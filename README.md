@@ -12,6 +12,26 @@ Three design directions for the Jin product site. Same content, three tones.
 
 Each page is a single self-contained HTML file. The only external dependency is Google Fonts.
 
+## Product screenshots
+
+`shots/` holds the real product screens, captured from `mockup/ui-concept-v5.html` — the UI concept for the
+Jin workspace. Three views are shown on the site:
+
+| View | What it shows |
+| --- | --- |
+| Notebook | Colour-coded section spines beside a working page. The pile arrives already folded. |
+| Focus | The page and its native files as one continuous surface. |
+| Project | The same colours reused as coordinates — a whole project on one screen. |
+
+Directions A and C carry these shots. B keeps its terminal hero, since its whole premise is the command line.
+
+To re-capture after editing the mockup:
+
+```
+python -m http.server 8777
+node capture.js          # or screenshot .app at ?mode=notebook|focus|project
+```
+
 ## What the pages say
 
 Jin gives every document on your disk a cover, folds them into groups, and keeps them traceable.

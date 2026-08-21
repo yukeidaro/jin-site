@@ -116,6 +116,20 @@ blockquote cite{display:block;font-family:var(--mono);font-size:10.5px;font-styl
 .toggle button{background:transparent;border:0;padding:7px 17px;cursor:pointer;font:inherit;color:var(--gray)}
 .toggle button.on{background:var(--sumi);color:var(--paper)}
 .fold-body{padding:20px;min-height:290px;background:#fff}
+
+/* product shots */
+.shotwrap{margin-top:44px}
+.shotframe{border:1px solid var(--sumi);overflow:hidden;background:#fff}
+.shotframe img{width:100%;display:block}
+.shotcap{margin-top:14px;font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+.views{display:grid;grid-template-columns:repeat(3,1fr);margin-top:48px;border-top:1px solid var(--sumi);border-bottom:1px solid var(--sumi)}
+.view{padding:30px 26px 34px;border-right:1px solid var(--line)}
+.view:last-child{border-right:0}
+.view .f{border:1px solid var(--line);overflow:hidden;background:#fff}
+.view .f img{width:100%;display:block}
+.view .n{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--shu);margin-top:18px}
+.view h3{font-family:var(--disp);font-size:23px;font-weight:800;letter-spacing:-.025em;margin-top:8px}
+.view p{font-size:13.5px;color:var(--sumi-2);line-height:1.9;margin-top:10px}
 .raw{display:flex;flex-wrap:wrap;gap:4px}
 .raw span{font-family:var(--mono);font-size:10.5px;color:var(--gray);border:1px solid var(--line);padding:2px 6px;white-space:nowrap}
 .raw span.dup{color:var(--shu);border-color:rgba(193,54,47,.32)}
@@ -161,7 +175,8 @@ footer{padding:60px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 .fbot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.08em;flex-wrap:wrap}
 
 @media(max-width:960px){
-  .herogrid,.axes,.nums,.priv{grid-template-columns:1fr;gap:36px}
+  .herogrid,.axes,.nums,.priv,.views{grid-template-columns:1fr;gap:36px}
+  .view{border-right:0;border-bottom:1px solid var(--line)}
   .axis{border-right:0;border-bottom:1px solid var(--line)}
   .num{border-right:0;border-bottom:1px solid #3f3b35}
   .shead,.mrow,.not{grid-template-columns:1fr;gap:14px}
@@ -175,7 +190,7 @@ footer{padding:60px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 <header>
   <div class="wrap nav">
     <a class="brand" href="#"><span class="mk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span><span class="rom">JIN</span></a>
-    <nav class="navlinks"><a href="#problem">Problem</a><a href="#how">Method</a><a href="#minute">60s</a><a href="#privacy">Privacy</a><a href="#not">Limits</a></nav>
+    <nav class="navlinks"><a href="#problem">Problem</a><a href="#how">Method</a><a href="#views">Product</a><a href="#minute">60s</a><a href="#privacy">Privacy</a></nav>
     <a class="btn btn-p" href="#final">Download</a>
   </div>
 </header>
@@ -300,10 +315,48 @@ footer{padding:60px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
   </div>
 </section>
 
+<section id="views">
+  <div class="wrap">
+    <div class="shead">
+      <div class="idx">Three — the product</div>
+      <div>
+        <h2 class="h2">Three ways to look at the same workspace.</h2>
+        <p class="sub">Nothing here asks you to learn Markdown, adopt a syntax or migrate anything. It is a notebook. The structure is carried by colour and position, so you find things by recognising them rather than by remembering their names.</p>
+      </div>
+    </div>
+
+    <div class="shotwrap">
+      <div class="shotframe"><img src="shots/shot-notebook.png" alt="Jin notebook view" width="2800" height="1640"></div>
+      <div class="shotcap">Notebook view — section spines colour and name every group</div>
+    </div>
+
+    <div class="views">
+      <div class="view">
+        <div class="f"><img src="shots/shot-notebook.png" alt="Notebook view" loading="lazy"></div>
+        <div class="n">Notebook</div>
+        <h3>Everything in its place</h3>
+        <p>Section spines give every group a colour and a name. Page ribbons carry that colour into the document, so you always know where you are without reading a breadcrumb.</p>
+      </div>
+      <div class="view">
+        <div class="f"><img src="shots/shot-focus.png" alt="Focus view" loading="lazy"></div>
+        <div class="n">Focus</div>
+        <h3>One continuous surface</h3>
+        <p>The page and the native files inside it read as a single document. A live slide is not an attachment at the bottom — it sits inside the paragraph that argues for it.</p>
+      </div>
+      <div class="view">
+        <div class="f"><img src="shots/shot-project.png" alt="Project view" loading="lazy"></div>
+        <div class="n">Project</div>
+        <h3>The whole thing at once</h3>
+        <p>The same colours become coordinates. Overview, meetings, research and deliverables lay out as one map — the folded state of an entire project.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="minute">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">Three — the gate</div>
+      <div class="idx">Four — the gate</div>
       <div>
         <h2 class="h2">From install to the first "there it is" — sixty seconds.</h2>
         <p class="sub">
@@ -323,7 +376,7 @@ footer{padding:60px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 <section id="privacy">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">Four — privacy</div>
+      <div class="idx">Five — privacy</div>
       <div>
         <h2 class="h2">What accumulates is not files. It's the rules.</h2>
         <p class="sub">
@@ -351,7 +404,7 @@ footer{padding:60px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 <section id="not">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">Five — the limits</div>
+      <div class="idx">Six — the limits</div>
       <div>
         <h2 class="h2">What Jin is not.</h2>
         <p class="sub">Written before what it is. Products that leave this vague try to become everything and end up as nothing.</p>

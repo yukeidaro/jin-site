@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <script>document.documentElement.setAttribute("data-theme", "light");</script>
+  <title>Jin AI UI Concept v5</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--cp-bg);
+      color: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    button { font: inherit; }
+    .stage { min-height: 100vh; padding: 24px 32px; }
+    .stage-head {
+      width: min(1400px, 100%);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .kicker { color: var(--cp-accent); font-size: 12px; font-weight: 600; }
+    h1 { margin: 4px 0; font-size: 28px; line-height: 36px; font-weight: 600; letter-spacing: -0.02em; }
+    .stage-sub { color: var(--cp-text-muted); font-size: 14px; }
+    .view-switcher {
+      display: flex;
+      gap: 2px;
+      padding: 3px;
+      border: 1px solid var(--cp-border);
+      border-radius: 10px;
+      background: var(--cp-surface);
+    }
+    .view-switcher button {
+      border: 0;
+      border-radius: 6px;
+      padding: 7px 12px;
+      background: transparent;
+      color: var(--cp-text-muted);
+      cursor: pointer;
+    }
+    .view-switcher button.active { background: var(--cp-surface-soft); color: var(--cp-text); font-weight: 600; }
+    .app {
+      width: min(1400px, 100%);
+      height: 820px;
+      margin: auto;
+      overflow: hidden;
+      background: var(--cp-bg-elevated);
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      display: grid;
+      grid-template-rows: 48px 1fr;
+      box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--cp-border);
+      background: var(--cp-bg-elevated);
+    }
+    .logo {
+      width: 28px; height: 28px; display: grid; place-items: center;
+      border-radius: 6px; background: var(--cp-accent); color: var(--cp-accent-fg);
+      font-size: 13px; font-weight: 600;
+    }
+    .product { font-size: 14px; font-weight: 600; }
+    .history { color: var(--cp-text-muted); font-size: 13px; }
+    .omnibox {
+      width: 340px; height: 30px; margin: auto;
+      display: flex; align-items: center; gap: 8px;
+      padding: 0 10px; border: 1px solid var(--cp-border);
+      border-radius: 6px; color: var(--cp-text-muted); background: var(--cp-surface);
+      font-size: 12px;
+    }
+    .top-action {
+      width: 30px; height: 30px; display: grid; place-items: center;
+      border: 0; border-radius: 6px; background: transparent; color: var(--cp-text-muted);
+    }
+    .avatar {
+      width: 28px; height: 28px; display: grid; place-items: center;
+      border-radius: 50%; background: var(--cp-accent-soft); color: var(--cp-accent);
+      font-size: 11px; font-weight: 600;
+    }
+    .workspace {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 52px 304px minmax(560px, 1fr);
+    }
+    .rail {
+      padding: 10px 6px;
+      border-right: 1px solid var(--cp-border);
+      background: var(--cp-bg-elevated);
+    }
+    .rail-btn {
+      width: 40px; height: 40px; margin-bottom: 4px;
+      display: grid; place-items: center;
+      border: 0; border-radius: 6px; background: transparent; color: var(--cp-text-muted);
+    }
+    .rail-btn.active { background: var(--cp-accent-soft); color: var(--cp-accent); }
+    .navigation {
+      min-width: 0;
+      border-right: 1px solid var(--cp-border);
+      background: var(--cp-surface-soft);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .project-head { padding: 18px 16px 14px; }
+    .project-name { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; }
+    .project-meta { margin: 5px 0 0 27px; color: var(--cp-text-muted); font-size: 12px; }
+    .visual-map { padding: 0 10px 10px 0; overflow: auto; }
+    .section-folder { margin-bottom: 8px; }
+    .folder-head {
+      min-height: 44px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 10px 8px 14px;
+      border-left: 8px solid var(--cp-accent);
+      background: var(--cp-surface);
+      border-radius: 0 10px 10px 0;
+      font-size: 13px; font-weight: 600;
+    }
+    .folder-head.meetings { border-left-color: var(--cp-warning); }
+    .folder-head.research { border-left-color: var(--cp-success); }
+    .folder-head.deliverables { border-left-color: var(--cp-link); }
+    .folder-head.active { background: var(--cp-accent-soft); }
+    .folder-head .count { margin-left: auto; color: var(--cp-text-muted); font-size: 11px; font-weight: 400; }
+    .folder-head .chevron { color: var(--cp-text-muted); font-size: 10px; }
+    .page-list {
+      position: relative;
+      margin-left: 22px;
+      padding: 4px 0 2px 12px;
+      border-left: 1px solid var(--cp-border);
+    }
+    .tree-item {
+      position: relative;
+      min-height: 32px; padding: 7px 9px 7px 15px;
+      display: flex; align-items: center; gap: 8px;
+      border-radius: 6px; color: var(--cp-text-muted); font-size: 13px;
+    }
+    .tree-item::before {
+      content: "";
+      position: absolute; left: 3px; top: 7px; bottom: 7px;
+      width: 5px; border-radius: 2px; background: var(--cp-accent);
+    }
+    .tree-item.meetings::before { background: var(--cp-warning); }
+    .tree-item.research::before { background: var(--cp-success); }
+    .tree-item.deliverables::before { background: var(--cp-link); }
+    .tree-item.active {
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      font-weight: 600;
+      box-shadow: 0 0 0 1px var(--cp-border);
+    }
+    .tree-item .count { margin-left: auto; font-size: 11px; color: var(--cp-text-muted); }
+    .nav-foot { margin-top: auto; padding: 10px 8px; border-top: 1px solid var(--cp-border); }
+    .create-button {
+      width: 100%; height: 34px; border: 0; border-radius: 6px;
+      background: var(--cp-accent); color: var(--cp-accent-fg);
+      font-weight: 600; font-size: 12px;
+    }
+    .template-row {
+      display: flex; justify-content: space-between;
+      margin-top: 8px; color: var(--cp-text-muted); font-size: 11px;
+    }
+    .editor {
+      position: relative;
+      min-width: 0;
+      overflow: auto;
+      background: var(--cp-surface);
+    }
+    .editor::after {
+      content: "Outline";
+      position: absolute;
+      top: 140px; right: 0;
+      padding: 14px 5px;
+      border: 1px solid var(--cp-border);
+      border-right: 0;
+      border-radius: 10px 0 0 10px;
+      background: var(--cp-bg-elevated);
+      color: var(--cp-text-muted);
+      font-size: 10px;
+      writing-mode: vertical-rl;
+    }
+    .document {
+      width: min(760px, calc(100% - 64px));
+      margin: 0 auto;
+      padding: 46px 0 80px;
+      position: relative;
+    }
+    .document::before {
+      content: "";
+      position: absolute;
+      left: -24px; top: 46px;
+      width: 4px; height: 112px;
+      border-radius: 9999px;
+      background: var(--cp-warning);
+    }
+    .page-section {
+      display: inline-flex; align-items: center; gap: 7px;
+      margin-bottom: 6px; color: var(--cp-text-muted); font-size: 12px; font-weight: 600;
+    }
+    .page-section i { width: 8px; height: 8px; border-radius: 50%; background: var(--cp-warning); }
+    .breadcrumbs { color: var(--cp-text-muted); font-size: 12px; }
+    .page-title { margin: 9px 0 7px; font-size: 34px; line-height: 42px; font-weight: 600; letter-spacing: -0.025em; }
+    .page-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; color: var(--cp-text-muted); font-size: 12px; }
+    .status { display: inline-flex; align-items: center; gap: 5px; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cp-success); }
+    .document p { margin: 9px 0; font-size: 15px; line-height: 1.6; }
+    .document h2 { margin: 28px 0 8px; font-size: 20px; line-height: 26px; font-weight: 600; }
+    mark { color: var(--cp-text); background: var(--cp-highlight); border-radius: 4px; padding: 1px 2px; }
+    .selection-tools {
+      position: sticky;
+      top: 16px;
+      z-index: 2;
+      display: inline-flex; align-items: center; gap: 1px;
+      margin: 3px 0 4px -45px; padding: 3px;
+      border: 1px solid var(--cp-border); border-radius: 10px;
+      background: var(--cp-panel-strong); box-shadow: var(--cp-shadow);
+    }
+    .selection-tools span { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 6px; font-size: 12px; }
+    .selection-tools span.active { background: var(--cp-accent-soft); color: var(--cp-accent); font-weight: 600; }
+    .decision {
+      margin: 18px 0;
+      padding: 12px 14px;
+      border-left: 2px solid var(--cp-accent);
+      background: var(--cp-accent-soft);
+      border-radius: 0 10px 10px 0;
+      font-size: 14px; line-height: 20px;
+    }
+    .decision b { display: block; margin-bottom: 3px; }
+    .native-file {
+      margin: 14px 0;
+      overflow: hidden;
+      border: 1px solid var(--cp-border);
+      border-radius: 10px;
+      background: var(--cp-surface);
+    }
+    .slide {
+      min-height: 208px;
+      display: grid; grid-template-columns: 1.35fr .65fr; gap: 28px; align-items: center;
+      padding: 28px;
+      background: var(--cp-bg-elevated);
+      border-bottom: 1px solid var(--cp-border);
+    }
+    .slide-label { margin-bottom: 9px; color: var(--cp-accent); font-size: 11px; font-weight: 600; }
+    .slide-title { font-size: 26px; line-height: 31px; font-weight: 600; letter-spacing: -0.025em; }
+    .slide-sub { margin-top: 8px; color: var(--cp-text-muted); font-size: 12px; line-height: 17px; }
+    .slide-points { border-left: 1px solid var(--cp-border); padding-left: 20px; }
+    .slide-point { padding: 8px 0; border-bottom: 1px solid var(--cp-border); font-size: 12px; }
+    .slide-point b { display: block; font-size: 16px; color: var(--cp-accent); }
+    .file-foot {
+      min-height: 44px; padding: 8px 12px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px;
+    }
+    .file-foot .source { color: var(--cp-text-muted); }
+    .file-foot .open { margin-left: auto; color: var(--cp-link); font-weight: 600; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .action {
+      padding: 10px 12px;
+      border: 1px solid var(--cp-border);
+      border-radius: 10px; font-size: 12px;
+    }
+    .action b { display: block; margin-bottom: 3px; }
+    .action span { color: var(--cp-text-muted); }
+    .context { display: none; }
+    .context h3 { margin: 0 0 10px; font-size: 12px; font-weight: 600; }
+    .outline-item {
+      min-height: 30px; padding: 6px 8px;
+      border-left: 2px solid var(--cp-border);
+      color: var(--cp-text-muted); font-size: 12px;
+    }
+    .outline-item.active { border-color: var(--cp-accent); color: var(--cp-text); }
+    .context-section { margin-top: 26px; }
+    .file-row { padding: 9px 0; border-bottom: 1px solid var(--cp-border); font-size: 12px; }
+    .file-row b { display: block; margin-bottom: 2px; }
+    .file-row span { color: var(--cp-text-muted); }
+
+    .workspace.focus { grid-template-columns: 56px minmax(520px, 1fr); }
+    .workspace.focus .navigation, .workspace.focus .context { display: none; }
+    .workspace.focus .document { width: min(720px, calc(100% - 64px)); padding-top: 52px; }
+
+    .project-view { display: none; min-width: 0; overflow: auto; background: var(--cp-surface); }
+    .workspace.project { grid-template-columns: 52px 304px minmax(650px, 1fr); }
+    .workspace.project .editor, .workspace.project .context { display: none; }
+    .workspace.project .project-view { display: block; }
+    .project-canvas { max-width: 980px; margin: auto; padding: 36px 40px 80px; }
+    .project-intro { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; padding-bottom: 24px; border-bottom: 1px solid var(--cp-border); }
+    .project-title { margin: 7px 0 5px; font-size: 32px; line-height: 40px; font-weight: 600; letter-spacing: -0.02em; }
+    .project-summary { max-width: 620px; color: var(--cp-text-muted); font-size: 14px; line-height: 20px; }
+    .project-status { padding: 7px 10px; border: 1px solid var(--cp-border); border-radius: 9999px; font-size: 12px; white-space: nowrap; }
+    .map-row { display: grid; grid-template-columns: 180px 1fr; gap: 28px; padding: 24px 0; border-bottom: 1px solid var(--cp-border); }
+    .map-label { font-size: 13px; font-weight: 600; }
+    .map-label span { display: block; margin-top: 4px; color: var(--cp-text-muted); font-size: 12px; font-weight: 400; }
+    .map-content { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .map-item { min-height: 54px; padding: 10px 12px; border: 1px solid var(--cp-border); border-radius: 10px; font-size: 12px; }
+    .map-item b { display: block; margin-bottom: 4px; }
+    .map-item span { color: var(--cp-text-muted); }
+    .map-item.accent { border-left: 3px solid var(--cp-accent); }
+    .map-item.warning { border-left: 3px solid var(--cp-warning); }
+    .map-item.success { border-left: 3px solid var(--cp-success); }
+    .map-item.link { border-left: 3px solid var(--cp-link); }
+    .stage-note { width: min(1400px, 100%); margin: 11px auto 0; color: var(--cp-text-muted); font-size: 12px; }
+    @media (max-width: 1050px) {
+      .stage { overflow-x: auto; }
+      .stage-head, .app, .stage-note { min-width: 980px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <header class="stage-head">
+      <div>
+        <div class="kicker">Jin AI · V5 visual concept</div>
+        <h1>Your workspace should feel remembered.</h1>
+        <div class="stage-sub">Section spines, page ribbons and living native files create a workspace you recognize by sight.</div>
+      </div>
+      <div class="view-switcher" aria-label="View selector">
+        <button data-mode="notebook">Notebook</button>
+        <button data-mode="focus">Focus</button>
+        <button data-mode="project">Project</button>
+      </div>
+    </header>
+
+    <section class="app">
+      <header class="topbar">
+        <div class="logo"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true" style="fill:currentColor"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></div><div class="product">Jin</div>
+        <span class="history">←</span><span class="history">→</span>
+        <div class="omnibox">⌕&nbsp;&nbsp;Search or jump to… <span style="margin-left:auto">Ctrl K</span></div>
+        <button class="top-action">＋</button><button class="top-action">↗</button><div class="avatar">TK</div>
+      </header>
+
+      <div class="workspace" id="workspace">
+        <nav class="rail">
+          <button class="rail-btn active">⌂</button><button class="rail-btn">⌕</button>
+          <button class="rail-btn">☆</button><button class="rail-btn">◷</button>
+        </nav>
+
+        <aside class="navigation">
+          <div class="project-head">
+            <div class="project-name">🚀 <span>FY27 Product Launch</span></div>
+            <div class="project-meta">18 pages · 24 native files</div>
+          </div>
+          <div class="visual-map">
+            <section class="section-folder">
+              <div class="folder-head"><span>⌂</span><span>Project</span><span class="count">2 pages</span><span class="chevron">⌄</span></div>
+              <div class="page-list">
+                <div class="tree-item">▤ Project home</div>
+                <div class="tree-item">▤ Goals & outcomes</div>
+              </div>
+            </section>
+            <section class="section-folder">
+              <div class="folder-head meetings active"><span>◷</span><span>Meetings</span><span class="count">5 pages</span><span class="chevron">⌄</span></div>
+              <div class="page-list">
+                <div class="tree-item meetings active">▤ Weekly sync — Aug 21</div>
+                <div class="tree-item meetings">▤ Kickoff notes</div>
+                <div class="tree-item meetings">▤ Customer review</div>
+              </div>
+            </section>
+            <section class="section-folder">
+              <div class="folder-head research"><span>⌁</span><span>Research</span><span class="count">8 pages</span><span class="chevron">⌄</span></div>
+              <div class="page-list">
+                <div class="tree-item research">▤ Customer evidence <span class="count">8</span></div>
+                <div class="tree-item research">▤ Market signals <span class="count">4</span></div>
+              </div>
+            </section>
+            <section class="section-folder">
+              <div class="folder-head deliverables"><span>◇</span><span>Deliverables</span><span class="count">3 pages</span><span class="chevron">⌄</span></div>
+              <div class="page-list">
+                <div class="tree-item deliverables">▤ Launch narrative</div>
+                <div class="tree-item deliverables">▤ Investor deck</div>
+              </div>
+            </section>
+          </div>
+          <div class="nav-foot">
+            <button class="create-button">＋ New page</button>
+            <div class="template-row"><span>Meeting note</span><span>Project brief</span><span>Decision log</span></div>
+          </div>
+        </aside>
+
+        <section class="editor">
+          <article class="document">
+            <div class="page-section"><i></i>Meetings · Weekly rhythm</div>
+            <div class="breadcrumbs">FY27 Product Launch / Meetings</div>
+            <h2 class="page-title">Weekly launch sync</h2>
+            <div class="page-meta">
+              <span>Aug 21, 2026</span><span>Owner: Tomoya</span><span>6 collaborators</span>
+              <span class="status"><i class="status-dot"></i>On track</span>
+            </div>
+            <div class="selection-tools">
+              <span class="active">B</span><span><i>I</i></span><span><u>U</u></span><span>▱</span><span>⌁</span><span>＋</span>
+            </div>
+            <p>The team aligned on a <mark>business-user-first launch narrative</mark> and agreed to simplify the first release around three daily workflows.</p>
+            <div class="decision"><b>Decision</b>Position Jin as a familiar business notebook—not another AI tool or file manager.</div>
+            <h2>Launch narrative</h2>
+            <p>The product should feel familiar on day one, then reveal its advantage when native business files become part of the working page.</p>
+            <div class="native-file">
+              <div class="slide">
+                <div>
+                  <div class="slide-label">Live PowerPoint · Slide 7</div>
+                  <div class="slide-title">From scattered work<br>to a living workspace</div>
+                  <div class="slide-sub">Pages, decisions and native files stay connected in one calm surface.</div>
+                </div>
+                <div class="slide-points">
+                  <div class="slide-point"><b>30%</b>faster context recovery</div>
+                  <div class="slide-point"><b>0</b>Markdown required</div>
+                  <div class="slide-point"><b>1</b>place for work and files</div>
+                </div>
+              </div>
+              <div class="file-foot">
+                <span>▣</span><b>FY27 Launch Narrative.pptx</b>
+                <span class="source">SharePoint · Updated 18 min ago</span><span class="open">Open original ↗</span>
+              </div>
+            </div>
+            <div class="actions">
+              <div class="action"><b>□ Finalize investor story</b><span>Tomoya · Aug 25</span></div>
+              <div class="action"><b>□ Validate with five users</b><span>Mika · Aug 28</span></div>
+            </div>
+          </article>
+        </section>
+
+        <aside class="context">
+          <h3>On this page</h3>
+          <div class="outline-item active">Weekly launch sync</div><div class="outline-item">Decision</div>
+          <div class="outline-item">Launch narrative</div><div class="outline-item">Actions</div>
+          <div class="context-section">
+            <h3>Native files</h3>
+            <div class="file-row"><b>▣ Launch Narrative</b><span>PowerPoint · 18 slides</span></div>
+            <div class="file-row"><b>▧ Customer Evidence</b><span>PDF · 12 pages</span></div>
+          </div>
+          <div class="context-section">
+            <h3>Related</h3>
+            <div class="file-row"><b>Launch positioning</b><span>Page · Research</span></div>
+            <div class="file-row"><b>Investor questions</b><span>Page · Deliverables</span></div>
+          </div>
+        </aside>
+
+        <section class="project-view">
+          <div class="project-canvas">
+            <div class="project-intro">
+              <div><div class="breadcrumbs">Acme Workspace / Projects</div><div class="project-title">🚀 FY27 Product Launch</div>
+              <div class="project-summary">Everything the team needs to understand the launch, make decisions and produce the final story.</div></div>
+              <div class="project-status">● On track</div>
+            </div>
+            <div class="map-row">
+              <div class="map-label">Overview<span>Direction and current state</span></div>
+              <div class="map-content"><div class="map-item accent"><b>Project brief</b><span>Updated today</span></div><div class="map-item accent"><b>Goals & outcomes</b><span>4 success measures</span></div></div>
+            </div>
+            <div class="map-row">
+              <div class="map-label">Meetings<span>Decisions in context</span></div>
+              <div class="map-content"><div class="map-item warning"><b>Weekly launch sync</b><span>2 decisions · 2 actions</span></div><div class="map-item warning"><b>Customer review</b><span>Aug 19 · 6 attendees</span></div></div>
+            </div>
+            <div class="map-row">
+              <div class="map-label">Research<span>Evidence and sources</span></div>
+              <div class="map-content"><div class="map-item success"><b>Customer evidence</b><span>8 notes · 3 native files</span></div><div class="map-item success"><b>Market signals</b><span>4 notes · 12 sources</span></div></div>
+            </div>
+            <div class="map-row">
+              <div class="map-label">Deliverables<span>Work that moves forward</span></div>
+              <div class="map-content"><div class="map-item link"><b>Launch narrative.pptx</b><span>PowerPoint · Updated 18 min ago</span></div><div class="map-item link"><b>Investor brief.pdf</b><span>PDF · Draft</span></div></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+    <div class="stage-note" id="stageNote">Notebook view · Section SpineとPage Ribbonにより、情報の場所を視覚で記憶する。</div>
+  </main>
+  <script>
+    const notes = {
+      notebook: "Notebook view · Section SpineとPage Ribbonにより、情報の場所を視覚で記憶する。",
+      focus: "Focus view · Living Pageだけを残し、文書とnative fileを一つの連続面として読む。",
+      project: "Project view · Section色を空間の座標として再利用し、Project全体をひと目で認識する。"
+    };
+    function setMode(mode) {
+      const selected = notes[mode] ? mode : "notebook";
+      const workspace = document.getElementById("workspace");
+      workspace.className = "workspace" + (selected === "notebook" ? "" : " " + selected);
+      document.querySelectorAll(".editor, .project-view").forEach(element => {
+        element.scrollTop = 0;
+      });
+      document.querySelectorAll("[data-mode]").forEach(button => button.classList.toggle("active", button.dataset.mode === selected));
+      document.getElementById("stageNote").textContent = notes[selected];
+      const url = new URL(window.location);
+      url.searchParams.set("mode", selected);
+      history.replaceState(null, "", url);
+    }
+    document.querySelectorAll("[data-mode]").forEach(button => button.addEventListener("click", () => setMode(button.dataset.mode)));
+    setMode(new URLSearchParams(window.location.search).get("mode") || "notebook");
+  </script>
+</body>
+</html>
