@@ -1,3 +1,10 @@
 *.log
 .DS_Store
 Thumbs.db
+
+# Pitch video assets. Not committed on purpose:
+# jinai-pitch-captioned-4k.mp4 is ~205MB, over GitHub's 100MB per-file hard
+# limit, and the 1080p cut is ~40MB which is far heavier than anything else
+# on this site. Host the video externally (YouTube, Vimeo, a CDN) and embed
+# it, or drop a compressed web cut in and un-ignore that single file.
+pitch-video/
