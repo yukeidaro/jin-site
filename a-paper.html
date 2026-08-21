@@ -58,7 +58,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(245,243,239,.86);backdro
 /* product shot */
 .shotwrap{margin-top:56px;position:relative}
 .shotframe{border:1px solid var(--line-2);border-radius:6px;overflow:hidden;background:#fff;box-shadow:0 30px 70px -34px rgba(0,0,0,.42)}
-.shotframe img{width:100%;display:block}
+.shotframe img{width:100%;height:auto;display:block;aspect-ratio:2800/1640}
 .shotcap{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.06em;display:flex;gap:8px;flex-wrap:wrap}
 .shotcap b{color:var(--ink-2);font-weight:500}
 
@@ -67,7 +67,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(245,243,239,.86);backdro
 .view{display:flex;flex-direction:column}
 .view .f{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;transition:.2s}
 .view:hover .f{border-color:var(--edge);transform:translateY(-2px);box-shadow:0 20px 44px -28px rgba(0,0,0,.34)}
-.view .f img{width:100%;display:block}
+.view .f img{width:100%;height:auto;display:block;aspect-ratio:2800/1640}
 .view .n{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cobalt);margin-top:16px}
 .view h3{font-family:var(--serif);font-size:21px;font-weight:700;letter-spacing:-.02em;margin-top:7px}
 .view p{font-size:14px;color:var(--ink-2);line-height:1.8;margin-top:9px}
@@ -286,19 +286,19 @@ footer{padding:56px 0 44px;color:var(--ink-3);font-size:13px}
 
     <div class="views">
       <div class="view">
-        <div class="f"><img src="shots/shot-notebook.png" alt="Notebook view" loading="lazy"></div>
+        <div class="f"><img src="shots/shot-notebook.png" alt="Notebook view" width="2800" height="1640" loading="lazy"></div>
         <div class="n">Notebook</div>
         <h3>Everything in its place</h3>
         <p>Section spines give every group a colour and a name. Page ribbons carry that colour into the document, so you always know where you are without reading a breadcrumb.</p>
       </div>
       <div class="view">
-        <div class="f"><img src="shots/shot-focus.png" alt="Focus view" loading="lazy"></div>
+        <div class="f"><img src="shots/shot-focus.png" alt="Focus view" width="2800" height="1640" loading="lazy"></div>
         <div class="n">Focus</div>
         <h3>One continuous surface</h3>
         <p>The page and the native files inside it read as a single document. A live PowerPoint slide is not an attachment sitting at the bottom — it is part of the paragraph that argues for it.</p>
       </div>
       <div class="view">
-        <div class="f"><img src="shots/shot-project.png" alt="Project view" loading="lazy"></div>
+        <div class="f"><img src="shots/shot-project.png" alt="Project view" width="2800" height="1640" loading="lazy"></div>
         <div class="n">Project</div>
         <h3>The whole thing at once</h3>
         <p>The same colours become coordinates. Overview, meetings, research and deliverables lay out as one map, which is the folded state of an entire project.</p>
