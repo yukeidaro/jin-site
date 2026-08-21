@@ -1,8 +1,8 @@
-# Jin — website
+# JinAI — website
 
-Two design directions for the Jin product site. Same story, two tones.
+Two design directions for the JinAI product site. Same story, two tones.
 
-**Live:** https://yukeidaro.github.io/jin-site/
+**Live:** https://yukeidaro.github.io/JinAI-site/
 
 | | Page | Character |
 | --- | --- | --- |
@@ -13,16 +13,18 @@ Each page is a single self-contained HTML file. The only external dependency is 
 
 ## The story both pages tell
 
-1. Files pile up faster than you can keep track of them — and search only helps when you already know the word
-2. **The product** — three ways to look at the same folder: Notebook, Focus, Project
-3. **The method** — visualise it, break it down *your* way, surface only what a person should read
-4. **The architecture** — Jin sits *under* the agents, so anything that writes a file can feed it
-5. **Privacy** — your files stay on your machine
-6. **Upcoming** — what is being built, in what order
-7. **Waitlist**
+1. **The gap** — business documents (folders, decks, docs, sheets) are familiar but disconnected; linked notes are connected but built for technical and power users
+2. **The verdict** — *this is not a file-management problem*. Work should not be fragmented by application or file type. What's missing is an **interaction layer**: a visual workspace holding knowledge, Office documents and AI-generated work together
+3. **The product** — one workspace, three ways to look at it: Notebook, Focus, Project
+4. **The method** — familiar on the surface, connected underneath, curated so only the human layer shows
+5. **The architecture** — JinAI sits *under* the tools, so anything that produces a document can feed it
+6. **Why us** — inside Microsoft's workplace productivity ecosystem, and daily users of generative AI and connected notes
+7. **Privacy** — your documents stay where they already live
+8. **Upcoming** — what is being built, in what order
+9. **Waitlist**
 
 Nothing on these pages claims a measurement from a specific machine. The before/after demo is an illustrative
-example folder, not a report about the visitor.
+example workspace, not a report about the visitor.
 
 ## Turning the waitlist on
 

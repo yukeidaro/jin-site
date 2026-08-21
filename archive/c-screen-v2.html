@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JinAI — the workspace you know, connected by AI</title>
-<meta name="description" content="JinAI keeps the folders, projects and documents business users already navigate, and connects the notes, sources, decisions and AI-generated context behind them. A visual workspace for work in the AI era.">
+<title>Jin — see what's actually in your folders</title>
+<meta name="description" content="Markdown piles up fast. Jin reads the folders you already have, lays them out the way you would organise them yourself, and shows you only what a person needs to read. Local-first, works with any agent.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23faf8f4'/%3E%3Cg fill='%23c1362f'%3E%3Crect x='4' y='11' width='4' height='12'/%3E%3Crect x='11' y='6' width='4' height='21'/%3E%3Crect x='18' y='14' width='4' height='8'/%3E%3Crect x='25' y='9' width='4' height='16'/%3E%3C/g%3E%3C/svg%3E">
 <meta property="og:type" content="website">
-<meta property="og:title" content="JinAI — the workspace you know, connected by AI">
-<meta property="og:description" content="Knowledge, Office documents and AI-generated work in one intuitive workspace.">
+<meta property="og:title" content="Jin — see what's actually in your folders">
+<meta property="og:description" content="Markdown piles up fast. Jin makes it visible again.">
 <meta property="og:image" content="preview-c-screen.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,16 +40,17 @@ header{position:sticky;top:0;z-index:60;background:rgba(250,248,244,.9);backdrop
 .brand{display:flex;align-items:center;gap:11px;text-decoration:none}
 .brand .mk{width:28px;height:28px;border:1.5px solid var(--shu);display:grid;place-items:center;flex:none}
 .brand .mk svg{width:16px;height:16px;fill:var(--shu)}
-.brand .rom{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:.1em;line-height:1}
-.navlinks{display:flex;gap:24px;font-size:11.5px;color:var(--gray);letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono)}
+.brand .rom{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:.14em;line-height:1}
+.navlinks{display:flex;gap:28px;font-size:12px;color:var(--gray);letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono)}
 .navlinks a{text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent}
 .navlinks a:hover{color:var(--shu);border-color:var(--shu)}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);text-decoration:none;border:1px solid var(--sumi);transition:.16s;cursor:pointer;background:transparent}
 .btn-p{background:var(--sumi);color:var(--paper)}
 .btn-p:hover{background:var(--shu);border-color:var(--shu)}
+.btn-o:hover{background:var(--sumi);color:var(--paper)}
 
 .hero{border-bottom:1px solid var(--sumi);padding:84px 0 72px}
-.hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(40px,6.4vw,82px);line-height:.98;letter-spacing:-.035em;margin:26px 0 0;max-width:12em}
+.hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(42px,7.2vw,92px);line-height:.96;letter-spacing:-.035em;margin:26px 0 0;max-width:11em}
 .hero h1 .shu{color:var(--shu)}
 .herogrid{display:grid;grid-template-columns:1fr 1fr;gap:64px;margin-top:44px;padding-top:38px;border-top:1px solid var(--sumi)}
 .lede{font-size:17px;line-height:1.9;color:var(--sumi-2)}
@@ -77,18 +78,17 @@ section{padding:90px 0;border-bottom:1px solid var(--sumi);scroll-margin-top:78p
 .sub{margin-top:24px;font-size:16px;color:var(--sumi-2);max-width:40em;line-height:1.9}
 .sub strong{font-weight:700;color:var(--sumi)}
 
-.worlds{display:grid;grid-template-columns:1fr 1fr;margin-top:46px;border:1px solid var(--sumi)}
-.world{padding:30px 28px 32px;border-right:1px solid var(--line);display:flex;flex-direction:column;background:#fff}
-.world:last-child{border-right:0}
-.world .wt{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
-.world h3{font-family:var(--disp);font-size:26px;font-weight:800;letter-spacing:-.025em;margin-top:10px}
-.world p{font-size:14.5px;color:var(--sumi-2);line-height:1.9;margin-top:12px;flex:1}
-.world .verdict{margin-top:20px;padding-top:15px;border-top:1px solid var(--line);font-size:13.5px;font-weight:600;color:var(--shu)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-.chips span{font-family:var(--mono);font-size:10.5px;border:1px solid var(--line);padding:3px 8px;color:var(--gray)}
-.verd{margin-top:0;border:1px solid var(--sumi);border-top:0;background:var(--sumi);color:var(--paper);padding:28px 30px}
-.verd b{font-family:var(--disp);font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.025em;display:block;margin-bottom:10px}
-.verd span{font-size:15px;color:#a8a39a;line-height:1.9}
+.pcols{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:44px;border:1px solid var(--sumi)}
+.pcard{display:flex;flex-direction:column;border-right:1px solid var(--line)}
+.pcard:last-child{border-right:0}
+.pcard .ph{padding:12px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--dim);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--paper-2)}
+.pcard .pb{padding:14px 16px;font-family:var(--mono);font-size:12px;line-height:2.05;color:var(--gray);flex:1;background:#fff}
+.pcard .pb .d{color:var(--shu)}
+.pcard .pb .g{color:var(--edge)}
+.pcard .pf{padding:13px 16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--sumi-2);background:var(--paper-2)}
+.pcard .pf b{color:var(--sumi);font-weight:700}
+.caret{display:inline-block;width:7px;height:13px;background:var(--shu);vertical-align:-2px;animation:bl 1.1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
 
 blockquote{font-family:var(--disp);font-size:clamp(24px,3.2vw,40px);font-weight:700;line-height:1.2;letter-spacing:-.03em;margin:50px 0 0;max-width:15em;position:relative;padding-left:34px}
 blockquote:before{content:"";position:absolute;left:0;top:.15em;bottom:.15em;width:3px;background:var(--shu)}
@@ -118,20 +118,19 @@ blockquote cite{display:block;font-family:var(--mono);font-size:10.5px;font-styl
 .toggle{display:inline-flex;border:1px solid var(--sumi);font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
 .toggle button{background:transparent;border:0;padding:7px 16px;cursor:pointer;font:inherit;color:var(--gray)}
 .toggle button.on{background:var(--sumi);color:var(--paper)}
-.fold-body{padding:20px;min-height:290px;background:#fff}
-.raw{display:flex;flex-wrap:wrap;gap:5px}
-.raw span{font-family:var(--mono);font-size:10.5px;color:var(--gray);border:1px solid var(--line);padding:3px 7px;white-space:nowrap}
-.raw span em{font-style:normal;opacity:.6;margin-right:5px}
+.fold-body{padding:20px;min-height:286px;background:#fff}
+.raw{display:flex;flex-wrap:wrap;gap:4px}
+.raw span{font-family:var(--mono);font-size:10.5px;color:var(--gray);border:1px solid var(--line);padding:2px 6px;white-space:nowrap}
+.raw span.dup{color:var(--shu);border-color:rgba(193,54,47,.32)}
 .raw span.mach{color:var(--edge);border-style:dashed}
-.buckets{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.buckets{display:grid;grid-template-columns:repeat(auto-fill,minmax(198px,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
 .bk{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 18px 20px}
 .bk .bd{height:2px;margin-bottom:13px}
 .bk .bn{font-family:var(--disp);font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.25}
-.bk .bl{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}
-.bk .bl i{font-style:normal;font-family:var(--mono);font-size:9.5px;border:1px solid var(--line);padding:2px 6px;color:var(--gray)}
-.bk .bc{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:11px;letter-spacing:.05em;line-height:1.7}
+.bk .bc{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:9px;letter-spacing:.05em}
 .bk.hid .bn{color:var(--dim)}
 
+/* agents */
 .numband{background:var(--sumi);color:var(--paper);border-bottom:1px solid var(--sumi)}
 .numband .eyebrow{color:#928d84}
 .numband .h2{color:var(--paper)}
@@ -139,9 +138,9 @@ blockquote cite{display:block;font-family:var(--mono);font-size:10.5px;font-styl
 .numband .sub strong{color:var(--paper)}
 .numband .shead .idx{color:#e0958f;border-color:#e0958f}
 .flow{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;align-items:center;margin-top:48px}
-.fbox{border:1px solid #3f3b35;padding:22px 20px;min-height:196px}
+.fbox{border:1px solid #3f3b35;padding:22px 20px;min-height:186px}
 .fbox .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#928d84}
-.fbox .cs{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.fbox .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
 .fbox .chip{font-family:var(--mono);font-size:11px;border:1px solid #3f3b35;padding:4px 11px;color:var(--paper)}
 .fbox .tree{font-family:var(--mono);font-size:11.5px;line-height:2;color:#a8a39a;margin-top:12px}
 .fbox .tree b{color:var(--paper);font-weight:400}
@@ -152,18 +151,6 @@ blockquote cite{display:block;font-family:var(--mono);font-size:10.5px;font-styl
 .agnote div{border-top:1px solid #3f3b35;padding-top:16px}
 .agnote b{display:block;font-family:var(--disp);font-size:19px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
 .agnote span{font-size:14px;color:#a8a39a;line-height:1.85}
-
-.team{display:grid;grid-template-columns:1fr 1fr;margin-top:46px;border:1px solid var(--sumi)}
-.tcard{padding:32px 30px 34px;border-right:1px solid var(--line);background:#fff}
-.tcard:last-child{border-right:0}
-.tcard .tt{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--shu)}
-.tcard h3{font-family:var(--disp);font-size:25px;font-weight:800;letter-spacing:-.025em;margin-top:10px;line-height:1.15}
-.tcard p{font-size:14.5px;color:var(--sumi-2);line-height:1.9;margin-top:13px}
-.creds{display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid var(--sumi);border-bottom:1px solid var(--sumi);border-right:1px solid var(--sumi)}
-.cred{padding:22px 20px;border-right:1px solid var(--line)}
-.cred:last-child{border-right:0}
-.cred b{display:block;font-family:var(--disp);font-size:17px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
-.cred span{font-size:13px;color:var(--gray);line-height:1.7}
 
 .priv{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-top:44px}
 .privcard{border:1px solid var(--sumi);background:#fff}
@@ -188,7 +175,7 @@ blockquote cite{display:block;font-family:var(--mono);font-size:10.5px;font-styl
 .final .fm{width:60px;height:60px;border:2px solid var(--shu);display:grid;place-items:center;margin:0 auto}
 .final .fm svg{width:32px;height:32px;fill:var(--shu)}
 .final h2{font-family:var(--disp);font-size:clamp(34px,5.2vw,64px);font-weight:900;line-height:1.02;letter-spacing:-.035em;max-width:13em;margin:28px auto 0}
-.final p{margin:22px auto 0;max-width:33em;color:var(--sumi-2);font-size:15.5px;line-height:1.95}
+.final p{margin:22px auto 0;max-width:32em;color:var(--sumi-2);font-size:15.5px;line-height:1.95}
 .final .wait{margin:32px auto 0;justify-content:center}
 .final .waitnote{text-align:center}
 
@@ -200,9 +187,10 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 .fbot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.08em;flex-wrap:wrap}
 
 @media(max-width:960px){
-  .herogrid,.priv{grid-template-columns:1fr;gap:36px}
-  .axes,.views,.road,.worlds,.team,.creds,.agnote{grid-template-columns:1fr}
-  .axis,.view,.stage,.world,.tcard,.cred{border-right:0;border-bottom:1px solid var(--line)}
+  .herogrid,.axes,.views,.priv,.road,.pcols,.agnote{grid-template-columns:1fr;gap:36px}
+  .axis,.view,.stage{border-right:0;border-bottom:1px solid var(--line)}
+  .pcard{border-right:0;border-bottom:1px solid var(--line)}
+  .pcols,.views,.axes,.road{gap:0}
   .flow{grid-template-columns:1fr}
   .arrow{height:34px;transform:rotate(90deg)}
   .shead{grid-template-columns:1fr;gap:14px}
@@ -215,8 +203,8 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 
 <header>
   <div class="wrap nav">
-    <a class="brand" href="#"><span class="mk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span><span class="rom">JINAI</span></a>
-    <nav class="navlinks"><a href="#problem">Gap</a><a href="#product">Product</a><a href="#how">Method</a><a href="#agents">Architecture</a><a href="#team">Why us</a><a href="#upcoming">Upcoming</a></nav>
+    <a class="brand" href="#"><span class="mk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span><span class="rom">JIN</span></a>
+    <nav class="navlinks"><a href="#problem">Problem</a><a href="#product">Product</a><a href="#how">Method</a><a href="#agents">Any agent</a><a href="#upcoming">Upcoming</a></nav>
     <a class="btn btn-p" href="#waitlist">Waitlist</a>
   </div>
 </header>
@@ -224,29 +212,29 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 <div class="hero">
   <div class="wrap">
     <span class="pill"><i></i>Upcoming — join the waitlist</span>
-    <h1>Keep the workspace you know.<br><span class="shu">Let AI connect what's behind it.</span></h1>
+    <h1>Markdown piles up fast.<br><span class="shu">Jin makes it visible.</span></h1>
     <div class="herogrid">
       <div>
         <p class="lede">
-          Business users organise work into folders, projects and documents, and find things by navigating them visually.
-          JinAI keeps that intact — and quietly connects <b>the notes, sources, decisions and AI-generated context</b>
-          behind the documents where the work actually lands.
+          Every week there are more files in your folders, and fewer of them you could describe from memory.
+          Jin reads the folders you already have, lays them out <b>the way you would organise them yourself</b>,
+          and puts the things a person actually needs to read on top.
         </p>
         <form class="wait" id="waitTop">
           <input type="email" name="email" required autocomplete="email" placeholder="you@company.com" aria-label="Email address">
           <button type="submit" class="btn btn-p">Join</button>
         </form>
-        <div class="waitnote" id="noteTop">A visual workspace for work in the AI era<br>one email when JinAI opens</div>
+        <div class="waitnote" id="noteTop">macOS &amp; Windows · your files never leave your machine<br>one email when Jin opens</div>
       </div>
       <div class="credo">
-        Nothing moves. Nothing is renamed.<br>The workspace simply becomes readable.
-        <small>JinAI — a formation: scattered work drawn up into a shape you can read</small>
+        Nothing moves. Nothing is renamed.<br>The folder just becomes readable.
+        <small>Jin — a formation: scattered things drawn up into a shape you can read</small>
       </div>
     </div>
 
     <div class="shotwrap">
-      <div class="shotframe"><img src="shots/shot-notebook.png" alt="JinAI: colour-coded projects on the left, a working page on the right with a live slide embedded in it" width="2800" height="1640"></div>
-      <div class="shotcap">Knowledge, Office documents and AI-generated work on one surface</div>
+      <div class="shotframe"><img src="shots/shot-notebook.png" alt="Jin showing a folder as a notebook: colour-coded sections on the left, a readable page on the right" width="2800" height="1640"></div>
+      <div class="shotcap">Your folder, drawn as something you can read</div>
     </div>
   </div>
 </div>
@@ -254,49 +242,50 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 <section id="problem">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">One — the gap</div>
+      <div class="idx">One — the problem</div>
       <div>
-        <h2 class="h2">Today you choose: familiar, or connected.</h2>
+        <h2 class="h2">You didn't lose the file. You lost the map.</h2>
         <p class="sub">
-          Both halves of the modern workspace already exist. Neither one is willing to be the other,
-          so most teams live in both and pay the tax of moving between them.
+          Folders grow by accretion. A note here, an export there, a dozen files an agent wrote while you were doing something else.
+          Nothing is missing — but nothing is <strong>legible</strong> either. And search only rescues you when you already know the word to type.
         </p>
       </div>
     </div>
 
-    <div class="worlds">
-      <div class="world">
-        <div class="wt">Where the work lands</div>
-        <h3>Familiar, but disconnected</h3>
-        <p>
-          Folders, projects and documents. Slides, docs and spreadsheets are where business outcomes are actually
-          produced — and they are the things people can navigate without being taught.
-        </p>
-        <div class="chips"><span>Folders</span><span>PowerPoint</span><span>Word</span><span>Excel</span><span>PDF</span></div>
-        <div class="verdict">But the reasoning behind each one lives somewhere else entirely.</div>
+    <div class="pcols">
+      <div class="pcard">
+        <div class="ph"><span>your-project/</span><span>flat listing</span></div>
+        <div class="pb">
+          <span class="d">README.md</span><br>
+          <span class="d">README.md</span> <span class="g">· docs/</span><br>
+          <span class="d">DESIGN.md</span> <span class="g">· v2/</span><br>
+          notes-final.md<br>
+          notes-final-2.md<br>
+          <span class="g">output-2026-08-14.md</span><br>
+          <span class="g">.agent-scratch.md</span><br>
+          untitled.md<br>
+          <span class="g">…</span>
+        </div>
+        <div class="pf"><b>Every name looks the same.</b> Which README is the one you meant?</div>
       </div>
-      <div class="world">
-        <div class="wt">Where the thinking lives</div>
-        <h3>Connected, but unfamiliar</h3>
-        <p>
-          Linked notes give you genuinely AI-friendly, connected knowledge. But Markdown, backlinks and a deliberately
-          sparse interface are designed for technical and power users — not for the person producing the deck.
-        </p>
-        <div class="chips"><span>Markdown</span><span>Backlinks</span><span>Graph view</span><span>Plugins</span></div>
-        <div class="verdict">Powerful, and quietly out of reach for most of the team.</div>
+      <div class="pcard">
+        <div class="ph"><span>⌕&nbsp; DESIGN<span class="caret"></span></span><span>instant</span></div>
+        <div class="pb">
+          DESIGN.md <span class="g">· ~/work/api</span><br>
+          DESIGN.md <span class="g">· ~/work/api/v2</span><br>
+          DESIGN.md <span class="g">· ~/notes/2025</span><br>
+          DESIGN.md <span class="g">· ~/archive</span><br>
+          DESIGN.md <span class="g">· ~/Downloads</span><br>
+          DESIGN.md <span class="g">· ~/clients/acme</span><br>
+          <span class="g">… and more</span>
+        </div>
+        <div class="pf"><b>Search was never slow.</b> It just can't tell you which one matters.</div>
       </div>
-    </div>
-
-    <div class="verd">
-      <b>This is not a file-management problem.</b>
-      <span>Work in the AI era should not be fragmented by application or by file type. What is missing is an interaction
-      layer — a visual workspace that holds knowledge, Office documents and AI-generated work together, and still looks
-      like the workspace people already know.</span>
     </div>
 
     <blockquote>
-      The deck is finished. The thinking that produced it is scattered across six other places.
-      <cite>The gap JinAI is built to close</cite>
+      I have to open all of it just to find out what's in there.
+      <cite>The feeling Jin is built to remove</cite>
     </blockquote>
   </div>
 </section>
@@ -306,10 +295,10 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
     <div class="shead">
       <div class="idx">Two — the product</div>
       <div>
-        <h2 class="h2">One workspace. Three ways to look at it.</h2>
+        <h2 class="h2">Three ways to look at the same folder.</h2>
         <p class="sub">
-          Nothing asks you to learn a syntax, adopt a taxonomy or migrate anything. Your files stay where they are and keep
-          their names. JinAI draws them, so you find things by <strong>recognising</strong> them — the way you already work.
+          Nothing here asks you to learn a syntax, migrate anything or move your files somewhere new. They stay exactly where they are.
+          Jin just draws them, so you find things by <strong>recognising</strong> them instead of remembering their names.
         </p>
       </div>
     </div>
@@ -319,19 +308,19 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
         <div class="f"><img src="shots/shot-notebook.png" alt="Notebook view" width="2800" height="1640" loading="lazy"></div>
         <div class="n">Notebook</div>
         <h3>Everything in its place</h3>
-        <p>Projects and sections carry a colour and a name, and that colour follows the document you open. You always know where you are without reading a path.</p>
+        <p>Each group gets a colour and a name, and that colour follows the document you open. You always know where you are without reading a path.</p>
       </div>
       <div class="view">
         <div class="f"><img src="shots/shot-focus.png" alt="Focus view" width="2800" height="1640" loading="lazy"></div>
         <div class="n">Focus</div>
-        <h3>The document and its reasoning</h3>
-        <p>A live slide sits inside the paragraph that argues for it. Notes, sources and decisions read as one continuous surface with the deck they produced.</p>
+        <h3>One continuous surface</h3>
+        <p>A page and the files it refers to read as a single document. A slide or a PDF is not an attachment at the bottom — it sits inside the paragraph that needs it.</p>
       </div>
       <div class="view">
         <div class="f"><img src="shots/shot-project.png" alt="Project view" width="2800" height="1640" loading="lazy"></div>
         <div class="n">Project</div>
         <h3>The whole thing at once</h3>
-        <p>The same colours become coordinates. A whole project — meetings, research, decisions and deliverables — lays out as one map you can take in without opening anything.</p>
+        <p>The same colours become coordinates. A whole project lays out as one map you can take in without scrolling or opening anything.</p>
       </div>
     </div>
   </div>
@@ -342,10 +331,10 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
     <div class="shead">
       <div class="idx">Three — the method</div>
       <div>
-        <h2 class="h2">Familiar on the surface. Structured underneath.</h2>
+        <h2 class="h2">It follows your structure, not someone else's.</h2>
         <p class="sub">
-          AI does the structuring and connecting in the background. You never see a graph you have to interpret,
-          and you are never asked to file something correctly for it to work.
+          Most tools want you to adopt their taxonomy. Jin does the opposite: it reads the way you already break folders down,
+          and applies that consistently to everything that lands afterwards — including everything your agents write.
         </p>
       </div>
     </div>
@@ -353,25 +342,25 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
     <div class="axes">
       <div class="axis">
         <div class="kg">01</div>
-        <h3>Familiar<span>nothing new to learn</span></h3>
-        <p>Folders, projects and documents, navigated visually. Every file keeps its name and its location. The surface is the one your team is already fluent in.</p>
+        <h3>Visualise<span>see the shape</span></h3>
+        <p>Every file gets a cover you can recognise at a glance, generated from what is already there — name, type, date, neighbours. No tagging, no filling in forms.</p>
       </div>
       <div class="axis">
         <div class="kg">02</div>
-        <h3>Connected<span>the reasoning travels with it</span></h3>
-        <p>The deck, the notes behind it, the sources it cites and the decision that shaped it are held together. Open the outcome and the thinking comes with it.</p>
+        <h3>Break down<span>your rules, applied</span></h3>
+        <p>Jin learns the folder breakdown you already use and keeps applying it. New files land where you would have put them, and the grouping stays stable as the folder grows.</p>
       </div>
       <div class="axis">
         <div class="kg">03</div>
-        <h3>Curated<span>only what's worth reading</span></h3>
-        <p>Agent scratch output, near-duplicates and dead drafts fold away by default. What stays on top is <strong>the layer a person should actually read</strong>.</p>
+        <h3>Surface<span>only what's worth reading</span></h3>
+        <p>Agent scratch files, near-duplicates, machine output and dead drafts fold away by default. What is left on top is <strong>the layer a human should actually read</strong>.</p>
       </div>
     </div>
 
     <div class="fold">
       <div class="fold-head">
-        <div class="st">example workspace · <b id="stCount">sorted by file type</b></div>
-        <div class="toggle"><button id="bRaw" class="on">As it is</button><button id="bFold">With JinAI</button></div>
+        <div class="st">example folder · <b id="stCount">flat listing</b></div>
+        <div class="toggle"><button id="bRaw" class="on">As it is</button><button id="bFold">With Jin</button></div>
       </div>
       <div class="fold-body" id="foldBody"></div>
     </div>
@@ -383,118 +372,72 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
     <div class="shead">
       <div class="idx">Four — architecture</div>
       <div>
-        <h2 class="h2">JinAI sits under the tools, not inside them.</h2>
+        <h2 class="h2">Jin sits under the agents, not inside them.</h2>
         <p class="sub">
-          It isn't a plugin for one assistant or one suite. JinAI works on the workspace itself — a convention plus an index that
-          lives with your files — so <strong>anything that produces a document can feed it</strong>, and the way you structure work
-          is honoured no matter which application or which model made the file.
+          Jin is not a plugin for one assistant. It works on the folder — a convention plus an index that lives on disk —
+          so <strong>anything that can write a file can feed it</strong>. Change your tools next month and nothing about your workspace has to change.
         </p>
       </div>
     </div>
 
     <div class="flow">
       <div class="fbox">
-        <div class="t">Anything that produces work</div>
-        <div class="cs"><span class="chip">Copilot</span><span class="chip">Claude</span><span class="chip">ChatGPT</span><span class="chip">Cursor</span><span class="chip">Office</span><span class="chip">You</span></div>
+        <div class="t">Anything that writes</div>
+        <div class="chips"><span class="chip">Claude Code</span><span class="chip">Codex</span><span class="chip">Cursor</span><span class="chip">Copilot</span><span class="chip">Desktop apps</span><span class="chip">You</span></div>
       </div>
       <div class="arrow">→</div>
       <div class="fbox">
-        <div class="t">Your workspace, unchanged</div>
+        <div class="t">Your folders, unchanged</div>
         <div class="tree">
-          FY27 Launch/<br>
-          &nbsp;&nbsp;<b>meeting-notes.md</b><br>
-          &nbsp;&nbsp;<b>narrative.pptx</b><br>
-          &nbsp;&nbsp;<b>evidence.pdf</b><br>
-          &nbsp;&nbsp;<b>model.xlsx</b>
+          ~/work/<br>
+          &nbsp;&nbsp;<b>project/</b><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;notes.md<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;spec.md<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;deck.pptx
         </div>
       </div>
       <div class="arrow">→</div>
       <div class="fbox hi">
-        <div class="t">JinAI — the interaction layer</div>
+        <div class="t">Jin — the human layer</div>
         <div class="tree">
-          <b>Meetings</b> · decisions in context<br>
-          <b>Research</b> · sources attached<br>
-          <b>Deliverables</b> · live documents<br>
-          <span style="opacity:.55">machine output · folded</span>
+          <b>Meetings</b> · 12<br>
+          <b>Research</b> · 24<br>
+          <b>Specs</b> · 9<br>
+          <b>Deliverables</b> · 6<br>
+          <span style="opacity:.5">machine output · folded</span>
         </div>
       </div>
     </div>
 
     <div class="agnote">
-      <div><b>No lock-in</b><span>The structure lives with your files. Remove JinAI and every document is still where it was, still openable in the app that made it.</span></div>
-      <div><b>Tool-agnostic</b><span>Your way of structuring work is written once and honoured whichever assistant, suite or model produced the file.</span></div>
-      <div><b>Two audiences, one source</b><span>The same workspace serves a person navigating visually and an agent retrieving context. Neither needs a second copy.</span></div>
+      <div><b>No lock-in</b><span>The structure lives in your folders as plain files. Uninstall Jin and everything you organised is still there and still readable.</span></div>
+      <div><b>Agent-agnostic</b><span>Your breakdown rules are written once and honoured no matter which model or which tool produced the file.</span></div>
+      <div><b>Two audiences, one source</b><span>The same folder serves a person browsing and an agent retrieving. Neither one has to be given a second copy.</span></div>
     </div>
   </div>
 </div>
 
-<section id="team">
-  <div class="wrap">
-    <div class="shead">
-      <div class="idx">Five — why us</div>
-      <div>
-        <h2 class="h2">We've built inside this ecosystem, and we've felt it break.</h2>
-        <p class="sub">
-          This needs two things that rarely sit together: real knowledge of how enterprise productivity actually works,
-          and honest first-hand experience of where the application-centric workspace stops holding up.
-        </p>
-      </div>
-    </div>
-
-    <div class="team">
-      <div class="tcard">
-        <div class="tt">From the inside</div>
-        <h3>Microsoft's workplace productivity ecosystem</h3>
-        <p>
-          First-hand experience of the platform and the business workflows built around it — how organisations really
-          adopt tools, where documents live, and what has to be true before something new is allowed near them.
-        </p>
-      </div>
-      <div class="tcard">
-        <div class="tt">From daily use</div>
-        <h3>Generative AI and connected notes, in practice</h3>
-        <p>
-          We use these tools every day, which is how we found the seam: connected knowledge only technical users can
-          live in, and business documents cut off from the reasoning that produced them.
-        </p>
-      </div>
-    </div>
-    <div class="creds">
-      <div class="cred"><b>Platform experience</b><span>How enterprise productivity is actually built and adopted</span></div>
-      <div class="cred"><b>Product strategy</b><span>Turning a felt problem into something buildable</span></div>
-      <div class="cred"><b>Customer discovery</b><span>Testing the premise with the people who'd live in it</span></div>
-      <div class="cred"><b>Go-to-market</b><span>Reaching business users where they already work</span></div>
-    </div>
-
-    <blockquote>
-      Bridging the workplace people know with the AI-native workspace they now need.
-      <cite>What we're here to do</cite>
-    </blockquote>
-  </div>
-</section>
-
 <section id="privacy">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">Six — privacy</div>
+      <div class="idx">Five — privacy</div>
       <div>
-        <h2 class="h2">Your documents stay where they already live.</h2>
+        <h2 class="h2">Your files stay on your machine.</h2>
         <p class="sub">
-          JinAI reads your workspace in place. There is no migration step and no second copy of your documents sitting
-          somewhere else. When sync is enabled, the default is still that <strong>only your structure travels</strong> —
-          never the names, never the contents.
+          Jin reads your folders locally. There is no upload step and no bucket somewhere with your documents in it.
+          If you later turn on sync across your own devices, the default is still that <strong>only your organising rules travel</strong> — never the names, never the contents.
         </p>
       </div>
     </div>
     <div class="priv">
       <div class="privcard">
-        <div class="privrow"><span>Your documents</span><span class="st2 nope">Stay in place</span></div>
+        <div class="privrow"><span>Your files</span><span class="st2 nope">Stay local</span></div>
         <div class="privrow"><span>File and folder names</span><span class="st2 nope">Never uploaded</span></div>
-        <div class="privrow"><span>Your structure and rules</span><span class="st2 yes">Yours to sync</span></div>
+        <div class="privrow"><span>Your organising rules</span><span class="st2 yes">Yours to sync</span></div>
         <div class="privrow"><span>Works offline</span><span class="st2 yes">Fully</span></div>
       </div>
       <blockquote style="margin:0;font-size:clamp(20px,2.4vw,29px);max-width:none">
-        Read the workspace where it already is. Nothing to migrate first.
+        Read your folders where they are. Nothing to upload first.
         <cite>Design principle one</cite>
       </blockquote>
     </div>
@@ -504,39 +447,39 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 <section id="upcoming">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">Seven — upcoming</div>
+      <div class="idx">Six — upcoming</div>
       <div>
         <h2 class="h2">What we're building, and in what order.</h2>
-        <p class="sub">JinAI isn't open yet. Here is the honest state of it, so you know what you'd be joining.</p>
+        <p class="sub">Jin isn't open yet. Here is the honest state of it, so you know what you'd be joining.</p>
       </div>
     </div>
 
     <div class="road">
       <div class="stage now">
         <div class="s"><i></i>In build</div>
-        <h3>The workspace</h3>
+        <h3>The reader</h3>
         <ul>
-          <li>Point JinAI at a folder and see it drawn</li>
+          <li>Point Jin at a folder, see it drawn</li>
           <li>Notebook, Focus and Project views</li>
-          <li>Office documents readable in place</li>
+          <li>Covers generated with no tagging</li>
           <li>macOS and Windows</li>
         </ul>
       </div>
       <div class="stage">
         <div class="s"><i></i>Next</div>
-        <h3>The connections</h3>
+        <h3>Your breakdown</h3>
         <ul>
-          <li>Notes, sources and decisions linked to the document</li>
-          <li>Your structure learned and applied automatically</li>
+          <li>Rules learned from how you already file things</li>
+          <li>New files sorted the same way, automatically</li>
           <li>Machine output folded out of the way</li>
-          <li>Context served to whichever agent asks</li>
+          <li>Native files readable in place</li>
         </ul>
       </div>
       <div class="stage">
         <div class="s"><i></i>Later</div>
-        <h3>The team</h3>
+        <h3>Shared workspaces</h3>
         <ul>
-          <li>The same workspace, legible to colleagues</li>
+          <li>The same folder, legible to a team</li>
           <li>Change history at the level of meaning</li>
           <li>Sync across your own devices</li>
           <li>An open format anyone can read</li>
@@ -549,8 +492,8 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 <section class="final" id="waitlist">
   <div class="wrap">
     <div class="fm"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></div>
-    <h2>Be there when JinAI opens.</h2>
-    <p>Early access goes out in small batches. We'll ask how your team works today, and you'll get in before it's public.</p>
+    <h2>Be there when Jin opens.</h2>
+    <p>Early access goes out in small batches. We'll ask what your folders look like, and you'll get in before it's public.</p>
     <form class="wait" id="waitBottom">
       <input type="email" name="email" required autocomplete="email" placeholder="you@company.com" aria-label="Email address">
       <button type="submit" class="btn btn-p">Join the waitlist</button>
@@ -563,14 +506,14 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
   <div class="wrap">
     <div class="fgrid">
       <div>
-        <a class="brand" href="#"><span class="mk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span><span class="rom">JINAI</span></a>
-        <p style="margin-top:15px;max-width:25em">A new interface for work in the AI era.<br>Knowledge, Office documents and AI-generated work in one workspace.</p>
+        <a class="brand" href="#"><span class="mk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span><span class="rom">JIN</span></a>
+        <p style="margin-top:15px;max-width:25em">Local files, drawn for people.<br>Works with whatever writes them.</p>
       </div>
-      <div><h4>Product</h4><ul><li><a href="#product">The three views</a></li><li><a href="#how">The method</a></li><li><a href="#agents">Architecture</a></li><li><a href="#upcoming">Upcoming</a></li></ul></div>
-      <div><h4>More</h4><ul><li><a href="#team">Why us</a></li><li><a href="#privacy">Privacy</a></li><li><a href="index.html">Design directions</a></li></ul></div>
+      <div><h4>Product</h4><ul><li><a href="#product">The three views</a></li><li><a href="#how">The method</a></li><li><a href="#agents">Any agent</a></li><li><a href="#upcoming">Upcoming</a></li></ul></div>
+      <div><h4>More</h4><ul><li><a href="#privacy">Privacy</a></li><li><a href="#waitlist">Waitlist</a></li><li><a href="index.html">Design directions</a></li></ul></div>
       <div><h4>Company</h4><ul><li><a href="#">Blog</a></li><li><a href="#">GitHub</a></li><li><a href="#">Contact</a></li></ul></div>
     </div>
-    <div class="fbot"><span>© 2026 JINAI</span><span>Direction C — Screen</span></div>
+    <div class="fbot"><span>© 2026 JIN</span><span>Direction C — Screen</span></div>
   </div>
 </footer>
 
@@ -581,7 +524,7 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
    or anything that accepts a POST with an `email` field.
    Leave it empty and the form falls back to opening the visitor's mail client. */
 const WAITLIST_ENDPOINT = "";
-const WAITLIST_EMAIL    = "hello@jinai.example";
+const WAITLIST_EMAIL    = "hello@jin.example";
 
 function wireWaitlist(formId, noteId, doneMsg){
   const form = document.getElementById(formId), note = document.getElementById(noteId);
@@ -597,8 +540,8 @@ function wireWaitlist(formId, noteId, doneMsg){
     if(!WAITLIST_ENDPOINT){
       note.textContent = 'Opening your mail app…';
       window.location.href = 'mailto:' + WAITLIST_EMAIL
-        + '?subject=' + encodeURIComponent('JinAI waitlist')
-        + '&body=' + encodeURIComponent('Please add me to the JinAI waitlist.\n\nEmail: ' + email + '\n');
+        + '?subject=' + encodeURIComponent('Jin waitlist')
+        + '&body=' + encodeURIComponent('Please add me to the Jin waitlist.\n\nEmail: ' + email + '\n');
       setTimeout(() => { note.innerHTML = original; }, 4000);
       return;
     }
@@ -626,48 +569,38 @@ wireWaitlist('waitBottom','noteBottom',"You're on the list. We'll be in touch.")
 
 /* ── Before / after demo ─────────────────────────────────────────────────── */
 const GROUPS=[
- {n:'Meetings',c:'#c1362f',k:'12 items',t:['.md','.docx','.pdf']},
- {n:'Research',c:'#1d3f73',k:'24 items',t:['.pdf','.md','.xlsx']},
- {n:'Decisions',c:'#a8863c',k:'7 items',t:['.md','.docx']},
- {n:'Deliverables',c:'#4d6b4a',k:'9 items',t:['.pptx','.docx','.pdf']},
- {n:'Financials',c:'#2b6b73',k:'6 items',t:['.xlsx','.pdf']},
- {n:'Reference',c:'#6b4a7a',k:'18 items',t:['.pdf','.md']}
+ {n:'Meetings',c:'#c1362f',k:12},{n:'Research',c:'#1d3f73',k:24},{n:'Specs',c:'#4d6b4a',k:9},
+ {n:'Decisions',c:'#a8863c',k:7},{n:'Drafts',c:'#6b4a7a',k:15},{n:'Reference',c:'#2b6b73',k:18},
+ {n:'Deliverables',c:'#8f4a2f',k:6},{n:'Handover',c:'#6e7a45',k:4}
 ];
 (()=>{
   const body=document.getElementById('foldBody'),
         bR=document.getElementById('bRaw'),
         bF=document.getElementById('bFold'),
         st=document.getElementById('stCount');
-  const files=[
-    ['▤','narrative-v3.pptx'],['▦','meeting-notes.md'],['▩','model-final.xlsx'],['▥','evidence.pdf'],
-    ['▤','deck-old.pptx'],['▦','README.md'],['▧','brief.docx'],['▩','budget.xlsx'],
-    ['▥','customer-interview.pdf'],['▦','notes-final.md'],['▧','summary.docx'],['▤','investor-deck.pptx'],
-    ['▦','DESIGN.md'],['▩','forecast.xlsx'],['▥','market-report.pdf'],['▧','handover.docx'],
-    ['▦','untitled.md'],['▤','review.pptx'],['▥','spec.pdf'],['▩','tracker.xlsx']
-  ];
-  const machine=['output-2026-08-14.md','.agent-scratch.md','tmp-run-3.md','.cache-index.md','raw-dump.md'];
+  const names=['README','DESIGN','notes','notes-final','index','spec','draft','memo','plan','summary',
+               'research','review','ideas','arch','api','setup','changelog','untitled','handover','minutes'];
+  const machine=['output-2026-08-14','.agent-scratch','tmp-run-3','.cache-index','raw-dump'];
+  const dup=['README','DESIGN','notes','index','notes-final'];
 
   function raw(){
-    st.textContent='sorted by file type';
+    st.textContent='flat listing';
     let h='<div class="raw">';
-    for(let i=0;i<220;i++){
-      if(i%13===9){ h+=`<span class="mach">${machine[i%machine.length]}</span>`; continue; }
-      const [ic,nm]=files[i%files.length];
-      h+=`<span><em>${ic}</em>${nm}</span>`;
+    for(let i=0;i<300;i++){
+      if(i%11===7){ h+=`<span class="mach">${machine[i%machine.length]}.md</span>`; continue; }
+      const n=names[i%names.length];
+      h+=`<span class="${dup.includes(n)?'dup':''}">${n}.md</span>`;
     }
     body.innerHTML=h+'</div>';
     bR.classList.add('on');bF.classList.remove('on');
   }
   function folded(){
-    st.textContent='organised by the work';
+    st.textContent='8 groups + 1 folded away';
     let h='<div class="buckets">';
     GROUPS.forEach(g=>{
-      h+=`<div class="bk"><div class="bd" style="background:${g.c}"></div><div class="bn">${g.n}</div>
-          <div class="bl">${g.t.map(t=>`<i>${t}</i>`).join('')}</div>
-          <div class="bc">${g.k} · notes, sources and documents together</div></div>`;
+      h+=`<div class="bk"><div class="bd" style="background:${g.c}"></div><div class="bn">${g.n}</div><div class="bc">${g.k} files · updated recently</div></div>`;
     });
-    h+=`<div class="bk hid"><div class="bd" style="background:var(--edge)"></div><div class="bn">Machine output</div>
-        <div class="bl"><i>folded</i></div><div class="bc">nothing here for a person to read</div></div>`;
+    h+=`<div class="bk hid"><div class="bd" style="background:var(--edge)"></div><div class="bn">Machine output</div><div class="bc">folded away · nothing for a person to read</div></div>`;
     body.innerHTML=h+'</div>';
     bF.classList.add('on');bR.classList.remove('on');
   }
