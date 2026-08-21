@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jin｜陣 — 散らばったものが、隊列になる。</title>
+<meta name="description" content="散らばったものが、隊列になる。Jin は AI が生成し続ける文書に自動で表紙をつけ、屏風のように畳み、一望できる形にします。ローカル・ファースト、アカウント不要。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23faf8f4'/%3E%3Crect x='2.5' y='2.5' width='27' height='27' fill='none' stroke='%23c1362f' stroke-width='1.8'/%3E%3Ctext x='16' y='24' font-size='20' text-anchor='middle' font-family='serif' font-weight='700' fill='%23c1362f'%3E陣%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jin｜陣 — 散らばったものが、隊列になる。">
+<meta property="og:description" content="2,650 本は、9 枚の面になります。">
+<meta property="og:image" content="preview-c-byoubu.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#faf8f4; --paper-2:#f0ede7; --wash:#e8e4dc; --line:#ddd9d1; --edge:#c4bfb5;
+  --sumi:#1b1a18; --sumi-2:#3b3833; --gray:#6e6a63; --dim:#8f8b83;
+  --shu:#c1362f;          /* 朱 */
+  --ai:#1d3f73;           /* 藍 */
+  --matcha:#4d6b4a;
+  --kin:#a8863c;          /* 金 */
+  --r:0px;
+  --min:"Shippori Mincho","Source Serif 4",serif;
+  --sans:"Noto Sans JP",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --wrap:1160px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--sumi);font-family:var(--sans);font-weight:400;font-size:16px;line-height:1.9;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 32px}
+a{color:inherit}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.vt{writing-mode:vertical-rl;text-orientation:upright}
+
+header{position:sticky;top:0;z-index:60;background:rgba(250,248,244,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--sumi)}
+.nav{height:70px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:baseline;gap:11px;text-decoration:none}
+.brand .kanji{font-family:var(--min);font-size:27px;font-weight:800;line-height:1;color:var(--shu)}
+.brand .rom{font-family:var(--min);font-size:19px;font-weight:700;letter-spacing:.16em;line-height:1}
+.navlinks{display:flex;gap:30px;font-size:13px;color:var(--gray);letter-spacing:.06em}
+.navlinks a{text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent}
+.navlinks a:hover{color:var(--shu);border-color:var(--shu)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;font-size:13px;letter-spacing:.08em;text-decoration:none;border:1px solid var(--sumi);transition:.16s}
+.btn-p{background:var(--sumi);color:var(--paper)}
+.btn-p:hover{background:var(--shu);border-color:var(--shu)}
+.btn-o{background:transparent}
+.btn-o:hover{background:var(--sumi);color:var(--paper)}
+
+/* hero : two column with vertical title */
+.hero{border-bottom:1px solid var(--sumi);padding:0}
+.herogrid{display:grid;grid-template-columns:auto 1fr;gap:56px;padding:80px 0 72px}
+.vtitle{font-family:var(--min);font-weight:800;font-size:clamp(32px,4.2vw,50px);line-height:1.5;letter-spacing:.08em;writing-mode:vertical-rl;height:min(74vh,632px);border-right:1px solid var(--line);padding-left:26px}
+.vtitle .shu{color:var(--shu)}
+.heroR{display:flex;flex-direction:column;justify-content:center}
+.heroR .lede{font-size:17px;line-height:2.15;color:var(--sumi-2);max-width:34em}
+.heroR .lede b{font-weight:700;color:var(--sumi);background:linear-gradient(transparent 62%,rgba(193,54,47,.22) 62%)}
+.kicker{font-family:var(--min);font-size:clamp(21px,2.5vw,29px);font-weight:700;line-height:1.6;letter-spacing:.02em;margin-bottom:26px;max-width:17em}
+.cta{margin-top:36px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.cta .note{font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.06em;margin-left:4px}
+.seal{margin-top:40px;display:inline-flex;align-items:center;gap:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--dim)}
+.seal .sq{width:44px;height:44px;border:1.5px solid var(--shu);color:var(--shu);display:grid;place-items:center;font-family:var(--min);font-size:19px;font-weight:800;line-height:1}
+
+/* folding screen */
+.screenwrap{border-bottom:1px solid var(--sumi);background:var(--paper-2);padding:76px 0}
+.screenhead{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:34px}
+.screen{display:flex;overflow-x:auto;border:1px solid var(--sumi);background:var(--paper);scrollbar-width:thin}
+.panel{flex:0 0 clamp(180px,19vw,230px);border-right:1px solid var(--line);padding:24px 22px 28px;position:relative;transition:.2s}
+.panel:last-child{border-right:0}
+.panel:nth-child(even){background:linear-gradient(180deg,rgba(0,0,0,.028),transparent 46%)}
+.panel:hover{background:#fff}
+.panel .no{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--dim)}
+.panel .bar{height:2px;margin:14px 0 16px}
+.panel .nm{font-family:var(--min);font-size:19px;font-weight:700;line-height:1.55;letter-spacing:.01em;min-height:3.1em}
+.panel .ct{font-family:var(--mono);font-size:10.5px;color:var(--gray);margin-top:16px;padding-top:12px;border-top:1px solid var(--line);letter-spacing:.04em}
+.hint{margin-top:14px;font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.1em}
+
+/* numbers */
+.numband{background:var(--sumi);color:var(--paper);border-bottom:1px solid var(--sumi)}
+.numband .eyebrow{color:#928d84}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);margin-top:34px;border-top:1px solid #3f3b35}
+.num{padding:34px 26px 30px;border-right:1px solid #3f3b35}
+.num:last-child{border-right:0}
+.num .v{font-family:var(--min);font-size:clamp(32px,4.2vw,50px);font-weight:800;line-height:1;letter-spacing:.01em}
+.num .v small{font-size:.42em;font-weight:400;color:#928d84;margin-left:3px}
+.num.a .v{color:#e0958f}.num.b .v{color:#d8bc78}
+.num .k{font-size:12.5px;color:#a8a39a;margin-top:14px;line-height:1.8}
+
+section{padding:92px 0;border-bottom:1px solid var(--sumi);scroll-margin-top:78px}
+.shead{display:grid;grid-template-columns:180px 1fr;gap:40px;align-items:start}
+.shead .idx{font-family:var(--min);font-size:15px;letter-spacing:.3em;color:var(--shu);border-top:2px solid var(--shu);padding-top:14px;font-weight:700}
+.h2{font-family:var(--min);font-size:clamp(26px,3.5vw,42px);font-weight:800;letter-spacing:.01em;line-height:1.5;max-width:19em}
+.sub{margin-top:24px;font-size:16px;color:var(--sumi-2);max-width:40em;line-height:2.15}
+.sub strong{font-weight:700;color:var(--sumi)}
+
+/* stack list (search problem) */
+.stack{margin-top:40px;border-top:1px solid var(--sumi)}
+.srow{display:grid;grid-template-columns:1fr auto;gap:20px;padding:11px 2px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--gray);align-items:center}
+.srow b{color:var(--shu);font-weight:500}
+.srow .p{color:var(--dim);font-size:11px}
+.smore{padding:16px 2px;font-family:var(--mono);font-size:11.5px;color:var(--dim);border-bottom:1px solid var(--sumi);letter-spacing:.06em}
+
+blockquote{font-family:var(--min);font-size:clamp(21px,2.7vw,31px);font-weight:700;line-height:1.85;letter-spacing:.02em;margin:52px 0;max-width:22em;position:relative;padding-left:34px}
+blockquote:before{content:"";position:absolute;left:0;top:.35em;bottom:.35em;width:3px;background:var(--shu)}
+blockquote cite{display:block;font-family:var(--mono);font-size:10.5px;font-style:normal;font-weight:400;color:var(--dim);letter-spacing:.16em;margin-top:22px}
+
+/* three axes as vertical cards */
+.axes{display:grid;grid-template-columns:repeat(3,1fr);margin-top:52px;border-top:1px solid var(--sumi);border-bottom:1px solid var(--sumi)}
+.axis{padding:36px 30px 40px;border-right:1px solid var(--line)}
+.axis:last-child{border-right:0}
+.axis .kg{font-family:var(--min);font-size:52px;font-weight:800;line-height:1;color:var(--wash)}
+.axis h3{font-family:var(--min);font-size:24px;font-weight:800;letter-spacing:.03em;margin:6px 0 0}
+.axis h3 span{display:block;font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--shu);letter-spacing:.2em;text-transform:uppercase;margin-top:9px}
+.axis p{font-size:14px;color:var(--sumi-2);line-height:2.05;margin-top:18px}
+.axis .tag{margin-top:20px;padding-top:13px;border-top:1px solid var(--line);font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.06em}
+
+/* fold demo */
+.fold{margin-top:44px;border:1px solid var(--sumi)}
+.fold-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;border-bottom:1px solid var(--sumi);flex-wrap:wrap;background:var(--paper-2)}
+.fold-head .st{font-family:var(--mono);font-size:11px;color:var(--gray);letter-spacing:.06em}
+.fold-head .st b{color:var(--shu);font-weight:500}
+.toggle{display:inline-flex;border:1px solid var(--sumi);font-family:var(--mono);font-size:11px;letter-spacing:.08em}
+.toggle button{background:transparent;border:0;padding:7px 17px;cursor:pointer;font:inherit;color:var(--gray)}
+.toggle button.on{background:var(--sumi);color:var(--paper)}
+.fold-body{padding:20px;min-height:290px;background:#fff}
+.raw{display:flex;flex-wrap:wrap;gap:4px}
+.raw span{font-family:var(--mono);font-size:10.5px;color:var(--gray);border:1px solid var(--line);padding:2px 6px;white-space:nowrap}
+.raw span.dup{color:var(--shu);border-color:rgba(193,54,47,.32)}
+.buckets{display:grid;grid-template-columns:repeat(auto-fill,minmax(198px,1fr));gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.bk{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 18px 20px}
+.bk .bd{height:2px;margin-bottom:13px}
+.bk .bn{font-family:var(--min);font-size:17px;font-weight:700;letter-spacing:.02em}
+.bk .bc{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:8px;letter-spacing:.05em}
+
+/* minute */
+.minute{margin-top:48px;border-top:1px solid var(--sumi)}
+.mrow{display:grid;grid-template-columns:150px 1fr 1.2fr;gap:32px;padding:28px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.mrow .s{font-family:var(--min);font-size:42px;font-weight:800;line-height:1;letter-spacing:.01em}
+.mrow .s em{font-style:normal;font-size:.36em;color:var(--dim);margin-left:4px}
+.mrow .l{font-size:15px;line-height:1.9}
+.mrow .x{font-family:var(--mono);font-size:11px;color:var(--gray);line-height:1.9;letter-spacing:.02em}
+
+/* privacy */
+.priv{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-top:8px}
+.privcard{border:1px solid var(--sumi)}
+.privrow{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;border-bottom:1px solid var(--line);font-size:14px}
+.privrow:last-child{border-bottom:0}
+.st2{font-family:var(--mono);font-size:10px;letter-spacing:.14em;padding:4px 11px;border:1px solid}
+.up{color:var(--matcha);border-color:var(--matcha)}
+.no{color:var(--dim);border-color:var(--edge)}
+
+/* not */
+.nots{margin-top:44px;border-top:1px solid var(--sumi)}
+.not{display:grid;grid-template-columns:170px 1fr;gap:34px;padding:28px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.not .k{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.16em}
+.not .v b{display:block;font-family:var(--min);font-size:20px;font-weight:800;letter-spacing:.02em;margin-bottom:9px}
+.not .v span{font-size:14.5px;color:var(--sumi-2);line-height:2.05}
+
+.final{text-align:center;padding:112px 0;border-bottom:0}
+.final .kanji{font-family:var(--min);font-size:74px;font-weight:800;color:var(--shu);line-height:1;letter-spacing:.1em}
+.final h2{font-family:var(--min);font-size:clamp(28px,4vw,48px);font-weight:800;line-height:1.5;letter-spacing:.02em;max-width:15em;margin:28px auto 0}
+.final p{margin:24px auto 0;max-width:32em;color:var(--sumi-2);font-size:15.5px;line-height:2.1}
+.final .cta{justify-content:center;margin-top:38px}
+
+footer{padding:60px 0 46px;color:var(--gray);font-size:13px;background:var(--paper-2);border-top:1px solid var(--sumi)}
+.fgrid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:38px}
+.fgrid h4{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:15px;font-weight:400}
+.fgrid ul{list-style:none;display:grid;gap:10px}
+.fgrid a{text-decoration:none}.fgrid a:hover{color:var(--shu)}
+.fbot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.08em;flex-wrap:wrap}
+
+@media(max-width:960px){
+  .herogrid{grid-template-columns:1fr;gap:36px}
+  .vtitle{writing-mode:horizontal-tb;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:0 0 22px;font-size:34px;line-height:1.45}
+  .axes,.nums,.priv{grid-template-columns:1fr}
+  .axis{border-right:0;border-bottom:1px solid var(--line)}
+  .num{border-right:0;border-bottom:1px solid #3f3b35}
+  .shead,.mrow,.not{grid-template-columns:1fr;gap:14px}
+  .fgrid{grid-template-columns:1fr 1fr}
+  .navlinks{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#"><span class="kanji">陣</span><span class="rom">JIN</span></a>
+    <nav class="navlinks"><a href="#problem">問題</a><a href="#how">三つの働き</a><a href="#minute">一分</a><a href="#privacy">持ち出さない</a><a href="#not">境界</a></nav>
+    <a class="btn btn-p" href="#final">ダウンロード</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap herogrid">
+    <div class="vtitle">散らばったものが、<br><span class="shu">隊列</span>になる。</div>
+    <div class="heroR">
+      <div class="eyebrow">Local-first &nbsp;·&nbsp; No account &nbsp;·&nbsp; No network in v1</div>
+      <div class="kicker" style="margin-top:20px">AI が書いた分だけ、読めなくなる。</div>
+      <p class="lede">
+        あなたの PC には、いま <b>2,650 本</b>の Markdown があります。そのうち <b>89.3%</b> は、この一週間で一度も開かれていません。
+        増やしているのはあなたではありません。AI です。しかも増え方は加速しています。<br><br>
+        Jin は、この山に自動で表紙をつけ、区分に畳み、一望できる形にします。<b>屏風のように。</b>
+      </p>
+      <div class="cta">
+        <a class="btn btn-p" href="#final">Jin をダウンロード</a>
+        <a class="btn btn-o" href="#how">三つの働きを見る</a>
+        <span class="note">macOS / Windows · 無料 · アカウント不要</span>
+      </div>
+      <div class="seal"><span class="sq">陣</span><span>JIN — 陣を組む。<br>散らばった隊を、見える形に並べること。</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOLDING SCREEN -->
+<div class="screenwrap">
+  <div class="wrap">
+    <div class="screenhead">
+      <div>
+        <div class="eyebrow">Fold — 畳んだ姿</div>
+        <div class="h2" style="font-size:clamp(22px,2.6vw,30px);margin-top:12px">2,650 本は、9 枚の面になります。</div>
+      </div>
+      <div class="hint">→ 横にスクロールできます</div>
+    </div>
+    <div class="screen" id="screen"></div>
+  </div>
+</div>
+
+<!-- NUMBERS -->
+<div class="numband">
+  <div class="wrap" style="padding:76px 0">
+    <div class="eyebrow">実測 — 2026年8月19日</div>
+    <div class="nums">
+      <div class="num"><div class="v">2,650</div><div class="k">.md ファイルの総数<br>594 のフォルダに散在</div></div>
+      <div class="num a"><div class="v">89.3<small>%</small></div><div class="k">直近七日間に<br>一度も開かれていない</div></div>
+      <div class="num b"><div class="v">786</div><div class="k">同じ名前のものが他にもある<br>（全体の 29.7%）</div></div>
+      <div class="num"><div class="v">879<small>/月</small></div><div class="k">生成のペース<br>6月350 → 7月446 → 8月879</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="wrap">
+    <div class="shead">
+      <div class="idx">一</div>
+      <div>
+        <h2 class="h2">これは「探すのが遅い」問題ではありません。</h2>
+        <p class="sub">
+          検索を速くしても、この問題は一ミリも解けません。なぜならあなたは、<strong>探す言葉を知らない</strong>からです。
+          その文書を書いたのは、あなたではないからです。
+        </p>
+
+        <div class="stack" id="stack"></div>
+        <div class="smore">— さらに 48 件。0.02 秒で出てきます。速さは問題ではありません。</div>
+
+        <blockquote>
+          いちいち全部読まないと、<br>何があるのか分からない。
+          <cite>顧客のことば ／ 実際に二度発せられた</cite>
+        </blockquote>
+
+        <p class="sub">
+          <strong>README という名前は 208 本</strong>、DESIGN は 55 本、lessons は 33 本。定型ファイルを除いてもなお、
+          <strong>五本に一本はファイル名だけでは区別が付きません。</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how">
+  <div class="wrap">
+    <div class="shead">
+      <div class="idx">二</div>
+      <div>
+        <h2 class="h2">表紙をつけ、畳み、たどれるようにする。</h2>
+        <p class="sub">三つだけです。本を本棚に並べるときに、人が何百年もやってきたことを、自動でやります。</p>
+      </div>
+    </div>
+
+    <div class="axes">
+      <div class="axis">
+        <div class="kg">表</div>
+        <h3>表紙をつける<span>Cover</span></h3>
+        <p>すべての文書に、見ただけで中身が分かる表紙を生成します。一段目は<strong>中身を読まずに</strong>即座に。読み込んだ二段目は、あとから静かに差し替わります。</p>
+        <div class="tag">差し替えのとき、並び順と行の高さを動かさない</div>
+      </div>
+      <div class="axis">
+        <div class="kg">畳</div>
+        <h3>畳む<span>Fold</span></h3>
+        <p>2,650 本をそのまま見せません。区分ラベルで畳んで <strong>9 区分</strong>にします。色だけでは「同じ組だ」としか伝わらないので、区分名の文字を必ず併記します。</p>
+        <div class="tag">五秒テスト — 十人中九人が答えられること</div>
+      </div>
+      <div class="axis">
+        <div class="kg">跡</div>
+        <h3>たどる<span>Trace</span></h3>
+        <p>段落・スライド・セル範囲のひとつひとつに<strong>消えない名札</strong>を付けます。AI が書き換えても、どこがどう変わったかを、意味の単位で追えます。</p>
+        <div class="tag">技術の関門 — ID 生存率 99%</div>
+      </div>
+    </div>
+
+    <div class="fold">
+      <div class="fold-head">
+        <div class="st">02 Claude ／ <b id="stCount">2,650 件</b> ／ 594 フォルダ</div>
+        <div class="toggle"><button id="bRaw" class="on">そのまま</button><button id="bFold">畳む</button></div>
+      </div>
+      <div class="fold-body" id="foldBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MINUTE -->
+<section id="minute">
+  <div class="wrap">
+    <div class="shead">
+      <div class="idx">三</div>
+      <div>
+        <h2 class="h2">入れてから最初の「あった」まで、一分。</h2>
+        <p class="sub">
+          五分なら、いまの OS の検索でも達成できてしまいます。合格ラインに見えて、何も決めていない数字です。
+          <strong>一分にすると、作り方の選択肢が強制的に絞られます。それがこの数字の目的です。</strong>
+        </p>
+      </div>
+    </div>
+    <div class="minute">
+      <div class="mrow"><div class="s">30<em>秒</em></div><div class="l">起動して、フォルダを一つ選ぶまで</div><div class="x">→ アカウント作成・ログイン・チュートリアル・設定画面を置けない</div></div>
+      <div class="mrow"><div class="s">10<em>秒</em></div><div class="l">選んでから、一覧が出るまで</div><div class="x">→「読み込み中…」で待たせられない。先頭から画面へ流し込むしかない</div></div>
+      <div class="mrow"><div class="s">20<em>秒</em></div><div class="l">一覧が出てから、目的の一件を見つけるまで</div><div class="x">→ 二十秒は「十件を目でなぞる」時間。「百件を読む」時間ではない</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section id="privacy">
+  <div class="wrap">
+    <div class="shead">
+      <div class="idx">四</div>
+      <div>
+        <h2 class="h2">貯まるのはファイルではなく、整理の規則です。</h2>
+        <p class="sub">
+          v1 はネットワークに出ません。一人が入れて、自分の PC の中がどんどん綺麗になっていく。それだけで価値が完結します。
+          <strong>会社の承認は要りません。</strong>同期を有効にしても、既定で上がるのはあなたが作った規則だけです。
+        </p>
+      </div>
+    </div>
+    <div class="priv" style="margin-top:44px">
+      <div class="privcard">
+        <div class="privrow"><span>整理の規則・区分の定義</span><span class="st2 up">上げる</span></div>
+        <div class="privrow"><span>表紙のテンプレート</span><span class="st2 up">上げる</span></div>
+        <div class="privrow"><span>ファイルの中身</span><span class="st2 no">上げない</span></div>
+        <div class="privrow"><span>ファイル名・フォルダ名</span><span class="st2 no">上げない</span></div>
+        <div class="privrow"><span>アカウント</span><span class="st2 no">要らない</span></div>
+      </div>
+      <blockquote style="margin:0;font-size:clamp(19px,2.2vw,26px)">
+        一人が入れて、自分のパソコンの中が<br>どんどん綺麗になっていくのが価値。
+        <cite>製品原則 九</cite>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- NOT -->
+<section id="not">
+  <div class="wrap">
+    <div class="shead">
+      <div class="idx">五</div>
+      <div>
+        <h2 class="h2">Jin でないもの。</h2>
+        <p class="sub">何であるかより、何でないかを先に書きます。ここを曖昧にした製品は、全部になろうとして何にもなりません。</p>
+      </div>
+    </div>
+    <div class="nots">
+      <div class="not"><div class="k">NOT 一</div><div class="v"><b>検索エンジンではない</b><span>Everything も OS の検索も無料で、しかも速い。そこでは戦いません。Jin は「探す言葉を知らない人」のための道具です。</span></div></div>
+      <div class="not"><div class="k">NOT 二</div><div class="v"><b>クラウドストレージではない</b><span>OneDrive も Box も置き換えません。v1 はそもそもネットワークに出ず、あなたのディスクの上で完結します。</span></div></div>
+      <div class="not"><div class="k">NOT 三</div><div class="v"><b>もう一つのメモアプリではない</b><span>書く場所を増やしません。すでにディスクにある 2,650 本を読むだけ。移行もインポートもありません。</span></div></div>
+      <div class="not"><div class="k">NOT 四</div><div class="v"><b>チャットボットではない</b><span>要約を読ませて終わりにしません。あなたが自分の目で全体像を掴み、自分で選べる状態にすることが目的です。</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="final" id="final">
+  <div class="wrap">
+    <div class="kanji">陣</div>
+    <h2>2,650 本を、9 枚にして返します。</h2>
+    <p>フォルダを一つ選ぶところから始まります。アカウントは要りません。ネットワークにも出ません。一分で確かめてください。</p>
+    <div class="cta"><a class="btn btn-p" href="#">macOS 版</a><a class="btn btn-o" href="#">Windows 版</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a class="brand" href="#"><span class="kanji">陣</span><span class="rom">JIN</span></a>
+        <p style="margin-top:15px;max-width:25em">AI が書き続ける文書に、表紙をつけて畳む。<br>ローカル・ファースト。</p>
+      </div>
+      <div><h4>Product</h4><ul><li><a href="#how">三つの働き</a></li><li><a href="#minute">一分の関門</a></li><li><a href="#privacy">持ち出さないもの</a></li><li><a href="#">ダウンロード</a></li></ul></div>
+      <div><h4>Docs</h4><ul><li><a href="#">はじめかた</a></li><li><a href="#">表紙の作られ方</a></li><li><a href="#">名札と追跡</a></li><li><a href="#">よくある質問</a></li></ul></div>
+      <div><h4>Company</h4><ul><li><a href="#">ブログ</a></li><li><a href="#">GitHub</a></li><li><a href="#">お問い合わせ</a></li><li><a href="#">プライバシー</a></li></ul></div>
+    </div>
+    <div class="fbot"><span>© 2026 JIN</span><span>Design direction C — Byoubu</span></div>
+  </div>
+</footer>
+
+<script>
+const BUCKETS=[
+ {n:'思考の核',c:'#c1362f'},{n:'要件定義',c:'#1d3f73'},{n:'競合と市場',c:'#4d6b4a'},
+ {n:'設計レビュー',c:'#a8863c'},{n:'プロトタイプ',c:'#6b4a7a'},{n:'索引',c:'#1b1a18'},
+ {n:'技術検証',c:'#2b6b73'},{n:'応募・対外',c:'#8f4a2f'},{n:'用語と経緯',c:'#6e7a45'}
+];
+const COUNTS=[412,588,301,196,143,29,477,88,416];
+const DESC=['何を作るのかを決める','数字と合否判定','占有状況と空白','50点から100点へ','表紙の実物','全体の地図','変換とIDの土台','SkyDeck・命名','決めた理由の記録'];
+
+/* folding screen panels */
+(()=>{
+  const el=document.getElementById('screen');
+  BUCKETS.forEach((b,i)=>{
+    const d=document.createElement('div');d.className='panel';
+    d.innerHTML=`<div class="no">${String(i+1).padStart(2,'0')} / 09</div>
+      <div class="bar" style="background:${b.c}"></div>
+      <div class="nm">${b.n}</div>
+      <div style="font-size:12px;color:var(--gray);line-height:1.9;margin-top:8px">${DESC[i]}</div>
+      <div class="ct">${COUNTS[i]} 件 · ${i%5+1}日前</div>`;
+    el.appendChild(d);
+  });
+})();
+
+/* search stack */
+(()=>{
+  const el=document.getElementById('stack');
+  const paths=['02 Claude/32 MD for BDM','02 Claude/24-jarvispilot','dev/child-recorder/docs','dev/qr-alarm-app',
+    '02 Claude/19-serendipity','dev/colorfitapp/spec','02 Claude/31-amazybook'];
+  paths.forEach((p,i)=>{
+    const r=document.createElement('div');r.className='srow';
+    r.innerHTML=`<span><b>DESIGN.md</b> <span class="p">${p}</span></span><span class="p">2026-0${(i%8)+1}-1${i%9}</span>`;
+    el.appendChild(r);
+  });
+})();
+
+/* fold demo */
+(()=>{
+  const body=document.getElementById('foldBody'),bR=document.getElementById('bRaw'),bF=document.getElementById('bFold'),st=document.getElementById('stCount');
+  const names=['README','DESIGN','notes','lessons','index','spec','draft','memo','plan','log','todo','summary','research','review','ideas','arch','api','setup','test','changelog'];
+  function raw(){
+    st.textContent='2,650 件';
+    let h='<div class="raw">';
+    for(let i=0;i<300;i++){const n=names[i%names.length];const dup=['README','DESIGN','notes','lessons','index'].includes(n);
+      h+=`<span class="${dup?'dup':''}">${n}.md</span>`}
+    body.innerHTML=h+'</div>';bR.classList.add('on');bF.classList.remove('on');
+  }
+  function folded(){
+    st.textContent='9 区分';
+    let h='<div class="buckets">';
+    BUCKETS.forEach((b,i)=>{h+=`<div class="bk"><div class="bd" style="background:${b.c}"></div><div class="bn">${b.n}</div><div class="bc">${COUNTS[i]} 件 · ${i%5+1}日前</div></div>`});
+    body.innerHTML=h+'</div>';bF.classList.add('on');bR.classList.remove('on');
+  }
+  bR.onclick=raw;bF.onclick=folded;raw();setTimeout(folded,2800);
+})();
+</script>
+</body>
+</html>

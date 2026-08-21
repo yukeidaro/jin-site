@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jin — three website directions</title>
+<meta name="description" content="Three design directions for the Jin website. Same content, three tones.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f5f3ef'/%3E%3Cg fill='%23252525'%3E%3Crect x='4' y='11' width='4' height='12'/%3E%3Crect x='11' y='6' width='4' height='21'/%3E%3Crect x='18' y='14' width='4' height='8'/%3E%3Crect x='25' y='9' width='4' height='16'/%3E%3C/g%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f5f3ef;--line:#dddad5;--edge:#c7c3bd;--ink:#252525;--ink2:#4d4d4d;--dim:#696969;
+ --cobalt:#1659e9;--mono:"JetBrains Mono",monospace;--serif:"Source Serif 4",serif;--sans:"Inter",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.75}
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+header{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+.mk{width:30px;height:30px;border:1.5px solid var(--ink);border-radius:4px;display:grid;place-items:center;margin-bottom:22px}
+.mk svg{width:17px;height:17px;fill:var(--ink)}
+h1{font-family:var(--serif);font-size:clamp(32px,4.6vw,52px);font-weight:700;letter-spacing:-.035em;line-height:1.1;margin-top:14px}
+.lede{margin-top:20px;max-width:46em;color:var(--ink2);font-size:16.5px}
+code{font-family:var(--mono);font-size:.86em;background:#ece9e4;padding:1px 5px;border-radius:3px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;padding:52px 0 60px}
+.card{border:1px solid var(--line);border-radius:4px;background:#fff;overflow:hidden;display:flex;flex-direction:column;transition:.2s;text-decoration:none;color:inherit}
+.card:hover{border-color:var(--edge);transform:translateY(-3px);box-shadow:0 18px 40px -22px rgba(0,0,0,.28)}
+.shot{height:420px;overflow:hidden;border-bottom:1px solid var(--line);background:var(--paper)}
+.shot img{width:100%;display:block}
+.body{padding:24px 24px 28px;display:flex;flex-direction:column;flex:1}
+.tagrow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;border:1px solid var(--edge);border-radius:2px;padding:2px 8px;color:var(--dim)}
+h2{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.025em;line-height:1.25}
+h2 span{display:block;font-family:var(--mono);font-size:11px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--cobalt);margin-bottom:7px}
+.desc{margin-top:12px;font-size:14px;color:var(--ink2);line-height:1.85;flex:1}
+.meta{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-family:var(--mono);font-size:10.5px;color:var(--dim);line-height:1.95}
+.open{margin-top:18px;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:var(--ink);color:var(--paper);border-radius:4px;font-size:13px;font-weight:500;align-self:flex-start}
+.note{padding:36px 0 40px;border-top:1px solid var(--line);color:var(--ink2);font-size:14.5px;max-width:56em}
+.note b{font-family:var(--serif);font-size:18px;display:block;margin-bottom:8px;letter-spacing:-.02em}
+.note:last-child{border-top:0;padding-top:0;padding-bottom:80px}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.shot{height:340px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="mk"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></div>
+    <div class="eyebrow">Jin — website directions · August 2026</div>
+    <h1>Same content. Three tones.</h1>
+    <p class="lede">
+      All three are built on one design language: warm paper <code>#f5f3ef</code>, Source Serif 4 headings, JetBrains Mono labels,
+      hairline rules and a 4px corner radius. Every number on these pages is measured from a real machine, not invented.
+    </p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+
+    <a class="card" href="a-paper.html">
+      <div class="shot"><img src="preview-a-paper.jpg" alt="Direction A, Paper, preview" loading="lazy"></div>
+      <div class="body">
+        <div class="tagrow"><span class="tag">safe</span><span class="tag">investor-ready</span><span class="tag">recommended</span></div>
+        <h2><span>Direction A</span>Paper</h2>
+        <p class="desc">
+          Warm paper, serif headings, hairline rules, cobalt accent. The hero shows the product itself — a wall of covers —
+          then folds 2,650 into 9 in front of you. The lowest-risk option, and the one that reads best to people who are not engineers.
+        </p>
+        <div class="meta">Ground #f5f3ef · accent cobalt #1659e9<br>Source Serif 4 700 · 4px radius<br>Dark band #322e2a</div>
+        <span class="open">Open A →</span>
+      </div>
+    </a>
+
+    <a class="card" href="b-terminal.html">
+      <div class="shot"><img src="preview-b-terminal.jpg" alt="Direction B, Terminal, preview" loading="lazy"></div>
+      <div class="body">
+        <div class="tagrow"><span class="tag">developer</span><span class="tag">HN / PH</span><span class="tag">dense</span></div>
+        <h2><span>Direction B</span>Terminal</h2>
+        <p class="desc">
+          Dark ground on a faint grid, with a live terminal typing out <code>jin scan</code>. Green as the accent.
+          It cites the research, tables the non-goals and breaks the 60 seconds into a budget — it earns trust through density.
+          Strong for a Hacker News or Product Hunt launch, harder for a non-technical buyer.
+        </p>
+        <div class="meta">Ground #232020 + 64px grid · accent #84c8af<br>Serif display over mono body<br>Typing hero animation</div>
+        <span class="open">Open B →</span>
+      </div>
+    </a>
+
+    <a class="card" href="c-screen.html">
+      <div class="shot"><img src="preview-c-screen.jpg" alt="Direction C, Screen, preview" loading="lazy"></div>
+      <div class="body">
+        <div class="tagrow"><span class="tag">editorial</span><span class="tag">memorable</span><span class="tag">bold</span></div>
+        <h2><span>Direction C</span>Screen</h2>
+        <p class="desc">
+          Takes the folding-screen metaphor literally: the nine groups become nine panels you scroll sideways through.
+          Playfair Display at magazine scale, vermilion accent, zero corner radius, chapters numbered One to Five.
+          The most distinctive of the three, and the most opinionated.
+        </p>
+        <div class="meta">Ground #faf8f4 · accent vermilion #c1362f<br>Playfair Display 900 · 0px radius<br>Horizontal folding panels</div>
+        <span class="open">Open C →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="note">
+    <b>What every version says</b>
+    The hero (2,650 files, 89.3% never opened, accelerating) · four measured figures · the restated problem (55 hits for
+    <code>DESIGN</code>, so speed was never the issue) · the three axes Cover, Fold and Trace · a live fold demo you can toggle ·
+    the 60-second budget broken into 30 / 10 / 20 · what never leaves your machine · four explicit non-goals · call to action.
+  </div>
+  <div class="note">
+    <b>Next</b>
+    Pick one. Then swap the mocked covers for real product screenshots, add an Open Graph image, and point a domain at it.
+  </div>
+</div>
+</body>
+</html>

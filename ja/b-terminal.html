@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jin — 2,650 files. 9 covers.</title>
+<meta name="description" content="2,650 本の Markdown、読まれたのは 10.7%。Jin は AI が生成し続ける文書に自動で表紙をつけ、畳み、たどれるようにします。ローカル・ファースト、アカウント不要、v1 はネットワークに出ません。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23232020'/%3E%3Crect x='2.5' y='2.5' width='27' height='27' fill='none' stroke='%2384c8af' stroke-width='1.6' rx='2'/%3E%3Ctext x='16' y='24' font-size='20' text-anchor='middle' font-family='serif' font-weight='700' fill='%2384c8af'%3E陣%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jin — 2,650 files. 9 covers.">
+<meta property="og:description" content="検索が遅いのではありません。速く出てきても、選べないのです。">
+<meta property="og:image" content="preview-b-terminal.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#232020; --bg-2:#2b2825; --bg-3:#322e2a; --panel:#1d1b19;
+  --text:#efece7; --muted:#b2afa9; --dim:#8a8680; --line:#46423d; --line-2:#56524d;
+  --cobalt:#61a6fa; --cobalt-2:#3c83f6; --green:#84c8af; --amber:#e0b877; --red:#e88a80;
+  --r:4px;
+  --serif:"Source Serif 4",Georgia,serif;
+  --sans:"Noto Sans JP",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --wrap:1140px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(var(--bg-2) 1px,transparent 1px),linear-gradient(90deg,var(--bg-2) 1px,transparent 1px);
+  background-size:64px 64px;background-position:-1px -1px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 28px}
+a{color:inherit}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.eyebrow b{color:var(--green);font-weight:500}
+
+header{position:sticky;top:0;z-index:60;background:rgba(35,32,32,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{height:62px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:17px;font-weight:700;letter-spacing:.02em;text-decoration:none}
+.mark{width:24px;height:24px;border:1px solid var(--green);color:var(--green);border-radius:var(--r);display:grid;place-items:center;font-family:var(--serif);font-size:14px;line-height:1;padding-bottom:1px}
+.navlinks{display:flex;gap:26px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.navlinks a{text-decoration:none}.navlinks a:hover{color:var(--green)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 17px;border-radius:var(--r);font-family:var(--mono);font-size:12.5px;text-decoration:none;border:1px solid transparent;transition:.15s}
+.btn-p{background:var(--green);color:#1a2620;font-weight:700}
+.btn-p:hover{background:#a3d9c3}
+.btn-o{border-color:var(--line-2);color:var(--text)}
+.btn-o:hover{border-color:var(--green);color:var(--green)}
+
+.hero{padding:88px 0 64px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(36px,5.2vw,62px);line-height:1.14;letter-spacing:-.03em;margin:20px 0 0;max-width:15em}
+.hero h1 em{font-style:normal;color:var(--green)}
+.hero .lede{margin-top:24px;font-size:17px;line-height:1.9;color:var(--muted);max-width:34em}
+.hero .lede b{color:var(--text);font-weight:500}
+.cta{margin-top:30px;display:flex;gap:11px;flex-wrap:wrap;align-items:center}
+.cta .note{font-family:var(--mono);font-size:11px;color:var(--dim);margin-left:6px}
+
+/* terminal */
+.term{margin-top:52px;background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:0 24px 60px -20px rgba(0,0,0,.6)}
+.term-bar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--bg-3)}
+.dot{width:10px;height:10px;border-radius:50%}
+.term-bar .t{margin-left:10px;font-family:var(--mono);font-size:11.5px;color:var(--dim)}
+.term-body{padding:20px 22px;font-family:var(--mono);font-size:13px;line-height:2;min-height:340px}
+.term-body .p{color:var(--green)}
+.term-body .c{color:var(--text)}
+.term-body .d{color:var(--dim)}
+.term-body .ok{color:var(--green)}
+.term-body .w{color:var(--amber)}
+.term-body .e{color:var(--red)}
+.term-body .b{color:var(--cobalt)}
+.cur{display:inline-block;width:8px;height:15px;background:var(--green);vertical-align:-2px;animation:bl 1.05s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+
+/* stats strip */
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--panel)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr)}
+.stat{padding:32px 26px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat .v{font-family:var(--mono);font-size:clamp(26px,3.4vw,38px);font-weight:700;letter-spacing:-.02em;line-height:1}
+.stat .v.g{color:var(--green)}.stat .v.r{color:var(--red)}.stat .v.a{color:var(--amber)}
+.stat .k{font-size:12.5px;color:var(--dim);margin-top:11px;line-height:1.65}
+
+section{padding:84px 0;border-bottom:1px solid var(--line);scroll-margin-top:70px}
+.h2{font-family:var(--serif);font-size:clamp(27px,3.4vw,40px);font-weight:700;letter-spacing:-.025em;line-height:1.25;margin:13px 0 0;max-width:21em}
+.sub{margin-top:17px;font-size:16px;color:var(--muted);max-width:40em;line-height:1.9}
+.sub strong{color:var(--text);font-weight:500}
+
+/* diff block */
+.diff{margin-top:40px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;font-family:var(--mono);font-size:12.5px;background:var(--panel)}
+.diff-h{padding:11px 16px;border-bottom:1px solid var(--line);color:var(--dim);background:var(--bg-3);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.diff-r{padding:5px 16px;display:flex;gap:14px;white-space:nowrap;overflow:hidden}
+.diff-r.bad{background:rgba(232,138,128,.07);color:var(--red)}
+.diff-r.bad b{color:#f2b3ac;font-weight:400}
+.diff-r.good{background:rgba(132,200,175,.07);color:var(--green)}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:44px}
+.card{border:1px solid var(--line);border-radius:var(--r);padding:26px 24px 30px;background:var(--panel);transition:.18s}
+.card:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.card .n{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.14em}
+.card h3{font-family:var(--serif);font-size:24px;font-weight:700;letter-spacing:-.02em;margin:12px 0 0}
+.card h3 span{display:block;font-family:var(--mono);font-size:11px;font-weight:400;color:var(--green);letter-spacing:.12em;text-transform:uppercase;margin-top:7px}
+.card p{font-size:14px;color:var(--muted);line-height:1.9;margin-top:15px}
+.card .tag{margin-top:17px;padding-top:12px;border-top:1px solid var(--line);font-family:var(--mono);font-size:10.5px;color:var(--dim)}
+
+/* fold */
+.fold{margin-top:40px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.fold-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--bg-3);flex-wrap:wrap}
+.fold-head .st{font-family:var(--mono);font-size:11.5px;color:var(--dim)}
+.fold-head .st b{color:var(--green);font-weight:500}
+.toggle{display:inline-flex;border:1px solid var(--line-2);border-radius:var(--r);overflow:hidden;font-family:var(--mono);font-size:11.5px}
+.toggle button{background:transparent;border:0;padding:6px 14px;cursor:pointer;font:inherit;color:var(--muted)}
+.toggle button.on{background:var(--green);color:#1a2620;font-weight:700}
+.fold-body{padding:18px;min-height:280px}
+.raw{display:flex;flex-wrap:wrap;gap:4px}
+.raw span{font-family:var(--mono);font-size:10.5px;color:var(--dim);border:1px solid var(--line);border-radius:2px;padding:2px 6px;white-space:nowrap}
+.raw span.dup{color:var(--red);border-color:rgba(232,138,128,.32)}
+.buckets{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:10px}
+.bk{border:1px solid var(--line);border-radius:var(--r);padding:14px 15px;background:var(--bg-3)}
+.bk .bd{height:3px;border-radius:2px;margin-bottom:11px}
+.bk .bn{font-family:var(--serif);font-size:16px;font-weight:700}
+.bk .bc{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:6px}
+
+/* budget */
+.budget{margin-top:40px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.bg-row{display:grid;grid-template-columns:88px 1fr;align-items:center;border-bottom:1px solid var(--line);background:var(--panel)}
+.bg-row:last-child{border-bottom:0}
+.bg-row .sec{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--green);padding:20px 18px;border-right:1px solid var(--line);text-align:right}
+.bg-row .body{padding:18px 22px}
+.bg-row .body .l{font-size:14.5px}
+.bg-row .body .x{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:7px}
+.bar{height:6px;background:var(--bg-3);border-radius:3px;margin-top:12px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green);border-radius:3px}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;margin-top:38px;font-size:14.5px;border:1px solid var(--line)}
+.tbl th,.tbl td{text-align:left;padding:15px 18px;border-bottom:1px solid var(--line)}
+.tbl th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:400;background:var(--panel)}
+.tbl td:first-child{font-family:var(--mono);font-size:12.5px;color:var(--dim);width:120px;vertical-align:top}
+.tbl td b{display:block;font-family:var(--serif);font-size:17px;margin-bottom:5px}
+.tbl td span{color:var(--muted);line-height:1.85}
+.tbl tr:last-child td{border-bottom:0}
+
+/* privacy */
+.priv{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
+.privcard{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--panel);font-family:var(--mono);font-size:13px}
+.privrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 17px;border-bottom:1px solid var(--line)}
+.privrow:last-child{border-bottom:0}
+.st2{font-size:10.5px;letter-spacing:.1em;padding:3px 9px;border-radius:2px}
+.up{background:rgba(132,200,175,.14);color:var(--green);border:1px solid rgba(132,200,175,.3)}
+.no{background:rgba(255,255,255,.04);color:var(--dim);border:1px solid var(--line)}
+
+.final{text-align:center;padding:104px 0;border-bottom:0}
+.final h2{font-family:var(--serif);font-size:clamp(30px,4.4vw,52px);font-weight:700;letter-spacing:-.03em;line-height:1.2;max-width:15em;margin:16px auto 0}
+.final p{margin:20px auto 0;max-width:33em;color:var(--muted)}
+.final .cta{justify-content:center;margin-top:32px}
+.install{margin:34px auto 0;max-width:440px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:13px 16px;font-family:var(--mono);font-size:13px;display:flex;justify-content:space-between;gap:12px;align-items:center;text-align:left}
+.install .cp{color:var(--dim);font-size:11px;cursor:pointer}
+.install .cp:hover{color:var(--green)}
+
+footer{padding:52px 0 40px;color:var(--muted);font-size:13px}
+.fgrid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:34px}
+.fgrid h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:13px;font-weight:400}
+.fgrid ul{list-style:none;display:grid;gap:9px}
+.fgrid a{text-decoration:none}.fgrid a:hover{color:var(--green)}
+.fbot{margin-top:42px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;font-family:var(--mono);font-size:11px;color:var(--dim);flex-wrap:wrap}
+
+@media(max-width:900px){
+  .cards,.stats,.priv{grid-template-columns:1fr}
+  .stat{border-right:0;border-bottom:1px solid var(--line)}
+  .fgrid{grid-template-columns:1fr 1fr}
+  .navlinks{display:none}
+  .bg-row{grid-template-columns:70px 1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#"><span class="mark">陣</span>jin</a>
+    <nav class="navlinks"><a href="#problem">problem</a><a href="#how">how</a><a href="#minute">60s</a><a href="#privacy">privacy</a><a href="#not">non-goals</a></nav>
+    <a class="btn btn-p" href="#final">Download</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><b>●</b> LOCAL-FIRST &nbsp;/&nbsp; NO ACCOUNT &nbsp;/&nbsp; NO NETWORK IN V1</div>
+    <h1>2,650 本の Markdown。<br>読まれたのは <em>10.7%</em>。</h1>
+    <p class="lede">
+      増やしているのはあなたではありません。<b>AI です。</b>
+      6月 350 本 → 7月 446 本 → 8月は月換算 <b>879 本</b>。加速しています。
+      Jin は、この山に自動で表紙をつけて畳み、一望できる形にします。
+    </p>
+    <div class="cta">
+      <a class="btn btn-p" href="#final">Download for macOS</a>
+      <a class="btn btn-o" href="#how">How it works →</a>
+      <span class="note">Free · No sign-in · 42MB</span>
+    </div>
+
+    <div class="term">
+      <div class="term-bar">
+        <span class="dot" style="background:#e88a80"></span><span class="dot" style="background:#e0b877"></span><span class="dot" style="background:#84c8af"></span>
+        <span class="t">jin — scan</span>
+      </div>
+      <div class="term-body" id="term"></div>
+    </div>
+  </div>
+</div>
+
+<div class="strip">
+  <div class="wrap" style="padding:0">
+    <div class="stats">
+      <div class="stat"><div class="v">2,650</div><div class="k">.md ファイル総数<br>594 フォルダに散在</div></div>
+      <div class="stat"><div class="v r">89.3%</div><div class="k">直近7日間に<br>一度も開かれていない</div></div>
+      <div class="stat"><div class="v a">786</div><div class="k">同名ファイルが他にもある<br>（全体の 29.7%）</div></div>
+      <div class="stat"><div class="v g">9</div><div class="k">Jin が畳んだあとの<br>区分の数</div></div>
+    </div>
+  </div>
+</div>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="eyebrow">// the real problem</div>
+    <h2 class="h2">検索が遅いのではありません。<br>速く出てきても、選べないのです。</h2>
+    <p class="sub">
+      2008年の実証研究（Bergman et al., ACM TOIS）が既に答えを出しています。検索エンジンを良いものに入れ替えて長期観察しても、
+      人がファイルに辿り着く手段は <strong>たどる 56〜68% / 検索 4〜15%</strong>。しかも検索を良くしても使用率はほとんど上がりませんでした。
+      <strong>検索は、他が全部ダメだったときの最後の手段です。</strong>
+    </p>
+
+    <div class="diff">
+      <div class="diff-h"><span>$ everything DESIGN.md</span><span>55 results in 0.02s</span></div>
+      <div id="diffRows"></div>
+      <div class="diff-h" style="border-bottom:0;border-top:1px solid var(--line);color:var(--red)">
+        <span>速さは問題ではありません。この 55 件から 1 件を選べないことが問題です。</span>
+      </div>
+    </div>
+
+    <p class="sub" style="margin-top:34px">
+      <strong>README は 208 本、DESIGN は 55 本、lessons は 33 本。</strong>
+      定型ファイルを除いても 5 本に 1 本はファイル名だけでは特定できません。
+      そして、あなたはその文書を書いていないので、<strong>そもそも検索する言葉を知りません。</strong>
+    </p>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="eyebrow">// three axes</div>
+    <h2 class="h2">表紙をつけ、畳み、たどれるようにする。</h2>
+    <p class="sub">本を本棚に並べるときに人類が何百年もやってきたことを、自動でやります。</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="n">01</div><h3>Cover<span>表紙をつける</span></h3>
+        <p>すべての文書に、見ただけで中身が分かる表紙を生成します。一段目は<strong>中身を読まずに</strong>即座に。読み込んだ二段目はあとから静かに差し替わります。</p>
+        <div class="tag">差し替え時に並び順・行高を動かさない</div>
+      </div>
+      <div class="card">
+        <div class="n">02</div><h3>Fold<span>畳む</span></h3>
+        <p>2,650 本をそのまま見せません。区分ラベルで畳んで <strong>9 区分</strong>にします。色だけでは「同じグループだ」としか伝わらないので、区分名の文字を必ず併記します。</p>
+        <div class="tag">5秒テスト: 10人中9人が答えられること</div>
+      </div>
+      <div class="card">
+        <div class="n">03</div><h3>Trace<span>たどる</span></h3>
+        <p>段落・スライド・セル範囲に<strong>消えない ID</strong> を付けます。AI が書き換えても、どこがどう変わったかを意味の単位で追跡できます。</p>
+        <div class="tag">技術ゲート: ID 生存率 99%</div>
+      </div>
+    </div>
+
+    <div class="fold">
+      <div class="fold-head">
+        <div class="st">$ jin fold ~/Documents/02\ Claude &nbsp;·&nbsp; <b id="stCount">2,650 files</b></div>
+        <div class="toggle"><button id="bRaw" class="on">raw</button><button id="bFold">folded</button></div>
+      </div>
+      <div class="fold-body" id="foldBody"></div>
+    </div>
+  </div>
+</section>
+
+<section id="minute">
+  <div class="wrap">
+    <div class="eyebrow">// the gate</div>
+    <h2 class="h2">インストールから最初の「あった」まで、60 秒。</h2>
+    <p class="sub">
+      5 分なら、いまの OS の検索でも達成できてしまいます。合格ラインに見えて、何も決めていない数字です。
+      <strong>60 秒にすると、作り方の選択肢が強制的に絞られます。それがこの数字の目的です。</strong>
+    </p>
+    <div class="budget">
+      <div class="bg-row"><div class="sec">30s</div><div class="body"><div class="l">起動して、フォルダを 1 つ選ぶまで</div><div class="x">→ アカウント作成・ログイン・チュートリアル・設定画面を置けない</div><div class="bar"><i style="width:50%"></i></div></div></div>
+      <div class="bg-row"><div class="sec">10s</div><div class="body"><div class="l">選んでから、一覧が出るまで</div><div class="x">→「読み込み中…」で待たせられない。先頭から画面へ流し込むしかない</div><div class="bar"><i style="width:16.7%"></i></div></div></div>
+      <div class="bg-row"><div class="sec">20s</div><div class="body"><div class="l">一覧が出てから、目的の 1 件を見つけるまで</div><div class="x">→ 20秒は「10件を目でなぞる」時間。「100件を読む」時間ではない</div><div class="bar"><i style="width:33.3%"></i></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <div class="priv">
+      <div>
+        <div class="eyebrow">// what leaves your machine</div>
+        <h2 class="h2">貯まるのはファイルではなく、整理の規則です。</h2>
+        <p class="sub">
+          v1 はネットワークに出ません。一人が入れて、自分の PC の中が綺麗になっていく。それだけで価値が完結します。
+          <strong>会社の承認は要りません。</strong>同期を有効にしても、既定で上がるのはあなたが作った規則だけです。
+        </p>
+      </div>
+      <div class="privcard">
+        <div class="privrow"><span>rules / bucket definitions</span><span class="st2 up">SYNCED</span></div>
+        <div class="privrow"><span>cover templates</span><span class="st2 up">SYNCED</span></div>
+        <div class="privrow"><span>file contents</span><span class="st2 no">NEVER</span></div>
+        <div class="privrow"><span>file &amp; folder names</span><span class="st2 no">NEVER</span></div>
+        <div class="privrow"><span>account</span><span class="st2 no">NOT REQUIRED</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="not">
+  <div class="wrap">
+    <div class="eyebrow">// non-goals</div>
+    <h2 class="h2">Jin でないもの。</h2>
+    <p class="sub">何であるかより、何でないかを先に書きます。ここを曖昧にした製品は、全部になろうとして何にもなりません。</p>
+    <table class="tbl">
+      <tr><th>非目標</th><th>理由</th></tr>
+      <tr><td>NOT 01</td><td><b>検索エンジンではない</b><span>Everything も OS 検索も無料で、しかも速い。そこでは戦いません。Jin は「探す言葉を知らない人」の道具です。</span></td></tr>
+      <tr><td>NOT 02</td><td><b>クラウドストレージではない</b><span>OneDrive も Box も置き換えません。v1 はネットワークに出ず、あなたのディスクの上で完結します。</span></td></tr>
+      <tr><td>NOT 03</td><td><b>もう一つのメモアプリではない</b><span>書く場所を増やしません。すでにディスクにある 2,650 本を読むだけ。移行もインポートもありません。</span></td></tr>
+      <tr><td>NOT 04</td><td><b>チャットボットではない</b><span>要約を読ませて終わりにしません。あなたが自分の目で全体像を掴み、自分で選べる状態にすることが目的です。</span></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="final" id="final">
+  <div class="wrap">
+    <div class="eyebrow">陣 — scattered units, formed up</div>
+    <h2>2,650 本を、9 枚にして返します。</h2>
+    <p>フォルダを 1 つ選ぶところから。アカウント不要、ネットワーク接続なし。60 秒で確かめてください。</p>
+    <div class="install"><span><span style="color:var(--green)">$</span> brew install jin</span><span class="cp" onclick="navigator.clipboard&&navigator.clipboard.writeText('brew install jin');this.textContent='copied'">copy</span></div>
+    <div class="cta"><a class="btn btn-p" href="#">Download for macOS</a><a class="btn btn-o" href="#">Download for Windows</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a class="brand" href="#"><span class="mark">陣</span>jin</a>
+        <p style="margin-top:13px;max-width:26em;color:var(--dim)">AI が書き続ける文書に、表紙をつけて畳む。ローカル・ファースト。</p>
+      </div>
+      <div><h4>Product</h4><ul><li><a href="#how">How it works</a></li><li><a href="#minute">The 60s gate</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#">Download</a></li></ul></div>
+      <div><h4>Docs</h4><ul><li><a href="#">Quickstart</a></li><li><a href="#">Covers</a></li><li><a href="#">Stable IDs</a></li><li><a href="#">CLI reference</a></li></ul></div>
+      <div><h4>Company</h4><ul><li><a href="#">Blog</a></li><li><a href="#">GitHub</a></li><li><a href="#">Discord</a></li><li><a href="#">Contact</a></li></ul></div>
+    </div>
+    <div class="fbot"><span>© 2026 Jin</span><span>Design direction B — Terminal</span></div>
+  </div>
+</footer>
+
+<script>
+const BUCKETS=[
+ {n:'思考の核',c:'#db2777'},{n:'要件定義',c:'#61a6fa'},{n:'競合と市場',c:'#84c8af'},
+ {n:'設計レビュー',c:'#e0b877'},{n:'プロトタイプ',c:'#a78bfa'},{n:'索引',c:'#b2afa9'},
+ {n:'技術検証',c:'#22d3ee'},{n:'応募・対外',c:'#e88a80'},{n:'用語と経緯',c:'#a3e635'}
+];
+
+/* terminal typing */
+(()=>{
+  const el=document.getElementById('term');
+  const lines=[
+    ['p','$ '],['c','jin scan ~/Documents'],['br'],
+    ['d','  walking 594 directories...'],['br'],
+    ['ok','  ✓ 2,650 markdown files indexed        '],['d','1.8s'],['br'],
+    ['br'],
+    ['w','  ! 786 files share a name with another file'],['br'],
+    ['e','    README.md   × 208'],['br'],
+    ['e','    DESIGN.md   ×  55'],['br'],
+    ['e','    lessons.md  ×  33'],['br'],
+    ['br'],
+    ['d','  no network calls. no account. nothing left this machine.'],['br'],
+    ['br'],
+    ['p','$ '],['c','jin fold'],['br'],
+    ['ok','  ✓ 2,650 files → '],['b','9 covers'],['ok','                 0.4s'],['br'],
+    ['br'],
+    ['d','  open the window to see them.'],['br'],
+    ['p','$ '],['cur']
+  ];
+  let i=0,j=0,cur='';
+  function step(){
+    if(i>=lines.length)return;
+    const [t,txt]=lines[i];
+    if(t==='br'){cur+='<br>';i++;j=0;el.innerHTML=cur;return setTimeout(step,40)}
+    if(t==='cur'){el.innerHTML=cur+'<span class="cur"></span>';return}
+    if(j===0)cur+='<span class="'+t+'">';
+    if(j<txt.length){cur+=txt[j];j++;el.innerHTML=cur+'</span><span class="cur"></span>';return setTimeout(step,t==='c'?42:11)}
+    cur+='</span>';i++;j=0;el.innerHTML=cur;setTimeout(step,t==='c'?260:20);
+  }
+  step();
+})();
+
+/* diff rows */
+(()=>{
+  const el=document.getElementById('diffRows');
+  const paths=['02 Claude/32 MD for BDM','02 Claude/24-jarvispilot','dev/child-recorder/docs','dev/qr-alarm-app',
+    '02 Claude/19-serendipity','dev/colorfitapp/spec','02 Claude/31-amazybook'];
+  paths.forEach((p,i)=>{
+    const r=document.createElement('div');r.className='diff-r bad';
+    r.innerHTML=`<b>DESIGN.md</b><span>${p}</span><span style="margin-left:auto">2026-0${(i%8)+1}-1${i%9}</span>`;
+    el.appendChild(r);
+  });
+  const m=document.createElement('div');m.className='diff-r';m.style.color='var(--dim)';m.innerHTML='<span>… 48 more</span>';el.appendChild(m);
+})();
+
+/* fold */
+(()=>{
+  const body=document.getElementById('foldBody'),bR=document.getElementById('bRaw'),bF=document.getElementById('bFold'),st=document.getElementById('stCount');
+  const names=['README','DESIGN','notes','lessons','index','spec','draft','memo','plan','log','todo','summary','research','review','ideas','arch','api','setup','test','changelog'];
+  function raw(){
+    st.textContent='2,650 files';
+    let h='<div class="raw">';
+    for(let i=0;i<300;i++){const n=names[i%names.length];const dup=['README','DESIGN','notes','lessons','index'].includes(n);
+      h+=`<span class="${dup?'dup':''}">${n}.md</span>`}
+    body.innerHTML=h+'</div>';bR.classList.add('on');bF.classList.remove('on');
+  }
+  function folded(){
+    st.textContent='9 covers';
+    const counts=[412,588,301,196,143,29,477,88,416];
+    let h='<div class="buckets">';
+    BUCKETS.forEach((b,i)=>{h+=`<div class="bk"><div class="bd" style="background:${b.c}"></div><div class="bn">${b.n}</div><div class="bc">${counts[i]} files · ${i%5+1}d ago</div></div>`});
+    body.innerHTML=h+'</div>';bF.classList.add('on');bR.classList.remove('on');
+  }
+  bR.onclick=raw;bF.onclick=folded;raw();setTimeout(folded,3000);
+})();
+</script>
+</body>
+</html>
