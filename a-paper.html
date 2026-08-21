@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JinAI — the workspace you know, connected by AI</title>
-<meta name="description" content="JinAI keeps the folders, projects and documents business users already navigate, and connects the notes, sources, decisions and AI-generated context behind them. A visual workspace for work in the AI era.">
+<title>Jin AI — the next Obsidian for business people</title>
+<meta name="description" content="Jin AI is a visual workspace for the Markdown your AI agents are already creating. Read, edit and organise it like an office document — no Markdown syntax, no GitHub, no developer tools.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f5f3ef'/%3E%3Cg fill='%23252525'%3E%3Crect x='4' y='11' width='4' height='12'/%3E%3Crect x='11' y='6' width='4' height='21'/%3E%3Crect x='18' y='14' width='4' height='8'/%3E%3Crect x='25' y='9' width='4' height='16'/%3E%3C/g%3E%3C/svg%3E">
 <meta property="og:type" content="website">
-<meta property="og:title" content="JinAI — the workspace you know, connected by AI">
-<meta property="og:description" content="Knowledge, Office documents and AI-generated work in one intuitive workspace.">
+<meta property="og:title" content="Jin AI — the next Obsidian for business people">
+<meta property="og:description" content="A visual workspace for the Markdown your AI agents are already creating.">
 <meta property="og:image" content="preview-a-paper.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +20,7 @@
   --ink:#252525; --ink-2:#4d4d4d; --ink-3:#616161; --dim:#696969;
   --dark:#322e2a; --dark-text:#efece7; --dark-muted:#b2afa9; --dark-line:#56524d;
   --cobalt:#1659e9; --cobalt-400:#61a6fa; --cobalt-50:#f0f6ff;
-  --green:#2a5e46; --green-300:#84c8af;
+  --green:#2a5e46; --green-300:#84c8af; --red:#b42318;
   --r:4px;
   --serif:"Source Serif 4",Georgia,serif;
   --sans:"Inter",ui-sans-serif,system-ui,sans-serif;
@@ -39,27 +39,29 @@ img{max-width:100%}
 
 header{position:sticky;top:0;z-index:50;background:rgba(245,243,239,.86);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .nav{height:64px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:-.025em;text-decoration:none}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:-.025em;text-decoration:none;white-space:nowrap}
 .mark{width:27px;height:27px;border:1.5px solid var(--ink);border-radius:var(--r);display:grid;place-items:center;flex:none}
 .mark svg{width:15px;height:15px;fill:var(--ink)}
-.navlinks{display:flex;gap:24px;font-size:13.5px;color:var(--ink-3)}
-.navlinks a{text-decoration:none}.navlinks a:hover{color:var(--cobalt)}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:var(--r);font-size:13.5px;font-weight:500;text-decoration:none;border:1px solid transparent;transition:.15s;cursor:pointer;font-family:inherit}
+.navlinks{display:flex;gap:22px;font-size:13.5px;color:var(--ink-3)}
+.navlinks a{text-decoration:none;white-space:nowrap}.navlinks a:hover{color:var(--cobalt)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:var(--r);font-size:13.5px;font-weight:500;text-decoration:none;border:1px solid transparent;transition:.15s;cursor:pointer;font-family:inherit;white-space:nowrap}
 .btn-p{background:var(--ink);color:var(--paper)}.btn-p:hover{background:#000}
 
 .hero{padding:88px 0 68px;border-bottom:1px solid var(--line)}
-.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(38px,5.4vw,64px);line-height:1.06;letter-spacing:-.035em;margin:22px 0 0;max-width:15em}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(38px,5.6vw,66px);line-height:1.04;letter-spacing:-.035em;margin:22px 0 0;max-width:13em}
 .hero h1 .fade{color:var(--edge)}
 .hero .lede{margin-top:24px;font-size:18px;line-height:1.75;color:var(--ink-2);max-width:36em}
 .hero .lede b{font-weight:600;color:var(--ink)}
+.agentrow{margin-top:22px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--dim)}
+.agentrow span{border:1px solid var(--line-2);border-radius:100px;padding:4px 11px;background:#fff;color:var(--ink-3)}
 
-.wait{margin-top:30px;display:flex;gap:9px;flex-wrap:wrap;max-width:520px}
+.wait{margin-top:28px;display:flex;gap:9px;flex-wrap:wrap;max-width:520px}
 .wait input{flex:1 1 240px;min-width:0;padding:12px 15px;border:1px solid var(--edge);border-radius:var(--r);background:#fff;font-family:inherit;font-size:14.5px;color:var(--ink)}
 .wait input:focus{outline:none;border-color:var(--cobalt);box-shadow:0 0 0 3px rgba(22,89,233,.12)}
 .wait button{padding:12px 22px;white-space:nowrap}
 .waitnote{margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.04em;line-height:1.9}
 .waitnote.ok{color:var(--green)}
-.waitnote.bad{color:#b42318}
+.waitnote.bad{color:var(--red)}
 
 .shotwrap{margin-top:52px}
 .shotframe{border:1px solid var(--line-2);border-radius:6px;overflow:hidden;background:#fff;box-shadow:0 30px 70px -34px rgba(0,0,0,.42)}
@@ -67,25 +69,58 @@ header{position:sticky;top:0;z-index:50;background:rgba(245,243,239,.86);backdro
 .shotcap{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.05em}
 
 section{padding:86px 0;border-bottom:1px solid var(--line);scroll-margin-top:72px}
-.h2{font-family:var(--serif);font-size:clamp(28px,3.4vw,42px);font-weight:700;letter-spacing:-.03em;line-height:1.16;margin:14px 0 0;max-width:19em}
+.h2{font-family:var(--serif);font-size:clamp(28px,3.4vw,42px);font-weight:700;letter-spacing:-.03em;line-height:1.14;margin:14px 0 0;max-width:19em}
 .sub{margin-top:18px;font-size:16.5px;color:var(--ink-2);max-width:41em;line-height:1.8}
 .sub strong{color:var(--ink);font-weight:600}
 .rule{height:1px;background:var(--line);margin:54px 0}
 
-.worlds{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:46px}
-.world{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:26px 24px 28px;display:flex;flex-direction:column}
-.world .wt{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-.world h3{font-family:var(--serif);font-size:23px;font-weight:700;letter-spacing:-.025em;margin-top:10px}
-.world p{font-size:14.5px;color:var(--ink-2);line-height:1.8;margin-top:11px;flex:1}
-.world .verdict{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:13.5px;font-weight:600;color:#b42318}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-.chips span{font-family:var(--mono);font-size:10.5px;border:1px solid var(--line);border-radius:2px;padding:3px 8px;color:var(--ink-3);background:var(--paper)}
-.verd{margin-top:26px;border:1px solid var(--cobalt);border-radius:var(--r);background:var(--cobalt-50);padding:24px 26px}
-.verd b{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:-.025em;display:block;margin-bottom:9px}
-.verd span{font-size:15px;color:var(--ink-2);line-height:1.8}
+/* chaos illustration */
+.chaos{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:44px}
+.agentcol{background:#fff;padding:22px 20px 24px}
+.agentcol .an{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink);display:flex;align-items:center;gap:8px}
+.agentcol .an i{width:7px;height:7px;border-radius:50%;font-style:normal;flex:none}
+.agentcol .aw{font-size:12.5px;color:var(--dim);margin-top:6px}
+.agentcol .fl{margin-top:14px;display:grid;gap:5px;font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+.agentcol .fl span{border:1px solid var(--line);border-radius:2px;padding:3px 7px;background:var(--paper)}
+.agentcol .fl span.hid{color:var(--edge);border-style:dashed;background:transparent}
+.chaosfoot{margin-top:0;border:1px solid var(--line);border-top:0;border-radius:0 0 var(--r) var(--r);background:var(--paper-2);padding:16px 20px;font-size:14.5px;color:var(--ink-2)}
+.chaosfoot b{color:var(--ink);font-weight:600}
 
-blockquote{font-family:var(--serif);font-size:clamp(22px,2.8vw,32px);line-height:1.32;letter-spacing:-.028em;border-left:2px solid var(--cobalt);padding-left:26px;margin:46px 0 0;max-width:19em}
-blockquote cite{display:block;font-family:var(--mono);font-size:11px;font-style:normal;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-top:18px;line-height:1.9}
+/* sync diagram */
+.sync{display:grid;grid-template-columns:1fr 92px 1fr;align-items:stretch;margin-top:46px;gap:0}
+.syncbox{border:1px solid var(--line);border-radius:var(--r);background:#fff;padding:26px 24px 28px}
+.syncbox .st{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.syncbox h3{font-family:var(--serif);font-size:21px;font-weight:700;letter-spacing:-.02em;margin-top:9px}
+.syncbox ul{list-style:none;margin-top:14px;display:grid;gap:8px}
+.syncbox li{font-size:14px;color:var(--ink-2);line-height:1.6;padding-left:17px;position:relative}
+.syncbox li:before{content:"—";position:absolute;left:0;color:var(--edge)}
+.syncbox.human{border-color:var(--cobalt)}
+.syncbox.human .st{color:var(--cobalt)}
+.syncmid{display:grid;place-items:center;gap:8px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--dim);text-align:center;padding:0 8px}
+.syncmid .ar{font-size:19px;color:var(--cobalt);line-height:1}
+.syncnote{margin-top:22px;border:1px solid var(--cobalt);border-radius:var(--r);background:var(--cobalt-50);padding:22px 24px;font-size:15px;color:var(--ink-2);line-height:1.8}
+.syncnote b{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--ink);display:block;margin-bottom:8px}
+
+/* demo */
+.fold{margin-top:44px;border:1px solid var(--line);border-radius:var(--r);background:#fff;overflow:hidden}
+.fold-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.fold-head .st{font-family:var(--mono);font-size:11.5px;color:var(--dim)}
+.fold-head .st b{color:var(--ink);font-weight:500}
+.toggle{display:inline-flex;border:1px solid var(--edge);border-radius:var(--r);overflow:hidden;font-family:var(--mono);font-size:11.5px}
+.toggle button{background:transparent;border:0;padding:7px 15px;cursor:pointer;font:inherit;color:var(--ink-3)}
+.toggle button.on{background:var(--ink);color:var(--paper)}
+.fold-body{padding:18px;min-height:296px}
+.raw{display:flex;flex-wrap:wrap;gap:5px}
+.raw span{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);background:var(--paper-2);border:1px solid var(--line);border-radius:2px;padding:3px 7px;white-space:nowrap}
+.raw span.mach{color:var(--edge);border-style:dashed;background:transparent}
+.buckets{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:10px}
+.bk{border:1px solid var(--line);border-radius:var(--r);padding:14px 15px;background:var(--paper)}
+.bk .bd{height:3px;border-radius:2px;margin-bottom:11px}
+.bk .bn{font-family:var(--serif);font-size:16.5px;font-weight:700;letter-spacing:-.015em}
+.bk .bs{margin-top:9px;display:grid;gap:4px;font-family:var(--mono);font-size:10px;color:var(--ink-3)}
+.bk .bc{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:10px;line-height:1.7}
+.bk.hid{border-style:dashed;background:transparent}
+.bk.hid .bn{color:var(--dim)}
 
 .views{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
 .view{display:flex;flex-direction:column}
@@ -96,72 +131,58 @@ blockquote cite{display:block;font-family:var(--mono);font-size:11px;font-style:
 .view h3{font-family:var(--serif);font-size:21px;font-weight:700;letter-spacing:-.02em;margin-top:7px}
 .view p{font-size:14px;color:var(--ink-2);line-height:1.8;margin-top:9px}
 
-.axes{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:48px}
-.axis{background:var(--paper);padding:32px 28px 36px}
-.axis .n{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.14em}
-.axis h3{font-family:var(--serif);font-size:25px;font-weight:700;letter-spacing:-.025em;margin:13px 0 0}
-.axis h3 span{display:block;font-family:var(--mono);font-size:11px;font-weight:400;color:var(--cobalt);letter-spacing:.1em;text-transform:uppercase;margin-top:8px}
-.axis p{font-size:14.5px;color:var(--ink-2);line-height:1.8;margin-top:15px}
+.does{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:44px}
+.do{background:var(--paper);padding:26px 24px 28px}
+.do h3{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:-.02em}
+.do p{font-size:14.5px;color:var(--ink-2);line-height:1.8;margin-top:9px}
 
-.fold{margin-top:44px;border:1px solid var(--line);border-radius:var(--r);background:#fff;overflow:hidden}
-.fold-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.fold-head .st{font-family:var(--mono);font-size:11.5px;color:var(--dim)}
-.fold-head .st b{color:var(--ink);font-weight:500}
-.toggle{display:inline-flex;border:1px solid var(--edge);border-radius:var(--r);overflow:hidden;font-family:var(--mono);font-size:11.5px}
-.toggle button{background:transparent;border:0;padding:7px 15px;cursor:pointer;font:inherit;color:var(--ink-3)}
-.toggle button.on{background:var(--ink);color:var(--paper)}
-.fold-body{padding:18px;min-height:290px}
-.raw{display:flex;flex-wrap:wrap;gap:5px}
-.raw span{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);background:var(--paper-2);border:1px solid var(--line);border-radius:2px;padding:3px 7px;white-space:nowrap}
-.raw span em{font-style:normal;opacity:.6;margin-right:5px}
-.raw span.mach{color:var(--edge);border-style:dashed;background:transparent}
-.buckets{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:10px}
-.bk{border:1px solid var(--line);border-radius:var(--r);padding:14px 15px;background:var(--paper)}
-.bk .bd{height:3px;border-radius:2px;margin-bottom:11px}
-.bk .bn{font-family:var(--serif);font-size:16.5px;font-weight:700;letter-spacing:-.015em}
-.bk .bl{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
-.bk .bl i{font-style:normal;font-family:var(--mono);font-size:9.5px;border:1px solid var(--line-2);border-radius:2px;padding:2px 6px;color:var(--ink-3);background:#fff}
-.bk .bc{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:10px;line-height:1.7}
-.bk.hid{border-style:dashed;background:transparent}
-.bk.hid .bn{color:var(--dim)}
+/* comparison */
+.cmp{width:100%;border-collapse:collapse;margin-top:44px;border:1px solid var(--line);background:#fff;font-size:14.5px}
+.cmp th,.cmp td{text-align:left;padding:16px 18px;border-bottom:1px solid var(--line);vertical-align:top}
+.cmp thead th{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:400;background:var(--paper-2)}
+.cmp thead th.us{color:var(--cobalt)}
+.cmp td:first-child{font-weight:600;width:26%;color:var(--ink)}
+.cmp td.them{color:var(--ink-3);width:37%}
+.cmp td.us{color:var(--ink-2);background:var(--cobalt-50)}
+.cmp tr:last-child td{border-bottom:0}
+.cmpline{margin-top:22px;font-family:var(--serif);font-size:clamp(20px,2.4vw,27px);font-weight:700;letter-spacing:-.025em;line-height:1.35;max-width:24em}
+.cmpline em{font-style:normal;color:var(--cobalt)}
 
 .band-dark{background:var(--dark);color:var(--dark-text)}
 .band-dark .eyebrow{color:var(--dark-muted)}
 .band-dark .h2{color:var(--dark-text)}
 .band-dark .sub{color:var(--dark-muted)}
 .band-dark .sub strong{color:var(--dark-text)}
-.flow{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;align-items:center;margin-top:48px}
-.fbox{border:1px solid var(--dark-line);border-radius:var(--r);padding:22px 20px;min-height:196px}
-.fbox .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dark-muted)}
-.fbox .cs{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
-.fbox .chip{font-family:var(--mono);font-size:11px;border:1px solid var(--dark-line);border-radius:100px;padding:4px 11px;color:var(--dark-text)}
-.fbox .tree{font-family:var(--mono);font-size:11.5px;line-height:2;color:var(--dark-muted);margin-top:12px}
-.fbox .tree b{color:var(--dark-text);font-weight:400}
-.fbox.hi{border-color:var(--green-300);background:rgba(132,200,175,.06)}
-.fbox.hi .t{color:var(--green-300)}
-.arrow{display:grid;place-items:center;font-family:var(--mono);color:var(--dark-line);font-size:18px}
-.agnote{margin-top:34px;display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
-.agnote div{border-top:1px solid var(--dark-line);padding-top:16px}
-.agnote b{display:block;font-family:var(--serif);font-size:18px;font-weight:700;letter-spacing:-.02em;margin-bottom:7px}
-.agnote span{font-size:14px;color:var(--dark-muted);line-height:1.8}
+.who{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:44px}
+.whocard{border:1px solid var(--dark-line);border-radius:var(--r);padding:26px 24px 28px}
+.whocard .wt{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--green-300)}
+.whocard h3{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:-.025em;margin-top:10px}
+.whocard p{font-size:14.5px;color:var(--dark-muted);line-height:1.85;margin-top:10px}
+.whocard .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.whocard .tags span{font-family:var(--mono);font-size:10.5px;border:1px solid var(--dark-line);border-radius:100px;padding:4px 11px;color:var(--dark-text)}
 
-.team{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:46px}
-.tcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:28px 26px 30px}
-.tcard .tt{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cobalt)}
-.tcard h3{font-family:var(--serif);font-size:23px;font-weight:700;letter-spacing:-.025em;margin-top:10px}
-.tcard p{font-size:14.5px;color:var(--ink-2);line-height:1.85;margin-top:11px}
+.tiers{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:44px}
+.tier{border:1px solid var(--line);border-radius:var(--r);background:#fff;padding:28px 26px 30px;display:flex;flex-direction:column}
+.tier.free{border-color:var(--green);background:#f7fbf9}
+.tier .tl{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.tier.free .tl{color:var(--green)}
+.tier h3{font-family:var(--serif);font-size:24px;font-weight:700;letter-spacing:-.025em;margin-top:9px}
+.tier .pr{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);margin-top:6px}
+.tier ul{list-style:none;margin-top:16px;display:grid;gap:9px;flex:1}
+.tier li{font-size:14.5px;color:var(--ink-2);line-height:1.6;padding-left:19px;position:relative}
+.tier li:before{content:"✓";position:absolute;left:0;color:var(--green);font-size:12px;top:1px}
+
+.founders{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:44px}
+.fcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:28px 26px 30px}
+.fcard .fn{font-family:var(--serif);font-size:24px;font-weight:700;letter-spacing:-.025em}
+.fcard .fr{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--cobalt);margin-top:7px}
+.fcard p{font-size:14.5px;color:var(--ink-2);line-height:1.85;margin-top:13px}
+.fcard .li{margin-top:16px;display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;border-bottom:1px solid var(--line-2);padding-bottom:2px}
+.fcard .li:hover{color:var(--cobalt);border-color:var(--cobalt)}
 .creds{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:22px}
 .cred{background:var(--paper);padding:20px 18px}
 .cred b{display:block;font-family:var(--serif);font-size:16px;font-weight:700;letter-spacing:-.02em;margin-bottom:5px}
 .cred span{font-size:13px;color:var(--ink-3);line-height:1.65}
-
-.priv{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
-.privcard{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff}
-.privrow{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 18px;border-bottom:1px solid var(--line);font-size:14px}
-.privrow:last-child{border-bottom:0}
-.st2{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;padding:3px 10px;border-radius:2px;text-transform:uppercase}
-.yes{background:#f0f9f6;color:var(--green);border:1px solid #b8e0d1}
-.nope{background:var(--paper-2);color:var(--dim);border:1px solid var(--line-2)}
 
 .road{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:44px}
 .stage{background:var(--paper);padding:28px 24px 32px}
@@ -174,7 +195,7 @@ blockquote cite{display:block;font-family:var(--mono);font-size:11px;font-style:
 .stage li:before{content:"—";position:absolute;left:0;color:var(--edge)}
 
 .final{text-align:center;padding:100px 0;border-bottom:0}
-.final h2{font-family:var(--serif);font-size:clamp(32px,4.4vw,52px);font-weight:700;letter-spacing:-.035em;line-height:1.1;max-width:15em;margin:18px auto 0}
+.final h2{font-family:var(--serif);font-size:clamp(32px,4.4vw,52px);font-weight:700;letter-spacing:-.035em;line-height:1.08;max-width:15em;margin:18px auto 0}
 .final p{margin:20px auto 0;max-width:34em;color:var(--ink-2);font-size:16.5px}
 .final .wait{margin:32px auto 0;justify-content:center}
 .final .waitnote{text-align:center}
@@ -187,10 +208,15 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 .fbot{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:11px;color:var(--dim);flex-wrap:wrap}
 
 @media(max-width:900px){
-  .axes,.views,.road,.worlds,.priv,.agnote,.team{grid-template-columns:1fr}
+  .chaos,.views,.road,.who,.tiers,.founders,.does{grid-template-columns:1fr}
   .creds{grid-template-columns:1fr 1fr}
-  .flow{grid-template-columns:1fr}
-  .arrow{height:34px;transform:rotate(90deg)}
+  .sync{grid-template-columns:1fr}
+  .syncmid{padding:14px 0}
+  .syncmid .ar{transform:rotate(90deg)}
+  .cmp td:first-child,.cmp td.them,.cmp td.us{width:auto}
+  .cmp thead{display:none}
+  .cmp td{display:block;border-bottom:0}
+  .cmp tr{display:block;border-bottom:1px solid var(--line)}
   .fgrid{grid-template-columns:1fr 1fr}
   .navlinks{display:none}
 }
@@ -200,88 +226,164 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 
 <header>
   <div class="wrap nav">
-    <a class="brand" href="#"><span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span>JinAI</a>
-    <nav class="navlinks"><a href="#problem">The gap</a><a href="#product">Product</a><a href="#how">How it works</a><a href="#agents">Architecture</a><a href="#team">Why us</a><a href="#upcoming">Upcoming</a></nav>
+    <a class="brand" href="#"><span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span>Jin AI</a>
+    <nav class="navlinks"><a href="#problem">Problem</a><a href="#sync">How it works</a><a href="#product">Product</a><a href="#obsidian">vs Obsidian</a><a href="#who">Who it's for</a><a href="#team">Team</a></nav>
     <a class="btn btn-p" href="#waitlist">Join the waitlist</a>
   </div>
 </header>
 
+<!-- HERO -->
 <div class="hero">
   <div class="wrap">
     <span class="pill"><i></i>Upcoming — join the waitlist</span>
-    <h1>Keep the workspace you know.<br>Let AI connect <span class="fade">everything behind it.</span></h1>
+    <h1>The next Obsidian<br>for <span class="fade">business people.</span></h1>
     <p class="lede">
-      Business users organise work into folders, projects and documents, and find things by navigating them visually.
-      JinAI keeps that intact — and quietly connects <b>the notes, sources, decisions and AI-generated context</b>
-      behind the documents where the work actually lands.
+      Your AI agents are already writing Markdown into your folders. Jin AI turns those raw files into
+      <b>clear, visual documents you can read and edit</b> — and organises them into projects that make sense to a person.
+      No Markdown syntax. No GitHub. No developer tools.
     </p>
+    <div class="agentrow">
+      Works with the agents you already use:
+      <span>Claude Code</span><span>Codex</span><span>Copilot Cowork</span><span>GitHub Copilot</span><span>Scout</span>
+    </div>
 
     <form class="wait" id="waitTop">
       <input type="email" name="email" required autocomplete="email" placeholder="you@company.com" aria-label="Email address">
       <button type="submit" class="btn btn-p">Join the waitlist</button>
     </form>
-    <div class="waitnote" id="noteTop">A visual workspace for work in the AI era · one email when JinAI opens</div>
+    <div class="waitnote" id="noteTop">Free and open source for individuals · one email when Jin AI opens</div>
 
     <div class="shotwrap">
-      <div class="shotframe"><img src="shots/shot-notebook.png" alt="JinAI: colour-coded projects on the left, a working page on the right with a live slide embedded in it" width="2800" height="1640"></div>
-      <div class="shotcap">Knowledge, Office documents and AI-generated work on one surface</div>
+      <div class="shotframe"><img src="shots/shot-notebook.png" alt="Jin AI: colour-coded projects on the left, a Markdown document rendered as a readable page on the right with a live slide inside it" width="2800" height="1640"></div>
+      <div class="shotcap">Markdown, rendered as something a business user can actually work with</div>
     </div>
   </div>
 </div>
 
+<!-- PROBLEM -->
 <section id="problem">
   <div class="wrap">
-    <div class="eyebrow">The gap</div>
-    <h2 class="h2">Today you choose: familiar, or connected.</h2>
+    <div class="eyebrow">The problem</div>
+    <h2 class="h2">Markdown file chaos.</h2>
     <p class="sub">
-      Both halves of the modern workspace already exist. Neither one is willing to be the other,
-      so most teams live in both and pay the tax of moving between them.
+      The more agents you use, the more Markdown appears in the background. These files are hard for business users to
+      read, edit or organise — and <strong>every agent files things by its own logic</strong>. Run a few at once and you
+      quickly lose track of what was created, what matters, and where any of it belongs.
     </p>
 
-    <div class="worlds">
-      <div class="world">
-        <div class="wt">Where the work lands</div>
-        <h3>Familiar, but disconnected</h3>
-        <p>
-          Folders, projects and documents. Slides, docs and spreadsheets are where business outcomes are actually
-          produced — and they are the things people can navigate without being taught.
-        </p>
-        <div class="chips"><span>Folders</span><span>PowerPoint</span><span>Word</span><span>Excel</span><span>PDF</span></div>
-        <div class="verdict">But the reasoning behind each one lives somewhere else entirely.</div>
+    <div class="chaos">
+      <div class="agentcol">
+        <div class="an"><i style="background:#db2777"></i>Claude Code</div>
+        <div class="aw">its own folder logic</div>
+        <div class="fl">
+          <span>notes/2026-08-21.md</span>
+          <span>plan.md</span>
+          <span class="hid">CLAUDE.md</span>
+          <span class="hid">.memory/session.md</span>
+        </div>
       </div>
-      <div class="world">
-        <div class="wt">Where the thinking lives</div>
-        <h3>Connected, but unfamiliar</h3>
-        <p>
-          Linked notes give you genuinely AI-friendly, connected knowledge. But Markdown, backlinks and a deliberately
-          sparse interface are designed for technical and power users — not for the person producing the deck.
-        </p>
-        <div class="chips"><span>Markdown</span><span>Backlinks</span><span>Graph view</span><span>Plugins</span></div>
-        <div class="verdict">Powerful, and quietly out of reach for most of the team.</div>
+      <div class="agentcol">
+        <div class="an"><i style="background:#1659e9"></i>Codex</div>
+        <div class="aw">a different one</div>
+        <div class="fl">
+          <span>docs/spec.md</span>
+          <span>README.md</span>
+          <span class="hid">AGENTS.md</span>
+          <span class="hid">tmp/run-3.md</span>
+        </div>
+      </div>
+      <div class="agentcol">
+        <div class="an"><i style="background:#2a5e46"></i>Copilot Cowork</div>
+        <div class="aw">and another</div>
+        <div class="fl">
+          <span>summary.md</span>
+          <span>research-out.md</span>
+          <span class="hid">instructions.md</span>
+          <span class="hid">.cache/index.md</span>
+        </div>
       </div>
     </div>
-
-    <div class="verd">
-      <b>This is not a file-management problem.</b>
-      <span>Work in the AI era should not be fragmented by application or by file type. What is missing is an interaction
-      layer — a visual workspace that holds knowledge, Office documents and AI-generated work together, and still looks
-      like the workspace people already know.</span>
+    <div class="chaosfoot">
+      Three agents, three conventions, one folder. <b>Half of it was never written for you to read</b> — instructions,
+      memory, logs and intermediate output sit right next to the two documents that actually matter.
     </div>
 
-    <blockquote>
-      The deck is finished. The thinking that produced it is scattered across six other places.
-      <cite>The gap JinAI is built to close</cite>
-    </blockquote>
+    <p class="sub" style="margin-top:34px">
+      This is where the familiar tools start to give out. SharePoint and OneDrive were built for documents people write,
+      not for the volume and variety agents produce. And Obsidian, which handles Markdown beautifully, assumes you are
+      comfortable living in a vault of raw files and links — <strong>which most business users are not.</strong>
+    </p>
   </div>
 </section>
 
+<!-- SYNC -->
+<section id="sync">
+  <div class="wrap">
+    <div class="eyebrow">How it works</div>
+    <h2 class="h2">Two structures, kept in sync.</h2>
+    <p class="sub">
+      There is the way <strong>you</strong> want to understand and organise your work, and the way <strong>agents</strong>
+      create and store files. Jin AI holds both, and keeps them aligned as the pile grows past what anyone can track by hand.
+    </p>
+
+    <div class="sync">
+      <div class="syncbox human">
+        <div class="st">The human structure</div>
+        <h3>How you think about the work</h3>
+        <ul>
+          <li>Projects and subprojects</li>
+          <li>Visual hierarchies, colours and groups</li>
+          <li>What's visible and what's put away</li>
+          <li>How things relate to each other</li>
+        </ul>
+      </div>
+      <div class="syncmid">
+        <div class="ar">⇄</div>
+        <div>Kept<br>in sync</div>
+      </div>
+      <div class="syncbox">
+        <div class="st">The agent structure</div>
+        <h3>How files actually get written</h3>
+        <ul>
+          <li>Markdown on disk, unchanged</li>
+          <li>Each agent's own conventions</li>
+          <li>Instructions, memory and logs</li>
+          <li>Intermediate and throwaway output</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="syncnote">
+      <b>Your decisions become the rule.</b>
+      When you move a project boundary, rename a category, hide something or link two things together, Jin AI treats that
+      as a statement of intent — and keeps <strong>future agent-generated files aligned with it</strong>, automatically.
+      The files themselves stay plain Markdown, so every agent can still read and write them.
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="eyebrow">Try it here</div>
+    <h2 class="h2" style="font-size:26px;margin-top:12px">Everything on disk, or only what's yours to read.</h2>
+    <p class="sub" style="margin-top:12px">Same files, same folder. Agent-only files stay available to agents — they just stop competing for your attention.</p>
+
+    <div class="fold">
+      <div class="fold-head">
+        <div class="st">example project · <b id="stCount">everything on disk</b></div>
+        <div class="toggle"><button id="bRaw" class="on">Raw folder</button><button id="bFold">With Jin AI</button></div>
+      </div>
+      <div class="fold-body" id="foldBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT -->
 <section id="product">
   <div class="wrap">
     <div class="eyebrow">The product</div>
     <h2 class="h2">One workspace. Three ways to look at it.</h2>
     <p class="sub">
-      Nothing asks you to learn a syntax, adopt a taxonomy or migrate anything. Your files stay where they are and keep
-      their names. JinAI draws them, so you find things by <strong>recognising</strong> them — the way you already work.
+      Nothing asks you to learn Markdown or move your files anywhere. They stay exactly where they are, in the format
+      your agents expect. Jin AI just draws them — so you find things by <strong>recognising</strong> them.
     </p>
 
     <div class="views">
@@ -289,13 +391,13 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
         <div class="f"><img src="shots/shot-notebook.png" alt="Notebook view" width="2800" height="1640" loading="lazy"></div>
         <div class="n">Notebook</div>
         <h3>Everything in its place</h3>
-        <p>Projects and sections carry a colour and a name, and that colour follows the document you open. You always know where you are without reading a path.</p>
+        <p>Projects and sections carry a colour and a name, and that colour follows the document you open. You always know where you are without reading a file path.</p>
       </div>
       <div class="view">
         <div class="f"><img src="shots/shot-focus.png" alt="Focus view" width="2800" height="1640" loading="lazy"></div>
         <div class="n">Focus</div>
-        <h3>The document and its reasoning</h3>
-        <p>A live slide sits inside the paragraph that argues for it. Notes, sources and decisions read as one continuous surface with the deck they produced — not as attachments at the bottom.</p>
+        <h3>A document, not a text file</h3>
+        <p>The same Markdown, rendered as a page you can actually read and edit — with slides, PDFs and sheets sitting inside the paragraph that needs them.</p>
       </div>
       <div class="view">
         <div class="f"><img src="shots/shot-project.png" alt="Project view" width="2800" height="1640" loading="lazy"></div>
@@ -304,208 +406,226 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
         <p>The same colours become coordinates. A whole project — meetings, research, decisions and deliverables — lays out as one map you can take in without opening anything.</p>
       </div>
     </div>
+
+    <div class="does">
+      <div class="do">
+        <h3>A visual editor for Markdown</h3>
+        <p>Edit, reorganise, duplicate and connect content directly. Everything you do is written back as ordinary Markdown, so the next agent picks up exactly where you left off.</p>
+      </div>
+      <div class="do">
+        <h3>Agent-only files, out of sight</h3>
+        <p>Instructions, memory, logs and intermediate output stay on disk and stay available to agents — they simply don't appear in your default view.</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<section id="how">
+<!-- VS OBSIDIAN -->
+<section id="obsidian">
   <div class="wrap">
-    <div class="eyebrow">How it works</div>
-    <h2 class="h2">Familiar on the surface. Structured underneath.</h2>
+    <div class="eyebrow">Compared to Obsidian</div>
+    <h2 class="h2">Obsidian is excellent. It just wasn't built for this.</h2>
     <p class="sub">
-      AI does the structuring and connecting in the background. You never see a graph you have to interpret,
-      and you are never asked to file something correctly for it to work.
+      Obsidian is a genuinely great Markdown editor and knowledge base, and we use it. But its core experience is built
+      around individual notes, file lists and links, and it assumes you're comfortable managing a vault yourself.
     </p>
 
-    <div class="axes">
-      <div class="axis">
-        <div class="n">01</div>
-        <h3>Familiar<span>nothing new to learn</span></h3>
-        <p>Folders, projects and documents, navigated visually. Every file keeps its name and its location. The surface is the one your team is already fluent in.</p>
-      </div>
-      <div class="axis">
-        <div class="n">02</div>
-        <h3>Connected<span>the reasoning travels with it</span></h3>
-        <p>The deck, the notes behind it, the sources it cites and the decision that shaped it are held together. Open the outcome and the thinking comes with it.</p>
-      </div>
-      <div class="axis">
-        <div class="n">03</div>
-        <h3>Curated<span>only what's worth reading</span></h3>
-        <p>Agent scratch output, near-duplicates and dead drafts fold away by default. What stays on top is <strong>the layer a person should actually read</strong>.</p>
-      </div>
-    </div>
+    <table class="cmp">
+      <thead>
+        <tr><th></th><th>Obsidian</th><th class="us">Jin AI</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Built for</td>
+          <td class="them">Technical users comfortable with Markdown and linked notes</td>
+          <td class="us">Business users who have never written a line of Markdown</td>
+        </tr>
+        <tr>
+          <td>How you navigate</td>
+          <td class="them">Note lists, backlinks and a graph you interpret yourself</td>
+          <td class="us">Visual hierarchies, colours, groups and projects</td>
+        </tr>
+        <tr>
+          <td>Agent-generated files</td>
+          <td class="them">Displayed like any other note — instructions and memory included</td>
+          <td class="us">Separated automatically, so only your documents surface</td>
+        </tr>
+        <tr>
+          <td>As volume grows</td>
+          <td class="them">You maintain the structure by hand</td>
+          <td class="us">Your decisions are reapplied to whatever lands next</td>
+        </tr>
+      </tbody>
+    </table>
 
-    <div class="rule"></div>
-
-    <div class="eyebrow">Try it here</div>
-    <h2 class="h2" style="font-size:26px;margin-top:12px">Fragmented by file type, or organised by the work.</h2>
-    <p class="sub" style="margin-top:12px">Same files, same locations. Nothing moved, nothing renamed.</p>
-
-    <div class="fold">
-      <div class="fold-head">
-        <div class="st">example workspace · <b id="stCount">sorted by file type</b></div>
-        <div class="toggle"><button id="bRaw" class="on">As it is</button><button id="bFold">With JinAI</button></div>
-      </div>
-      <div class="fold-body" id="foldBody"></div>
-    </div>
+    <p class="cmpline">
+      Obsidian helps you manage Markdown files. <em>We're building the most human-readable platform for AI-generated work.</em>
+    </p>
   </div>
 </section>
 
-<div class="band-dark" id="agents">
+<!-- WHO -->
+<div class="band-dark" id="who">
   <div class="wrap" style="padding:86px 0">
-    <div class="eyebrow">Architecture</div>
-    <h2 class="h2">JinAI sits under the tools, not inside them.</h2>
+    <div class="eyebrow">Who it's for</div>
+    <h2 class="h2">People running real projects with agents.</h2>
     <p class="sub">
-      It isn't a plugin for one assistant or one suite. JinAI works on the workspace itself — a convention plus an index that
-      lives with your files — so <strong>anything that produces a document can feed it</strong>, and the way you structure work is
-      honoured no matter which application or which model made the file.
+      Not developers managing repositories. The people who now have an agent producing serious work for them,
+      and no good way to see what came out of it.
     </p>
 
-    <div class="flow">
-      <div class="fbox">
-        <div class="t">Anything that produces work</div>
-        <div class="cs"><span class="chip">Copilot</span><span class="chip">Claude</span><span class="chip">ChatGPT</span><span class="chip">Cursor</span><span class="chip">Office</span><span class="chip">You</span></div>
+    <div class="who">
+      <div class="whocard">
+        <div class="wt">Today</div>
+        <h3>Business professionals using AI agents</h3>
+        <p>
+          CEOs, non-engineer vibe coders and business development managers running company projects through agents —
+          and needing to visually organise and navigate what those agents write.
+        </p>
+        <div class="tags"><span>CEOs</span><span>Non-engineer vibe coders</span><span>BD managers</span><span>Consultants</span><span>Product managers</span></div>
       </div>
-      <div class="arrow">→</div>
-      <div class="fbox">
-        <div class="t">Your workspace, unchanged</div>
-        <div class="tree">
-          FY27 Launch/<br>
-          &nbsp;&nbsp;<b>meeting-notes.md</b><br>
-          &nbsp;&nbsp;<b>narrative.pptx</b><br>
-          &nbsp;&nbsp;<b>evidence.pdf</b><br>
-          &nbsp;&nbsp;<b>model.xlsx</b>
-        </div>
+      <div class="whocard">
+        <div class="wt">Next</div>
+        <h3>Microsoft 365 organisations</h3>
+        <p>
+          Teams that need to structure, share and manage AI-generated knowledge in a workspace ordinary employees can
+          understand — with the access control and governance an organisation actually requires.
+        </p>
+        <div class="tags"><span>Shared storage</span><span>Access control</span><span>Governance</span><span>Collaboration</span></div>
       </div>
-      <div class="arrow">→</div>
-      <div class="fbox hi">
-        <div class="t">JinAI — the interaction layer</div>
-        <div class="tree">
-          <b>Meetings</b> · decisions in context<br>
-          <b>Research</b> · sources attached<br>
-          <b>Deliverables</b> · live documents<br>
-          <span style="opacity:.55">machine output · folded</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="agnote">
-      <div><b>No lock-in</b><span>The structure lives with your files. Remove JinAI and every document is still where it was, still openable in the app that made it.</span></div>
-      <div><b>Tool-agnostic</b><span>Your way of structuring work is written once and honoured whichever assistant, suite or model produced the file.</span></div>
-      <div><b>Two audiences, one source</b><span>The same workspace serves a person navigating visually and an agent retrieving context. Neither needs a second copy.</span></div>
     </div>
   </div>
 </div>
 
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="eyebrow">How we'll ship it</div>
+    <h2 class="h2">Free and open source for people. Paid for organisations.</h2>
+    <p class="sub">
+      Individuals shouldn't have to ask anyone's permission to make their own work legible. The company product is the
+      part organisations actually need — shared storage, control and governance.
+    </p>
+
+    <div class="tiers">
+      <div class="tier free">
+        <div class="tl">For individuals</div>
+        <h3>Open source</h3>
+        <div class="pr">Free, forever</div>
+        <ul>
+          <li>The full visual workspace</li>
+          <li>Visual Markdown editing</li>
+          <li>Projects, colours, groups and links</li>
+          <li>Agent-only files separated automatically</li>
+          <li>Your files stay yours, in plain Markdown</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div class="tl">For organisations</div>
+        <h3>Teams</h3>
+        <div class="pr">Pricing at launch</div>
+        <ul>
+          <li>Secure shared storage</li>
+          <li>Access controls and permissions</li>
+          <li>Governance and audit</li>
+          <li>Collaboration across a team</li>
+          <li>One place employees and agents both reach</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
 <section id="team">
   <div class="wrap">
     <div class="eyebrow">Why us</div>
     <h2 class="h2">We've built inside this ecosystem, and we've felt it break.</h2>
     <p class="sub">
-      This needs two things that rarely sit together: real knowledge of how enterprise productivity actually works,
-      and honest first-hand experience of where the application-centric workspace stops holding up.
+      We work inside Microsoft's workplace productivity ecosystem and understand how business users organise and produce
+      their work. We're also daily users of agents — which is how we watched SharePoint and OneDrive start to give out as
+      those agents created more files, more context and more places to lose them.
     </p>
 
-    <div class="team">
-      <div class="tcard">
-        <div class="tt">From the inside</div>
-        <h3>Microsoft's workplace productivity ecosystem</h3>
+    <div class="founders">
+      <div class="fcard">
+        <div class="fn">Yu Asano</div>
+        <div class="fr">Co-founder</div>
         <p>
-          First-hand experience of the platform and the business workflows built around it — how organisations really
-          adopt tools, where documents live, and what has to be true before something new is allowed near them.
+          AI product builder and Microsoft GTM engineer, obsessed with making complex AI-generated information clear,
+          visual and usable. Built Baby Voice Recorder end to end — hardware, firmware, cloud and iOS — while leading
+          Azure go-to-market at Microsoft Japan, and launched Microsoft's first TikTok account in Asia.
         </p>
+        <a class="li" href="https://www.linkedin.com/in/yu-asano-6878571a6/" target="_blank" rel="noopener">LinkedIn ↗</a>
       </div>
-      <div class="tcard">
-        <div class="tt">From daily use</div>
-        <h3>Generative AI and connected notes, in practice</h3>
+      <div class="fcard">
+        <div class="fn">Tomoya Kato</div>
+        <div class="fr">Co-founder</div>
         <p>
-          We use these tools every day, which is how we found the seam: connected knowledge only technical users can
-          live in, and business documents cut off from the reasoning that produced them.
+          Working at the intersection of workplace platforms and the agents now running on top of them — how large
+          organisations adopt new tools, and what has to be true before anything is allowed near their documents.
         </p>
+        <a class="li" href="https://www.linkedin.com/in/tomoya-kato-a0a078162/" target="_blank" rel="noopener">LinkedIn ↗</a>
       </div>
     </div>
 
     <div class="creds">
-      <div class="cred"><b>Platform experience</b><span>How enterprise productivity is actually built and adopted</span></div>
+      <div class="cred"><b>Platform experience</b><span>How enterprise productivity is built and adopted</span></div>
       <div class="cred"><b>Product strategy</b><span>Turning a felt problem into something buildable</span></div>
-      <div class="cred"><b>Customer discovery</b><span>Testing the premise with the people who'd live in it</span></div>
+      <div class="cred"><b>Customer discovery</b><span>Testing the premise with people who'd live in it</span></div>
       <div class="cred"><b>Go-to-market</b><span>Reaching business users where they already work</span></div>
     </div>
-
-    <blockquote>
-      Bridging the workplace people know with the AI-native workspace they now need.
-      <cite>What we're here to do</cite>
-    </blockquote>
   </div>
 </section>
 
-<section id="privacy">
-  <div class="wrap">
-    <div class="priv">
-      <div>
-        <div class="eyebrow">Privacy</div>
-        <h2 class="h2">Your documents stay where they already live.</h2>
-        <p class="sub">
-          JinAI reads your workspace in place. There is no migration step and no second copy of your documents sitting
-          somewhere else. When sync is enabled, the default is still that <strong>only your structure travels</strong> —
-          never the names, never the contents.
-        </p>
-      </div>
-      <div class="privcard">
-        <div class="privrow"><span>Your documents</span><span class="st2 nope">Stay in place</span></div>
-        <div class="privrow"><span>File and folder names</span><span class="st2 nope">Never uploaded</span></div>
-        <div class="privrow"><span>Your structure and rules</span><span class="st2 yes">Yours to sync</span></div>
-        <div class="privrow"><span>Works offline</span><span class="st2 yes">Fully</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
+<!-- UPCOMING -->
 <section id="upcoming">
   <div class="wrap">
     <div class="eyebrow">Upcoming</div>
     <h2 class="h2">What we're building, and in what order.</h2>
-    <p class="sub">JinAI isn't open yet. Here is the honest state of it, so you know what you'd be joining.</p>
+    <p class="sub">Jin AI isn't open yet. Here is the honest state of it, so you know what you'd be joining.</p>
 
     <div class="road">
       <div class="stage now">
         <div class="s"><i></i>In build</div>
         <h3>The workspace</h3>
         <ul>
-          <li>Point JinAI at a folder and see it drawn</li>
+          <li>Point Jin AI at a folder and see it drawn</li>
           <li>Notebook, Focus and Project views</li>
-          <li>Office documents readable in place</li>
+          <li>Visual Markdown reading and editing</li>
           <li>macOS and Windows</li>
         </ul>
       </div>
       <div class="stage">
         <div class="s"><i></i>Next</div>
-        <h3>The connections</h3>
+        <h3>The sync</h3>
         <ul>
-          <li>Notes, sources and decisions linked to the document</li>
-          <li>Your structure learned and applied automatically</li>
-          <li>Machine output folded out of the way</li>
-          <li>Context served to whichever agent asks</li>
+          <li>Your structure learned and reapplied</li>
+          <li>Agent-only files separated automatically</li>
+          <li>Projects and subprojects, visually managed</li>
+          <li>Open source release</li>
         </ul>
       </div>
       <div class="stage">
         <div class="s"><i></i>Later</div>
-        <h3>The team</h3>
+        <h3>The organisation</h3>
         <ul>
-          <li>The same workspace, legible to colleagues</li>
-          <li>Change history at the level of meaning</li>
-          <li>Sync across your own devices</li>
-          <li>An open format anyone can read</li>
+          <li>Secure shared storage for teams</li>
+          <li>Access controls and governance</li>
+          <li>One place employees and agents both reach</li>
+          <li>Microsoft 365 alongside your existing stack</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
+<!-- WAITLIST -->
 <section class="final" id="waitlist">
   <div class="wrap">
     <div class="eyebrow">Join the waitlist</div>
-    <h2>Be there when JinAI opens.</h2>
-    <p>Early access goes out in small batches. We'll ask how your team works today, and you'll get in before it's public.</p>
+    <h2>Be there when Jin AI opens.</h2>
+    <p>Early access goes out in small batches. We'll ask which agents you use and what your folders look like — and you'll get in before it's public.</p>
     <form class="wait" id="waitBottom">
       <input type="email" name="email" required autocomplete="email" placeholder="you@company.com" aria-label="Email address">
       <button type="submit" class="btn btn-p">Join the waitlist</button>
@@ -518,14 +638,15 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
   <div class="wrap">
     <div class="fgrid">
       <div>
-        <a class="brand" href="#" style="font-size:20px"><span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span>JinAI</a>
-        <p style="margin-top:14px;max-width:26em;color:var(--ink-3)">A new interface for work in the AI era. Knowledge, Office documents and AI-generated work in one workspace.</p>
+        <a class="brand" href="#" style="font-size:20px"><span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span>Jin AI</a>
+        <p style="margin-top:14px;max-width:26em;color:var(--ink-3)">The next Obsidian for business people. A visual workspace for the Markdown your agents are already writing.</p>
+        <p style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--dim)">Tokyo, Japan</p>
       </div>
-      <div><h4>Product</h4><ul><li><a href="#product">The three views</a></li><li><a href="#how">How it works</a></li><li><a href="#agents">Architecture</a></li><li><a href="#upcoming">Upcoming</a></li></ul></div>
-      <div><h4>More</h4><ul><li><a href="#team">Why us</a></li><li><a href="#privacy">Privacy</a></li><li><a href="index.html">Design directions</a></li></ul></div>
+      <div><h4>Product</h4><ul><li><a href="#sync">How it works</a></li><li><a href="#product">The three views</a></li><li><a href="#obsidian">vs Obsidian</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
+      <div><h4>More</h4><ul><li><a href="#who">Who it's for</a></li><li><a href="#team">Team</a></li><li><a href="#upcoming">Upcoming</a></li><li><a href="index.html">Design directions</a></li></ul></div>
       <div><h4>Company</h4><ul><li><a href="#">Blog</a></li><li><a href="#">GitHub</a></li><li><a href="#">Contact</a></li></ul></div>
     </div>
-    <div class="fbot"><span>© 2026 JinAI</span><span>Direction A — Paper</span></div>
+    <div class="fbot"><span>© 2026 Jin AI</span><span>Direction A — Paper</span></div>
   </div>
 </footer>
 
@@ -552,8 +673,8 @@ function wireWaitlist(formId, noteId, doneMsg){
     if(!WAITLIST_ENDPOINT){
       note.textContent = 'Opening your mail app…';
       window.location.href = 'mailto:' + WAITLIST_EMAIL
-        + '?subject=' + encodeURIComponent('JinAI waitlist')
-        + '&body=' + encodeURIComponent('Please add me to the JinAI waitlist.\n\nEmail: ' + email + '\n');
+        + '?subject=' + encodeURIComponent('Jin AI waitlist')
+        + '&body=' + encodeURIComponent('Please add me to the Jin AI waitlist.\n\nEmail: ' + email + '\n');
       setTimeout(() => { note.innerHTML = original; }, 4000);
       return;
     }
@@ -579,50 +700,46 @@ function wireWaitlist(formId, noteId, doneMsg){
 wireWaitlist('waitTop','noteTop',"You're on the list. We'll be in touch.");
 wireWaitlist('waitBottom','noteBottom',"You're on the list. We'll be in touch.");
 
-/* ── Before / after demo ─────────────────────────────────────────────────── */
+/* ── Raw folder / With Jin AI demo ───────────────────────────────────────── */
 const GROUPS=[
- {n:'Meetings',c:'#db2777',k:'12 items',t:['.md','.docx','.pdf']},
- {n:'Research',c:'#1659e9',k:'24 items',t:['.pdf','.md','.xlsx']},
- {n:'Decisions',c:'#b45309',k:'7 items',t:['.md','.docx']},
- {n:'Deliverables',c:'#2a5e46',k:'9 items',t:['.pptx','.docx','.pdf']},
- {n:'Financials',c:'#0891b2',k:'6 items',t:['.xlsx','.pdf']},
- {n:'Reference',c:'#7c3aed',k:'18 items',t:['.pdf','.md']}
+ {n:'Meetings',c:'#db2777',s:['Weekly sync — Aug 21','Kickoff notes','Customer review'],k:'12 documents'},
+ {n:'Research',c:'#1659e9',s:['Customer evidence','Market signals','Interview notes'],k:'24 documents'},
+ {n:'Decisions',c:'#b45309',s:['Positioning call','Pricing direction'],k:'7 documents'},
+ {n:'Deliverables',c:'#2a5e46',s:['Launch narrative','Investor brief'],k:'9 documents'},
+ {n:'Reference',c:'#7c3aed',s:['Competitor notes','Glossary'],k:'18 documents'}
 ];
 (()=>{
   const body=document.getElementById('foldBody'),
         bR=document.getElementById('bRaw'),
         bF=document.getElementById('bFold'),
         st=document.getElementById('stCount');
-  const files=[
-    ['▤','narrative-v3.pptx'],['▦','meeting-notes.md'],['▩','model-final.xlsx'],['▥','evidence.pdf'],
-    ['▤','deck-old.pptx'],['▦','README.md'],['▧','brief.docx'],['▩','budget.xlsx'],
-    ['▥','customer-interview.pdf'],['▦','notes-final.md'],['▧','summary.docx'],['▤','investor-deck.pptx'],
-    ['▦','DESIGN.md'],['▩','forecast.xlsx'],['▥','market-report.pdf'],['▧','handover.docx'],
-    ['▦','untitled.md'],['▤','review.pptx'],['▥','spec.pdf'],['▩','tracker.xlsx']
-  ];
-  const machine=['output-2026-08-14.md','.agent-scratch.md','tmp-run-3.md','.cache-index.md','raw-dump.md'];
+  const human=['weekly-sync.md','kickoff-notes.md','customer-review.md','launch-narrative.md','market-signals.md',
+               'pricing-decision.md','investor-brief.md','competitor-notes.md','interview-01.md','glossary.md',
+               'positioning.md','customer-evidence.md','summary.md','handover.md','README.md'];
+  const agent=['CLAUDE.md','AGENTS.md','instructions.md','.memory/session.md','tmp/run-3.md','.cache/index.md',
+               'output-2026-08-14.md','raw-dump.md','copilot-instructions.md','scratch.md'];
 
   function raw(){
-    st.textContent='sorted by file type';
+    st.textContent='everything on disk';
     let h='<div class="raw">';
-    for(let i=0;i<220;i++){
-      if(i%13===9){ h+=`<span class="mach">${machine[i%machine.length]}</span>`; continue; }
-      const [ic,nm]=files[i%files.length];
-      h+=`<span><em>${ic}</em>${nm}</span>`;
+    for(let i=0;i<240;i++){
+      if(i%3===1){ h+=`<span class="mach">${agent[i%agent.length]}</span>`; }
+      else { h+=`<span>${human[i%human.length]}</span>`; }
     }
     body.innerHTML=h+'</div>';
     bR.classList.add('on');bF.classList.remove('on');
   }
   function folded(){
-    st.textContent='organised by the work';
+    st.textContent='5 projects · agent files put away';
     let h='<div class="buckets">';
     GROUPS.forEach(g=>{
       h+=`<div class="bk"><div class="bd" style="background:${g.c}"></div><div class="bn">${g.n}</div>
-          <div class="bl">${g.t.map(t=>`<i>${t}</i>`).join('')}</div>
-          <div class="bc">${g.k} · notes, sources and documents together</div></div>`;
+          <div class="bs">${g.s.map(x=>`<span>${x}</span>`).join('')}</div>
+          <div class="bc">${g.k}</div></div>`;
     });
-    h+=`<div class="bk hid"><div class="bd" style="background:var(--edge)"></div><div class="bn">Machine output</div>
-        <div class="bl"><i>folded</i></div><div class="bc">nothing here for a person to read</div></div>`;
+    h+=`<div class="bk hid"><div class="bd" style="background:var(--edge)"></div><div class="bn">Agent-only files</div>
+        <div class="bs"><span>instructions · memory</span><span>logs · intermediate output</span></div>
+        <div class="bc">still on disk, still readable by your agents</div></div>`;
     body.innerHTML=h+'</div>';
     bF.classList.add('on');bR.classList.remove('on');
   }

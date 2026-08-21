@@ -1,8 +1,8 @@
-# JinAI — website
+# Jin AI — website
 
-Two design directions for the JinAI product site. Same story, two tones.
+Two design directions for the Jin AI product site. Same story, two tones.
 
-**Live:** https://yukeidaro.github.io/JinAI-site/
+**Live:** https://yukeidaro.github.io/Jin AI-site/
 
 | | Page | Character |
 | --- | --- | --- |
@@ -13,18 +13,21 @@ Each page is a single self-contained HTML file. The only external dependency is 
 
 ## The story both pages tell
 
-1. **The gap** — business documents (folders, decks, docs, sheets) are familiar but disconnected; linked notes are connected but built for technical and power users
-2. **The verdict** — *this is not a file-management problem*. Work should not be fragmented by application or file type. What's missing is an **interaction layer**: a visual workspace holding knowledge, Office documents and AI-generated work together
-3. **The product** — one workspace, three ways to look at it: Notebook, Focus, Project
-4. **The method** — familiar on the surface, connected underneath, curated so only the human layer shows
-5. **The architecture** — JinAI sits *under* the tools, so anything that produces a document can feed it
-6. **Why us** — inside Microsoft's workplace productivity ecosystem, and daily users of generative AI and connected notes
-7. **Privacy** — your documents stay where they already live
-8. **Upcoming** — what is being built, in what order
-9. **Waitlist**
+Positioning follows the SkyDeck / F6S application for Jin AI, so the site and the application say the same thing.
 
-Nothing on these pages claims a measurement from a specific machine. The before/after demo is an illustrative
-example workspace, not a report about the visitor.
+**One line: "The next Obsidian for business people."**
+
+1. **The problem** — *Markdown file chaos.* The more agents you run, the more Markdown lands in your folders. Every agent files by its own logic, and much of what it writes (instructions, memory, logs, intermediate output) was never meant for a person
+2. **The method** — two structures kept in sync: how you want to understand and organise your work, and how agents create and store files. Your decisions about boundaries, categories, visibility and relationships become the rule applied to whatever lands next
+3. **The product** — one workspace, three views (Notebook, Focus, Project), plus a visual Markdown editor: edit, reorganise, duplicate and connect, written back as plain Markdown
+4. **vs Obsidian** — excellent for technical users, but it shows agent-facing files like any other note and expects you to maintain the vault yourself
+5. **Who it's for** — CEOs, non-engineer vibe coders and BD managers today; Microsoft 365 organisations next
+6. **How we ship** — free and open source for individuals; paid for organisations needing shared storage, access control, governance and collaboration
+7. **Team** — Yu Asano and Tomoya Kato, with LinkedIn links
+8. **Upcoming**, then the **waitlist**
+
+Nothing on these pages claims a measurement from a specific machine. The raw/organised demo is an illustrative
+example project, not a report about the visitor.
 
 ## Turning the waitlist on
 
