@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jin AI — structured for AI, simple for people</title>
-<meta name="description" content="Generative AI keeps increasing what gets created at work. Jin AI keeps the visual way business users already navigate projects and folders, and lets AI organise the structure underneath. A new interface for work.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23faf8f4'/%3E%3Cg fill='%23c1362f'%3E%3Crect x='4' y='11' width='4' height='12'/%3E%3Crect x='11' y='6' width='4' height='21'/%3E%3Crect x='18' y='14' width='4' height='8'/%3E%3Crect x='25' y='9' width='4' height='16'/%3E%3C/g%3E%3C/svg%3E">
+<meta name="description" content="AI agents now write your files for you and file them somewhere you would not have. Jin AI puts that structure on one screen, lets you correct it, and records every change. Structured for AI, simple for people.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-55 -87 500 500'%3E%3Crect x='-55' y='-87' width='500' height='500' fill='%23faf8f4'/%3E%3Cg fill='%23c1362f'%3E%3Cpath d='M234 0h71L71 326H0Z'/%3E%3Cpath d='M248 129 211 180 317 326 389 326Z'/%3E%3C/g%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Jin AI — structured for AI, simple for people">
-<meta property="og:description" content="A new interface for work. Keep the way you navigate; let AI manage the structure.">
+<meta property="og:description" content="You lose the file twice. Jin AI makes the structure visible, editable and reversible.">
 <meta property="og:image" content="preview-c-screen.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,8 +38,8 @@ img{max-width:100%}
 header{position:sticky;top:0;z-index:60;background:rgba(250,248,244,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--sumi)}
 .nav{height:70px;display:flex;align-items:center;justify-content:space-between;gap:18px}
 .brand{display:flex;align-items:center;gap:11px;text-decoration:none;white-space:nowrap}
-.brand .mk{width:28px;height:28px;border:1.5px solid var(--shu);display:grid;place-items:center;flex:none}
-.brand .mk svg{width:16px;height:16px;fill:var(--shu)}
+.brand .mk{width:26px;height:22px;display:grid;place-items:center;flex:none}
+.brand .mk svg{width:26px;height:22px;fill:var(--shu)}
 .brand .rom{font-family:var(--disp);font-size:20px;font-weight:800;letter-spacing:.08em;line-height:1}
 .navlinks{display:flex;gap:20px;font-size:11px;color:var(--gray);letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono)}
 .navlinks a{text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent;white-space:nowrap}
@@ -231,7 +231,7 @@ code{font-family:var(--mono);font-size:.84em;background:#fff;border:1px solid va
 
 .final{text-align:center;padding:106px 0;border-bottom:0}
 .final .fm{width:60px;height:60px;border:2px solid var(--shu);display:grid;place-items:center;margin:0 auto}
-.final .fm svg{width:32px;height:32px;fill:var(--shu)}
+.final .fm svg{width:38px;height:32px;fill:var(--shu)}
 .final h2{font-family:var(--disp);font-size:clamp(34px,5.2vw,64px);font-weight:900;line-height:1;letter-spacing:-.035em;max-width:13em;margin:28px auto 0}
 .final p{margin:22px auto 0;max-width:33em;color:var(--sumi-2);font-size:15.5px;line-height:1.95}
 .final .wait{margin:32px auto 0;justify-content:center}
@@ -244,10 +244,32 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 .fgrid a{text-decoration:none}.fgrid a:hover{color:var(--shu)}
 .fbot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.08em;flex-wrap:wrap}
 
+.worlds.three{grid-template-columns:repeat(3,1fr)}
+
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);margin-top:44px;border:1px solid var(--sumi)}
+.q{padding:28px 26px 30px;border-right:1px solid var(--line);background:#fff}
+.q:last-child{border-right:0}
+.q p{font-family:var(--disp);font-size:19px;font-weight:600;line-height:1.5;letter-spacing:-.02em;color:var(--sumi)}
+.q span{display:block;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:13.5px;color:var(--gray);line-height:1.8}
+
+.stat{margin-top:26px;display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;border:1px solid var(--sumi);background:var(--paper-2);padding:30px 32px}
+.stat .sn{font-family:var(--disp);font-size:clamp(46px,6vw,76px);font-weight:900;letter-spacing:-.04em;line-height:1;color:var(--shu)}
+.stat .sb{font-size:14.5px;color:var(--sumi-2);line-height:1.9}
+.stat .sb b{display:block;font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:-.025em;color:var(--sumi);margin-bottom:7px}
+
+.src{margin-top:26px;font-size:13.5px;color:var(--gray);line-height:1.9;max-width:47em}
+.src em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.06em}
+
+.addon{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.addon b{display:block;font-family:var(--mono);font-size:13px;color:var(--sumi)}
+.addon span{display:block;margin-top:6px;font-size:13.5px;color:var(--gray);line-height:1.8}
+.modelfoot{border:1px solid var(--sumi);border-top:0;background:var(--sumi);color:var(--paper);padding:20px 24px;font-size:14.5px;line-height:1.85}
+
 @media(max-width:960px){
   .herogrid{grid-template-columns:1fr;gap:36px}
-  .chaos,.views,.road,.tiers,.founders,.does,.worlds,.outs{grid-template-columns:1fr}
-  .agentcol,.view,.stage,.tier,.fcard,.do,.world,.out{border-right:0;border-bottom:1px solid var(--line)}
+  .chaos,.views,.road,.tiers,.founders,.does,.worlds,.outs,.quotes,.worlds.three{grid-template-columns:1fr}
+  .agentcol,.view,.stage,.tier,.fcard,.do,.world,.out,.q{border-right:0;border-bottom:1px solid var(--line)}
+  .stat{grid-template-columns:1fr;gap:14px}
   /* stacked: put the label and heading above their own screenshot,
      otherwise an image reads as if it belonged to the card above it */
   .view{display:flex;flex-direction:column}
@@ -268,8 +290,8 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 
 <header>
   <div class="wrap nav">
-    <a class="brand" href="#"><span class="mk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span><span class="rom">JIN AI</span></a>
-    <nav class="navlinks"><a href="#problem">Problem</a><a href="#sync">Method</a><a href="#product">Product</a><a href="#outcome">Outcome</a><a href="#pricing">Pricing</a><a href="#team">Team</a></nav>
+    <a class="brand" href="#"><span class="mk"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span><span class="rom">JIN AI</span></a>
+    <nav class="navlinks"><a href="#problem">Problem</a><a href="#solution">Solution</a><a href="#product">Product</a><a href="#pricing">Pricing</a><a href="#team">Team</a></nav>
     <a class="btn btn-p" href="#waitlist">Waitlist</a>
   </div>
 </header>
@@ -281,9 +303,9 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
     <div class="herogrid">
       <div>
         <p class="lede">
-          Generative AI keeps increasing how much gets created at work — Markdown, decks, documents, spreadsheets,
-          PDFs, chat threads and whatever your agents leave on your laptop. Jin AI keeps <b>the visual way you already
-          navigate projects, folders and documents</b>, and lets AI organise everything underneath.
+          AI agents now write your files for you &mdash; Markdown, decks, documents, spreadsheets, PDFs &mdash; and file
+          them <b>somewhere you would not have</b>. Jin AI puts that structure on one screen, lets you correct it, and
+          records every change, so yours and the agent&rsquo;s can be undone separately.
         </p>
         <div class="agentrow">
           Works with:
@@ -293,17 +315,17 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
           <input type="email" name="email" required autocomplete="email" placeholder="you@company.com" aria-label="Email address">
           <button type="submit" class="btn btn-p">Join</button>
         </form>
-        <div class="waitnote" id="noteTop">Free and open source for individuals<br>one email when Jin AI opens</div>
+        <div class="waitnote" id="noteTop">Free on your laptop<br>one email when Jin AI opens</div>
       </div>
       <div class="credo">
-        Managing file names, folders, links and tags<br>was never supposed to be your job.
+        First you forget what it was called.<br>Then you forget where it went.
         <small>Jin AI — a new interface for work</small>
       </div>
     </div>
 
     <div class="shotwrap">
       <div class="shotframe"><img src="shots/shot-notebook.png" alt="Jin AI: colour-coded projects on the left, a working page on the right" width="2800" height="1640"></div>
-      <div class="shotcap">The projects, sections and pages you need — and nothing you don't</div>
+      <div class="shotcap">See your work as a workspace, then open a page and get to work</div>
     </div>
   </div>
 </div>
@@ -311,16 +333,32 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 <section id="problem">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">One — what changed</div>
+      <div class="idx">One — the problem</div>
       <div>
-        <h2 class="h2">Managing it all became a new job.</h2>
+        <h2 class="h2">You lose the file twice.</h2>
         <p class="sub">
-          The output is scattered across Markdown, presentations, documents, spreadsheets, PDFs, chat and local AI
-          output. Markdown may be easy for AI to process, but <strong>file names, folders, links and tags were never
-          supposed to become your job</strong> — and every agent files things by its own logic.
+          First you forget what it was called. Then you forget where it went. When an agent starts a project it also
+          decides where things should go &mdash; and <strong>unless you tell it exactly how to organise everything, the
+          structure stops matching how you would have organised it yourself</strong>.
         </p>
       </div>
     </div>
+
+    <div class="quotes">
+      <div class="q">
+        <p>&ldquo;I edited an MD file in Codex and wanted to use it in a meeting later. When I came back I couldn&rsquo;t remember what the file was called, or where it was.&rdquo;</p>
+      </div>
+      <div class="q">
+        <p>&ldquo;That is not where I would have put it.&rdquo;</p>
+        <span>So the afternoon goes on moving files and cleaning up folders that an agent made in a second.</span>
+      </div>
+      <div class="q">
+        <p>&ldquo;You end up opening files one by one just to work out what you made.&rdquo;</p>
+        <span>Agents create and edit quickly. The filenames and the folder structure are what get lost.</span>
+      </div>
+    </div>
+
+    <div class="rule"></div>
 
     <div class="chaos">
       <div class="agentcol">
@@ -353,98 +391,62 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
       memory, logs and intermediate output sit right next to the deck you actually have to deliver.
     </div>
 
-    <div class="rule"></div>
-
-    <div class="shead">
-      <div class="idx">Two — the false choice</div>
-      <div>
-        <h2 class="h2">Good for AI, or good for you. Right now you have to pick.</h2>
-        <p class="sub">
-          Both halves already exist. Neither is willing to be the other, so most people end up living in both
-          and paying the tax of moving between them.
-        </p>
+    <div class="stat">
+      <div class="sn">3,950</div>
+      <div class="sb">
+        <b>One machine, one week.</b>
+        On our CEO&rsquo;s laptop, 3,950 Markdown files were created in a single week. <strong>89% were never opened
+        again</strong>, and 283 were simply named <code>README.md</code>. Almost none of them were things anyone meant to
+        create or needed to see &mdash; they were just left behind as agents worked.
       </div>
-    </div>
-
-    <div class="worlds">
-      <div class="world">
-        <div class="wt">Structures that work well for AI</div>
-        <h3>Connected, but you maintain it</h3>
-        <p>
-          Tools like Obsidian genuinely connect knowledge. But they ask you to understand Markdown and to manage the
-          files, links and tags yourself. A file-, link- and text-centred experience is not how business users work.
-        </p>
-        <div class="chips"><span>Markdown</span><span>Backlinks</span><span>Tags</span><span>Vault upkeep</span></div>
-        <div class="verdict">Powerful, and quietly out of reach for most of the team.</div>
-      </div>
-      <div class="world">
-        <div class="wt">Interfaces that work well for people</div>
-        <h3>Familiar, but cut off</h3>
-        <p>
-          Business applications are where outcomes are actually produced, and everyone can navigate them without being
-          taught. But the content inside them is separated from the notes, sources and decisions that shaped it.
-        </p>
-        <div class="chips"><span>Folders</span><span>PowerPoint</span><span>Word</span><span>Excel</span><span>PDF</span></div>
-        <div class="verdict">The deck survives. The thinking behind it doesn't.</div>
-      </div>
-    </div>
-
-    <div class="verd">
-      <b>You shouldn't have to choose.</b>
-      <span>Keep the visual navigation people already know, and let AI handle the structure underneath — the
-      relationships, the classification, the sources and the history. That is the whole design of Jin AI.</span>
     </div>
   </div>
 </section>
 
-<section id="sync">
+<section id="solution">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">Three — the method</div>
+      <div class="idx">Two — the solution</div>
       <div>
-        <h2 class="h2">You keep the navigation. AI keeps the structure.</h2>
+        <h2 class="h2">Visible, editable, reversible.</h2>
         <p class="sub">
-          There is the way <strong>you</strong> want to see and move through your work, and the structure everything
-          underneath actually needs. Jin AI holds both, and keeps them aligned as the pile grows past what anyone can
-          track by hand.
+          Jin AI does not change how your agents work. It simply <strong>makes the structure easier to see</strong>,
+          lets you correct it by hand, and lets agents help maintain it in the background.
         </p>
       </div>
     </div>
 
-    <div class="sync">
-      <div class="syncbox human">
-        <div class="st">What you see</div>
-        <h3>The way you already navigate</h3>
-        <ul>
-          <li>Projects, sections and pages</li>
-          <li>Visual hierarchies, colours and groups</li>
-          <li>Key deliverables, open in context</li>
-          <li>Only what you actually need on screen</li>
-        </ul>
+    <div class="worlds three">
+      <div class="world">
+        <div class="wt">See</div>
+        <h3>See the whole project at once</h3>
+        <p>
+          Projects, sub-projects, folders and files are shown together in one view. You can see where a file belongs
+          without opening folders one by one, or trying to remember what the agent named it.
+        </p>
       </div>
-      <div class="syncmid">
-        <div class="ar">⇄</div>
-        <div>Kept<br>in sync</div>
+      <div class="world">
+        <div class="wt">Fix</div>
+        <h3>Move things around like normal files</h3>
+        <p>
+          Rename a file. Move it. Change the folder. Reorganise a project. When an agent puts something in the wrong
+          place you drag and drop it, instead of rebuilding the structure from scratch.
+        </p>
       </div>
-      <div class="syncbox">
-        <div class="st">What AI maintains</div>
-        <h3>The structure underneath</h3>
-        <ul>
-          <li>Relationships, classification and history</li>
-          <li>Which sources a claim came from</li>
-          <li><code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>copilot-instructions.md</code></li>
-          <li>Everything on disk as plain files</li>
-        </ul>
+      <div class="world">
+        <div class="wt">Undo</div>
+        <h3>See what changed, and change it back</h3>
+        <p>
+          Changes made by you and changes made by agents are recorded separately. If something gets moved, renamed or
+          reorganised the wrong way, you can see what happened and roll it back.
+        </p>
       </div>
     </div>
 
-    <div class="syncnote">
-      <b>Your decisions get written back.</b>
-      Move a project boundary, rename a category, hide something or link two things together, and Jin AI updates
-      <strong>the instruction files your agents already read</strong> — <code>CLAUDE.md</code>, <code>AGENTS.md</code>,
-      <code>copilot-instructions.md</code> and the rest — so the next file an agent writes lands where you would have put
-      it. No plugin and no API: just the Markdown they are reading anyway.
-      <span class="never">You never open <code>CLAUDE.md</code>. Jin AI keeps it correct.</span>
+    <div class="verd">
+      <b>The agent can still reach everything. You just don&rsquo;t need to see everything.</b>
+      <span>Jin AI doesn&rsquo;t delete anything or hide files from the agent. It gives people a cleaner view of the
+      files that actually matter to them, while the agent keeps working with the full project in the background.</span>
     </div>
 
     <div class="rule"></div>
@@ -460,41 +462,57 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
       </div>
       <div class="fold-body" id="foldBody"></div>
     </div>
+
+    <div class="syncnote">
+      <b>Your corrections don&rsquo;t stop at the screen.</b>
+      Move a project boundary, rename a category or hide something, and Jin AI writes it back into
+      <strong>the instruction files your agents already read</strong> — <code>CLAUDE.md</code>, <code>AGENTS.md</code>,
+      <code>copilot-instructions.md</code> and the rest — so the next file an agent writes lands where you would have put
+      it. No plugin and no API: just the Markdown they are reading anyway.
+      <span class="never">You never open <code>CLAUDE.md</code>. Jin AI keeps it correct.</span>
+    </div>
+
+    <p class="src">
+      Why the structure, and not a better search box: people reach their files by navigating 56&ndash;68% of the time and
+      by searching 4&ndash;15% — and that barely moved even after their search tools were upgraded.
+      <em>Bergman et al., ACM TOIS, 2008.</em>
+    </p>
   </div>
 </section>
 
 <section id="product">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">Four — the product</div>
+      <div class="idx">Three — the product</div>
       <div>
-        <h2 class="h2">One workspace. Two ways to look at it.</h2>
+        <h2 class="h2">What it looks like.</h2>
         <p class="sub">
-          Nothing asks you to learn Markdown or move your files anywhere. They stay exactly where they are, in the format
-          your agents expect. Jin AI just draws them — so you find things by <strong>recognising</strong> them.
+          See your work as a workspace, then open a page and get to work. Nothing asks you to learn Markdown or move
+          your files anywhere &mdash; they stay exactly where they are, in the format your agents expect. Jin AI just
+          draws them, so you find things by <strong>recognising</strong> them.
         </p>
       </div>
     </div>
 
     <div class="views">
       <div class="view">
-        <div class="f"><img src="shots/shot-notebook.png" alt="Notebook view" width="2800" height="1640" loading="lazy"></div>
-        <div class="n">Notebook</div>
-        <h3>Everything in its place</h3>
-        <p>Projects and sections carry a colour and a name, and that colour follows the document you open. You always know where you are without reading a file path.</p>
+        <div class="f"><img src="shots/shot-project.png" alt="The visual workspace: a whole project laid out as colour-coded sections and pages" width="2800" height="1640" loading="lazy"></div>
+        <div class="n">The visual workspace</div>
+        <h3>See the whole project at a glance</h3>
+        <p>Pages and files stay organised in a structure that makes sense. Meetings, research, decisions and deliverables lay out as one map you can take in without opening anything.</p>
       </div>
       <div class="view">
-        <div class="f"><img src="shots/shot-project.png" alt="Project view" width="2800" height="1640" loading="lazy"></div>
-        <div class="n">Project</div>
-        <h3>The whole thing at once</h3>
-        <p>The same colours become coordinates. A whole project — meetings, research, decisions and deliverables — lays out as one map you can take in without opening anything.</p>
+        <div class="f"><img src="shots/shot-notebook.png" alt="The page: notes, decisions and a live slide together on one page" width="2800" height="1640" loading="lazy"></div>
+        <div class="n">The page</div>
+        <h3>Everything about one thing, together</h3>
+        <p>Notes, decisions, PowerPoint files, PDFs and links sit on a single page — all built on Markdown, so the next agent picks up exactly where you left off.</p>
       </div>
     </div>
 
     <div class="does">
       <div class="do">
         <h3>A visual editor for Markdown</h3>
-        <p>Edit, reorganise, duplicate and connect content directly. Everything you do is written back as ordinary Markdown, so the next agent picks up exactly where you left off.</p>
+        <p>Edit, reorganise, duplicate and connect content directly. Everything you do is written back as ordinary Markdown, so nothing you touch becomes unreadable to an agent.</p>
       </div>
       <div class="do">
         <h3>Agent-only files, out of sight</h3>
@@ -507,7 +525,7 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 <div class="numband" id="outcome">
   <div class="wrap" style="padding:90px 0">
     <div class="shead">
-      <div class="idx">Five — the outcome</div>
+      <div class="idx">Four — the outcome</div>
       <div>
         <h2 class="h2">Both sides get what they need.</h2>
         <p class="sub">
@@ -527,56 +545,58 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
       </div>
     </div>
 
-    <p class="closer">Structured for AI, <em>made simple for people.</em></p>
+    <p class="closer">Structured for AI, <em>simple for people.</em></p>
   </div>
 </div>
 
 <section id="pricing">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">Six — how we ship</div>
+      <div class="idx">Five — the business model</div>
       <div>
-        <h2 class="h2">Free and open source for people. Paid for organisations.</h2>
+        <h2 class="h2">Free on your laptop. Paid when it leaves.</h2>
         <p class="sub">
-          Individuals shouldn't have to ask anyone's permission to make their own work legible. The company product is the
-          part organisations actually need — shared storage, control and governance.
+          Individuals pay only to share or to store in the cloud. Companies buy seats.
         </p>
       </div>
     </div>
 
     <div class="tiers">
       <div class="tier free">
-        <div class="tl">For individuals</div>
-        <h3>Open source</h3>
-        <div class="pr">Free, forever</div>
+        <div class="tl">Individuals</div>
+        <h3>Free</h3>
+        <div class="pr">Everything on your own machine</div>
         <ul>
-          <li>The full visual workspace</li>
-          <li>Visual Markdown editing</li>
-          <li>Projects, colours, groups and links</li>
-          <li>Agent-only files separated automatically</li>
+          <li>Scan, see, correct and undo</li>
+          <li>The full visual workspace and Markdown editing</li>
+          <li>No account, nothing leaves the device</li>
           <li>Your files stay yours, in plain Markdown</li>
         </ul>
+        <div class="addon"><b>$15 / month</b><span>Share workspaces with other people and sync them across your devices.</span></div>
+        <div class="addon"><b>+ storage</b><span>Additional cloud storage is priced by usage.</span></div>
       </div>
       <div class="tier">
-        <div class="tl">For organisations</div>
-        <h3>Teams</h3>
-        <div class="pr">Pricing at launch</div>
+        <div class="tl">Companies</div>
+        <h3>Per seat</h3>
+        <div class="pr">Enterprise pricing</div>
         <ul>
-          <li>Secure shared storage</li>
-          <li>Access controls and permissions</li>
-          <li>Governance and audit</li>
-          <li>Collaboration across a team</li>
+          <li>Shared workspaces across a team</li>
+          <li>Centralised, secure storage</li>
+          <li>Admin controls, governance and audit</li>
           <li>One place employees and agents both reach</li>
         </ul>
+        <div class="addon"><b>Not final yet</b><span>Pricing will be validated with early customers before launch.</span></div>
       </div>
     </div>
+
+    <div class="modelfoot">Free for individual local use. Paid for collaboration, cloud storage and company-wide deployment.</div>
   </div>
 </section>
 
 <section id="team">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">Seven — the team</div>
+      <div class="idx">Six — the team</div>
       <div>
         <h2 class="h2">We've built inside this ecosystem, and we've felt it break.</h2>
         <p class="sub">
@@ -590,7 +610,7 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
     <div class="founders">
       <div class="fcard">
         <div class="fn">Yu Asano</div>
-        <div class="fr">Co-founder</div>
+        <div class="fr">Co-founder &amp; CEO</div>>
         <p>
           AI product builder and Microsoft GTM engineer, obsessed with making complex AI-generated information clear,
           visual and usable. Built Baby Voice Recorder end to end — hardware, firmware, cloud and iOS — while leading
@@ -613,7 +633,7 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 <section id="upcoming">
   <div class="wrap">
     <div class="shead">
-      <div class="idx">Eight — upcoming</div>
+      <div class="idx">Seven — upcoming</div>
       <div>
         <h2 class="h2">What we're building, and in what order.</h2>
         <p class="sub">Jin AI isn't open yet. Here is the honest state of it, so you know what you'd be joining.</p>
@@ -626,7 +646,7 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
         <h3>The workspace</h3>
         <ul>
           <li>Point Jin AI at a folder and see it drawn</li>
-          <li>Notebook, Focus and Project views</li>
+          <li>The visual workspace and the page</li>
           <li>Visual Markdown reading and editing</li>
           <li>macOS and Windows</li>
         </ul>
@@ -657,7 +677,7 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 
 <section class="final" id="waitlist">
   <div class="wrap">
-    <div class="fm"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></div>
+    <div class="fm"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></div>
     <h2>Be there when Jin AI opens.</h2>
     <p>Early access goes out in small batches. We'll ask which agents you use and what your folders look like — and you'll get in before it's public.</p>
     <form class="wait" id="waitBottom">
@@ -672,11 +692,11 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
   <div class="wrap">
     <div class="fgrid">
       <div>
-        <a class="brand" href="#"><span class="mk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span><span class="rom">JIN AI</span></a>
+        <a class="brand" href="#"><span class="mk"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span><span class="rom">JIN AI</span></a>
         <p style="margin-top:15px;max-width:25em">A new interface for work.<br>Structured for AI, made simple for people.</p>
         <p style="margin-top:10px;font-family:var(--mono);font-size:10.5px;color:var(--dim)">Tokyo, Japan</p>
       </div>
-      <div><h4>Product</h4><ul><li><a href="#sync">The method</a></li><li><a href="#product">The product</a></li><li><a href="#outcome">The outcome</a></li><li><a href="#upcoming">Upcoming</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
+      <div><h4>Product</h4><ul><li><a href="#problem">The problem</a></li><li><a href="#solution">The solution</a></li><li><a href="#product">The product</a></li><li><a href="#upcoming">Upcoming</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
       <div><h4>More</h4><ul><li><a href="#team">Team</a></li><li><a href="index.html">Design directions</a></li></ul></div>
       <div><h4>Company</h4><ul><li><a href="#">Blog</a></li><li><a href="#">GitHub</a></li><li><a href="#">Contact</a></li></ul></div>
     </div>

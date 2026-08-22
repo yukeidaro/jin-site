@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jin AI — website directions</title>
 <meta name="description" content="Two design directions for the Jin AI website. Same story, two tones.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f5f3ef'/%3E%3Cg fill='%23252525'%3E%3Crect x='4' y='11' width='4' height='12'/%3E%3Crect x='11' y='6' width='4' height='21'/%3E%3Crect x='18' y='14' width='4' height='8'/%3E%3Crect x='25' y='9' width='4' height='16'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-55 -87 500 500'%3E%3Crect x='-55' y='-87' width='500' height='500' fill='%23f5f3ef'/%3E%3Cg fill='%23252525'%3E%3Cpath d='M234 0h71L71 326H0Z'/%3E%3Cpath d='M248 129 211 180 317 326 389 326Z'/%3E%3C/g%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{--paper:#f5f3ef;--line:#dddad5;--edge:#c7c3bd;--ink:#252525;--ink2:#4d4d4d;--dim:#696969;
@@ -15,8 +15,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-heigh
 .wrap{max-width:1180px;margin:0 auto;padding:0 32px}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
 header{padding:64px 0 40px;border-bottom:1px solid var(--line)}
-.mk{width:30px;height:30px;border:1.5px solid var(--ink);border-radius:4px;display:grid;place-items:center;margin-bottom:22px}
-.mk svg{width:17px;height:17px;fill:var(--ink)}
+.mk{width:34px;height:29px;display:grid;place-items:center;margin-bottom:22px}
+.mk svg{width:34px;height:29px;fill:var(--ink)}
 h1{font-family:var(--serif);font-size:clamp(32px,4.6vw,52px);font-weight:700;letter-spacing:-.035em;line-height:1.1;margin-top:14px}
 .lede{margin-top:20px;max-width:46em;color:var(--ink2);font-size:16.5px}
 code{font-family:var(--mono);font-size:.86em;background:#ece9e4;padding:1px 5px;border-radius:3px}
@@ -46,7 +46,7 @@ h2 span{display:block;font-family:var(--mono);font-size:11px;font-weight:400;let
 <body>
 <header>
   <div class="wrap">
-    <div class="mk"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></div>
+    <div class="mk"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></div>
     <div class="eyebrow">Jin AI — website directions · August 2026</div>
     <h1>Same story. Two tones.</h1>
     <p class="lede">
@@ -94,12 +94,12 @@ h2 span{display:block;font-family:var(--mono);font-size:11px;font-weight:400;let
   <div class="note">
     <b>What both pages say, in order</b>
     <ol>
-      <li>What changed: output scattered across Markdown, decks, documents, spreadsheets, PDFs, chat and local AI output — and <em>managing file names, folders, links and tags became a new job</em></li>
-      <li>The false choice: structures that work well for AI, versus interfaces that work well for people</li>
-      <li>The method: you keep the navigation, AI keeps the structure — written back into <code>CLAUDE.md</code> and the other instruction files agents already read</li>
-      <li>The product: one workspace, two views, plus a visual editor and agent-only files kept out of sight</li>
+      <li>The problem: <em>you lose the file twice</em> — first you forget what it was called, then you forget where it went</li>
+      <li>The solution: visible, editable, reversible — see the whole project, move things like normal files, and roll back what an agent got wrong</li>
+      <li>Written back into <code>CLAUDE.md</code> and the other instruction files agents already read, so the next file lands where you would have put it</li>
+      <li>The product: the visual workspace and the page, plus a visual editor and agent-only files kept out of sight</li>
       <li>The outcome: people stop managing files, AI gets richer context</li>
-      <li>How we ship: free and open source for individuals, paid for organisations</li>
+      <li>Business model: free on your laptop, paid when it leaves</li>
       <li>Team, upcoming, then the waitlist</li>
     </ol>
   </div>
