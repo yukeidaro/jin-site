@@ -128,7 +128,7 @@ code{font-family:var(--mono);font-size:.84em;background:#fff;border:1px solid va
 .bk .bc{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:11px;letter-spacing:.05em;line-height:1.7}
 .bk.hid .bn{color:var(--dim)}
 
-.views{display:grid;grid-template-columns:repeat(3,1fr);margin-top:48px;border-top:1px solid var(--sumi);border-bottom:1px solid var(--sumi)}
+.views{display:grid;grid-template-columns:repeat(2,1fr);margin-top:48px;border-top:1px solid var(--sumi);border-bottom:1px solid var(--sumi)}
 .view{padding:30px 26px 34px;border-right:1px solid var(--line)}
 .view:last-child{border-right:0}
 .view .f{border:1px solid var(--line);overflow:hidden;background:#fff}
@@ -223,8 +223,12 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
 
 @media(max-width:960px){
   .herogrid{grid-template-columns:1fr;gap:36px}
-  .chaos,.views,.road,.who,.tiers,.founders,.does,.creds{grid-template-columns:1fr}
-  .agentcol,.view,.stage,.whocard,.tier,.fcard,.do,.cred{border-right:0;border-bottom:1px solid var(--line)}
+  .chaos,.views,.road,.tiers,.founders,.does{grid-template-columns:1fr}
+  .agentcol,.view,.stage,.tier,.fcard,.do{border-right:0;border-bottom:1px solid var(--line)}
+  /* stacked: put the label and heading above their own screenshot,
+     otherwise an image reads as if it belonged to the card above it */
+  .view{display:flex;flex-direction:column}
+  .view .n{order:1;margin-top:0}.view h3{order:2}.view .f{order:3;margin-top:14px}.view p{order:4}
   .sync{grid-template-columns:1fr}
   .syncmid{padding:14px 0}
   .syncmid .ar{transform:rotate(90deg)}
@@ -404,7 +408,7 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
     <div class="shead">
       <div class="idx">Three — the product</div>
       <div>
-        <h2 class="h2">One workspace. Three ways to look at it.</h2>
+        <h2 class="h2">One workspace. Two ways to look at it.</h2>
         <p class="sub">
           Nothing asks you to learn Markdown or move your files anywhere. They stay exactly where they are, in the format
           your agents expect. Jin AI just draws them — so you find things by <strong>recognising</strong> them.
@@ -418,12 +422,6 @@ footer{padding:58px 0 46px;color:var(--gray);font-size:13px;background:var(--pap
         <div class="n">Notebook</div>
         <h3>Everything in its place</h3>
         <p>Projects and sections carry a colour and a name, and that colour follows the document you open. You always know where you are without reading a file path.</p>
-      </div>
-      <div class="view">
-        <div class="f"><img src="shots/shot-focus.png" alt="Focus view" width="2800" height="1640" loading="lazy"></div>
-        <div class="n">Focus</div>
-        <h3>A document, not a text file</h3>
-        <p>The same Markdown, rendered as a page you can actually read and edit — with slides, PDFs and sheets sitting inside the paragraph that needs them.</p>
       </div>
       <div class="view">
         <div class="f"><img src="shots/shot-project.png" alt="Project view" width="2800" height="1640" loading="lazy"></div>
