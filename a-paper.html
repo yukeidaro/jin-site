@@ -100,6 +100,9 @@ section{padding:86px 0;border-bottom:1px solid var(--line);scroll-margin-top:72p
 .syncmid .ar{font-size:19px;color:var(--cobalt);line-height:1}
 .syncnote{margin-top:22px;border:1px solid var(--cobalt);border-radius:var(--r);background:var(--cobalt-50);padding:22px 24px;font-size:15px;color:var(--ink-2);line-height:1.8}
 .syncnote b{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--ink);display:block;margin-bottom:8px}
+.syncnote .never{display:block;margin-top:16px;padding-top:14px;border-top:1px solid #cfe0fd;font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+code{font-family:var(--mono);font-size:.84em;background:#fff;border:1px solid var(--line-2);border-radius:2px;padding:1px 5px;white-space:nowrap}
+.syncbox li code{background:var(--paper-2);border-color:var(--line);font-size:.86em}
 
 /* demo */
 .fold{margin-top:44px;border:1px solid var(--line);border-radius:var(--r);background:#fff;overflow:hidden}
@@ -227,7 +230,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <header>
   <div class="wrap nav">
     <a class="brand" href="#"><span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="3" height="9"/><rect x="7.5" y="4" width="3" height="16"/><rect x="13" y="10" width="3" height="6"/><rect x="18.5" y="6.5" width="3" height="12"/></svg></span>Jin AI</a>
-    <nav class="navlinks"><a href="#problem">Problem</a><a href="#sync">How it works</a><a href="#product">Product</a><a href="#obsidian">vs Obsidian</a><a href="#who">Who it's for</a><a href="#team">Team</a></nav>
+    <nav class="navlinks"><a href="#problem">Problem</a><a href="#sync">How it works</a><a href="#product">Product</a><a href="#pricing">Pricing</a><a href="#team">Team</a><a href="#upcoming">Upcoming</a></nav>
     <a class="btn btn-p" href="#waitlist">Join the waitlist</a>
   </div>
 </header>
@@ -240,7 +243,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
     <p class="lede">
       Your AI agents are already writing Markdown into your folders. Jin AI turns those raw files into
       <b>clear, visual documents you can read and edit</b> — and organises them into projects that make sense to a person.
-      No Markdown syntax. No GitHub. No developer tools.
+      The files stay Markdown, so your agents keep working. <b>You just never have to learn it.</b>
     </p>
     <div class="agentrow">
       Works with the agents you already use:
@@ -343,21 +346,23 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       </div>
       <div class="syncbox">
         <div class="st">The agent structure</div>
-        <h3>How files actually get written</h3>
+        <h3>The files that tell agents what to do</h3>
         <ul>
-          <li>Markdown on disk, unchanged</li>
-          <li>Each agent's own conventions</li>
-          <li>Instructions, memory and logs</li>
-          <li>Intermediate and throwaway output</li>
+          <li><code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>copilot-instructions.md</code></li>
+          <li>Where each kind of file is supposed to go</li>
+          <li>Memory, logs and intermediate output</li>
+          <li>Everything on disk as plain Markdown</li>
         </ul>
       </div>
     </div>
 
     <div class="syncnote">
-      <b>Your decisions become the rule.</b>
-      When you move a project boundary, rename a category, hide something or link two things together, Jin AI treats that
-      as a statement of intent — and keeps <strong>future agent-generated files aligned with it</strong>, automatically.
-      The files themselves stay plain Markdown, so every agent can still read and write them.
+      <b>Your decisions get written back.</b>
+      Move a project boundary, rename a category, hide something or link two things together, and Jin AI updates
+      <strong>the instruction files your agents already read</strong> — <code>CLAUDE.md</code>, <code>AGENTS.md</code>,
+      <code>copilot-instructions.md</code> and the rest — so the next file an agent writes lands where you would have put
+      it. No plugin and no API: just the Markdown they are reading anyway.
+      <span class="never">You never open <code>CLAUDE.md</code>. Jin AI keeps it correct.</span>
     </div>
 
     <div class="rule"></div>
@@ -420,83 +425,6 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
   </div>
 </section>
 
-<!-- VS OBSIDIAN -->
-<section id="obsidian">
-  <div class="wrap">
-    <div class="eyebrow">Compared to Obsidian</div>
-    <h2 class="h2">Obsidian is excellent. It just wasn't built for this.</h2>
-    <p class="sub">
-      Obsidian is a genuinely great Markdown editor and knowledge base, and we use it. But its core experience is built
-      around individual notes, file lists and links, and it assumes you're comfortable managing a vault yourself.
-    </p>
-
-    <table class="cmp">
-      <thead>
-        <tr><th></th><th>Obsidian</th><th class="us">Jin AI</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Built for</td>
-          <td class="them">Technical users comfortable with Markdown and linked notes</td>
-          <td class="us">Business users who have never written a line of Markdown</td>
-        </tr>
-        <tr>
-          <td>How you navigate</td>
-          <td class="them">Note lists, backlinks and a graph you interpret yourself</td>
-          <td class="us">Visual hierarchies, colours, groups and projects</td>
-        </tr>
-        <tr>
-          <td>Agent-generated files</td>
-          <td class="them">Displayed like any other note — instructions and memory included</td>
-          <td class="us">Separated automatically, so only your documents surface</td>
-        </tr>
-        <tr>
-          <td>As volume grows</td>
-          <td class="them">You maintain the structure by hand</td>
-          <td class="us">Your decisions are reapplied to whatever lands next</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p class="cmpline">
-      Obsidian helps you manage Markdown files. <em>We're building the most human-readable platform for AI-generated work.</em>
-    </p>
-  </div>
-</section>
-
-<!-- WHO -->
-<div class="band-dark" id="who">
-  <div class="wrap" style="padding:86px 0">
-    <div class="eyebrow">Who it's for</div>
-    <h2 class="h2">People running real projects with agents.</h2>
-    <p class="sub">
-      Not developers managing repositories. The people who now have an agent producing serious work for them,
-      and no good way to see what came out of it.
-    </p>
-
-    <div class="who">
-      <div class="whocard">
-        <div class="wt">Today</div>
-        <h3>Business professionals using AI agents</h3>
-        <p>
-          CEOs, non-engineer vibe coders and business development managers running company projects through agents —
-          and needing to visually organise and navigate what those agents write.
-        </p>
-        <div class="tags"><span>CEOs</span><span>Non-engineer vibe coders</span><span>BD managers</span><span>Consultants</span><span>Product managers</span></div>
-      </div>
-      <div class="whocard">
-        <div class="wt">Next</div>
-        <h3>Microsoft 365 organisations</h3>
-        <p>
-          Teams that need to structure, share and manage AI-generated knowledge in a workspace ordinary employees can
-          understand — with the access control and governance an organisation actually requires.
-        </p>
-        <div class="tags"><span>Shared storage</span><span>Access control</span><span>Governance</span><span>Collaboration</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- PRICING -->
 <section id="pricing">
   <div class="wrap">
@@ -539,7 +467,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <!-- TEAM -->
 <section id="team">
   <div class="wrap">
-    <div class="eyebrow">Why us</div>
+    <div class="eyebrow">The team</div>
     <h2 class="h2">We've built inside this ecosystem, and we've felt it break.</h2>
     <p class="sub">
       We work inside Microsoft's workplace productivity ecosystem and understand how business users organise and produce
@@ -569,13 +497,6 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       </div>
     </div>
 
-    <div class="creds">
-      <div class="cred"><b>Platform experience</b><span>How enterprise productivity is built and adopted</span></div>
-      <div class="cred"><b>Product strategy</b><span>Turning a felt problem into something buildable</span></div>
-      <div class="cred"><b>Customer discovery</b><span>Testing the premise with people who'd live in it</span></div>
-      <div class="cred"><b>Go-to-market</b><span>Reaching business users where they already work</span></div>
-    </div>
-  </div>
 </section>
 
 <!-- UPCOMING -->
@@ -600,7 +521,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
         <div class="s"><i></i>Next</div>
         <h3>The sync</h3>
         <ul>
-          <li>Your structure learned and reapplied</li>
+          <li>Your structure written back into <code>CLAUDE.md</code> and friends</li>
           <li>Agent-only files separated automatically</li>
           <li>Projects and subprojects, visually managed</li>
           <li>Open source release</li>
@@ -642,8 +563,8 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
         <p style="margin-top:14px;max-width:26em;color:var(--ink-3)">The next Obsidian for business people. A visual workspace for the Markdown your agents are already writing.</p>
         <p style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--dim)">Tokyo, Japan</p>
       </div>
-      <div><h4>Product</h4><ul><li><a href="#sync">How it works</a></li><li><a href="#product">The three views</a></li><li><a href="#obsidian">vs Obsidian</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
-      <div><h4>More</h4><ul><li><a href="#who">Who it's for</a></li><li><a href="#team">Team</a></li><li><a href="#upcoming">Upcoming</a></li><li><a href="index.html">Design directions</a></li></ul></div>
+      <div><h4>Product</h4><ul><li><a href="#sync">How it works</a></li><li><a href="#product">The three views</a></li><li><a href="#upcoming">Upcoming</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
+      <div><h4>More</h4><ul><li><a href="#team">Team</a></li><li><a href="index.html">Design directions</a></li></ul></div>
       <div><h4>Company</h4><ul><li><a href="#">Blog</a></li><li><a href="#">GitHub</a></li><li><a href="#">Contact</a></li></ul></div>
     </div>
     <div class="fbot"><span>© 2026 Jin AI</span><span>Direction A — Paper</span></div>

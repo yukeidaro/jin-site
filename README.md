@@ -13,21 +13,24 @@ Each page is a single self-contained HTML file. The only external dependency is 
 
 ## The story both pages tell
 
-Positioning follows the SkyDeck / F6S application for Jin AI, so the site and the application say the same thing.
-
-**One line: "The next Obsidian for business people."**
+Positioning follows the SkyDeck / F6S application for Jin AI. **One line: "The next Obsidian for business people."**
 
 1. **The problem** — *Markdown file chaos.* The more agents you run, the more Markdown lands in your folders. Every agent files by its own logic, and much of what it writes (instructions, memory, logs, intermediate output) was never meant for a person
-2. **The method** — two structures kept in sync: how you want to understand and organise your work, and how agents create and store files. Your decisions about boundaries, categories, visibility and relationships become the rule applied to whatever lands next
+2. **The method** — two structures kept in sync. Your decisions about boundaries, categories, visibility and relationships get **written back into the instruction files agents already read** (`CLAUDE.md`, `AGENTS.md`, `copilot-instructions.md`), so the next file lands where you would have put it. No plugin, no API
 3. **The product** — one workspace, three views (Notebook, Focus, Project), plus a visual Markdown editor: edit, reorganise, duplicate and connect, written back as plain Markdown
-4. **vs Obsidian** — excellent for technical users, but it shows agent-facing files like any other note and expects you to maintain the vault yourself
-5. **Who it's for** — CEOs, non-engineer vibe coders and BD managers today; Microsoft 365 organisations next
-6. **How we ship** — free and open source for individuals; paid for organisations needing shared storage, access control, governance and collaboration
-7. **Team** — Yu Asano and Tomoya Kato, with LinkedIn links
-8. **Upcoming**, then the **waitlist**
+4. **How we ship** — free and open source for individuals; paid for organisations needing shared storage, access control, governance and collaboration
+5. **Team** — Yu Asano and Tomoya Kato, with LinkedIn links
+6. **Upcoming**, then the **waitlist**
 
-Nothing on these pages claims a measurement from a specific machine. The raw/organised demo is an illustrative
-example project, not a report about the visitor.
+The files stay Markdown so agents keep working — the promise is that *you never have to learn it*, not that Markdown
+is absent. The raw/organised demo is an illustrative example project, not a report about the visitor.
+
+### Deliberately not on these pages
+
+This is a consumer landing page, so the investor-facing material lives in the application instead of here:
+the Obsidian comparison table, the "who it's for" segment breakdown (CEOs / vibe coders / BD managers /
+Microsoft 365 organisations), and the go-to-market and customer-discovery credentials. Earlier drafts that
+included them are in `archive/`.
 
 ## Turning the waitlist on
 
