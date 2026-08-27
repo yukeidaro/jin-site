@@ -4,12 +4,29 @@ Two design directions for the Jin AI product site. Same story, two tones.
 
 **Live:** https://yukeidaro.github.io/Jin AI-site/
 
-| | Page | Character |
-| --- | --- | --- |
-| A | [`a-paper.html`](a-paper.html) | Warm paper, serif headings, cobalt accent. Calm and broad. Recommended. |
-| C | [`c-screen.html`](c-screen.html) | Magazine-scale Playfair Display, vermilion accent, numbered chapters. Bolder. |
+| | Page | Character | Languages |
+| --- | --- | --- | --- |
+| A | [`a-paper.html`](a-paper.html) | Warm paper, serif headings, cobalt accent. Calm and broad. Recommended. | English + 日本語 |
+| C | [`c-screen.html`](c-screen.html) | Magazine-scale Playfair Display, vermilion accent, numbered chapters. Bolder. | English only |
 
 Each page is a single self-contained HTML file. The only external dependency is Google Fonts.
+
+## Languages (page A)
+
+`a-paper.html` ships English and Japanese in the one file, with a `日本語 / EN` switch in the header.
+
+- **Which one a visitor gets:** `?lang=ja` or `?lang=en` in the URL wins, then whatever they last picked
+  (`localStorage["jinai-lang"]`), then their browser language — `ja*` gets Japanese, everyone else gets English.
+- **Where the words live:** English stays in the markup and is captured into the `EN` dictionary on load, so it can
+  never drift from the HTML. Japanese lives in the `JA` object at the top of the page script.
+- **Editing copy:** change English in the markup as usual, then update the matching key in `JA`. Every translatable
+  element carries `data-i18n="key"` (plus `data-i18n-ph` / `data-i18n-aria` for the email field). The switch also
+  swaps `<title>`, the meta description, `<html lang>`, and the strings the scripts build by hand — the raw/organised
+  demo and the waitlist messages.
+- **Adding a third language:** add one more dictionary with the same keys and one more button in `.langsw`. There are
+  180 keys; the page logs nothing if one is missing, it just falls back to English.
+- **Japanese type:** headings fall back to Hiragino Mincho / Yu Mincho and body text to Hiragino Kaku Gothic / Yu
+  Gothic, so no extra webfont is downloaded. Line height and letter-spacing are loosened under `html[lang="ja"]`.
 
 ## The story both pages tell
 
@@ -74,7 +91,8 @@ To re-capture after editing the mockup, serve the repo and screenshot the `.app`
 ## Folders
 
 - `archive/` — the first round of pages, written around one person's measured folder and a 60-second install claim
-- `ja/` — Japanese first drafts, not linked from the site
+- `ja/` — **superseded.** Japanese first drafts from two narratives ago, never linked from the site. The live Japanese
+  copy is now inside `a-paper.html`; treat this folder as archive material
 - `mockup/` — the UI concept the screenshots come from
 
 ## Local preview

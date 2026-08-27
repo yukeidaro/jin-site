@@ -272,6 +272,43 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
   .fgrid{grid-template-columns:1fr 1fr}
   .navlinks{display:none}
 }
+
+/* ── language switch ─────────────────────────────────────────────────────── */
+.navright{display:flex;align-items:center;gap:12px}
+.langsw{display:inline-flex;border:1px solid var(--edge);border-radius:var(--r);overflow:hidden;font-family:var(--mono);font-size:11px;background:#fff;flex:none}
+.langsw button{background:transparent;border:0;padding:7px 11px;cursor:pointer;font:inherit;color:var(--ink-3);letter-spacing:.06em;line-height:1.2;transition:.15s}
+.langsw button:hover{color:var(--cobalt)}
+.langsw button.on{background:var(--ink);color:var(--paper)}
+.langsw button.on:hover{color:var(--paper)}
+.agentrow span.plain{border:0;background:transparent;padding:0;color:var(--dim)}
+
+/* ── Japanese typography ─────────────────────────────────────────────────── */
+html[lang="ja"] body{font-family:"Inter",-apple-system,"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic","Noto Sans JP",Meiryo,system-ui,sans-serif;line-height:1.85}
+html[lang="ja"] .brand,
+html[lang="ja"] h1,html[lang="ja"] h2,html[lang="ja"] h3,html[lang="ja"] h4,
+html[lang="ja"] .h2,html[lang="ja"] .closer,html[lang="ja"] .cmpline,
+html[lang="ja"] .verd b,html[lang="ja"] .syncnote b,html[lang="ja"] .syncnote .never,
+html[lang="ja"] .stat .sb b,html[lang="ja"] .q p,html[lang="ja"] .bk .bn,
+html[lang="ja"] .fcard .fn{font-family:"Source Serif 4","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",Georgia,serif}
+html[lang="ja"] h1,html[lang="ja"] .h2,html[lang="ja"] .final h2,
+html[lang="ja"] .closer{letter-spacing:-.01em;line-height:1.28}
+html[lang="ja"] .hero h1{font-size:clamp(32px,4.6vw,54px);line-height:1.22;max-width:16em}
+html[lang="ja"] .lede,html[lang="ja"] .sub,html[lang="ja"] .q p{line-height:1.95}
+html[lang="ja"] .q p{font-size:16px;letter-spacing:0}
+html[lang="ja"] .eyebrow,html[lang="ja"] .pill,html[lang="ja"] .world .wt,html[lang="ja"] .view .n,
+html[lang="ja"] .tier .tl,html[lang="ja"] .stage .s,html[lang="ja"] .fcard .fr,
+html[lang="ja"] .fgrid h4,html[lang="ja"] .whocard .wt{letter-spacing:.06em;text-transform:none;font-size:11.5px}
+html[lang="ja"] .h2{max-width:24em}
+html[lang="ja"] .sub,html[lang="ja"] .lede{max-width:44em}
+
+@media(max-width:760px){
+  .navright{gap:8px}
+  .navright .btn{padding:8px 12px;font-size:12.5px}
+  .langsw button{padding:6px 9px;font-size:10.5px}
+}
+/* the hero form sits just below the fold on a phone, so the header CTA
+   can go rather than crowd the language switch off the edge */
+@media(max-width:640px){ .navright .btn{display:none} }
 </style>
 </head>
 <body>
@@ -279,35 +316,47 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <header>
   <div class="wrap nav">
     <a class="brand" href="#"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
-    <nav class="navlinks"><a href="#problem">Problem</a><a href="#solution">Solution</a><a href="#product">Product</a><a href="#pricing">Pricing</a><a href="#team">Team</a></nav>
-    <a class="btn btn-p" href="#waitlist">Join the waitlist</a>
+    <nav class="navlinks">
+      <a href="#problem" data-i18n="nav.problem">Problem</a>
+      <a href="#solution" data-i18n="nav.solution">Solution</a>
+      <a href="#product" data-i18n="nav.product">Product</a>
+      <a href="#pricing" data-i18n="nav.pricing">Pricing</a>
+      <a href="#team" data-i18n="nav.team">Team</a>
+    </nav>
+    <div class="navright">
+      <div class="langsw" role="group" aria-label="Language / 言語">
+        <button type="button" data-lang="ja" lang="ja">日本語</button>
+        <button type="button" data-lang="en" lang="en">EN</button>
+      </div>
+      <a class="btn btn-p" href="#waitlist" data-i18n="nav.cta">Join the waitlist</a>
+    </div>
   </div>
 </header>
 
 <!-- HERO -->
 <div class="hero">
   <div class="wrap">
-    <span class="pill"><i></i>Upcoming — join the waitlist</span>
-    <h1>Structured for AI.<br>Simple for <span class="fade">people.</span></h1>
-    <p class="lede">
+    <span class="pill"><i></i><span data-i18n="hero.pill">Upcoming — join the waitlist</span></span>
+    <h1 data-i18n="hero.h1">Structured for AI.<br>Simple for <span class="fade">people.</span></h1>
+    <p class="lede" data-i18n="hero.lede">
       AI agents now write your files for you &mdash; Markdown, decks, documents, spreadsheets, PDFs &mdash; and file them
       <b>somewhere you would not have</b>. Jin AI puts that structure on one screen, lets you correct it, and records
       every change, so yours and the agent&rsquo;s can be undone separately.
     </p>
     <div class="agentrow">
-      Works with:
+      <span class="plain" data-i18n="hero.works">Works with:</span>
       <span>Claude Code</span><span>Codex</span><span>Copilot Cowork</span><span>GitHub Copilot</span><span>Scout</span>
     </div>
 
     <form class="wait" id="waitTop">
-      <input type="email" name="email" required autocomplete="email" placeholder="you@company.com" aria-label="Email address">
-      <button type="submit" class="btn btn-p">Join the waitlist</button>
+      <input type="email" name="email" required autocomplete="email" placeholder="you@company.com" aria-label="Email address" data-i18n-ph="wait.ph" data-i18n-aria="wait.aria">
+      <button type="submit" class="btn btn-p" data-i18n="wait.cta">Join the waitlist</button>
     </form>
-    <div class="waitnote" id="noteTop">Free on your laptop · one email when Jin AI opens</div>
+    <div class="waitnote" id="noteTop" data-i18n="hero.note">Free on your laptop · one email when Jin AI opens</div>
 
     <div class="shotwrap">
       <div class="shotframe"><img src="shots/shot-notebook.png" alt="Jin AI: colour-coded projects on the left, a working page on the right with a live slide inside it" width="2800" height="1640"></div>
-      <div class="shotcap">See your work as a workspace, then open a page and get to work</div>
+      <div class="shotcap" data-i18n="hero.cap">See your work as a workspace, then open a page and get to work</div>
     </div>
   </div>
 </div>
@@ -315,9 +364,9 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <!-- PROBLEM -->
 <section id="problem">
   <div class="wrap">
-    <div class="eyebrow">The problem</div>
-    <h2 class="h2">You lose the file twice.</h2>
-    <p class="sub">
+    <div class="eyebrow" data-i18n="problem.eyebrow">The problem</div>
+    <h2 class="h2" data-i18n="problem.h2">You lose the file twice.</h2>
+    <p class="sub" data-i18n="problem.sub">
       First you forget what it was called. Then you forget where it went. When an agent starts a project it also decides
       where things should go &mdash; and <strong>unless you tell it exactly how to organise everything, the structure
       stops matching how you would have organised it yourself</strong>.
@@ -325,22 +374,22 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 
     <div class="quotes">
       <div class="q">
-        <p>&ldquo;I edited an MD file in Codex and wanted to use it in a meeting later. When I came back I couldn&rsquo;t remember what the file was called, or where it was.&rdquo;</p>
+        <p data-i18n="problem.q1">&ldquo;I edited an MD file in Codex and wanted to use it in a meeting later. When I came back I couldn&rsquo;t remember what the file was called, or where it was.&rdquo;</p>
       </div>
       <div class="q">
-        <p>&ldquo;That is not where I would have put it.&rdquo;</p>
-        <span>So the afternoon goes on moving files and cleaning up folders that an agent made in a second.</span>
+        <p data-i18n="problem.q2">&ldquo;That is not where I would have put it.&rdquo;</p>
+        <span data-i18n="problem.q2s">So the afternoon goes on moving files and cleaning up folders that an agent made in a second.</span>
       </div>
       <div class="q">
-        <p>&ldquo;You end up opening files one by one just to work out what you made.&rdquo;</p>
-        <span>Agents create and edit quickly. The filenames and the folder structure are what get lost.</span>
+        <p data-i18n="problem.q3">&ldquo;You end up opening files one by one just to work out what you made.&rdquo;</p>
+        <span data-i18n="problem.q3s">Agents create and edit quickly. The filenames and the folder structure are what get lost.</span>
       </div>
     </div>
 
     <div class="chaos">
       <div class="agentcol">
         <div class="an"><i style="background:#db2777"></i>Claude Code</div>
-        <div class="aw">its own folder logic</div>
+        <div class="aw" data-i18n="chaos.a1">its own folder logic</div>
         <div class="fl">
           <span>notes/2026-08-21.md</span>
           <span>launch-deck.pptx</span>
@@ -350,7 +399,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       </div>
       <div class="agentcol">
         <div class="an"><i style="background:#1659e9"></i>Codex</div>
-        <div class="aw">a different one</div>
+        <div class="aw" data-i18n="chaos.a2">a different one</div>
         <div class="fl">
           <span>docs/spec.md</span>
           <span>model-v3.xlsx</span>
@@ -360,7 +409,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       </div>
       <div class="agentcol">
         <div class="an"><i style="background:#2a5e46"></i>Copilot Cowork</div>
-        <div class="aw">and another</div>
+        <div class="aw" data-i18n="chaos.a3">and another</div>
         <div class="fl">
           <span>summary.md</span>
           <span>evidence.pdf</span>
@@ -369,14 +418,14 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
         </div>
       </div>
     </div>
-    <div class="chaosfoot">
+    <div class="chaosfoot" data-i18n="chaos.foot">
       Three agents, three conventions, one folder. <b>Half of it was never written for you to read</b> — instructions,
       memory, logs and intermediate output sit right next to the deck you actually have to deliver.
     </div>
 
     <div class="stat">
       <div class="sn">3,950</div>
-      <div class="sb">
+      <div class="sb" data-i18n="stat.body">
         <b>One machine, one week.</b>
         On our CEO&rsquo;s laptop, 3,950 Markdown files were created in a single week. <strong>89% were never opened
         again</strong>, and 283 were simply named <code>README.md</code>. Almost none of them were things anyone meant to
@@ -389,34 +438,34 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <!-- SOLUTION -->
 <section id="solution">
   <div class="wrap">
-    <div class="eyebrow">The solution</div>
-    <h2 class="h2">Visible, editable, reversible.</h2>
-    <p class="sub">
+    <div class="eyebrow" data-i18n="sol.eyebrow">The solution</div>
+    <h2 class="h2" data-i18n="sol.h2">Visible, editable, reversible.</h2>
+    <p class="sub" data-i18n="sol.sub">
       Jin AI does not change how your agents work. It simply <strong>makes the structure easier to see</strong>, lets you
       correct it by hand, and lets agents help maintain it in the background.
     </p>
 
     <div class="worlds three">
       <div class="world">
-        <div class="wt">See</div>
-        <h3>See the whole project at once</h3>
-        <p>
+        <div class="wt" data-i18n="sol.t1">See</div>
+        <h3 data-i18n="sol.h1">See the whole project at once</h3>
+        <p data-i18n="sol.p1">
           Projects, sub-projects, folders and files are shown together in one view. You can see where a file belongs
           without opening folders one by one, or trying to remember what the agent named it.
         </p>
       </div>
       <div class="world">
-        <div class="wt">Fix</div>
-        <h3>Move things around like normal files</h3>
-        <p>
+        <div class="wt" data-i18n="sol.t2">Fix</div>
+        <h3 data-i18n="sol.h3b">Move things around like normal files</h3>
+        <p data-i18n="sol.p2">
           Rename a file. Move it. Change the folder. Reorganise a project. When an agent puts something in the wrong
           place you drag and drop it, instead of rebuilding the structure from scratch.
         </p>
       </div>
       <div class="world">
-        <div class="wt">Undo</div>
-        <h3>See what changed, and change it back</h3>
-        <p>
+        <div class="wt" data-i18n="sol.t3">Undo</div>
+        <h3 data-i18n="sol.h3c">See what changed, and change it back</h3>
+        <p data-i18n="sol.p3">
           Changes made by you and changes made by agents are recorded separately. If something gets moved, renamed or
           reorganised the wrong way, you can see what happened and roll it back.
         </p>
@@ -424,26 +473,26 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
     </div>
 
     <div class="verd">
-      <b>The agent can still reach everything. You just don&rsquo;t need to see everything.</b>
-      <span>Jin AI doesn&rsquo;t delete anything or hide files from the agent. It gives people a cleaner view of the
+      <b data-i18n="sol.verdb">The agent can still reach everything. You just don&rsquo;t need to see everything.</b>
+      <span data-i18n="sol.verds">Jin AI doesn&rsquo;t delete anything or hide files from the agent. It gives people a cleaner view of the
       files that actually matter to them, while the agent keeps working with the full project in the background.</span>
     </div>
 
     <div class="rule"></div>
 
-    <div class="eyebrow">Try it here</div>
-    <h2 class="h2" style="font-size:26px;margin-top:12px">Everything on disk, or only what's yours to read.</h2>
-    <p class="sub" style="margin-top:12px">Same files, same folder. Agent-only files stay available to agents — they just stop competing for your attention.</p>
+    <div class="eyebrow" data-i18n="demo.eyebrow">Try it here</div>
+    <h2 class="h2" style="font-size:26px;margin-top:12px" data-i18n="demo.h2">Everything on disk, or only what's yours to read.</h2>
+    <p class="sub" style="margin-top:12px" data-i18n="demo.sub">Same files, same folder. Agent-only files stay available to agents — they just stop competing for your attention.</p>
 
     <div class="fold">
       <div class="fold-head">
-        <div class="st">example project · <b id="stCount">everything on disk</b></div>
-        <div class="toggle"><button id="bRaw" class="on">Raw folder</button><button id="bFold">With Jin AI</button></div>
+        <div class="st"><span data-i18n="demo.label">example project</span> · <b id="stCount">everything on disk</b></div>
+        <div class="toggle"><button id="bRaw" class="on" data-i18n="demo.raw">Raw folder</button><button id="bFold" data-i18n="demo.fold">With Jin AI</button></div>
       </div>
       <div class="fold-body" id="foldBody"></div>
     </div>
 
-    <div class="syncnote">
+    <div class="syncnote" data-i18n="sync.note">
       <b>Your corrections don&rsquo;t stop at the screen.</b>
       Move a project boundary, rename a category or hide something, and Jin AI writes it back into
       <strong>the instruction files your agents already read</strong> — <code>CLAUDE.md</code>, <code>AGENTS.md</code>,
@@ -452,7 +501,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       <span class="never">You never open <code>CLAUDE.md</code>. Jin AI keeps it correct.</span>
     </div>
 
-    <p class="src">
+    <p class="src" data-i18n="sol.src">
       Why the structure, and not a better search box: people reach their files by navigating 56&ndash;68% of the time and
       by searching 4&ndash;15% — and that barely moved even after their search tools were upgraded.
       <em>Bergman et al., ACM TOIS, 2008.</em>
@@ -463,9 +512,9 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <!-- PRODUCT -->
 <section id="product">
   <div class="wrap">
-    <div class="eyebrow">The product</div>
-    <h2 class="h2">What it looks like.</h2>
-    <p class="sub">
+    <div class="eyebrow" data-i18n="prod.eyebrow">The product</div>
+    <h2 class="h2" data-i18n="prod.h2">What it looks like.</h2>
+    <p class="sub" data-i18n="prod.sub">
       See your work as a workspace, then open a page and get to work. Nothing asks you to learn Markdown or move your
       files anywhere &mdash; they stay exactly where they are, in the format your agents expect. Jin AI just draws them,
       so you find things by <strong>recognising</strong> them.
@@ -474,26 +523,26 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
     <div class="views">
       <div class="view">
         <div class="f"><img src="shots/shot-project.png" alt="The visual workspace: a whole project laid out as colour-coded sections and pages" width="2800" height="1640" loading="lazy"></div>
-        <div class="n">The visual workspace</div>
-        <h3>See the whole project at a glance</h3>
-        <p>Pages and files stay organised in a structure that makes sense. Meetings, research, decisions and deliverables lay out as one map you can take in without opening anything.</p>
+        <div class="n" data-i18n="prod.n1">The visual workspace</div>
+        <h3 data-i18n="prod.vh1">See the whole project at a glance</h3>
+        <p data-i18n="prod.vp1">Pages and files stay organised in a structure that makes sense. Meetings, research, decisions and deliverables lay out as one map you can take in without opening anything.</p>
       </div>
       <div class="view">
         <div class="f"><img src="shots/shot-notebook.png" alt="The page: notes, decisions and a live slide together on one page" width="2800" height="1640" loading="lazy"></div>
-        <div class="n">The page</div>
-        <h3>Everything about one thing, together</h3>
-        <p>Notes, decisions, PowerPoint files, PDFs and links sit on a single page &mdash; all built on Markdown, so the next agent picks up exactly where you left off.</p>
+        <div class="n" data-i18n="prod.n2">The page</div>
+        <h3 data-i18n="prod.vh2">Everything about one thing, together</h3>
+        <p data-i18n="prod.vp2">Notes, decisions, PowerPoint files, PDFs and links sit on a single page &mdash; all built on Markdown, so the next agent picks up exactly where you left off.</p>
       </div>
     </div>
 
     <div class="does">
       <div class="do">
-        <h3>A visual editor for Markdown</h3>
-        <p>Edit, reorganise, duplicate and connect content directly. Everything you do is written back as ordinary Markdown, so nothing you touch becomes unreadable to an agent.</p>
+        <h3 data-i18n="prod.dh1">A visual editor for Markdown</h3>
+        <p data-i18n="prod.dp1">Edit, reorganise, duplicate and connect content directly. Everything you do is written back as ordinary Markdown, so nothing you touch becomes unreadable to an agent.</p>
       </div>
       <div class="do">
-        <h3>Agent-only files, out of sight</h3>
-        <p>Instructions, memory, logs and intermediate output stay on disk and stay available to agents — they simply don't appear in your default view.</p>
+        <h3 data-i18n="prod.dh2">Agent-only files, out of sight</h3>
+        <p data-i18n="prod.dp2">Instructions, memory, logs and intermediate output stay on disk and stay available to agents — they simply don't appear in your default view.</p>
       </div>
     </div>
   </div>
@@ -502,74 +551,74 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <!-- OUTCOME -->
 <div class="band-dark" id="outcome">
   <div class="wrap" style="padding:86px 0">
-    <div class="eyebrow">The outcome</div>
-    <h2 class="h2">Both sides get what they need.</h2>
-    <p class="sub">
+    <div class="eyebrow" data-i18n="out.eyebrow">The outcome</div>
+    <h2 class="h2" data-i18n="out.h2">Both sides get what they need.</h2>
+    <p class="sub" data-i18n="out.sub">
       The point isn't a tidier folder. It's that the two audiences for your work stop pulling against each other.
     </p>
 
     <div class="outs">
       <div class="out">
-        <h3>People stop managing files</h3>
-        <p>You spend your attention on moving the work forward instead of hunting for the right version, renaming things and deciding where they belong. The structure is still there — you just aren't the one maintaining it.</p>
+        <h3 data-i18n="out.h1">People stop managing files</h3>
+        <p data-i18n="out.p1">You spend your attention on moving the work forward instead of hunting for the right version, renaming things and deciding where they belong. The structure is still there — you just aren't the one maintaining it.</p>
       </div>
       <div class="out">
-        <h3>AI gets richer context</h3>
-        <p>Agents can see relationships, sources and history across everything you've produced, without that same volume being pushed at you. More context for them does not have to mean more noise for you.</p>
+        <h3 data-i18n="out.h3b">AI gets richer context</h3>
+        <p data-i18n="out.p2">Agents can see relationships, sources and history across everything you've produced, without that same volume being pushed at you. More context for them does not have to mean more noise for you.</p>
       </div>
     </div>
 
-    <p class="closer">Structured for AI. <em>Simple for people.</em></p>
+    <p class="closer" data-i18n="out.closer">Structured for AI. <em>Simple for people.</em></p>
   </div>
 </div>
 
 <!-- PRICING -->
 <section id="pricing">
   <div class="wrap">
-    <div class="eyebrow">Business model</div>
-    <h2 class="h2">Free on your laptop. Paid when it leaves.</h2>
-    <p class="sub">
+    <div class="eyebrow" data-i18n="price.eyebrow">Business model</div>
+    <h2 class="h2" data-i18n="price.h2">Free on your laptop. Paid when it leaves.</h2>
+    <p class="sub" data-i18n="price.sub">
       Individuals pay only to share or to store in the cloud. Companies buy seats.
     </p>
 
     <div class="tiers">
       <div class="tier free">
-        <div class="tl">Individuals</div>
-        <h3>Free</h3>
-        <div class="pr">Everything on your own machine</div>
+        <div class="tl" data-i18n="price.t1l">Individuals</div>
+        <h3 data-i18n="price.t1h">Free</h3>
+        <div class="pr" data-i18n="price.t1p">Everything on your own machine</div>
         <ul>
-          <li>Scan, see, correct and undo</li>
-          <li>The full visual workspace and Markdown editing</li>
-          <li>No account, nothing leaves the device</li>
-          <li>Your files stay yours, in plain Markdown</li>
+          <li data-i18n="price.t1a">Scan, see, correct and undo</li>
+          <li data-i18n="price.t1b">The full visual workspace and Markdown editing</li>
+          <li data-i18n="price.t1c">No account, nothing leaves the device</li>
+          <li data-i18n="price.t1d">Your files stay yours, in plain Markdown</li>
         </ul>
-        <div class="addon"><b>$15 / month</b><span>Share workspaces with other people and sync them across your devices.</span></div>
-        <div class="addon"><b>+ storage</b><span>Additional cloud storage is priced by usage.</span></div>
+        <div class="addon"><b data-i18n="price.a1b">$15 / month</b><span data-i18n="price.a1s">Share workspaces with other people and sync them across your devices.</span></div>
+        <div class="addon"><b data-i18n="price.a2b">+ storage</b><span data-i18n="price.a2s">Additional cloud storage is priced by usage.</span></div>
       </div>
       <div class="tier">
-        <div class="tl">Companies</div>
-        <h3>Per seat</h3>
-        <div class="pr">Enterprise pricing</div>
+        <div class="tl" data-i18n="price.t2l">Companies</div>
+        <h3 data-i18n="price.t2h">Per seat</h3>
+        <div class="pr" data-i18n="price.t2p">Enterprise pricing</div>
         <ul>
-          <li>Shared workspaces across a team</li>
-          <li>Centralised, secure storage</li>
-          <li>Admin controls, governance and audit</li>
-          <li>One place employees and agents both reach</li>
+          <li data-i18n="price.t2a">Shared workspaces across a team</li>
+          <li data-i18n="price.t2b">Centralised, secure storage</li>
+          <li data-i18n="price.t2c">Admin controls, governance and audit</li>
+          <li data-i18n="price.t2d">One place employees and agents both reach</li>
         </ul>
-        <div class="addon"><b>Not final yet</b><span>Pricing will be validated with early customers before launch.</span></div>
+        <div class="addon"><b data-i18n="price.a3b">Not final yet</b><span data-i18n="price.a3s">Pricing will be validated with early customers before launch.</span></div>
       </div>
     </div>
 
-    <div class="modelfoot">Free for individual local use. Paid for collaboration, cloud storage and company-wide deployment.</div>
+    <div class="modelfoot" data-i18n="price.foot">Free for individual local use. Paid for collaboration, cloud storage and company-wide deployment.</div>
   </div>
 </section>
 
 <!-- TEAM -->
 <section id="team">
   <div class="wrap">
-    <div class="eyebrow">The team</div>
-    <h2 class="h2">We've built inside this ecosystem, and we've felt it break.</h2>
-    <p class="sub">
+    <div class="eyebrow" data-i18n="team.eyebrow">The team</div>
+    <h2 class="h2" data-i18n="team.h2">We've built inside this ecosystem, and we've felt it break.</h2>
+    <p class="sub" data-i18n="team.sub">
       We work inside Microsoft's workplace productivity ecosystem and understand how business users organise and produce
       their work. We're also daily users of agents — which is how we watched SharePoint and OneDrive start to give out as
       those agents created more files, more context and more places to lose them.
@@ -578,8 +627,8 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
     <div class="founders">
       <div class="fcard">
         <div class="fn">Yu Asano</div>
-        <div class="fr">Co-founder &amp; CEO</div>
-        <p>
+        <div class="fr" data-i18n="team.r1">Co-founder &amp; CEO</div>
+        <p data-i18n="team.b1">
           AI product builder and Microsoft GTM engineer, obsessed with making complex AI-generated information clear,
           visual and usable. Built Baby Voice Recorder end to end — hardware, firmware, cloud and iOS — while leading
           Azure go-to-market at Microsoft Japan, and launched Microsoft's first TikTok account in Asia.
@@ -588,53 +637,53 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       </div>
       <div class="fcard">
         <div class="fn">Tomoya Kato</div>
-        <div class="fr">Co-founder</div>
-        <p>
+        <div class="fr" data-i18n="team.r2">Co-founder</div>
+        <p data-i18n="team.b2">
           Working at the intersection of workplace platforms and the agents now running on top of them — how large
           organisations adopt new tools, and what has to be true before anything is allowed near their documents.
         </p>
         <a class="li" href="https://www.linkedin.com/in/tomoya-kato-a0a078162/" target="_blank" rel="noopener">LinkedIn ↗</a>
       </div>
     </div>
-
+  </div>
 </section>
 
 <!-- UPCOMING -->
 <section id="upcoming">
   <div class="wrap">
-    <div class="eyebrow">Upcoming</div>
-    <h2 class="h2">What we're building, and in what order.</h2>
-    <p class="sub">Jin AI isn't open yet. Here is the honest state of it, so you know what you'd be joining.</p>
+    <div class="eyebrow" data-i18n="road.eyebrow">Upcoming</div>
+    <h2 class="h2" data-i18n="road.h2">What we're building, and in what order.</h2>
+    <p class="sub" data-i18n="road.sub">Jin AI isn't open yet. Here is the honest state of it, so you know what you'd be joining.</p>
 
     <div class="road">
       <div class="stage now">
-        <div class="s"><i></i>In build</div>
-        <h3>The workspace</h3>
+        <div class="s"><i></i><span data-i18n="road.s1">In build</span></div>
+        <h3 data-i18n="road.h1">The workspace</h3>
         <ul>
-          <li>Point Jin AI at a folder and see it drawn</li>
-          <li>The visual workspace and the page</li>
-          <li>Visual Markdown reading and editing</li>
-          <li>macOS and Windows</li>
+          <li data-i18n="road.l1a">Point Jin AI at a folder and see it drawn</li>
+          <li data-i18n="road.l1b">The visual workspace and the page</li>
+          <li data-i18n="road.l1c">Visual Markdown reading and editing</li>
+          <li data-i18n="road.l1d">macOS and Windows</li>
         </ul>
       </div>
       <div class="stage">
-        <div class="s"><i></i>Next</div>
-        <h3>The sync</h3>
+        <div class="s"><i></i><span data-i18n="road.s2">Next</span></div>
+        <h3 data-i18n="road.h3b">The sync</h3>
         <ul>
-          <li>Your structure written back into <code>CLAUDE.md</code> and friends</li>
-          <li>Agent-only files separated automatically</li>
-          <li>Projects and subprojects, visually managed</li>
-          <li>Open source release</li>
+          <li data-i18n="road.l2a">Your structure written back into <code>CLAUDE.md</code> and friends</li>
+          <li data-i18n="road.l2b">Agent-only files separated automatically</li>
+          <li data-i18n="road.l2c">Projects and subprojects, visually managed</li>
+          <li data-i18n="road.l2d">Open source release</li>
         </ul>
       </div>
       <div class="stage">
-        <div class="s"><i></i>Later</div>
-        <h3>The organisation</h3>
+        <div class="s"><i></i><span data-i18n="road.s3">Later</span></div>
+        <h3 data-i18n="road.h3c">The organisation</h3>
         <ul>
-          <li>Secure shared storage for teams</li>
-          <li>Access controls and governance</li>
-          <li>One place employees and agents both reach</li>
-          <li>Microsoft 365 alongside your existing stack</li>
+          <li data-i18n="road.l3a">Secure shared storage for teams</li>
+          <li data-i18n="road.l3b">Access controls and governance</li>
+          <li data-i18n="road.l3c">One place employees and agents both reach</li>
+          <li data-i18n="road.l3d">Microsoft 365 alongside your existing stack</li>
         </ul>
       </div>
     </div>
@@ -644,14 +693,14 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <!-- WAITLIST -->
 <section class="final" id="waitlist">
   <div class="wrap">
-    <div class="eyebrow">Join the waitlist</div>
-    <h2>Be there when Jin AI opens.</h2>
-    <p>Early access goes out in small batches. We'll ask which agents you use and what your folders look like — and you'll get in before it's public.</p>
+    <div class="eyebrow" data-i18n="final.eyebrow">Join the waitlist</div>
+    <h2 data-i18n="final.h2">Be there when Jin AI opens.</h2>
+    <p data-i18n="final.sub">Early access goes out in small batches. We'll ask which agents you use and what your folders look like — and you'll get in before it's public.</p>
     <form class="wait" id="waitBottom">
-      <input type="email" name="email" required autocomplete="email" placeholder="you@company.com" aria-label="Email address">
-      <button type="submit" class="btn btn-p">Join the waitlist</button>
+      <input type="email" name="email" required autocomplete="email" placeholder="you@company.com" aria-label="Email address" data-i18n-ph="wait.ph" data-i18n-aria="wait.aria">
+      <button type="submit" class="btn btn-p" data-i18n="wait.cta">Join the waitlist</button>
     </form>
-    <div class="waitnote" id="noteBottom">No newsletter, no drip campaign. One email when it's your turn.</div>
+    <div class="waitnote" id="noteBottom" data-i18n="final.note">No newsletter, no drip campaign. One email when it's your turn.</div>
   </div>
 </section>
 
@@ -660,18 +709,260 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
     <div class="fgrid">
       <div>
         <a class="brand" href="#" style="font-size:20px"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
-        <p style="margin-top:14px;max-width:26em;color:var(--ink-3)">Structured for AI. Simple for people.</p>
-        <p style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--dim)">Tokyo, Japan</p>
+        <p style="margin-top:14px;max-width:26em;color:var(--ink-3)" data-i18n="foot.tag">Structured for AI. Simple for people.</p>
+        <p style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--dim)" data-i18n="foot.city">Tokyo, Japan</p>
       </div>
-      <div><h4>Product</h4><ul><li><a href="#problem">The problem</a></li><li><a href="#solution">The solution</a></li><li><a href="#product">The product</a></li><li><a href="#upcoming">Upcoming</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
-      <div><h4>More</h4><ul><li><a href="#team">Team</a></li><li><a href="index.html">Design directions</a></li></ul></div>
-      <div><h4>Company</h4><ul><li><a href="#">Blog</a></li><li><a href="#">GitHub</a></li><li><a href="#">Contact</a></li></ul></div>
+      <div><h4 data-i18n="foot.h1">Product</h4><ul><li><a href="#problem" data-i18n="foot.l1">The problem</a></li><li><a href="#solution" data-i18n="foot.l2">The solution</a></li><li><a href="#product" data-i18n="foot.l3">The product</a></li><li><a href="#upcoming" data-i18n="foot.l4">Upcoming</a></li><li><a href="#pricing" data-i18n="foot.l5">Pricing</a></li></ul></div>
+      <div><h4 data-i18n="foot.h2">More</h4><ul><li><a href="#team" data-i18n="foot.l6">Team</a></li><li><a href="index.html" data-i18n="foot.l7">Design directions</a></li></ul></div>
+      <div><h4 data-i18n="foot.h3">Company</h4><ul><li><a href="#" data-i18n="foot.l8">Blog</a></li><li><a href="#" data-i18n="foot.l9">GitHub</a></li><li><a href="#" data-i18n="foot.l10">Contact</a></li></ul></div>
     </div>
-    <div class="fbot"><span>© 2026 Jin AI</span><span>Direction A — Paper</span></div>
+    <div class="fbot"><span>© 2026 Jin AI</span><span data-i18n="foot.dir">Direction A — Paper</span></div>
   </div>
 </footer>
 
 <script>
+/* ── Language ───────────────────────────────────────────────────────────────
+   English lives in the HTML above and is captured as the `en` dictionary on
+   load, so it can never drift from the markup. Japanese lives in JA below.
+   Add a language by adding one more dictionary with the same keys. */
+const JA = {
+  "html.title": "Jin AI — AIには構造を、人にはシンプルさを",
+  "html.desc": "AIエージェントが、あなたの代わりにファイルをつくり、あなたなら選ばない場所に置いていく。Jin AI はその構造を1画面に映し、手で直せるようにし、すべての変更を記録します。AIには構造を、人にはシンプルさを。",
+
+  "nav.problem": "課題",
+  "nav.solution": "解決",
+  "nav.product": "プロダクト",
+  "nav.pricing": "料金",
+  "nav.team": "チーム",
+  "nav.cta": "ウェイトリストに登録",
+
+  "hero.pill": "開発中 — ウェイトリスト受付中",
+  "hero.h1": "AIには構造を。<br>人には<span class=\"fade\">シンプルさを。</span>",
+  "hero.lede": "いまや、AIエージェントがあなたの代わりにファイルをつくります。Markdown、スライド、文書、表計算、PDF——そして<b>あなたなら選ばない場所</b>に保存していく。Jin AI は、その構造を1つの画面に映し、手で直せるようにし、すべての変更を記録します。だから、自分の変更とエージェントの変更を、別々に取り消せます。",
+  "hero.works": "対応エージェント:",
+  "hero.note": "手元のPCでは無料 · 公開したときにメールを1通だけ",
+  "hero.cap": "全体を見渡してから、ページを開いて仕事に取りかかる",
+
+  "wait.ph": "you@company.com",
+  "wait.aria": "メールアドレス",
+  "wait.cta": "ウェイトリストに登録",
+
+  "problem.eyebrow": "課題",
+  "problem.h2": "ファイルは、二度なくなる。",
+  "problem.sub": "まず名前を忘れる。次に、置き場所を忘れる。エージェントが作業を始めると、どこに何を置くかもエージェントが決めます。<strong>整理の仕方を一つひとつ指示しないかぎり、その構造は自分ならこうする、という形から離れていきます</strong>。",
+  "problem.q1": "「Codex で MD ファイルを直して、後の会議で使おうと思っていた。戻ってきたら、ファイル名も置き場所も思い出せなかった」",
+  "problem.q2": "「自分なら、そこには置かない」",
+  "problem.q2s": "エージェントが一瞬でつくった構造を、午後いっぱいかけて移動し、片づけることになる。",
+  "problem.q3": "「結局、自分が何をつくったのか確かめるために、1つずつ開くはめになる」",
+  "problem.q3s": "エージェントの作成と編集は速い。失われるのは、ファイル名とフォルダ構造のほう。",
+  "chaos.a1": "独自のフォルダ規則",
+  "chaos.a2": "別の規則",
+  "chaos.a3": "さらに別の規則",
+  "chaos.foot": "3つのエージェント、3つの流儀、1つのフォルダ。<b>その半分は、そもそも人が読むために書かれていません</b> — 指示書、メモリ、ログ、途中生成物が、本当に仕上げるべき資料のすぐ隣に並びます。",
+  "stat.body": "<b>1台のPCで、1週間。</b>弊社CEOのノートPCでは、1週間に 3,950 個の Markdown ファイルが生成されていました。<strong>その89%は二度と開かれず</strong>、283 個は名前がただの <code>README.md</code>。ほとんどは、誰かが意図してつくったものでも、見る必要があるものでもありません。エージェントが働いた跡として、ただ残っただけです。",
+
+  "sol.eyebrow": "解決",
+  "sol.h2": "見える、直せる、戻せる。",
+  "sol.sub": "Jin AI は、エージェントの動き方を変えません。ただ<strong>構造を見えるようにし</strong>、手で直せるようにし、その維持をエージェントに手伝わせるだけです。",
+  "sol.t1": "見る",
+  "sol.h1": "プロジェクト全体を、一度に見る",
+  "sol.p1": "プロジェクト、サブプロジェクト、フォルダ、ファイルが1つの画面に並びます。フォルダを1つずつ開いたり、エージェントが付けた名前を思い出したりしなくても、どのファイルがどこに属するのか分かります。",
+  "sol.t2": "直す",
+  "sol.h3b": "ふつうのファイルのように動かす",
+  "sol.p2": "名前を変える。移動する。フォルダを変える。プロジェクトを組み替える。エージェントが違う場所に置いたときは、構造をつくり直すのではなく、ドラッグ＆ドロップで直せます。",
+  "sol.t3": "戻す",
+  "sol.h3c": "何が変わったかを見て、元に戻す",
+  "sol.p3": "自分の変更と、エージェントの変更は、別々に記録されます。移動・改名・再編成がまずい形になったら、何が起きたのかを見て、そこだけ元に戻せます。",
+  "sol.verdb": "エージェントは、すべてに手が届く。あなたが、すべてを見る必要はない。",
+  "sol.verds": "Jin AI は何も削除しませんし、エージェントからファイルを隠すこともしません。人には自分に関係のあるファイルだけを見せ、エージェントは裏側でプロジェクト全体を扱い続けます。",
+
+  "demo.eyebrow": "触ってみる",
+  "demo.h2": "ディスクの中身すべてか、自分に必要な分だけか。",
+  "demo.sub": "同じファイル、同じフォルダです。エージェント専用のファイルは、エージェントからは今までどおり見えます。人の注意を奪わなくなるだけです。",
+  "demo.label": "サンプルプロジェクト",
+  "demo.raw": "生のフォルダ",
+  "demo.fold": "Jin AI で見る",
+  "demo.stRaw": "ディスクの中身すべて",
+  "demo.stFold": "5プロジェクト · エージェント用ファイルは収納済み",
+  "demo.hidName": "エージェント専用ファイル",
+  "demo.hidA": "指示書 · メモリ",
+  "demo.hidB": "ログ · 途中生成物",
+  "demo.hidC": "ディスクにあり、エージェントからは今までどおり読めます",
+
+  "sync.note": "<b>あなたの修正は、画面の中で終わりません。</b>プロジェクトの区切りを動かす、分類の名前を変える、何かを隠す — その結果を Jin AI が<strong>エージェントがすでに読んでいる指示ファイル</strong>（<code>CLAUDE.md</code>、<code>AGENTS.md</code>、<code>copilot-instructions.md</code> など）に書き戻します。だから次にエージェントがつくるファイルは、あなたが置いたはずの場所に置かれます。プラグインも API も不要。エージェントがもともと読んでいる Markdown を使うだけです。<span class=\"never\"><code>CLAUDE.md</code> を開くのは、あなたではありません。Jin AI が正しく保ちます。</span>",
+  "sol.src": "検索窓を良くするのではなく、構造にこだわる理由: 人が自分のファイルにたどり着く手段は、たどって開くが 56〜68%、検索は 4〜15%。検索ツールを高性能なものに入れ替えた後でも、この比率はほとんど変わりませんでした。<em>Bergman et al., ACM TOIS, 2008.</em>",
+
+  "prod.eyebrow": "プロダクト",
+  "prod.h2": "こういう画面です。",
+  "prod.sub": "全体を見渡してから、ページを開いて仕事に取りかかる。Markdown を覚える必要も、ファイルをどこかへ移す必要もありません。ファイルは今の場所に、エージェントが期待する形式のまま残ります。Jin AI はそれを描くだけ。だから、思い出すのではなく<strong>見て分かる</strong>ようになります。",
+  "prod.n1": "ビジュアルワークスペース",
+  "prod.vh1": "プロジェクト全体を、ひと目で",
+  "prod.vp1": "ページやファイルは、意味の通る構造のまま並びます。会議、リサーチ、意思決定、成果物が1枚の地図になり、何も開かないまま全体をつかめます。",
+  "prod.n2": "ページ",
+  "prod.vh2": "1つのテーマに関わるものが、1か所に",
+  "prod.vp2": "メモ、決定事項、PowerPoint、PDF、リンクが1つのページに集まります。土台はすべて Markdown なので、次のエージェントは、あなたが止めたところからそのまま続けられます。",
+  "prod.dh1": "Markdown のためのビジュアルエディタ",
+  "prod.dp1": "編集、並べ替え、複製、リンクをそのまま操作できます。結果はふつうの Markdown として書き戻されるので、あなたが触ったものがエージェントに読めなくなることはありません。",
+  "prod.dh2": "エージェント専用ファイルは、視界の外に",
+  "prod.dp2": "指示書、メモリ、ログ、途中生成物はディスクに残り、エージェントからは今までどおり読めます。あなたの既定の画面に出てこなくなるだけです。",
+
+  "out.eyebrow": "結果",
+  "out.h2": "人もAIも、必要なものを得る。",
+  "out.sub": "目的は、フォルダがきれいになることではありません。あなたの仕事を受け取る2種類の相手——人とAI——が、互いの足を引っ張らなくなることです。",
+  "out.h1": "人は、ファイル管理から解放される",
+  "out.p1": "正しいバージョンを探し、名前を付け直し、置き場所を決める。そこに使っていた注意力を、仕事を前に進めることに使えます。構造がなくなるわけではありません。維持する人が、あなたでなくなるだけです。",
+  "out.h3b": "AIは、より豊かな文脈を得る",
+  "out.p2": "エージェントは、あなたがこれまでつくったものの関係・出典・履歴を横断して見られます。その同じ量が、あなたに押し寄せることはありません。AIの文脈が増えることと、人のノイズが増えることは、切り離せます。",
+  "out.closer": "AIには構造を。<em>人にはシンプルさを。</em>",
+
+  "price.eyebrow": "ビジネスモデル",
+  "price.h2": "手元では無料。外に出るときに有料。",
+  "price.sub": "個人のお客様は、共有するときとクラウドに置くときだけお支払いいただきます。企業はシート単位です。",
+  "price.t1l": "個人",
+  "price.t1h": "無料",
+  "price.t1p": "すべて自分のPCの中で完結",
+  "price.t1a": "スキャンして、見て、直して、戻す",
+  "price.t1b": "ビジュアルワークスペースと Markdown 編集のすべて",
+  "price.t1c": "アカウント不要。デバイスの外に何も出ません",
+  "price.t1d": "ファイルはプレーンな Markdown のまま、あなたのもの",
+  "price.a1b": "月 $15",
+  "price.a1s": "ほかの人とワークスペースを共有し、複数の端末で同期します。",
+  "price.a2b": "+ ストレージ",
+  "price.a2s": "追加のクラウドストレージは、使用量に応じた料金です。",
+  "price.t2l": "企業",
+  "price.t2h": "シート単位",
+  "price.t2p": "エンタープライズ価格",
+  "price.t2a": "チーム全体でのワークスペース共有",
+  "price.t2b": "集約された、安全なストレージ",
+  "price.t2c": "管理者機能、ガバナンス、監査",
+  "price.t2d": "社員とエージェントが、同じ1か所にアクセス",
+  "price.a3b": "価格は未確定",
+  "price.a3s": "提供開始の前に、初期のお客様と一緒に検証します。",
+  "price.foot": "個人がローカルで使う分は無料。共同作業・クラウド保存・全社導入は有料です。",
+
+  "team.eyebrow": "チーム",
+  "team.h2": "このエコシステムの内側でつくり、それが壊れるところも見てきました。",
+  "team.sub": "私たちは Microsoft の働き方のエコシステムの中で仕事をし、ビジネスユーザーがどう整理し、どう成果物をつくるのかを理解しています。同時に、エージェントの日常ユーザーでもあります。だからこそ、エージェントがファイルと文脈と「なくす場所」を増やしていくなかで、SharePoint と OneDrive が持ちこたえられなくなっていく様子を、間近で見てきました。",
+  "team.r1": "共同創業者 兼 CEO",
+  "team.b1": "AIプロダクトの作り手であり、Microsoft の GTM エンジニア。AIが生み出す複雑な情報を、明快で、目に見えて、使えるものにすることに取り憑かれている。日本マイクロソフトで Azure の Go-To-Market をリードしながら、Baby Voice Recorder をハードウェア・ファームウェア・クラウド・iOS まで一人でつくり切り、アジアで初となる Microsoft の TikTok アカウントを立ち上げた。",
+  "team.r2": "共同創業者",
+  "team.b2": "働き方のプラットフォームと、その上で動き始めたエージェントの交差点で仕事をしている。大企業が新しいツールをどう受け入れるのか、そして自社の文書に何かを近づける前に何が満たされている必要があるのかを見てきた。",
+
+  "road.eyebrow": "これから",
+  "road.h2": "何を、どの順番でつくるか。",
+  "road.sub": "Jin AI はまだ公開していません。何に登録することになるのか分かるように、いまの状態を正直に書いておきます。",
+  "road.s1": "開発中",
+  "road.h1": "ワークスペース",
+  "road.l1a": "フォルダを指定すると、そのまま描かれる",
+  "road.l1b": "ビジュアルワークスペースと、ページ",
+  "road.l1c": "Markdown のビジュアルな閲覧と編集",
+  "road.l1d": "macOS と Windows",
+  "road.s2": "次",
+  "road.h3b": "同期",
+  "road.l2a": "あなたの構造を <code>CLAUDE.md</code> などに書き戻す",
+  "road.l2b": "エージェント専用ファイルの自動仕分け",
+  "road.l2c": "プロジェクトとサブプロジェクトの視覚的な管理",
+  "road.l2d": "オープンソースでの公開",
+  "road.s3": "その先",
+  "road.h3c": "組織",
+  "road.l3a": "チーム向けの、安全な共有ストレージ",
+  "road.l3b": "アクセス制御とガバナンス",
+  "road.l3c": "社員とエージェントが、同じ1か所にアクセス",
+  "road.l3d": "既存の環境と併存する Microsoft 365 対応",
+
+  "final.eyebrow": "ウェイトリスト",
+  "final.h2": "Jin AI が開いた、その日から。",
+  "final.sub": "早期アクセスは、少人数ずつご案内します。お使いのエージェントとフォルダの様子をうかがったうえで、一般公開より先にお渡しします。",
+  "final.note": "ニュースレターも、ステップメールもありません。順番が来たときに、1通だけ。",
+
+  "foot.tag": "AIには構造を。人にはシンプルさを。",
+  "foot.city": "東京, 日本",
+  "foot.h1": "プロダクト",
+  "foot.l1": "課題",
+  "foot.l2": "解決",
+  "foot.l3": "プロダクト",
+  "foot.l4": "これから",
+  "foot.l5": "料金",
+  "foot.h2": "その他",
+  "foot.l6": "チーム",
+  "foot.l7": "デザイン案",
+  "foot.h3": "会社",
+  "foot.l8": "ブログ",
+  "foot.l9": "GitHub",
+  "foot.l10": "お問い合わせ",
+  "foot.dir": "A案 — Paper",
+
+  "demo.g1": "会議", "demo.g1a": "週次同期 — 8月21日", "demo.g1b": "キックオフ議事録", "demo.g1c": "顧客レビュー", "demo.g1k": "12 件",
+  "demo.g2": "リサーチ", "demo.g2a": "顧客の声", "demo.g2b": "市場シグナル", "demo.g2c": "インタビュー記録", "demo.g2k": "24 件",
+  "demo.g3": "意思決定", "demo.g3a": "ポジショニングの判断", "demo.g3b": "価格の方向性", "demo.g3k": "7 件",
+  "demo.g4": "成果物", "demo.g4a": "ローンチ・ナラティブ", "demo.g4b": "投資家向け資料", "demo.g4k": "9 件",
+  "demo.g5": "参考資料", "demo.g5a": "競合メモ", "demo.g5b": "用語集", "demo.g5k": "18 件",
+
+  "js.done": "登録できました。順番が来たらご連絡します。",
+  "js.opening": "メールアプリを開いています…",
+  "js.adding": "登録中…",
+  "js.failA": "送信できませんでした。もう一度試すか、",
+  "js.failB": " までメールをお送りください。",
+  "js.mailSubject": "Jin AI ウェイトリスト登録",
+  "js.mailBody": "Jin AI のウェイトリストに登録してください。\n\nメールアドレス: "
+};
+
+const EN = {};                       /* filled from the markup on load */
+const DICTS = { en: EN, ja: JA };
+let LANG = "en";
+
+const T = k => (DICTS[LANG] && DICTS[LANG][k] !== undefined) ? DICTS[LANG][k] : (EN[k] || "");
+
+(function captureEnglish(){
+  document.querySelectorAll("[data-i18n]").forEach(el => { EN[el.dataset.i18n] = el.innerHTML.trim(); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el => { EN[el.dataset.i18nPh] = el.placeholder; });
+  document.querySelectorAll("[data-i18n-aria]").forEach(el => { EN[el.dataset.i18nAria] = el.getAttribute("aria-label"); });
+  EN["html.title"] = document.title;
+  EN["html.desc"]  = document.querySelector('meta[name=description]').content;
+  /* strings the scripts below build by hand */
+  Object.assign(EN, {
+    "demo.stRaw":"everything on disk", "demo.stFold":"5 projects · agent files put away",
+    "demo.hidName":"Agent-only files", "demo.hidA":"instructions · memory",
+    "demo.hidB":"logs · intermediate output", "demo.hidC":"still on disk, still readable by your agents",
+    "demo.g1":"Meetings","demo.g1a":"Weekly sync — Aug 21","demo.g1b":"Kickoff notes","demo.g1c":"Customer review","demo.g1k":"12 documents",
+    "demo.g2":"Research","demo.g2a":"Customer evidence","demo.g2b":"Market signals","demo.g2c":"Interview notes","demo.g2k":"24 documents",
+    "demo.g3":"Decisions","demo.g3a":"Positioning call","demo.g3b":"Pricing direction","demo.g3k":"7 documents",
+    "demo.g4":"Deliverables","demo.g4a":"Launch narrative","demo.g4b":"Investor brief","demo.g4k":"9 documents",
+    "demo.g5":"Reference","demo.g5a":"Competitor notes","demo.g5b":"Glossary","demo.g5k":"18 documents",
+    "js.done":"You're on the list. We'll be in touch.",
+    "js.opening":"Opening your mail app…",
+    "js.adding":"Adding…",
+    "js.failA":"That didn't go through. Try again, or email ",
+    "js.failB":".",
+    "js.mailSubject":"Jin AI waitlist",
+    "js.mailBody":"Please add me to the Jin AI waitlist.\n\nEmail: "
+  });
+})();
+
+function setLang(lang, remember){
+  LANG = DICTS[lang] ? lang : "en";
+  document.documentElement.lang = LANG;
+  document.title = T("html.title");
+  document.querySelector('meta[name=description]').content = T("html.desc");
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.innerHTML = T(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el => { el.placeholder = T(el.dataset.i18nPh); });
+  document.querySelectorAll("[data-i18n-aria]").forEach(el => { el.setAttribute("aria-label", T(el.dataset.i18nAria)); });
+  document.querySelectorAll(".langsw button").forEach(b => b.classList.toggle("on", b.dataset.lang === LANG));
+  if(remember){ try{ localStorage.setItem("jinai-lang", LANG); }catch(e){} }
+  document.dispatchEvent(new CustomEvent("langchange"));
+}
+
+(function initLang(){
+  let saved = null;
+  try{ saved = localStorage.getItem("jinai-lang"); }catch(e){}
+  const q = new URLSearchParams(location.search).get("lang");
+  const auto = (navigator.language || "en").toLowerCase().startsWith("ja") ? "ja" : "en";
+  setLang(q || saved || auto, false);
+  document.querySelectorAll(".langsw button").forEach(b => {
+    b.addEventListener("click", () => setLang(b.dataset.lang, true));
+  });
+})();
+
 /* ── Waitlist ───────────────────────────────────────────────────────────────
    Paste a form endpoint below to make the waitlist live.
    Works with Formspree ("https://formspree.io/f/xxxxxxx"), Tally, Basin,
@@ -680,10 +971,10 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 const WAITLIST_ENDPOINT = "";
 const WAITLIST_EMAIL    = "hello@jinai.example";
 
-function wireWaitlist(formId, noteId, doneMsg){
+function wireWaitlist(formId, noteId){
   const form = document.getElementById(formId), note = document.getElementById(noteId);
   if(!form || !note) return;
-  const original = note.innerHTML;
+  const noteKey = note.dataset.i18n;
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = form.querySelector('input[type=email]').value.trim();
@@ -692,15 +983,15 @@ function wireWaitlist(formId, noteId, doneMsg){
     note.className = 'waitnote';
 
     if(!WAITLIST_ENDPOINT){
-      note.textContent = 'Opening your mail app…';
+      note.textContent = T('js.opening');
       window.location.href = 'mailto:' + WAITLIST_EMAIL
-        + '?subject=' + encodeURIComponent('Jin AI waitlist')
-        + '&body=' + encodeURIComponent('Please add me to the Jin AI waitlist.\n\nEmail: ' + email + '\n');
-      setTimeout(() => { note.innerHTML = original; }, 4000);
+        + '?subject=' + encodeURIComponent(T('js.mailSubject'))
+        + '&body=' + encodeURIComponent(T('js.mailBody') + email + '\n');
+      setTimeout(() => { note.innerHTML = T(noteKey); }, 4000);
       return;
     }
 
-    btn.disabled = true; const label = btn.textContent; btn.textContent = 'Adding…';
+    btn.disabled = true; const label = btn.textContent; btn.textContent = T('js.adding');
     try{
       const res = await fetch(WAITLIST_ENDPOINT, {
         method: 'POST',
@@ -710,38 +1001,41 @@ function wireWaitlist(formId, noteId, doneMsg){
       if(!res.ok) throw new Error(res.status);
       form.innerHTML = '';
       note.className = 'waitnote ok';
-      note.textContent = doneMsg;
+      note.removeAttribute('data-i18n');
+      note.textContent = T('js.done');
     }catch(err){
       note.className = 'waitnote bad';
-      note.textContent = "That didn't go through. Try again, or email " + WAITLIST_EMAIL + '.';
-      btn.disabled = false; btn.textContent = label;
+      note.textContent = T('js.failA') + WAITLIST_EMAIL + T('js.failB');
+      btn.disabled = false; btn.textContent = T('wait.cta');
     }
   });
 }
-wireWaitlist('waitTop','noteTop',"You're on the list. We'll be in touch.");
-wireWaitlist('waitBottom','noteBottom',"You're on the list. We'll be in touch.");
+wireWaitlist('waitTop','noteTop');
+wireWaitlist('waitBottom','noteBottom');
 
 /* ── Raw folder / With Jin AI demo ───────────────────────────────────────── */
-const GROUPS=[
- {n:'Meetings',c:'#db2777',s:['Weekly sync — Aug 21','Kickoff notes','Customer review'],k:'12 documents'},
- {n:'Research',c:'#1659e9',s:['Customer evidence','Market signals','Interview notes'],k:'24 documents'},
- {n:'Decisions',c:'#b45309',s:['Positioning call','Pricing direction'],k:'7 documents'},
- {n:'Deliverables',c:'#2a5e46',s:['Launch narrative','Investor brief'],k:'9 documents'},
- {n:'Reference',c:'#7c3aed',s:['Competitor notes','Glossary'],k:'18 documents'}
-];
 (()=>{
   const body=document.getElementById('foldBody'),
         bR=document.getElementById('bRaw'),
         bF=document.getElementById('bFold'),
         st=document.getElementById('stCount');
+  const groups = () => [
+   {c:'#db2777',n:'demo.g1',s:['demo.g1a','demo.g1b','demo.g1c'],k:'demo.g1k'},
+   {c:'#1659e9',n:'demo.g2',s:['demo.g2a','demo.g2b','demo.g2c'],k:'demo.g2k'},
+   {c:'#b45309',n:'demo.g3',s:['demo.g3a','demo.g3b'],k:'demo.g3k'},
+   {c:'#2a5e46',n:'demo.g4',s:['demo.g4a','demo.g4b'],k:'demo.g4k'},
+   {c:'#7c3aed',n:'demo.g5',s:['demo.g5a','demo.g5b'],k:'demo.g5k'}
+  ];
   const human=['weekly-sync.md','kickoff-notes.md','customer-review.md','launch-narrative.md','market-signals.md',
                'pricing-decision.md','investor-brief.md','competitor-notes.md','interview-01.md','glossary.md',
                'positioning.md','customer-evidence.md','summary.md','handover.md','README.md'];
   const agent=['CLAUDE.md','AGENTS.md','instructions.md','.memory/session.md','tmp/run-3.md','.cache/index.md',
                'output-2026-08-14.md','raw-dump.md','copilot-instructions.md','scratch.md'];
+  let view = 'raw';
 
   function raw(){
-    st.textContent='everything on disk';
+    view='raw';
+    st.textContent=T('demo.stRaw');
     let h='<div class="raw">';
     for(let i=0;i<240;i++){
       if(i%3===1){ h+=`<span class="mach">${agent[i%agent.length]}</span>`; }
@@ -751,20 +1045,23 @@ const GROUPS=[
     bR.classList.add('on');bF.classList.remove('on');
   }
   function folded(){
-    st.textContent='5 projects · agent files put away';
+    view='folded';
+    st.textContent=T('demo.stFold');
     let h='<div class="buckets">';
-    GROUPS.forEach(g=>{
-      h+=`<div class="bk"><div class="bd" style="background:${g.c}"></div><div class="bn">${g.n}</div>
-          <div class="bs">${g.s.map(x=>`<span>${x}</span>`).join('')}</div>
-          <div class="bc">${g.k}</div></div>`;
+    groups().forEach(g=>{
+      h+=`<div class="bk"><div class="bd" style="background:${g.c}"></div><div class="bn">${T(g.n)}</div>
+          <div class="bs">${g.s.map(x=>`<span>${T(x)}</span>`).join('')}</div>
+          <div class="bc">${T(g.k)}</div></div>`;
     });
-    h+=`<div class="bk hid"><div class="bd" style="background:var(--edge)"></div><div class="bn">Agent-only files</div>
-        <div class="bs"><span>instructions · memory</span><span>logs · intermediate output</span></div>
-        <div class="bc">still on disk, still readable by your agents</div></div>`;
+    h+=`<div class="bk hid"><div class="bd" style="background:var(--edge)"></div><div class="bn">${T('demo.hidName')}</div>
+        <div class="bs"><span>${T('demo.hidA')}</span><span>${T('demo.hidB')}</span></div>
+        <div class="bc">${T('demo.hidC')}</div></div>`;
     body.innerHTML=h+'</div>';
     bF.classList.add('on');bR.classList.remove('on');
   }
-  bR.onclick=raw;bF.onclick=folded;raw();setTimeout(folded,2600);
+  bR.onclick=raw;bF.onclick=folded;
+  document.addEventListener('langchange',()=>{ view==='raw'?raw():folded(); });
+  raw();setTimeout(folded,2600);
 })();
 </script>
 </body>
