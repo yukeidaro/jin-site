@@ -73,8 +73,8 @@ function renderFaq(source) {
   return `<section id="faq">
   <div class="wrap">
     <div class="eyebrow">Direct answers</div>
-    <h2 class="h2">Questions people and agents ask first.</h2>
-    <p class="sub">Current product status, scope and pricing without launch-stage ambiguity.</p>
+    <h2 class="h2">The questions people ask first.</h2>
+    <p class="sub">Where the product actually is today, what it will cost, and what it does not do.</p>
     <div class="faq">${cards}
     </div>
   </div>

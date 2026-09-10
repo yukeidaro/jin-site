@@ -1,6 +1,6 @@
 # Jin AI
 
-> Jin AI is a visual workspace for AI-generated work, with Markdown as the spine. It is being built to show business users the structure their agents created, let them correct it, and record human and agent changes separately so either can be undone.
+> Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to show business users what their agents created and changed, let them correct it, and carry those corrections into the instruction files agents already read.
 
 Status: In build. Availability: coming soon. Last updated: 2026-09-10.
 
@@ -15,11 +15,12 @@ Interpret status words literally. "In build" is not shipped, "planned" is intend
 
 ## Direct answers
 
-- [What is Jin AI?](https://jinai.md/#faq-what-is-jin-ai): Jin AI is a visual workspace for AI-generated work, with Markdown as the spine. It is being built to show business users the structure their agents created, let them correct it, and record human and agent changes separately so either can be undone.
+- [What is Jin AI?](https://jinai.md/#faq-what-is-jin-ai): Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to show you what your agents created and changed, let you correct it, and carry those corrections into the instruction files agents already read.
 - [Who is Jin AI for?](https://jinai.md/#faq-who-is-jin-ai-for): Jin AI is for business users who work with AI agents but do not want file names, folders, links, tags, Markdown syntax or developer tools to become a second job.
+- [Why not just look in my file explorer?](https://jinai.md/#faq-why-not-just-use-my-file-explorer): A file explorer shows names and dates, not what an agent produced or changed. It does not separate agent-only files from your deliverables, and it cannot tell you which agent made which edit.
 - [Does Jin AI replace Markdown?](https://jinai.md/#faq-does-jin-ai-replace-markdown): No. Markdown remains the spine so agents can keep working. The planned visual interface means people will not need to learn Markdown syntax.
 - [Does Jin AI move or upload local files?](https://jinai.md/#faq-does-jin-ai-move-or-upload-files): The planned local edition is designed to read files in their existing locations without moving them. Sharing and cloud storage are optional planned paid capabilities.
-- [How will agents learn the structure a person chose?](https://jinai.md/#faq-how-do-agents-learn-the-structure): A planned next capability will write structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md, which agents already read. No plugin or API is planned to be required.
+- [How does Jin AI make my agents better?](https://jinai.md/#faq-how-do-agents-learn-the-structure): Seeing the output is what makes it correctable. A planned next capability will write your structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md, which agents already read, so the next file lands where you would have put it. No plugin or API is planned to be required.
 - [Is Jin AI available now?](https://jinai.md/#faq-is-jin-ai-available): Not yet. Jin AI is in build and early access is planned to open in small batches.
 - [How much will Jin AI cost?](https://jinai.md/#faq-how-much-will-jin-ai-cost): Individual local use is planned to be free. Individual collaboration is planned at $15 per month plus usage-based cloud storage. Company pricing is not final.
 
