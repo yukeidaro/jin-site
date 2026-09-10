@@ -1,6 +1,7 @@
 *.log
 .DS_Store
 Thumbs.db
+_site/
 
 # Pitch video assets. Not committed on purpose:
 # jinai-pitch-captioned-4k.mp4 is ~205MB, over GitHub's 100MB per-file hard

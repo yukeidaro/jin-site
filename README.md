@@ -2,85 +2,81 @@
 
 Public product site for **Jin AI** at <https://jinai.md/>.
 
-The site has one fixed English product narrative with two audience-specific formats:
+## Production routes
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Entry point; immediately opens `/human/` without an audience chooser |
-| `/human/` | Normal visual landing page for prospective users |
-| `/agent/` | Semantic, low-interaction product reference for machine readers |
-| `/agent/content.json` | Structured product facts used as a machine-readable companion |
-| `/llms.txt` | Short agent index with canonical resource links and evidence constraints |
-| `/en/` | English-language alias; immediately opens `/human/` |
+| `/` | Complete English Human landing page and sole product canonical |
+| `/human/` | `noindex` compatibility alias that opens `/` |
+| `/en/` | `noindex` English alias that opens `/` |
+| `/agent/` | Crawlable, status-aware reference generated for machine readers |
+| `/agent/content.json` | Public fact source for Human and Agent derivatives |
+| `/llms.txt` | Concise LLM index generated from the fact source |
+| `/robots.txt` | Search policy; model-training crawlers are blocked by default |
+| `/sitemap.xml` | Contains only the canonical root |
 
-There is no language toggle and no public Paper, Magazine, Screen or design-direction navigation.
+The site has no language toggle or design-direction chooser. Customer-facing
+content is English-only.
+
+## Content source and generation
+
+`agent/content.json` is the status-aware fact source. It records product status,
+capability delivery stages, direct answers, pricing status, founders, evidence,
+sources and caveats.
+
+Run the zero-dependency generator after changing facts:
+
+```powershell
+node scripts/generate-aeo.mjs
+```
+
+It updates:
+
+- the visible FAQ in `index.html`;
+- the root JSON-LD graph;
+- the content of `agent/index.html`;
+- `llms.txt`.
+
+Do not edit content inside `GENERATED:*` markers directly. CI runs the generator
+in check mode and fails when a derivative has drifted.
 
 ## Content rules
 
 - Product name: **Jin AI**
 - Headline: **Structured for AI. Simple for people.**
 - Markdown remains the spine of the product story.
-- The solution is always explained as **See → Fix → Undo**.
-- Structural decisions are written to files agents already read:
+- The solution is explained as **See -> Fix -> Undo**.
+- In-build, planned and later capabilities must remain distinguishable.
+- Instruction-file synchronization is planned, not shipped. It will write to
   `CLAUDE.md`, `AGENTS.md` and `copilot-instructions.md`.
-- Evidence from one founder's laptop must retain its caveat:
-  3,950 Markdown files in one week, 89% not reopened within a week and
-  283 named `README.md`; this is one machine, not market-wide evidence.
-- Customer-facing pages are English-only.
+- The founder-laptop observation must keep its scope and caveat: 3,950 Markdown
+  files in one week, 89% not reopened within the following week and 283 named
+  `README.md`; this is one founder's machine, not market-wide evidence.
+- Do not add `FAQPage` schema, active offers, ratings or reviews unless they
+  become truthful and applicable.
 
-## Human page
+## Early access
 
-`human/index.html` is the canonical landing page. It includes the product story,
-screenshots, interactive file-grouping demonstration, roadmap, team and waitlist.
-The **For humans / For agents** switch links to the matching fixed route.
+There is no public form endpoint or approved domain email yet. The current
+temporary action links to Yu Asano's LinkedIn profile so the site does not expose
+a broken form or invented contact address.
 
-Product screenshots live in `shots/`. Paths from the human page are relative to
-the route directory so the site works both on `jinai.md` and in local preview.
+## Deployment boundary
 
-## Agent page
+GitHub Pages deploys through `.github/workflows/deploy-pages.yml`. The build
+copies only the allowlist in `scripts/build-pages.mjs` into `_site`.
 
-`agent/index.html` contains the same product facts in a structure designed for
-machine extraction:
+Historical source directories such as `archive/`, `ja/` and `mockup/`, along
+with repository documentation and generation scripts, are intentionally absent
+from the production artifact.
 
-- stable section IDs and semantic headings;
-- explicit metadata and caveat fields;
-- JSON-LD for the software application;
-- direct links to `agent/content.json`, `llms.txt` and the human page;
-- no animation, screenshot dependency or generated copy.
-
-Keep the HTML, JSON and `llms.txt` factually aligned when changing product copy.
-
-## Waitlist
-
-The human page contains two forms. Until a POST endpoint is configured, the form
-opens the visitor's mail client. Configure these constants near the bottom of
-`human/index.html`:
-
-```js
-const WAITLIST_ENDPOINT = "https://formspree.io/f/xxxxxxx";
-const WAITLIST_EMAIL = "hello@yourdomain.com";
-```
-
-Any endpoint accepting a JSON `email` field can be used.
-
-## Archive
-
-Earlier design explorations and superseded pages live in `archive/`. They remain
-available for history but are not linked from the public site. `ja/` is also
-superseded and is not part of public navigation.
-
-## Local preview
+## Local validation
 
 ```powershell
-python -m http.server 8777
+node scripts/generate-aeo.mjs --check
+node scripts/build-pages.mjs
+node scripts/validate-site.mjs
+python -m http.server 8777 --directory _site
 ```
 
-Open:
-
-- <http://127.0.0.1:8777/>
-- <http://127.0.0.1:8777/human/>
-- <http://127.0.0.1:8777/agent/>
-- <http://127.0.0.1:8777/en/>
-
-GitHub Pages deploys from the repository root. Keep the root `CNAME` file with
-`jinai.md`.
+Open <http://127.0.0.1:8777/> and <http://127.0.0.1:8777/agent/>.

@@ -1,349 +1,214 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<script>document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Jin AI for agents — structured product reference</title>
-<meta name="description" content="A stable, machine-readable product reference for Jin AI: problem, evidence, solution, product, business model, team and roadmap.">
-<link rel="canonical" href="https://jinai.md/agent/">
-<link rel="alternate" href="https://jinai.md/human/" title="Jin AI for humans">
-<link rel="alternate" type="application/json" href="content.json" title="Jin AI structured data">
-<link rel="alternate" type="text/plain" href="../llms.txt" title="Jin AI agent index">
-<link rel="icon" href="../brand/jin-mark.svg" type="image/svg+xml">
+<title>Jin AI for agents — Product facts and status</title>
+<meta name="description" content="A concise, status-aware reference for agents researching Jin AI, generated from the public Jin AI fact source.">
 <meta name="robots" content="index,follow,max-snippet:-1">
+<link rel="canonical" href="https://jinai.md/">
+<link rel="alternate" type="application/json" href="https://jinai.md/agent/content.json">
+<link rel="describedby" href="https://jinai.md/llms.txt">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 390 326'%3E%3Crect width='390' height='326' fill='%23f5f3ef'/%3E%3Cpath fill='%23252525' d='M234 0h71L71 326H0Z'/%3E%3Cpath fill='%23252525' d='M248 129 211 180 317 326 389 326Z'/%3E%3C/svg%3E">
 <style>
-:root {
-  --cp-bg: #f5f3ef; --cp-surface: #ffffff; --cp-surface-2: #eeece8;
-  --cp-text: #242424; --cp-text-muted: #6b6b6b; --cp-border: #d8d6d1;
-  --cp-accent: #1659e9; --cp-accent-hover: #1048c4; --cp-accent-subtle: #edf3ff;
-  --cp-success: #17834f; --cp-warning: #9a6700; --cp-danger: #cf222e;
-  --cp-radius: 4px; --cp-radius-lg: 6px;
-  --cp-shadow: 0 1px 3px rgba(0,0,0,.12); --cp-shadow-lg: 0 8px 24px rgba(0,0,0,.16);
-}
-html[data-theme="dark"] {
-  --cp-bg: #1b1b1b; --cp-surface: #252525; --cp-surface-2: #2f2f2f;
-  --cp-text: #f1f1f1; --cp-text-muted: #a7a7a7; --cp-border: #3f3f3f;
-  --cp-accent: #61a6fa; --cp-accent-hover: #8fc1fb; --cp-accent-subtle: #1d2a3d;
-  --cp-success: #3fb950; --cp-warning: #d29922; --cp-danger: #f85149;
-  --cp-shadow: 0 1px 3px rgba(0,0,0,.4); --cp-shadow-lg: 0 8px 24px rgba(0,0,0,.5);
-}
+:root{--paper:#f5f3ef;--surface:#fff;--ink:#252525;--muted:#5d5d5d;--line:#d8d4cd;--blue:#1659e9;--green:#2a5e46;--amber:#9a5d00;--later:#6b7280;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--sans:Inter,system-ui,-apple-system,sans-serif}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--cp-bg);color:var(--cp-text);font-family:"Segoe UI",Aptos,Calibri,sans-serif;font-size:16px;line-height:1.6}
-a{color:var(--cp-accent)}
-a:hover{color:var(--cp-accent-hover)}
-code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.9em;background:var(--cp-surface-2);border:1px solid var(--cp-border);border-radius:var(--cp-radius);padding:1px 5px}
-.shell{max-width:960px;margin:0 auto;padding:0 24px}
-.site-header{position:sticky;top:0;z-index:10;background:var(--cp-bg);border-bottom:1px solid var(--cp-border)}
-.header-row{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.brand{display:flex;align-items:center;gap:10px;color:var(--cp-text);font-weight:700;text-decoration:none;font-size:20px}
-.mark{width:24px;height:20px;display:block;fill:currentColor}
-.audience-switch{display:inline-flex;border:1px solid var(--cp-border);border-radius:var(--cp-radius);overflow:hidden;background:var(--cp-surface);font-size:12px}
-.audience-switch a{padding:7px 11px;color:var(--cp-text-muted);text-decoration:none;white-space:nowrap}
-.audience-switch a+a{border-left:1px solid var(--cp-border)}
-.audience-switch a:hover{color:var(--cp-accent)}
-.audience-switch .active{background:var(--cp-text);color:var(--cp-bg)}
-.audience-switch .active:hover{color:var(--cp-bg)}
-main{padding:56px 0 80px}
-.eyebrow{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--cp-accent)}
-h1{font-size:34px;line-height:1.16;letter-spacing:-.025em;margin:10px 0 0}
-.lede{max-width:760px;margin:18px 0 0;font-size:18px;color:var(--cp-text-muted)}
-.lede strong{color:var(--cp-text)}
-.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
-.tag{display:inline-flex;align-items:center;border:1px solid var(--cp-border);border-radius:999px;background:var(--cp-surface);padding:4px 10px;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:11px;color:var(--cp-text-muted)}
-.tag.status{border-color:var(--cp-success);color:var(--cp-success)}
-.machine-note{margin-top:28px;border-left:3px solid var(--cp-accent);background:var(--cp-accent-subtle);padding:14px 16px}
-.machine-note p{margin:0;color:var(--cp-text-muted)}
-.machine-note ul{margin:8px 0 0;padding-left:20px}
-.toc{margin-top:28px;border:1px solid var(--cp-border);border-radius:var(--cp-radius);background:var(--cp-surface);padding:18px}
-.toc strong{display:block;margin-bottom:8px}
-.toc ol{margin:0;padding-left:22px;columns:2;column-gap:36px}
-.toc li{break-inside:avoid;margin:4px 0}
-section{padding:42px 0;border-bottom:1px solid var(--cp-border);scroll-margin-top:80px}
-h2{font-size:24px;line-height:1.25;margin:0 0 16px}
-h3{font-size:18px;line-height:1.35;margin:0 0 8px}
-p{margin:0 0 14px}
-ul,ol{margin:0;padding-left:22px}
-li+li{margin-top:8px}
-.meta{display:grid;grid-template-columns:minmax(130px,180px) 1fr;margin:0;border:1px solid var(--cp-border);border-radius:var(--cp-radius);overflow:hidden}
-.meta dt,.meta dd{margin:0;padding:10px 12px;border-bottom:1px solid var(--cp-border)}
-.meta dt{font-weight:600;background:var(--cp-surface-2)}
-.meta dd{background:var(--cp-surface)}
-.meta dt:last-of-type,.meta dd:last-of-type{border-bottom:0}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.card{border:1px solid var(--cp-border);border-radius:var(--cp-radius);background:var(--cp-surface);padding:18px;box-shadow:var(--cp-shadow)}
-.card p:last-child{margin-bottom:0}
-.step-label{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:12px;color:var(--cp-accent);text-transform:uppercase;letter-spacing:.08em}
-.evidence{width:100%;border-collapse:collapse;background:var(--cp-surface);font-size:14px}
-.evidence th,.evidence td{border:1px solid var(--cp-border);padding:10px 12px;text-align:left;vertical-align:top}
-.evidence th{background:var(--cp-surface-2)}
-.caveat{color:var(--cp-danger);font-weight:600}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.founder{display:grid;gap:7px}
-.founder a{width:max-content}
-.cta{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--cp-accent);border-radius:var(--cp-radius);background:var(--cp-accent);color:var(--cp-surface);padding:9px 16px;text-decoration:none;font-weight:600}
-.cta:hover{background:var(--cp-accent-hover);color:var(--cp-surface)}
-footer{padding:26px 0 40px;color:var(--cp-text-muted);font-size:13px}
-@media(max-width:720px){
-  .shell{padding:0 18px}
-  .header-row{align-items:flex-start;flex-direction:column;padding:12px 0}
-  main{padding-top:38px}
-  h1{font-size:30px}
-  .steps,.grid-2{grid-template-columns:1fr}
-  .toc ol{columns:1}
-  .meta{grid-template-columns:1fr}
-  .meta dt{border-bottom:0}
-}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 var(--sans)}
+a{color:var(--blue)}
+.shell{width:min(920px,calc(100% - 36px));margin:auto}
+header{border-bottom:1px solid var(--line);background:rgba(245,243,239,.95);position:sticky;top:0;z-index:5}
+.nav{min-height:62px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{font-weight:800;color:var(--ink);text-decoration:none;letter-spacing:-.02em}
+.navlinks{display:flex;gap:14px;align-items:center;font:12px var(--mono)}
+.navlinks a{color:var(--muted)}
+.navlinks a:first-child{color:var(--ink);font-weight:700}
+main{padding:64px 0 80px}
+article{background:var(--surface);border:1px solid var(--line);padding:clamp(24px,5vw,54px)}
+h1,h2,h3,p,ul,dl{margin-top:0}
+h1{font-size:clamp(34px,6vw,64px);line-height:1.04;letter-spacing:-.055em;margin-bottom:18px}
+h2{font-size:25px;line-height:1.25;letter-spacing:-.025em;margin-top:48px;padding-top:28px;border-top:1px solid var(--line)}
+h3{font-size:17px;margin:24px 0 8px}
+.dek{font-size:19px;color:var(--muted);max-width:45em}
+.statusline{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 32px}
+.badge{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font:11px var(--mono);text-transform:uppercase;letter-spacing:.08em}
+.badge[data-status=in_build]{border-color:#9eb2e5;color:#234a9b;background:#eef3ff}
+.badge[data-status=planned]{border-color:#d9b56d;color:#794700;background:#fff7e5}
+.badge[data-status=later]{color:#505660;background:#f3f4f6}
+.answer{font-size:17px}
+.caveat{border-left:3px solid var(--amber);padding:2px 0 2px 16px;color:var(--muted)}
+.steps,.capabilities,.answers{display:grid;gap:14px}
+.card{border:1px solid var(--line);padding:17px 18px;background:#fcfbf9}
+.card h3{margin:0 0 7px}
+.card p{margin:0;color:var(--muted)}
+dt{font-weight:700;margin-top:16px}
+dd{margin:4px 0 0;color:var(--muted)}
+code{font:13px var(--mono);background:#ece9e4;padding:2px 5px}
+.meta{font:12px var(--mono);color:var(--muted);margin-top:46px}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;font:12px var(--mono);color:var(--muted)}
+@media(max-width:640px){.nav{align-items:flex-start;padding:14px 0;flex-direction:column}.navlinks{flex-wrap:wrap}main{padding-top:28px}article{padding:24px 20px}}
 </style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "Jin AI",
-  "applicationCategory": "BusinessApplication",
-  "operatingSystem": ["macOS", "Windows"],
-  "description": "A visual workspace for AI-generated work, with Markdown as the spine. Jin AI makes file structure visible, editable and reversible.",
-  "url": "https://jinai.md/human/",
-  "author": {
-    "@type": "Organization",
-    "name": "Jin AI",
-    "location": "Tokyo, Japan",
-    "founder": [
-      {"@type": "Person", "name": "Yu Asano"},
-      {"@type": "Person", "name": "Tomoya Kato"}
-    ]
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD",
-    "description": "Free for individual local use. Paid for collaboration, cloud storage and company deployment."
-  }
-}
-</script>
 </head>
 <body>
-<header class="site-header">
-  <div class="shell header-row">
-    <a class="brand" href="../human/">
-      <svg class="mark" viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg>
-      Jin AI
-    </a>
-    <nav class="audience-switch" aria-label="Reading mode">
-      <a href="../human/">For humans</a>
-      <a class="active" href="./" aria-current="page">For agents</a>
+<header>
+  <div class="shell nav">
+    <a class="brand" href="/">Jin AI</a>
+    <nav class="navlinks" aria-label="Audience and machine formats">
+      <a href="/agent/" aria-current="page">For agents</a>
+      <a href="/">For humans</a>
+      <a href="/agent/content.json">JSON</a>
+      <a href="/llms.txt">llms.txt</a>
     </nav>
   </div>
 </header>
-
 <main class="shell">
-  <article itemscope itemtype="https://schema.org/SoftwareApplication" data-content-version="1.0">
-    <header>
-      <div class="eyebrow">Stable product reference</div>
-      <h1 itemprop="name">Structured for AI. Simple for people.</h1>
-      <p class="lede" itemprop="description">
-        AI agents now write your files for you — Markdown, decks, documents, spreadsheets and PDFs — and file them
-        <strong>somewhere you would not have</strong>. Jin AI puts that structure on one screen, lets you correct it,
-        and records every change, so yours and the agent's can be undone separately.
-      </p>
-      <div class="tags" aria-label="Product metadata">
-        <span class="tag status">Coming soon</span>
-        <span class="tag">Enterprise</span>
-        <span class="tag">Tokyo, Japan</span>
-        <span class="tag">English</span>
+<!-- GENERATED:AGENT_CONTENT:START -->
+<article data-content-version="2.0">
+  <h1>Jin AI for agents</h1>
+  <p class="dek">Jin AI is a visual workspace for AI-generated work, with Markdown as the spine. It is being built to show business users the structure their agents created, let them correct it, and record human and agent changes separately so either can be undone.</p>
+  <div class="statusline">
+    <span class="badge" data-status="in_build">In build</span>
+    <span class="badge">Availability: coming soon</span>
+    <span class="badge">Updated: 2026-09-10</span>
+  </div>
+
+  <h2>Direct answer</h2>
+  <p class="answer"><strong>Jin AI</strong> is a visual workspace for AI-generated work, with Markdown as the spine. It is for business users working with AI agents and is currently <strong>in build</strong>.</p>
+
+  <h2>Problem</h2>
+  <p class="answer"><strong>You lose the file twice.</strong> First you forget what it was called. Then you forget where it went.</p>
+  <p>Each agent may create files according to its own logic, while instructions, memory, logs and intermediate output sit beside the Markdown, decks, documents, spreadsheets and PDFs a person actually needs to deliver.</p>
+
+  <h2>Evidence and limits</h2>
+  <section id="founder-laptop-markdown-volume">
+      <h3>On one founder's laptop, agents created 3,950 Markdown files in one week; 89% were not reopened within the following week; 283 were named README.md.</h3>
+      <p class="caveat"><strong>Scope:</strong> One founder's laptop only <strong>Caveat:</strong> This is not market-wide evidence. Jin AI has not surveyed anyone else yet.</p>
+      <p>Source: Internal observation.</p>
+    </section>
+    <section id="file-retrieval-navigation-preference">
+      <h3>Participants estimated that they reached files by navigation 56–68% of the time and by search 4–15%, with little change after search tools were improved.</h3>
+      <p class="caveat"><strong>Scope:</strong> Desktop personal-information-management studies; not research on AI-generated files or Jin AI users.</p>
+      <p><a href="https://dl.acm.org/doi/10.1145/1402256.1402259">Improved search engines and navigation preference in personal information management</a> (2008)</p>
+    </section>
+
+  <h2>Planned product behavior</h2>
+  <p>Visible, editable, reversible. The agent can still reach everything. You just do not need to see everything.</p>
+  <div class="steps">
+      <section class="card">
+        <h3>See</h3>
+        <p>View the same files by project, person, recency, topic, date or file type without moving them.</p>
+      </section>
+      <section class="card">
+        <h3>Fix</h3>
+        <p>Rename, move, regroup or hide an item when an agent places it somewhere a person would not have.</p>
+      </section>
+      <section class="card">
+        <h3>Undo</h3>
+        <p>Inspect and reverse human changes or an individual agent's changes separately.</p>
+      </section>
+  </div>
+
+  <h2>Capability status</h2>
+  <p>Status vocabulary is explicit: <strong>In build</strong> means active development, <strong>Planned</strong> means intended next work, and <strong>Later</strong> is not committed for the first release.</p>
+  <div class="capabilities">
+      <section class="card">
+        <span class="badge" data-status="in_build">In build</span>
+        <h3>Visual workspace with projects and subprojects</h3>
+        <p>Target stage: The workspace.</p>
+      </section>
+      <section class="card">
+        <span class="badge" data-status="in_build">In build</span>
+        <h3>Visual Markdown reading and editing</h3>
+        <p>Target stage: The workspace.</p>
+      </section>
+      <section class="card">
+        <span class="badge" data-status="in_build">In build</span>
+        <h3>Views by project, person and recency</h3>
+        <p>Target stage: The workspace.</p>
+      </section>
+      <section class="card">
+        <span class="badge" data-status="in_build">In build</span>
+        <h3>History showing what each agent changed and when</h3>
+        <p>Target stage: The workspace.</p>
+      </section>
+      <section class="card">
+        <span class="badge" data-status="planned">Planned</span>
+        <h3>Write structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md</h3>
+        <p>Target stage: The sync.</p>
+      </section>
+      <section class="card">
+        <span class="badge" data-status="planned">Planned</span>
+        <h3>Separate agent-only instructions, memory, logs and intermediate outputs</h3>
+        <p>Target stage: The sync.</p>
+      </section>
+      <section class="card">
+        <span class="badge" data-status="planned">Planned</span>
+        <h3>Regroup files with a plain-language instruction</h3>
+        <p>Target stage: The sync.</p>
+      </section>
+      <section class="card">
+        <span class="badge" data-status="later">Later</span>
+        <h3>Secure shared storage, access control and governance</h3>
+        <p>Target stage: The organisation.</p>
+      </section>
+  </div>
+
+  <h2>Direct questions and answers</h2>
+  <div class="answers">
+      <div class="card" id="what-is-jin-ai">
+        <h3>What is Jin AI?</h3>
+        <p>Jin AI is a visual workspace for AI-generated work, with Markdown as the spine. It is being built to show business users the structure their agents created, let them correct it, and record human and agent changes separately so either can be undone.</p>
       </div>
-    </header>
-
-    <aside class="machine-note" aria-label="Machine-readable resources">
-      <p><strong>Machine-readable resources</strong></p>
-      <ul>
-        <li><a href="content.json">Structured JSON</a></li>
-        <li><a href="../llms.txt">LLM index</a></li>
-        <li><a href="../human/">Human-readable landing page</a></li>
-      </ul>
-    </aside>
-
-    <nav class="toc" aria-label="Document contents">
-      <strong>Contents</strong>
-      <ol>
-        <li><a href="#metadata">Metadata</a></li>
-        <li><a href="#problem">Problem</a></li>
-        <li><a href="#evidence">Evidence</a></li>
-        <li><a href="#solution">Solution</a></li>
-        <li><a href="#operation">Operation</a></li>
-        <li><a href="#product">Product</a></li>
-        <li><a href="#outcome">Outcome</a></li>
-        <li><a href="#business-model">Business model</a></li>
-        <li><a href="#team">Team</a></li>
-        <li><a href="#roadmap">Roadmap</a></li>
-      </ol>
-    </nav>
-
-    <section id="metadata">
-      <h2>Metadata</h2>
-      <dl class="meta">
-        <dt>Product</dt><dd>Jin AI</dd>
-        <dt>Category</dt><dd>Visual workspace for AI-generated work</dd>
-        <dt>Primary format</dt><dd>Markdown, with decks, documents, spreadsheets, PDFs and links alongside it</dd>
-        <dt>Primary users</dt><dd>Business users working with AI agents</dd>
-        <dt>Platforms</dt><dd>macOS and Windows</dd>
-        <dt>Availability</dt><dd>Coming soon; early access is released in small batches</dd>
-        <dt>Canonical human URL</dt><dd><a href="https://jinai.md/human/">https://jinai.md/human/</a></dd>
-        <dt>Canonical agent URL</dt><dd><a href="https://jinai.md/agent/">https://jinai.md/agent/</a></dd>
-      </dl>
-    </section>
-
-    <section id="problem">
-      <h2>You lose the file twice</h2>
-      <p>First you forget what it was called. Then you forget where it went.</p>
-      <p>
-        Each agent may create files according to its own logic. Instructions, memory, logs and intermediate output sit
-        beside the Markdown, decks, documents, spreadsheets and PDFs a person actually needs to deliver. Work becomes
-        split across editors, chats, slides and documents, and the person loses track of what changed where.
-      </p>
-    </section>
-
-    <section id="evidence">
-      <h2>Evidence and caveats</h2>
-      <table class="evidence">
-        <thead><tr><th>Observation</th><th>Result</th><th>Scope and source</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>Agent-generated Markdown files</td>
-            <td>3,950 files in one week; 89% were not reopened within a week; 283 were named <code>README.md</code>.</td>
-            <td><span class="caveat">One founder's laptop only. Not market-wide evidence. We have not surveyed anyone else yet.</span></td>
-          </tr>
-          <tr>
-            <td>How people reach files</td>
-            <td>Navigation: 56–68%. Search: 4–15%. The pattern barely changed after search tools were upgraded.</td>
-            <td>Bergman et al., ACM Transactions on Information Systems, 2008.</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section id="solution">
-      <h2>Visible, editable, reversible</h2>
-      <p>Jin AI does not change how agents work. It makes the structure easier to see, correct and maintain.</p>
-      <div class="steps">
-        <div class="card">
-          <div class="step-label">See</div>
-          <h3>See the whole project at once</h3>
-          <p>View the same files by project, person, recency, topic, date or file type. The files do not move.</p>
-        </div>
-        <div class="card">
-          <div class="step-label">Fix</div>
-          <h3>Move things like normal files</h3>
-          <p>Rename, move, regroup or hide an item directly when an agent places it somewhere you would not have.</p>
-        </div>
-        <div class="card">
-          <div class="step-label">Undo</div>
-          <h3>See what changed and change it back</h3>
-          <p>Human changes and each agent's changes are recorded separately, so the wrong part can be reversed.</p>
-        </div>
+      <div class="card" id="who-is-jin-ai-for">
+        <h3>Who is Jin AI for?</h3>
+        <p>Jin AI is for business users who work with AI agents but do not want file names, folders, links, tags, Markdown syntax or developer tools to become a second job.</p>
       </div>
-      <p style="margin-top:18px"><strong>The agent can still reach everything. You just do not need to see everything.</strong></p>
-    </section>
-
-    <section id="operation">
-      <h2>How structural decisions reach agents</h2>
-      <p>
-        Jin AI writes the user's structural decisions back into the instruction files agents already read:
-        <code>CLAUDE.md</code>, <code>AGENTS.md</code> and <code>copilot-instructions.md</code>. There is no plugin and
-        no API requirement. The files remain Markdown so existing agents continue to work.
-      </p>
-    </section>
-
-    <section id="product">
-      <h2>What it looks like</h2>
-      <p>See your work as a workspace, then open a page and get to work.</p>
-      <div class="grid-2">
-        <div class="card">
-          <h3>Visual workspace</h3>
-          <p>Clear projects and subprojects show meetings, research, decisions and deliverables on one screen.</p>
-        </div>
-        <div class="card">
-          <h3>Visual Markdown editor</h3>
-          <p>People edit and reorganise content without learning Markdown syntax, GitHub or developer tools.</p>
-        </div>
-        <div class="card">
-          <h3>Human-relevant view</h3>
-          <p>Documents people need are separated from agent-only instructions, memory, logs and intermediate outputs.</p>
-        </div>
-        <div class="card">
-          <h3>One page per subject</h3>
-          <p>Notes, decisions, PowerPoint files, PDFs and links sit together, with Markdown remaining the spine.</p>
-        </div>
+      <div class="card" id="does-jin-ai-replace-markdown">
+        <h3>Does Jin AI replace Markdown?</h3>
+        <p>No. Markdown remains the spine so agents can keep working. The planned visual interface means people will not need to learn Markdown syntax.</p>
       </div>
-    </section>
-
-    <section id="outcome">
-      <h2>Both sides get what they need</h2>
-      <div class="grid-2">
-        <div class="card">
-          <h3>People stop managing files</h3>
-          <p>Attention goes to moving the work forward instead of hunting, renaming and deciding where files belong.</p>
-        </div>
-        <div class="card">
-          <h3>AI gets richer context</h3>
-          <p>Agents retain relationships, sources and history without pushing the same volume of information at people.</p>
-        </div>
+      <div class="card" id="does-jin-ai-move-or-upload-files">
+        <h3>Does Jin AI move or upload local files?</h3>
+        <p>The planned local edition is designed to read files in their existing locations without moving them. Sharing and cloud storage are optional planned paid capabilities.</p>
       </div>
-    </section>
-
-    <section id="business-model">
-      <h2>Free on your laptop. Paid when it leaves.</h2>
-      <p>Individuals pay only to share or to store in the cloud. Companies buy seats.</p>
-      <ul>
-        <li><strong>Individual local use:</strong> free; no account; files stay on the device in plain Markdown.</li>
-        <li><strong>Individual collaboration:</strong> planned at $15 per month, plus usage-based cloud storage.</li>
-        <li><strong>Companies:</strong> per-seat enterprise pricing for shared workspaces, secure storage, governance and audit.</li>
-        <li><strong>Pricing status:</strong> company pricing is not final and will be validated with early customers.</li>
-      </ul>
-    </section>
-
-    <section id="team">
-      <h2>Team</h2>
-      <p>
-        The founders combine firsthand experience in Microsoft's workplace productivity ecosystem with daily use of
-        agents, product building, customer discovery, sales and go-to-market execution.
-      </p>
-      <div class="grid-2">
-        <div class="card founder">
-          <h3>Yu Asano</h3>
-          <div>Co-founder and CEO</div>
-          <p>AI product builder and Microsoft GTM engineer. Built Baby Voice Recorder end to end while leading Azure go-to-market at Microsoft Japan.</p>
-          <a href="https://www.linkedin.com/in/yu-asano-6878571a6/">LinkedIn</a>
-        </div>
-        <div class="card founder">
-          <h3>Tomoya Kato</h3>
-          <div>Co-founder</div>
-          <p>Business and sales leader focused on workplace platforms, organisational adoption and the requirements for agents working near company documents.</p>
-          <a href="https://www.linkedin.com/in/tomoya-kato-a0a078162/">LinkedIn</a>
-        </div>
+      <div class="card" id="how-do-agents-learn-the-structure">
+        <h3>How will agents learn the structure a person chose?</h3>
+        <p>A planned next capability will write structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md, which agents already read. No plugin or API is planned to be required.</p>
       </div>
-    </section>
+      <div class="card" id="is-jin-ai-available">
+        <h3>Is Jin AI available now?</h3>
+        <p>Not yet. Jin AI is in build and early access is planned to open in small batches.</p>
+      </div>
+      <div class="card" id="how-much-will-jin-ai-cost">
+        <h3>How much will Jin AI cost?</h3>
+        <p>Individual local use is planned to be free. Individual collaboration is planned at $15 per month plus usage-based cloud storage. Company pricing is not final.</p>
+      </div>
+  </div>
 
-    <section id="roadmap">
-      <h2>Roadmap</h2>
-      <ol>
-        <li><strong>In build — workspace:</strong> folder scanning, project/person/recent views, change history, visual Markdown editing, macOS and Windows.</li>
-        <li><strong>Next — sync:</strong> instruction-file updates, automatic agent-only separation, visual projects and subprojects, plain-language regrouping, open-source release.</li>
-        <li><strong>Later — organisation:</strong> secure team storage, access control, governance and Microsoft 365 integration.</li>
-      </ol>
-    </section>
+  <h2>Business model</h2>
+  <p><strong>Free on your laptop. Paid when it leaves.</strong> Planned to be free, with no account required and files remaining on the device in plain Markdown. Planned at $15 per month, plus usage-based cloud storage. Planned per-seat enterprise pricing for shared workspaces, secure storage, governance and audit.</p>
+  <p class="caveat">Not final; to be validated with early customers.</p>
 
-    <section id="waitlist">
-      <h2>Waitlist</h2>
-      <p>Early access goes out in small batches before the product is public.</p>
-      <a class="cta" href="../human/#waitlist">Join the waitlist</a>
-    </section>
-  </article>
+  <h2>Founders</h2>
+  <dl>
+      <dt><a href="https://www.linkedin.com/in/yu-asano-6878571a6/">Yu Asano</a> — Co-founder</dt>
+      <dd>AI product builder and Microsoft GTM engineer. Built Baby Voice Recorder end to end while leading Azure go-to-market at Microsoft Japan and launched Microsoft's first TikTok account in Asia.</dd>
+      <dt><a href="https://www.linkedin.com/in/tomoya-kato-a0a078162/">Tomoya Kato</a> — Co-founder, business and sales</dt>
+      <dd>Business and sales co-founder.</dd>
+  </dl>
+
+  <h2>Primary machine resources</h2>
+  <ul>
+    <li><a href="https://jinai.md/agent/content.json">Structured fact source (JSON)</a></li>
+    <li><a href="https://jinai.md/llms.txt">LLM index (text)</a></li>
+    <li><a href="https://jinai.md/">Canonical Human page</a></li>
+  </ul>
+  <p class="meta">Generated from agent/content.json · content version 2.0 · updated 2026-09-10</p>
+</article>
+<!-- GENERATED:AGENT_CONTENT:END -->
 </main>
-
-<footer class="shell">
-  <span>Jin AI · Tokyo, Japan · Content version 1.0</span>
+<footer>
+  <div class="shell">Generated from <a href="/agent/content.json">agent/content.json</a>. The Human page at <a href="/">https://jinai.md/</a> is the canonical product page.</div>
 </footer>
 </body>
 </html>

@@ -1,29 +1,34 @@
 # Jin AI
 
-> Structured for AI. Simple for people.
+> Jin AI is a visual workspace for AI-generated work, with Markdown as the spine. It is being built to show business users the structure their agents created, let them correct it, and record human and agent changes separately so either can be undone.
 
-Jin AI is a visual workspace for AI-generated work, with Markdown as the spine.
-It makes file structure visible, editable and reversible for business users
-while preserving the files and instruction formats their agents already use.
+Status: In build. Availability: coming soon. Last updated: 2026-09-10.
 
-## Canonical resources
+Interpret status words literally. "In build" is not shipped, "planned" is intended next work, and "later" is not committed for the first release. The Human page at https://jinai.md/ is the sole canonical product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
 
-- Human-readable product page: https://jinai.md/human/
-- Agent-optimized product reference: https://jinai.md/agent/
-- Structured JSON: https://jinai.md/agent/content.json
+## Primary resources
 
-## Core product model
+- [Canonical Human page](https://jinai.md/): Complete product narrative, evidence, roadmap, team and direct-answer FAQ.
+- [Agent reference](https://jinai.md/agent/): Concise status-aware HTML for automated research.
+- [Structured fact source](https://jinai.md/agent/content.json): Public JSON used to generate agent-facing derivatives.
+- [Sitemap](https://jinai.md/sitemap.xml): Canonical indexable URL.
 
-- Problem: You lose the file twice — first the name, then the location.
-- Solution: See the structure, fix it like normal files, and undo human or agent changes separately.
-- Agent integration: Jin AI writes structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md.
-- File model: Markdown remains the spine; decks, documents, spreadsheets, PDFs and links sit alongside it.
-- Business model: Free for individual local use; paid for collaboration, cloud storage and company deployment.
+## Direct answers
 
-## Evidence constraints
+- [What is Jin AI?](https://jinai.md/#faq-what-is-jin-ai): Jin AI is a visual workspace for AI-generated work, with Markdown as the spine. It is being built to show business users the structure their agents created, let them correct it, and record human and agent changes separately so either can be undone.
+- [Who is Jin AI for?](https://jinai.md/#faq-who-is-jin-ai-for): Jin AI is for business users who work with AI agents but do not want file names, folders, links, tags, Markdown syntax or developer tools to become a second job.
+- [Does Jin AI replace Markdown?](https://jinai.md/#faq-does-jin-ai-replace-markdown): No. Markdown remains the spine so agents can keep working. The planned visual interface means people will not need to learn Markdown syntax.
+- [Does Jin AI move or upload local files?](https://jinai.md/#faq-does-jin-ai-move-or-upload-files): The planned local edition is designed to read files in their existing locations without moving them. Sharing and cloud storage are optional planned paid capabilities.
+- [How will agents learn the structure a person chose?](https://jinai.md/#faq-how-do-agents-learn-the-structure): A planned next capability will write structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md, which agents already read. No plugin or API is planned to be required.
+- [Is Jin AI available now?](https://jinai.md/#faq-is-jin-ai-available): Not yet. Jin AI is in build and early access is planned to open in small batches.
+- [How much will Jin AI cost?](https://jinai.md/#faq-how-much-will-jin-ai-cost): Individual local use is planned to be free. Individual collaboration is planned at $15 per month plus usage-based cloud storage. Company pricing is not final.
 
-- One founder's laptop produced 3,950 Markdown files in one week.
-- 89% were not reopened within a week.
-- 283 were named README.md.
-- This is one machine only, not market-wide evidence. Jin AI has not surveyed anyone else yet.
-- Bergman et al. (ACM TOIS, 2008) found people reached files by navigation 56–68% of the time and search 4–15%.
+## Evidence and sources
+
+- [Structured evidence record](https://jinai.md/agent/content.json): On one founder's laptop, agents created 3,950 Markdown files in one week; 89% were not reopened within the following week; 283 were named README.md. Scope: One founder's laptop only. This is not market-wide evidence. Jin AI has not surveyed anyone else yet.
+- [Improved search engines and navigation preference in personal information management](https://dl.acm.org/doi/10.1145/1402256.1402259): Participants estimated that they reached files by navigation 56–68% of the time and by search 4–15%, with little change after search tools were improved. Scope: Desktop personal-information-management studies; not research on AI-generated files or Jin AI users.
+
+## Founders
+
+- [Yu Asano](https://www.linkedin.com/in/yu-asano-6878571a6/): Co-founder. AI product builder and Microsoft GTM engineer. Built Baby Voice Recorder end to end while leading Azure go-to-market at Microsoft Japan and launched Microsoft's first TikTok account in Asia.
+- [Tomoya Kato](https://www.linkedin.com/in/tomoya-kato-a0a078162/): Co-founder, business and sales. Business and sales co-founder.
