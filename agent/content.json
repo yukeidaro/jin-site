@@ -15,9 +15,7 @@
     "legal_name": "Jin AI",
     "same_as": [
       "https://github.com/yukeidaro/jin-site"
-    ],
-    "address_locality": "Tokyo",
-    "address_country": "JP"
+    ]
   },
   "product": {
     "name": "Jin AI",
@@ -30,7 +28,6 @@
       "macOS",
       "Windows"
     ],
-    "location": "Tokyo, Japan",
     "industry": "Enterprise"
   },
   "audience": {

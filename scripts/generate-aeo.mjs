@@ -119,15 +119,6 @@ function renderJsonLd(source) {
       logo: "https://jinai.md/brand/jin-mark.svg",
       description: source.product.description,
       sameAs: source.identity.same_as,
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: source.identity.address_locality,
-        addressCountry: source.identity.address_country
-      },
-      location: {
-        "@type": "Place",
-        name: source.product.location
-      },
       founder: source.founders.map((founder) => ({ "@id": `${source.canonical_url}#${founder.name === "Yu Asano" ? "yu-asano" : "tomoya-kato"}` }))
     },
     ...source.founders.map((founder) => ({

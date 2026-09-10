@@ -31,5 +31,5 @@ Save-Crop -Source $light -Target (Join-Path $out 'app-hero-en.jpg')     -X 0   -
 # Left panes: local files plus the project structure.
 Save-Crop -Source $light -Target (Join-Path $out 'app-workspace-en.jpg') -X 0   -Y 0 -W 844  -H 968 -Quality 92
 
-# The document pane, shown in dark mode.
-Save-Crop -Source $dark  -Target (Join-Path $out 'app-page-en.jpg')      -X 780 -Y 0 -W 844  -H 968 -Quality 92
+# The document pane, from the same light screenshot so the page never mixes themes.
+Save-Crop -Source $light -Target (Join-Path $out 'app-page-en.jpg')      -X 780 -Y 0 -W 844  -H 968 -Quality 92
