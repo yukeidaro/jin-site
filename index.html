@@ -184,6 +184,17 @@ header{position:sticky;top:0;z-index:50;background:rgba(245,243,239,.86);backdro
 .wait input:focus{outline:none;border-color:var(--cobalt);box-shadow:0 0 0 3px rgba(22,89,233,.12)}
 .wait button{padding:12px 22px;white-space:nowrap}
 .waitnote{margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.04em;line-height:1.9}
+.signup{max-width:420px;margin:32px auto 0;text-align:left;display:grid;gap:14px}
+.signup-row{display:grid;gap:6px}
+.signup label{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.signup input{width:100%;padding:11px 13px;border:1px solid var(--edge);border-radius:var(--r);background:#fff;font:inherit;font-size:15px;color:var(--ink)}
+.signup input::placeholder{color:var(--edge)}
+.signup input:focus{outline:none;border-color:var(--ink)}
+.signup button{width:100%;justify-content:center;margin-top:4px;padding:12px 18px}
+.signup .waitnote{text-align:center;margin-top:2px}
+.signup-done{max-width:420px;margin:32px auto 0;padding:18px 20px;border:1px solid var(--cobalt);border-radius:var(--r);background:var(--cobalt-50);font-size:15px;color:var(--ink);line-height:1.7}
+#waitlistSink{display:none}
+.waitalt{margin-top:22px;font-size:14px;color:var(--ink-3);line-height:1.8}
 .waitnote.ok{color:var(--green)}
 .waitnote.bad{color:var(--red)}
 
@@ -243,36 +254,11 @@ section{padding:86px 0;border-bottom:1px solid var(--line);scroll-margin-top:72p
 .syncbox.human .st{color:var(--cobalt)}
 .syncmid{display:grid;place-items:center;gap:8px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--dim);text-align:center;padding:0 8px}
 .syncmid .ar{font-size:19px;color:var(--cobalt);line-height:1}
-.syncnote{margin-top:22px;border:1px solid var(--cobalt);border-radius:var(--r);background:var(--cobalt-50);padding:22px 24px;font-size:15px;color:var(--ink-2);line-height:1.8}
+.syncnote{margin-top:38px;border:1px solid var(--line);border-left:3px solid var(--cobalt);border-radius:var(--r);background:#fff;padding:22px 24px;font-size:15px;color:var(--ink-2);line-height:1.8}
 .syncnote b{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--ink);display:block;margin-bottom:8px}
-.syncnote .never{display:block;margin-top:16px;padding-top:14px;border-top:1px solid #cfe0fd;font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.syncnote .never{display:block;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
 code{font-family:var(--mono);font-size:.84em;background:#fff;border:1px solid var(--line-2);border-radius:2px;padding:1px 5px;white-space:nowrap}
 .syncbox li code{background:var(--paper-2);border-color:var(--line);font-size:.86em}
-
-/* demo */
-.fold{margin-top:44px;border:1px solid var(--line);border-radius:var(--r);background:#fff;overflow:hidden}
-.fold-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 20px 0;flex-wrap:wrap}
-.fold-head .pn{font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:-.02em}
-.fold-head .st{font-family:var(--mono);font-size:11px;color:var(--dim)}
-.foldtabs{display:flex;gap:24px;padding:12px 20px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.foldtabs button{background:none;border:0;padding:8px 0 11px;margin-bottom:-1px;font:inherit;font-size:14.5px;color:var(--ink-3);cursor:pointer;border-bottom:2px solid transparent}
-.foldtabs button:hover{color:var(--ink)}
-.foldtabs button.on{color:var(--ink);font-weight:600;border-bottom-color:var(--red)}
-.fold-body{padding:16px 20px 20px;min-height:296px}
-.tree{display:grid;gap:1px}
-.tree .sec{display:flex;align-items:center;gap:9px;margin:18px 0 5px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-.tree .sec:first-child{margin-top:0}
-.tree .sec b{font-weight:400;color:var(--edge)}
-.tree .row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;font-size:14.5px;color:var(--ink-2)}
-.tree .row svg{width:14px;height:17px;flex:none;color:var(--edge)}
-.tree .row.on{background:#fdeef2;color:var(--ink);font-weight:500}
-.tree .row.on svg{color:var(--red)}
-.tree .row .tag{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--dim)}
-.tree .hidrow{margin-top:18px;padding:12px 13px;border:1px dashed var(--edge);border-radius:var(--r);color:var(--dim);font-size:13px;line-height:1.7}
-.tree .hidrow b{display:block;color:var(--ink-3);font-weight:500;font-size:13.5px;margin-bottom:3px}
-.raw{display:flex;flex-wrap:wrap;gap:5px}
-.raw span{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);background:var(--paper-2);border:1px solid var(--line);border-radius:2px;padding:3px 7px;white-space:nowrap}
-.raw span.mach{color:var(--edge);border-style:dashed;background:transparent}
 
 .views{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:48px}
 .view{display:flex;flex-direction:column}
@@ -464,16 +450,13 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       are already in. You see what changed, move it where it belongs, undo what you did not want, and the rules you
       set are the ones your agents follow next.
     </p>
-    <div class="agentrow">
-      <span class="plain" data-i18n="hero.works">Designed for workflows using:</span>
-      <span>Claude Code</span><span>Codex</span><span>Copilot Cowork</span><span>GitHub Copilot</span><span>Scout</span>
-    </div>
+
 
     <!-- GENERATED:CTA_HERO:START -->
 <div class="wait">
-      <a class="btn btn-p" href="https://www.linkedin.com/in/yu-asano-6878571a6/" target="_blank" rel="noopener">Join the waitlist</a>
+      <a class="btn btn-p" href="#waitlist">Join the waitlist</a>
     </div>
-    <div class="waitnote">Message Yu Asano on LinkedIn to join the waitlist.</div>
+    <div class="waitnote">No newsletter. One email when your invite is ready.</div>
 <!-- GENERATED:CTA_HERO:END -->
 
     <div class="shotwrap">
@@ -603,21 +586,6 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       <span data-i18n="sol.verds">Jin AI is designed not to delete anything or hide files from the agent. It will give
       people a cleaner view of the files that matter to them, while the agent keeps working with the full project in
       the background.</span>
-    </div>
-
-    <div class="rule"></div>
-
-    <div class="eyebrow" data-i18n="demo.eyebrow">The views</div>
-    <h2 class="h2" style="font-size:26px;margin-top:12px" data-i18n="demo.h2">The same files, grouped a different way.</h2>
-    <p class="sub" style="margin-top:12px" data-i18n="demo.sub">Switch the grouping. Nothing moves on disk.</p>
-
-    <div class="fold">
-      <div class="fold-head">
-        <div class="pn">FY27 Product Launch</div>
-        <div class="st" id="stCount" aria-live="polite"></div>
-      </div>
-      <div class="foldtabs" id="viewTabs" role="tablist" aria-label="Group files by"></div>
-      <div class="fold-body" id="foldBody" role="tabpanel" aria-live="polite"></div>
     </div>
 
     <div class="syncnote" data-i18n="sync.note">
@@ -875,10 +843,24 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
     <h2 data-i18n="final.h2">Take back control of what your agents write.</h2>
     <p data-i18n="final.sub">Jin AI is in build. Early access will open in small batches.</p>
     <!-- GENERATED:CTA_FINAL:START -->
-<div class="wait">
-      <a class="btn btn-p" href="https://www.linkedin.com/in/yu-asano-6878571a6/" target="_blank" rel="noopener">Join the waitlist</a>
-    </div>
-    <div class="waitnote" data-i18n="final.note">Message Yu Asano on LinkedIn to join the waitlist.</div>
+<form class="signup" id="waitlistForm" action="https://docs.google.com/forms/d/e/1FAIpQLSd45IxIFq9nKdkVwbdflQ6MEaZ6MUPEaiKEmG6ulIVXdFXvig/formResponse" method="post" target="waitlistSink">
+      <div class="signup-row">
+        <label for="wl-name">Name</label>
+        <input id="wl-name" name="entry.648754583" type="text" autocomplete="name" required>
+      </div>
+      <div class="signup-row">
+        <label for="wl-email">Email</label>
+        <input id="wl-email" name="entry.440219398" type="email" autocomplete="email" required>
+      </div>
+      <div class="signup-row">
+        <label for="wl-role">What do you do?</label>
+        <input id="wl-role" name="entry.113570650" type="text" autocomplete="organization-title" placeholder="Founder, PM, consultant, researcher&hellip;">
+      </div>
+      <button class="btn btn-p" type="submit">Join the waitlist</button>
+      <p class="waitnote">No newsletter. One email when your invite is ready.</p>
+    </form>
+    <p class="signup-done" id="waitlistDone" role="status" hidden>You are on the list. We will email you when your invite is ready.</p>
+    <iframe name="waitlistSink" id="waitlistSink" title="Waitlist submission target" hidden></iframe>
 <!-- GENERATED:CTA_FINAL:END -->
   </div>
 </section>
@@ -900,69 +882,22 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 </footer>
 
 <script>
-/* View switcher demo.
-   One set of files, regrouped along whichever axis is selected. The point the
-   section has to land is that nothing moves on disk, only the grouping key
-   changes, so every view is rendered from the same `FILES` array. The layout
-   deliberately mirrors the real app so the demo and the screenshots match. */
-(()=>{
-  const body=document.getElementById('foldBody'),
-        tabs=document.getElementById('viewTabs'),
-        st=document.getElementById('stCount');
+/* The waitlist posts into a hidden iframe so the visitor never leaves the page
+   and the site needs no backend. The iframe load event is the success signal. */
+(() => {
+  const form = document.getElementById('waitlistForm');
+  const done = document.getElementById('waitlistDone');
+  const sink = document.getElementById('waitlistSink');
+  if (!form || !done || !sink) return;
 
-  const DOC='<svg viewBox="0 0 14 17" fill="none" aria-hidden="true"><path d="M8.2.8H2.9a1.6 1.6 0 0 0-1.6 1.6v12.2a1.6 1.6 0 0 0 1.6 1.6h8.2a1.6 1.6 0 0 0 1.6-1.6V5.1L8.2.8Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8.1 1v3.1a1 1 0 0 0 1 1h3.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>';
-
-  const FILES=[
-    {n:'Project home',        s:'Overview',     t:'Markdown',   d:'This week', p:'You'},
-    {n:'Goals & outcomes',    s:'Overview',     t:'Markdown',   d:'This week', p:'Tomoya'},
-    {n:'Weekly sync — Aug 21',s:'Meetings',     t:'Markdown',   d:'Today',     p:'Tomoya', on:true},
-    {n:'Kickoff notes',       s:'Meetings',     t:'Markdown',   d:'Earlier',   p:'You'},
-    {n:'Customer review',     s:'Meetings',     t:'Markdown',   d:'This week', p:'Mika'},
-    {n:'Customer evidence',   s:'Research',     t:'PDF',        d:'This week', p:'Mika'},
-    {n:'Market signals',      s:'Research',     t:'Markdown',   d:'Earlier',   p:'You'},
-    {n:'Launch narrative',    s:'Deliverables', t:'PowerPoint', d:'Today',     p:'Tomoya'},
-    {n:'Investor deck',       s:'Deliverables', t:'PowerPoint', d:'Earlier',   p:'You'},
-    {n:'Proposal draft',      s:'Deliverables', t:'Word',       d:'This week', p:'Mika'}
-  ];
-
-  const AXES=[
-    {lab:'Structure', key:'s', groups:['Overview','Meetings','Research','Deliverables'], note:'as your agents filed them'},
-    {lab:'By type',   key:'t', groups:['Markdown','PowerPoint','Word','PDF'],            note:'not one file moved'},
-    {lab:'Recent',    key:'d', groups:['Today','This week','Earlier'],                   note:'not one file moved'},
-    {lab:'People',    key:'p', groups:['You','Tomoya','Mika'],                           note:'not one file moved'}
-  ];
-  let axis=0;
-
-  const escape=value=>value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-  function render(){
-    const A=AXES[axis];
-    st.textContent=FILES.length+' files · '+A.note;
-
-    tabs.innerHTML=AXES.map((a,i)=>
-      `<button type="button" role="tab" aria-selected="${i===axis}" data-i="${i}"${i===axis?' class="on"':''}>${a.lab}</button>`
-    ).join('');
-
-    let html='<div class="tree">';
-    A.groups.forEach(group=>{
-      const mine=FILES.filter(file=>file[A.key]===group);
-      if(!mine.length) return;
-      html+=`<div class="sec">${escape(group)} <b>${mine.length}</b></div>`;
-      mine.forEach(file=>{
-        const tag=A.key==='t'?'':file.t!=='Markdown'?file.t:'';
-        html+=`<div class="row${file.on?' on':''}">${DOC}<span>${escape(file.n)}</span>${tag?`<span class="tag">${escape(tag)}</span>`:''}</div>`;
-      });
-    });
-    html+=`<div class="hidrow"><b>Agent-only files</b>Instructions, memory, logs and intermediate output stay on disk and stay readable by your agents. They are kept out of every view above.</div>`;
-    body.innerHTML=html+'</div>';
-
-    tabs.querySelectorAll('button').forEach(button=>{
-      button.onclick=()=>{ axis=+button.dataset.i; render(); };
-    });
-  }
-
-  render();
-  setTimeout(()=>{ if(axis===0){ axis=1; render(); } },2800);
+  let sent = false;
+  form.addEventListener('submit', () => { sent = true; });
+  sink.addEventListener('load', () => {
+    if (!sent) return;
+    form.hidden = true;
+    done.hidden = false;
+    done.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  });
 })();
 </script>
 </body>

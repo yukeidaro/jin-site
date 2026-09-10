@@ -29,7 +29,11 @@ function validate(source) {
 
   const access = source.early_access;
   assert(access?.label && access?.note, "Early access needs a label and a note.");
-  assert(typeof access.url === "string" && access.url.startsWith("https://"), "Early access must point at a live https destination.");
+  assert(/^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/formResponse$/.test(access.form?.action || ""), "The waitlist form must post to a Google Forms response endpoint.");
+  for (const key of ["name", "email", "role"]) {
+    assert(/^entry\.\d+$/.test(access.form.fields?.[key] || ""), `The waitlist form is missing the ${key} field id.`);
+  }
+  assert(access.form.success, "The waitlist form needs a success message.");
   const community = access.community;
   if (community && community.url !== null && community.url !== undefined) {
     assert(
@@ -80,15 +84,39 @@ function renderCta(source, { centred }) {
   const community = access.community;
   const hasCommunity = Boolean(community?.url);
 
-  const secondary = hasCommunity
-    ? `\n      <a class="btn btn-s" href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a>`
-    : "";
-  const note = hasCommunity ? `${escapeHtml(access.note)} ${escapeHtml(community.note)}` : escapeHtml(access.note);
-
-  return `<div class="wait">
-      <a class="btn btn-p" href="${escapeHtml(access.url)}" target="_blank" rel="noopener">${escapeHtml(access.label)}</a>${secondary}
+  if (!centred) {
+    const secondary = hasCommunity
+      ? `\n      <a class="btn btn-s" href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a>`
+      : "";
+    return `<div class="wait">
+      <a class="btn btn-p" href="#waitlist">${escapeHtml(access.label)}</a>${secondary}
     </div>
-    <div class="waitnote"${centred ? ' data-i18n="final.note"' : ""}>${note}</div>`;
+    <div class="waitnote">${escapeHtml(access.note)}</div>`;
+  }
+
+  const fields = access.form.fields;
+  const community_button = hasCommunity
+    ? `\n    <p class="waitalt">Already building with agents? <a href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a> ${escapeHtml(community.note)}</p>`
+    : "";
+
+  return `<form class="signup" id="waitlistForm" action="${escapeHtml(access.form.action)}" method="post" target="waitlistSink">
+      <div class="signup-row">
+        <label for="wl-name">Name</label>
+        <input id="wl-name" name="${escapeHtml(fields.name)}" type="text" autocomplete="name" required>
+      </div>
+      <div class="signup-row">
+        <label for="wl-email">Email</label>
+        <input id="wl-email" name="${escapeHtml(fields.email)}" type="email" autocomplete="email" required>
+      </div>
+      <div class="signup-row">
+        <label for="wl-role">What do you do?</label>
+        <input id="wl-role" name="${escapeHtml(fields.role)}" type="text" autocomplete="organization-title" placeholder="Founder, PM, consultant, researcher&hellip;">
+      </div>
+      <button class="btn btn-p" type="submit">${escapeHtml(access.label)}</button>
+      <p class="waitnote">${escapeHtml(access.note)}</p>
+    </form>
+    <p class="signup-done" id="waitlistDone" role="status" hidden>${escapeHtml(access.form.success)}</p>
+    <iframe name="waitlistSink" id="waitlistSink" title="Waitlist submission target" hidden></iframe>${community_button}`;
 }
 
 function renderFaq(source) {

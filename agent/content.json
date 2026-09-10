@@ -252,11 +252,18 @@
     }
   ],
   "early_access": {
-    "status": "manual",
+    "status": "open",
     "label": "Join the waitlist",
-    "url": "https://www.linkedin.com/in/yu-asano-6878571a6/",
-    "note": "Message Yu Asano on LinkedIn to join the waitlist.",
-    "instructions": "Message Yu Asano on LinkedIn to join the Jin AI waitlist.",
+    "note": "No newsletter. One email when your invite is ready.",
+    "form": {
+      "action": "https://docs.google.com/forms/d/e/1FAIpQLSd45IxIFq9nKdkVwbdflQ6MEaZ6MUPEaiKEmG6ulIVXdFXvig/formResponse",
+      "fields": {
+        "name": "entry.648754583",
+        "email": "entry.440219398",
+        "role": "entry.113570650"
+      },
+      "success": "You are on the list. We will email you when your invite is ready."
+    },
     "community": {
       "name": "Discord",
       "label": "Join the Discord",
