@@ -31,11 +31,13 @@ function count(source, expression) {
 
 const expectedFiles = [
   ".nojekyll",
+  "6252d6a938298e86f40672b512227d4b.txt",
   "CNAME",
   "agent/content.json",
   "agent/index.html",
   "brand/jin-mark.svg",
   "en/index.html",
+  "googled8075da2e5b1406b.html",
   "human/index.html",
   "index.html",
   "llms.txt",

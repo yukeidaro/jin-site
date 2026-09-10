@@ -11,6 +11,14 @@
     "llm_index": "https://jinai.md/llms.txt",
     "sitemap": "https://jinai.md/sitemap.xml"
   },
+  "identity": {
+    "legal_name": "Jin AI",
+    "same_as": [
+      "https://github.com/yukeidaro/jin-site"
+    ],
+    "address_locality": "Tokyo",
+    "address_country": "JP"
+  },
   "product": {
     "name": "Jin AI",
     "headline": "Structured for AI. Simple for people.",

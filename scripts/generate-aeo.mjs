@@ -24,6 +24,8 @@ function validate(source) {
   assert(/^\d{4}-\d{2}-\d{2}$/.test(source.last_updated), "last_updated must use YYYY-MM-DD.");
   assert(allowedStatuses.has(source.product.status), "Product status is invalid.");
   assert(source.direct_answers?.length >= 7, "At least seven direct answers are required.");
+  assert(source.identity?.legal_name === "Jin AI", "Identity legal name must be Jin AI.");
+  assert(Array.isArray(source.identity.same_as) && source.identity.same_as.length >= 1, "Identity must declare a sameAs list for entity disambiguation.");
 
   const ids = new Set();
   for (const answer of source.direct_answers) {
@@ -85,8 +87,15 @@ function renderJsonLd(source) {
       "@type": "Organization",
       "@id": `${source.canonical_url}#organization`,
       name: source.product.name,
-      url: source.canonical_url,
+      legalName: source.identity.legal_name,      url: source.canonical_url,
       logo: "https://jinai.md/brand/jin-mark.svg",
+      description: source.product.description,
+      sameAs: source.identity.same_as,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: source.identity.address_locality,
+        addressCountry: source.identity.address_country
+      },
       location: {
         "@type": "Place",
         name: source.product.location

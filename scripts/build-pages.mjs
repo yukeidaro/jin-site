@@ -12,6 +12,8 @@ const files = [
   "robots.txt",
   "sitemap.xml",
   "llms.txt",
+  "googled8075da2e5b1406b.html",
+  "6252d6a938298e86f40672b512227d4b.txt",
   "preview-a-paper.jpg",
   "human/index.html",
   "en/index.html",
