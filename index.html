@@ -25,7 +25,7 @@
 <meta name="twitter:description" content="A visual workspace for the files AI agents write on your own computer. You decide where things go, not the agent.">
 <meta name="twitter:image" content="https://jinai.md/preview-a-paper.jpg">
 <meta name="twitter:image:alt" content="Jin AI visual workspace for AI-generated work">
-<link rel="preload" as="image" href="shots/shot-notebook-en.png">
+<link rel="preload" as="image" href="shots/app-hero-en.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -260,33 +260,34 @@ code{font-family:var(--mono);font-size:.84em;background:#fff;border:1px solid va
 
 /* demo */
 .fold{margin-top:44px;border:1px solid var(--line);border-radius:var(--r);background:#fff;overflow:hidden}
-.fold-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.fold-head .st{font-family:var(--mono);font-size:11.5px;color:var(--dim)}
-.fold-head .st b{color:var(--ink);font-weight:500}
-.toggle{display:inline-flex;flex-wrap:wrap;border:1px solid var(--edge);border-radius:var(--r);overflow:hidden;font-family:var(--mono);font-size:11.5px}
-.toggle button{background:transparent;border:0;border-left:1px solid var(--line-2);padding:7px 14px;cursor:pointer;font:inherit;color:var(--ink-3)}
-.toggle button:first-child{border-left:0}
-.toggle button:hover{color:var(--cobalt)}
-.toggle button.on:hover{color:var(--paper)}
-.toggle button.on{background:var(--ink);color:var(--paper)}
-.fold-body{padding:18px;min-height:296px}
+.fold-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 20px 0;flex-wrap:wrap}
+.fold-head .pn{font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:-.02em}
+.fold-head .st{font-family:var(--mono);font-size:11px;color:var(--dim)}
+.foldtabs{display:flex;gap:24px;padding:12px 20px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.foldtabs button{background:none;border:0;padding:8px 0 11px;margin-bottom:-1px;font:inherit;font-size:14.5px;color:var(--ink-3);cursor:pointer;border-bottom:2px solid transparent}
+.foldtabs button:hover{color:var(--ink)}
+.foldtabs button.on{color:var(--ink);font-weight:600;border-bottom-color:var(--red)}
+.fold-body{padding:16px 20px 20px;min-height:296px}
+.tree{display:grid;gap:1px}
+.tree .sec{display:flex;align-items:center;gap:9px;margin:18px 0 5px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.tree .sec:first-child{margin-top:0}
+.tree .sec b{font-weight:400;color:var(--edge)}
+.tree .row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;font-size:14.5px;color:var(--ink-2)}
+.tree .row svg{width:14px;height:17px;flex:none;color:var(--edge)}
+.tree .row.on{background:#fdeef2;color:var(--ink);font-weight:500}
+.tree .row.on svg{color:var(--red)}
+.tree .row .tag{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--dim)}
+.tree .hidrow{margin-top:18px;padding:12px 13px;border:1px dashed var(--edge);border-radius:var(--r);color:var(--dim);font-size:13px;line-height:1.7}
+.tree .hidrow b{display:block;color:var(--ink-3);font-weight:500;font-size:13.5px;margin-bottom:3px}
 .raw{display:flex;flex-wrap:wrap;gap:5px}
 .raw span{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);background:var(--paper-2);border:1px solid var(--line);border-radius:2px;padding:3px 7px;white-space:nowrap}
 .raw span.mach{color:var(--edge);border-style:dashed;background:transparent}
-.buckets{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:10px}
-.bk{border:1px solid var(--line);border-radius:var(--r);padding:14px 15px;background:var(--paper)}
-.bk .bd{height:3px;border-radius:2px;margin-bottom:11px}
-.bk .bn{font-family:var(--serif);font-size:16.5px;font-weight:700;letter-spacing:-.015em}
-.bk .bs{margin-top:9px;display:grid;gap:4px;font-family:var(--mono);font-size:10px;color:var(--ink-3)}
-.bk .bc{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:10px;line-height:1.7}
-.bk.hid{border-style:dashed;background:transparent}
-.bk.hid .bn{color:var(--dim)}
 
 .views{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:48px}
 .view{display:flex;flex-direction:column}
 .view .f{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;transition:.2s}
 .view:hover .f{border-color:var(--edge);transform:translateY(-2px);box-shadow:0 20px 44px -28px rgba(0,0,0,.34)}
-.view .f img{width:100%;height:auto;display:block;aspect-ratio:1750/1027}
+.view .f img{width:100%;height:auto;display:block;aspect-ratio:844/968}
 .view .n{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cobalt);margin-top:16px}
 .view h3{font-family:var(--serif);font-size:21px;font-weight:700;letter-spacing:-.02em;margin-top:7px}
 .view p{font-size:14px;color:var(--ink-2);line-height:1.8;margin-top:9px}
@@ -485,7 +486,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <!-- GENERATED:CTA_HERO:END -->
 
     <div class="shotwrap">
-      <div class="shotframe"><img src="shots/shot-notebook-en.png" alt="Jin AI: colour-coded projects on the left, a working page on the right with a live slide inside it" width="1750" height="1025" fetchpriority="high"></div>
+      <div class="shotframe"><img src="shots/app-hero-en.jpg" alt="Jin AI: local files on the left, the project structure in the middle, and the working document on the right" width="1624" height="968" fetchpriority="high"></div>
       <div class="shotcap" data-i18n="hero.cap">Every file your agents touched, grouped by project, with the real document open beside it</div>
     </div>
   </div>
@@ -616,14 +617,15 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
     <div class="rule"></div>
 
     <div class="eyebrow" data-i18n="demo.eyebrow">Try it here</div>
-    <h2 class="h2" style="font-size:26px;margin-top:12px" data-i18n="demo.h2">The same files, sorted any way you need.</h2>
-    <p class="sub" style="margin-top:12px" data-i18n="demo.sub">This prototype shows the planned behavior: switch the view and the same files regroup by topic, date, person or file type. Not one file moves.</p>
+    <h2 class="h2" style="font-size:26px;margin-top:12px" data-i18n="demo.h2">The same files, grouped a different way.</h2>
+    <p class="sub" style="margin-top:12px" data-i18n="demo.sub">This is the planned view switcher. Change the grouping and the same files rearrange on screen. Nothing moves on disk.</p>
 
     <div class="fold">
       <div class="fold-head">
-        <div class="st"><span data-i18n="demo.label">example project</span> · <b id="stCount" aria-live="polite"></b></div>
-        <div class="toggle" id="viewTabs" role="tablist" aria-label="Group files by"></div>
+        <div class="pn">FY27 Product Launch</div>
+        <div class="st" id="stCount" aria-live="polite"></div>
       </div>
+      <div class="foldtabs" id="viewTabs" role="tablist" aria-label="Group files by"></div>
       <div class="fold-body" id="foldBody" role="tabpanel" aria-live="polite"></div>
     </div>
 
@@ -658,13 +660,13 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 
     <div class="views">
       <div class="view">
-        <div class="f"><img src="shots/shot-project-en.png" alt="The planned Jin AI visual workspace: a project laid out as colour-coded sections and pages" width="1750" height="1025" loading="lazy"></div>
+        <div class="f"><img src="shots/app-workspace-en.jpg" alt="Local files listed on the left and the project structure grouped into Overview, Meetings, Research and Deliverables" width="844" height="968" loading="lazy"></div>
         <div class="n" data-i18n="prod.n1">The visual workspace</div>
         <h3 data-i18n="prod.vh1">See the whole project at once</h3>
-        <p data-i18n="prod.vp1">Meetings, research, decisions and deliverables laid out as one map. You can tell what exists and what changed without opening anything.</p>
+        <p data-i18n="prod.vp1">Your local files on one side, the project laid out on the other. Switch between Structure, By type and Recent to see the same files a different way. Nothing moves on disk.</p>
       </div>
       <div class="view">
-        <div class="f"><img src="shots/shot-notebook-en.png" alt="The planned Jin AI page: notes, decisions and a live slide together on one page" width="1750" height="1025" loading="lazy"></div>
+        <div class="f"><img src="shots/app-page-en.jpg" alt="A working page in dark mode with a decision callout and a PowerPoint file attached to it" width="844" height="968" loading="lazy"></div>
         <div class="n" data-i18n="prod.n2">The page</div>
         <h3 data-i18n="prod.vh2">Open the real file and read it</h3>
         <p data-i18n="prod.vp2">Notes and decisions are written in Markdown, while PowerPoint files, PDFs and links sit
@@ -910,67 +912,67 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <script>
 /* View switcher demo.
    One set of files, regrouped along whichever axis is selected. The point the
-   section has to land is that nothing moves on disk — only the grouping key
-   changes — so every view is rendered from the same `FILES` array. */
+   section has to land is that nothing moves on disk, only the grouping key
+   changes, so every view is rendered from the same `FILES` array. The layout
+   deliberately mirrors the real app so the demo and the screenshots match. */
 (()=>{
   const body=document.getElementById('foldBody'),
         tabs=document.getElementById('viewTabs'),
         st=document.getElementById('stCount');
 
+  const DOC='<svg viewBox="0 0 14 17" fill="none" aria-hidden="true"><path d="M8.2.8H2.9a1.6 1.6 0 0 0-1.6 1.6v12.2a1.6 1.6 0 0 0 1.6 1.6h8.2a1.6 1.6 0 0 0 1.6-1.6V5.1L8.2.8Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8.1 1v3.1a1 1 0 0 0 1 1h3.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>';
+
   const FILES=[
-    {n:'Weekly sync notes',f:0,t:0,d:0,p:0,k:0},
-    {n:'Kickoff notes',f:0,t:0,d:1,p:1,k:0},
-    {n:'Customer review',f:0,t:0,d:2,p:2,k:0},
-    {n:'Customer interview',f:1,t:1,d:1,p:2,k:0},
-    {n:'Market signals',f:1,t:1,d:2,p:0,k:0},
-    {n:'Competitor notes',f:1,t:1,d:2,p:1,k:0},
-    {n:'Positioning call',f:2,t:2,d:0,p:0,k:0},
-    {n:'Pricing direction',f:2,t:2,d:1,p:1,k:0},
-    {n:'Investor deck',f:3,t:3,d:0,p:0,k:1},
-    {n:'Launch deck',f:3,t:3,d:1,p:2,k:1},
-    {n:'Proposal draft',f:3,t:3,d:2,p:0,k:2},
-    {n:'Pricing benchmark',f:1,t:1,d:2,p:2,k:3}
+    {n:'Project home',        s:'Overview',     t:'Markdown',   d:'This week', p:'You'},
+    {n:'Goals & outcomes',    s:'Overview',     t:'Markdown',   d:'This week', p:'Tomoya'},
+    {n:'Weekly sync — Aug 21',s:'Meetings',     t:'Markdown',   d:'Today',     p:'Tomoya', on:true},
+    {n:'Kickoff notes',       s:'Meetings',     t:'Markdown',   d:'Earlier',   p:'You'},
+    {n:'Customer review',     s:'Meetings',     t:'Markdown',   d:'This week', p:'Mika'},
+    {n:'Customer evidence',   s:'Research',     t:'PDF',        d:'This week', p:'Mika'},
+    {n:'Market signals',      s:'Research',     t:'Markdown',   d:'Earlier',   p:'You'},
+    {n:'Launch narrative',    s:'Deliverables', t:'PowerPoint', d:'Today',     p:'Tomoya'},
+    {n:'Investor deck',       s:'Deliverables', t:'PowerPoint', d:'Earlier',   p:'You'},
+    {n:'Proposal draft',      s:'Deliverables', t:'Word',       d:'This week', p:'Mika'}
   ];
 
-  const PAL=['#db2777','#1659e9','#b45309','#2a5e46','#7c3aed'];
   const AXES=[
-    {key:'f',lab:'Folders',g:['32-jinai/docs','research/','tmp/output','deck/']},
-    {key:'t',lab:'Topic',g:['Meetings','Research','Decisions','Deliverables']},
-    {key:'d',lab:'Date',g:['Today','This week','Earlier this month']},
-    {key:'p',lab:'People',g:['You','Tanaka','Sato']},
-    {key:'k',lab:'File type',g:['Markdown','PowerPoint','Word','PDF']}
+    {lab:'Structure', key:'s', groups:['Overview','Meetings','Research','Deliverables'], note:'as your agents filed them'},
+    {lab:'By type',   key:'t', groups:['Markdown','PowerPoint','Word','PDF'],            note:'not one file moved'},
+    {lab:'Recent',    key:'d', groups:['Today','This week','Earlier'],                   note:'not one file moved'},
+    {lab:'People',    key:'p', groups:['You','Tomoya','Mika'],                           note:'not one file moved'}
   ];
   let axis=0;
 
+  const escape=value=>value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
   function render(){
     const A=AXES[axis];
-    st.textContent=axis===0?'as they sit on disk':'not one file moved';
+    st.textContent=FILES.length+' files · '+A.note;
+
     tabs.innerHTML=AXES.map((a,i)=>
       `<button type="button" role="tab" aria-selected="${i===axis}" data-i="${i}"${i===axis?' class="on"':''}>${a.lab}</button>`
     ).join('');
 
-    let h='<div class="buckets">';
-    A.g.forEach((name,gi)=>{
-      const mine=FILES.filter(f=>f[A.key]===gi);
+    let html='<div class="tree">';
+    A.groups.forEach(group=>{
+      const mine=FILES.filter(file=>file[A.key]===group);
       if(!mine.length) return;
-      h+=`<div class="bk"><div class="bd" style="background:${PAL[gi%PAL.length]}"></div>
-          <div class="bn">${name}</div>
-          <div class="bs">${mine.slice(0,3).map(f=>`<span>${f.n}</span>`).join('')}</div>
-          <div class="bc">${mine.length}${mine.length===1?' file':' files'}</div></div>`;
+      html+=`<div class="sec">${escape(group)} <b>${mine.length}</b></div>`;
+      mine.forEach(file=>{
+        const tag=A.key==='t'?'':file.t!=='Markdown'?file.t:'';
+        html+=`<div class="row${file.on?' on':''}">${DOC}<span>${escape(file.n)}</span>${tag?`<span class="tag">${escape(tag)}</span>`:''}</div>`;
+      });
     });
-    h+=`<div class="bk hid"><div class="bd" style="background:var(--edge)"></div>
-        <div class="bn">Agent-only files</div>
-        <div class="bs"><span>instructions · memory</span><span>logs · intermediate output</span></div>
-        <div class="bc">hidden in every view, still readable by your agents</div></div>`;
-    body.innerHTML=h+'</div>';
+    html+=`<div class="hidrow"><b>Agent-only files</b>Instructions, memory, logs and intermediate output stay on disk and stay readable by your agents. They are kept out of every view above.</div>`;
+    body.innerHTML=html+'</div>';
 
-    tabs.querySelectorAll('button').forEach(b=>{
-      b.onclick=()=>{ axis=+b.dataset.i; render(); };
+    tabs.querySelectorAll('button').forEach(button=>{
+      button.onclick=()=>{ axis=+button.dataset.i; render(); };
     });
   }
 
   render();
-  setTimeout(()=>{ if(axis===0){ axis=1; render(); } },2600);
+  setTimeout(()=>{ if(axis===0){ axis=1; render(); } },2800);
 })();
 </script>
 </body>

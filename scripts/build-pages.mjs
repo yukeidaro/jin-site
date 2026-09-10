@@ -20,8 +20,9 @@ const files = [
   "agent/index.html",
   "agent/content.json",
   "brand/jin-mark.svg",
-  "shots/shot-notebook-en.png",
-  "shots/shot-project-en.png"
+  "shots/app-hero-en.jpg",
+  "shots/app-workspace-en.jpg",
+  "shots/app-page-en.jpg"
 ];
 
 await rm(output, { recursive: true, force: true });

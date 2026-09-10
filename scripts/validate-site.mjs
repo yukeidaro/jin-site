@@ -43,8 +43,9 @@ const expectedFiles = [
   "llms.txt",
   "preview-a-paper.jpg",
   "robots.txt",
-  "shots/shot-notebook-en.png",
-  "shots/shot-project-en.png",
+  "shots/app-hero-en.jpg",
+  "shots/app-page-en.jpg",
+  "shots/app-workspace-en.jpg",
   "sitemap.xml"
 ].sort();
 
