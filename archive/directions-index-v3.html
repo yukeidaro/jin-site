@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jin AI — website directions</title>
+<meta name="description" content="Two design directions for the Jin AI website. Same story, two tones.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-55 -87 500 500'%3E%3Crect x='-55' y='-87' width='500' height='500' fill='%23f5f3ef'/%3E%3Cg fill='%23252525'%3E%3Cpath d='M234 0h71L71 326H0Z'/%3E%3Cpath d='M248 129 211 180 317 326 389 326Z'/%3E%3C/g%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f5f3ef;--line:#dddad5;--edge:#c7c3bd;--ink:#252525;--ink2:#4d4d4d;--dim:#696969;
+ --cobalt:#1659e9;--mono:"JetBrains Mono",monospace;--serif:"Source Serif 4",serif;--sans:"Inter",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.75}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+header{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+.mk{width:34px;height:29px;display:grid;place-items:center;margin-bottom:22px}
+.mk svg{width:34px;height:29px;fill:var(--ink)}
+h1{font-family:var(--serif);font-size:clamp(32px,4.6vw,52px);font-weight:700;letter-spacing:-.035em;line-height:1.1;margin-top:14px}
+.lede{margin-top:20px;max-width:46em;color:var(--ink2);font-size:16.5px}
+code{font-family:var(--mono);font-size:.86em;background:#ece9e4;padding:1px 5px;border-radius:3px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;padding:52px 0 56px}
+.card{border:1px solid var(--line);border-radius:4px;background:#fff;overflow:hidden;display:flex;flex-direction:column;transition:.2s;text-decoration:none;color:inherit}
+.card:hover{border-color:var(--edge);transform:translateY(-3px);box-shadow:0 18px 40px -22px rgba(0,0,0,.28)}
+.shot{height:460px;overflow:hidden;border-bottom:1px solid var(--line);background:var(--paper)}
+.shot img{width:100%;height:auto;display:block;object-fit:cover;object-position:top}
+.body{padding:26px 26px 30px;display:flex;flex-direction:column;flex:1}
+.tagrow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;border:1px solid var(--edge);border-radius:2px;padding:2px 8px;color:var(--dim)}
+h2{font-family:var(--serif);font-size:28px;font-weight:700;letter-spacing:-.025em;line-height:1.2}
+h2 span{display:block;font-family:var(--mono);font-size:11px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--cobalt);margin-bottom:7px}
+.desc{margin-top:13px;font-size:14.5px;color:var(--ink2);line-height:1.85;flex:1}
+.meta{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-family:var(--mono);font-size:10.5px;color:var(--dim);line-height:1.95}
+.open{margin-top:18px;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:var(--ink);color:var(--paper);border-radius:4px;font-size:13px;font-weight:500;align-self:flex-start}
+.note{padding:34px 0 38px;border-top:1px solid var(--line);color:var(--ink2);font-size:14.5px;max-width:58em}
+.note b{font-family:var(--serif);font-size:18px;display:block;margin-bottom:8px;letter-spacing:-.02em}
+.note ol{margin:10px 0 0 20px;display:grid;gap:6px}
+.note:last-child{padding-bottom:80px}
+.arch{margin-top:14px;display:grid;gap:7px}
+.arch div{padding-left:18px;position:relative}
+.arch div:before{content:"—";position:absolute;left:0;color:var(--edge)}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.shot{height:340px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="mk"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></div>
+    <div class="eyebrow">Jin AI — website directions · August 2026</div>
+    <h1>Same story. Two tones.</h1>
+    <p class="lede">
+      Both pages tell it the same way: generative AI keeps increasing what gets created at work, managing it became a
+      new job, and today you have to choose between structures that suit AI and interfaces that suit people.
+      Jin AI removes that choice. Both pages end on the waitlist.
+    </p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+
+    <a class="card" href="a-paper.html">
+      <div class="shot"><img src="preview-a-paper.jpg" alt="Direction A, Paper, preview" loading="lazy"></div>
+      <div class="body">
+        <div class="tagrow"><span class="tag">calm</span><span class="tag">broad appeal</span><span class="tag">recommended</span></div>
+        <h2><span>Direction A</span>Paper</h2>
+        <p class="desc">
+          Warm paper, serif headings, hairline rules, cobalt accent. Reads like a well-made product page rather than a
+          manifesto — the safest choice for someone who has never heard of you, and the easiest to keep extending.
+        </p>
+        <div class="meta">Ground #f5f3ef · accent cobalt #1659e9<br>Source Serif 4 700 · 4px radius<br>Dark band for the audience section</div>
+        <span class="open">Open A →</span>
+      </div>
+    </a>
+
+    <a class="card" href="c-screen.html">
+      <div class="shot"><img src="preview-c-screen.jpg" alt="Direction C, Screen, preview" loading="lazy"></div>
+      <div class="body">
+        <div class="tagrow"><span class="tag">editorial</span><span class="tag">memorable</span><span class="tag">bold</span></div>
+        <h2><span>Direction C</span>Screen</h2>
+        <p class="desc">
+          Magazine-scale Playfair Display, vermilion accent, zero corner radius, chapters numbered One to Six.
+          Slower and more deliberate to read. More distinctive, and more of a statement — better once people already
+          have a reason to pay attention.
+        </p>
+        <div class="meta">Ground #faf8f4 · accent vermilion #c1362f<br>Playfair Display 900 · 0px radius<br>Numbered chapters, split hero</div>
+        <span class="open">Open C →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="note">
+    <b>What both pages say, in order</b>
+    <ol>
+      <li>The problem: <em>you lose the file twice</em> — first you forget what it was called, then you forget where it went</li>
+      <li>The solution: visible, editable, reversible — see the whole project, move things like normal files, and roll back what an agent got wrong</li>
+      <li>Written back into <code>CLAUDE.md</code> and the other instruction files agents already read, so the next file lands where you would have put it</li>
+      <li>The product: the visual workspace and the page, plus a visual editor and agent-only files kept out of sight</li>
+      <li>The outcome: people stop managing files, AI gets richer context</li>
+      <li>Business model: free on your laptop, paid when it leaves</li>
+      <li>Team, upcoming, then the waitlist</li>
+    </ol>
+  </div>
+
+  <div class="note">
+    <b>The waitlist needs one line to go live</b>
+    Both pages ship with a working form. Until an endpoint is set it falls back to opening the visitor's mail client,
+    so it is never a dead button. To make it collect properly, open either page and set the two constants near the bottom of the file:
+    <div class="arch">
+      <div><code>WAITLIST_ENDPOINT</code> — a Formspree, Tally or Basin URL that accepts a POST with an <code>email</code> field</div>
+      <div><code>WAITLIST_EMAIL</code> — the address the mail fallback writes to</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Earlier drafts</b>
+    The first round lives in <code>archive/</code>: <a href="archive/a-paper-v1.html">A v1</a>,
+    <a href="archive/c-screen-v1.html">C v1</a>, <a href="archive/b-terminal.html">B — Terminal</a>, and the
+    second round (<a href="archive/a-paper-v2.html">A v2</a>, <a href="archive/c-screen-v2.html">C v2</a>).
+    Those were written around one person's measured folder and a 60-second install claim, which is why they were replaced.
+    Japanese first drafts are in <code>ja/</code>.
+  </div>
+</div>
+</body>
+</html>

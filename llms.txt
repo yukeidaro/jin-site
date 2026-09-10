@@ -1,0 +1,29 @@
+# Jin AI
+
+> Structured for AI. Simple for people.
+
+Jin AI is a visual workspace for AI-generated work, with Markdown as the spine.
+It makes file structure visible, editable and reversible for business users
+while preserving the files and instruction formats their agents already use.
+
+## Canonical resources
+
+- Human-readable product page: https://jinai.md/human/
+- Agent-optimized product reference: https://jinai.md/agent/
+- Structured JSON: https://jinai.md/agent/content.json
+
+## Core product model
+
+- Problem: You lose the file twice — first the name, then the location.
+- Solution: See the structure, fix it like normal files, and undo human or agent changes separately.
+- Agent integration: Jin AI writes structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md.
+- File model: Markdown remains the spine; decks, documents, spreadsheets, PDFs and links sit alongside it.
+- Business model: Free for individual local use; paid for collaboration, cloud storage and company deployment.
+
+## Evidence constraints
+
+- One founder's laptop produced 3,950 Markdown files in one week.
+- 89% were not reopened within a week.
+- 283 were named README.md.
+- This is one machine only, not market-wide evidence. Jin AI has not surveyed anyone else yet.
+- Bergman et al. (ACM TOIS, 2008) found people reached files by navigation 56–68% of the time and search 4–15%.

@@ -1,0 +1,138 @@
+{
+  "schema_version": "1.0",
+  "content_version": "1.0",
+  "language": "en",
+  "product": {
+    "name": "Jin AI",
+    "headline": "Structured for AI. Simple for people.",
+    "category": "Visual workspace for AI-generated work",
+    "status": "Coming soon",
+    "location": "Tokyo, Japan",
+    "industry": "Enterprise",
+    "platforms": [
+      "macOS",
+      "Windows"
+    ],
+    "canonical_human_url": "https://jinai.md/human/",
+    "canonical_agent_url": "https://jinai.md/agent/"
+  },
+  "summary": "AI agents now write your files for you — Markdown, decks, documents, spreadsheets and PDFs — and file them somewhere you would not have. Jin AI puts that structure on one screen, lets you correct it, and records every change, so yours and the agent's can be undone separately.",
+  "problem": {
+    "headline": "You lose the file twice",
+    "description": "First you forget what it was called. Then you forget where it went. Each agent may create files according to its own logic, while instructions, memory, logs and intermediate output sit beside the work a person needs to deliver."
+  },
+  "evidence": [
+    {
+      "observation": "Agent-generated Markdown files on one founder's laptop",
+      "period": "one week",
+      "markdown_files": 3950,
+      "not_reopened_within_one_week_percent": 89,
+      "files_named_readme_md": 283,
+      "caveat": "One founder's laptop only. Not market-wide evidence. Jin AI has not surveyed anyone else yet."
+    },
+    {
+      "observation": "How people reach files",
+      "navigation_percent_range": [
+        56,
+        68
+      ],
+      "search_percent_range": [
+        4,
+        15
+      ],
+      "finding": "The pattern barely changed after search tools were upgraded.",
+      "source": "Bergman et al., ACM Transactions on Information Systems, 2008"
+    }
+  ],
+  "solution": {
+    "headline": "Visible, editable, reversible",
+    "steps": [
+      {
+        "name": "See",
+        "description": "View the same files by project, person, recency, topic, date or file type without moving them."
+      },
+      {
+        "name": "Fix",
+        "description": "Rename, move, regroup or hide an item directly when an agent places it somewhere you would not have."
+      },
+      {
+        "name": "Undo",
+        "description": "Record human changes and each agent's changes separately so the wrong part can be reversed."
+      }
+    ],
+    "principle": "The agent can still reach everything. You just do not need to see everything."
+  },
+  "operation": {
+    "markdown_is_the_spine": true,
+    "instruction_files": [
+      "CLAUDE.md",
+      "AGENTS.md",
+      "copilot-instructions.md"
+    ],
+    "plugin_required": false,
+    "api_required": false,
+    "description": "Jin AI writes the user's structural decisions back into the instruction files agents already read."
+  },
+  "capabilities": [
+    "Visual workspace with projects and subprojects",
+    "Visual Markdown reading and editing",
+    "Views by project, person, recency, topic, date and file type",
+    "Separate human-relevant documents from agent-only instructions, memory, logs and intermediate outputs",
+    "Track human and agent changes separately",
+    "Keep Markdown, decks, documents, spreadsheets, PDFs and links together"
+  ],
+  "business_model": {
+    "headline": "Free on your laptop. Paid when it leaves.",
+    "individual_local": "Free; no account; files stay on the device in plain Markdown.",
+    "individual_collaboration": "$15 per month, plus usage-based cloud storage.",
+    "companies": "Per-seat enterprise pricing for shared workspaces, secure storage, governance and audit.",
+    "company_pricing_status": "Not final; to be validated with early customers."
+  },
+  "founders": [
+    {
+      "name": "Yu Asano",
+      "role": "Co-founder and CEO",
+      "profile_url": "https://www.linkedin.com/in/yu-asano-6878571a6/"
+    },
+    {
+      "name": "Tomoya Kato",
+      "role": "Co-founder",
+      "profile_url": "https://www.linkedin.com/in/tomoya-kato-a0a078162/"
+    }
+  ],
+  "roadmap": [
+    {
+      "stage": "In build",
+      "name": "The workspace",
+      "items": [
+        "Folder scanning",
+        "Project, person and recent views",
+        "Agent change history",
+        "Visual Markdown editing",
+        "macOS and Windows"
+      ]
+    },
+    {
+      "stage": "Next",
+      "name": "The sync",
+      "items": [
+        "Write structural decisions into agent instruction files",
+        "Separate agent-only files automatically",
+        "Manage projects and subprojects visually",
+        "Regroup in plain language",
+        "Open-source release"
+      ]
+    },
+    {
+      "stage": "Later",
+      "name": "The organisation",
+      "items": [
+        "Secure shared storage",
+        "Access control and governance",
+        "One place employees and agents both reach",
+        "Microsoft 365 integration"
+      ]
+    }
+  ],
+  "waitlist_url": "https://jinai.md/human/#waitlist"
+}
