@@ -55,11 +55,37 @@ in check mode and fails when a derivative has drifted.
 - Do not add `FAQPage` schema, active offers, ratings or reviews unless they
   become truthful and applicable.
 
-## Early access
+## Waitlist and community
 
-There is no public form endpoint or approved domain email yet. The current
-temporary action links to Yu Asano's LinkedIn profile so the site does not expose
-a broken form or invented contact address.
+Both waitlist CTAs are generated from `early_access` in `agent/content.json`, so the
+label and destination live in one place and cannot drift between the hero and the
+closing section.
+
+There is still no public form endpoint or approved domain email, so the waitlist
+points to Yu Asano's LinkedIn rather than exposing a broken form or an invented
+address.
+
+To publish the Discord invite as a second CTA, set the URL and regenerate:
+
+```jsonc
+// agent/content.json
+"early_access": {
+  "community": { "url": "https://discord.gg/xxxxxxx" }
+}
+```
+
+```powershell
+node scripts/generate-aeo.mjs
+```
+
+Use a permanent invite (Discord invite settings: *Expire after: Never*, *Max uses:
+No limit*). Validation rejects anything that is not a real `discord.gg` or
+`discord.com/invite` link, and the Discord button is omitted entirely while
+`community.url` is `null`.
+
+Discord conversations are not indexed by search engines: `discord.com/robots.txt`
+contains `Disallow: /channels`. Treat Discord as a feedback and support surface,
+not a discovery channel.
 
 ## Deployment boundary
 

@@ -107,6 +107,14 @@ const content = JSON.parse(contentJson);
 check(content.product.name === "Jin AI", "Structured data product name is invalid.");
 check(content.product.status === "in_build", "Structured data must state the in-build status.");
 
+const access = content.early_access;
+check(count(home, new RegExp(`href="${access.url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`, "g")) >= 2, "Both waitlist CTAs must point at the early-access destination.");
+check(home.includes(`>${access.label}</a>`), `Root CTA must use the declared label "${access.label}".`);
+check(!/<a[^>]*class="btn[^"]*"[^>]*href="#?"/.test(home), "No CTA may link to an empty or placeholder target.");
+if (access.community?.url) {
+  check(home.includes(`href="${access.community.url}"`), "Community CTA must be published once its URL is set.");
+}
+
 const customerFacingTextFiles = deployedFiles.filter((file) => /\.(html|json|txt|xml|svg)$/.test(file));
 for (const relativePath of customerFacingTextFiles) {
   const source = await text(relativePath);

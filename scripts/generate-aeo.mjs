@@ -27,6 +27,18 @@ function validate(source) {
   assert(source.identity?.legal_name === "Jin AI", "Identity legal name must be Jin AI.");
   assert(Array.isArray(source.identity.same_as) && source.identity.same_as.length >= 1, "Identity must declare a sameAs list for entity disambiguation.");
 
+  const access = source.early_access;
+  assert(access?.label && access?.note, "Early access needs a label and a note.");
+  assert(typeof access.url === "string" && access.url.startsWith("https://"), "Early access must point at a live https destination.");
+  const community = access.community;
+  if (community && community.url !== null && community.url !== undefined) {
+    assert(
+      /^https:\/\/(discord\.gg|discord\.com\/invite)\/[A-Za-z0-9-]+$/.test(community.url),
+      "Community URL must be a real Discord invite such as https://discord.gg/xxxxxxx."
+    );
+    assert(community.label && community.note, "A published community link needs a label and a note.");
+  }
+
   const ids = new Set();
   for (const answer of source.direct_answers) {
     assert(answer.id && answer.question && answer.answer, "Each direct answer needs an id, question and answer.");
@@ -61,6 +73,22 @@ function replaceBlock(document, blockName, generated) {
   const endIndex = document.indexOf(end);
   assert(startIndex >= 0 && endIndex > startIndex, `Missing generated block: ${blockName}`);
   return `${document.slice(0, startIndex)}${start}\n${generated.trim()}\n${end}${document.slice(endIndex + end.length)}`;
+}
+
+function renderCta(source, { centred }) {
+  const access = source.early_access;
+  const community = access.community;
+  const hasCommunity = Boolean(community?.url);
+
+  const secondary = hasCommunity
+    ? `\n      <a class="btn btn-s" href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a>`
+    : "";
+  const note = hasCommunity ? `${escapeHtml(access.note)} ${escapeHtml(community.note)}` : escapeHtml(access.note);
+
+  return `<div class="wait">
+      <a class="btn btn-p" href="${escapeHtml(access.url)}" target="_blank" rel="noopener">${escapeHtml(access.label)}</a>${secondary}
+    </div>
+    <div class="waitnote"${centred ? ' data-i18n="final.note"' : ""}>${note}</div>`;
 }
 
 function renderFaq(source) {
@@ -293,7 +321,9 @@ validate(data);
 
 await updateGeneratedFile(path.join(root, "index.html"), [
   ["JSON_LD", renderJsonLd(data)],
-  ["FAQ", renderFaq(data)]
+  ["FAQ", renderFaq(data)],
+  ["CTA_HERO", renderCta(data, { centred: false })],
+  ["CTA_FINAL", renderCta(data, { centred: true })]
 ]);
 
 await updateGeneratedFile(path.join(root, "agent", "index.html"), [

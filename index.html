@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Jin AI — See the files your AI agents create</title>
-<meta name="description" content="Jin AI is a visual workspace for the files AI agents write on your own computer. See what they created, fix what is wrong, and tell your agents to do it differently.">
+<title>Jin AI — Take control of the files your AI agents create</title>
+<meta name="description" content="Jin AI is a visual workspace for the files AI agents write on your own computer. See what changed, put it where it belongs, undo an agent's edit, and set the rules it follows next.">
 <meta name="author" content="Jin AI">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link rel="canonical" href="https://jinai.md/">
@@ -13,16 +13,16 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-55 -87 500 500'%3E%3Crect x='-55' y='-87' width='500' height='500' fill='%23f5f3ef'/%3E%3Cg fill='%23252525'%3E%3Cpath d='M234 0h71L71 326H0Z'/%3E%3Cpath d='M248 129 211 180 317 326 389 326Z'/%3E%3C/g%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Jin AI">
-<meta property="og:title" content="Jin AI — See the files your AI agents create">
-<meta property="og:description" content="A visual workspace for the files AI agents write on your own computer. Nothing moves. Nothing uploads. You just finally see it.">
+<meta property="og:title" content="Jin AI — Take control of the files your AI agents create">
+<meta property="og:description" content="A visual workspace for the files AI agents write on your own computer. You decide where things go, not the agent.">
 <meta property="og:url" content="https://jinai.md/">
 <meta property="og:image" content="https://jinai.md/preview-a-paper.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Jin AI visual workspace for AI-generated work">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Jin AI — See the files your AI agents create">
-<meta name="twitter:description" content="A visual workspace for the files AI agents write on your own computer. See what changed, fix it, and tell your agents to do it differently.">
+<meta name="twitter:title" content="Jin AI — Take control of the files your AI agents create">
+<meta name="twitter:description" content="A visual workspace for the files AI agents write on your own computer. You decide where things go, not the agent.">
 <meta name="twitter:image" content="https://jinai.md/preview-a-paper.jpg">
 <meta name="twitter:image:alt" content="Jin AI visual workspace for AI-generated work">
 <link rel="preload" as="image" href="shots/shot-notebook-en.png">
@@ -41,7 +41,7 @@
       "legalName": "Jin AI",
       "url": "https://jinai.md/",
       "logo": "https://jinai.md/brand/jin-mark.svg",
-      "description": "Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to show business users what their agents created and changed, let them correct it, and carry those corrections into the instruction files agents already read.",
+      "description": "Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to give business users control of that output: see what an agent created and changed, put it where it belongs, undo an individual agent's edit, and have those decisions written into the instruction files agents already read.",
       "sameAs": [
         "https://github.com/yukeidaro/jin-site"
       ],
@@ -96,7 +96,7 @@
       "@id": "https://jinai.md/#website",
       "url": "https://jinai.md/",
       "name": "Jin AI",
-      "description": "Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to show business users what their agents created and changed, let them correct it, and carry those corrections into the instruction files agents already read.",
+      "description": "Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to give business users control of that output: see what an agent created and changed, put it where it belongs, undo an individual agent's edit, and have those decisions written into the instruction files agents already read.",
       "inLanguage": "en",
       "publisher": {
         "@id": "https://jinai.md/#organization"
@@ -110,7 +110,7 @@
       "applicationCategory": "BusinessApplication",
       "applicationSubCategory": "Visual workspace for the files AI agents create",
       "operatingSystem": "macOS, Windows",
-      "description": "Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to show business users what their agents created and changed, let them correct it, and carry those corrections into the instruction files agents already read.",
+      "description": "Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to give business users control of that output: see what an agent created and changed, put it where it belongs, undo an individual agent's edit, and have those decisions written into the instruction files agents already read.",
       "softwareVersion": "In build",
       "audience": {
         "@type": "Audience",
@@ -125,7 +125,7 @@
       "@id": "https://jinai.md/#webpage",
       "url": "https://jinai.md/",
       "name": "Jin AI — Visual workspace for the files AI agents create",
-      "description": "Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to show business users what their agents created and changed, let them correct it, and carry those corrections into the instruction files agents already read.",
+      "description": "Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to give business users control of that output: see what an agent created and changed, put it where it belongs, undo an individual agent's edit, and have those decisions written into the instruction files agents already read.",
       "dateModified": "2026-09-10",
       "inLanguage": "en",
       "isPartOf": {
@@ -178,6 +178,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(245,243,239,.86);backdro
 .navlinks a{text-decoration:none;white-space:nowrap}.navlinks a:hover{color:var(--cobalt)}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:var(--r);font-size:13.5px;font-weight:500;text-decoration:none;border:1px solid transparent;transition:.15s;cursor:pointer;font-family:inherit;white-space:nowrap}
 .btn-p{background:var(--ink);color:var(--paper)}.btn-p:hover{background:#000}
+.btn-s{background:#fff;color:var(--ink);border-color:var(--edge)}.btn-s:hover{border-color:var(--ink);color:var(--ink)}
 
 .hero{padding:88px 0 68px;border-bottom:1px solid var(--line)}
 .hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(38px,5.6vw,66px);line-height:1.04;letter-spacing:-.035em;margin:22px 0 0;max-width:13em}
@@ -453,7 +454,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
         <a class="on" href="./" aria-current="page">For humans</a>
         <a href="agent/">For agents</a>
       </nav>
-      <a class="btn btn-p" href="#waitlist" data-i18n="nav.cta">Request early access</a>
+      <a class="btn btn-p" href="#waitlist" data-i18n="nav.cta">Join the waitlist</a>
     </div>
   </div>
 </header>
@@ -463,23 +464,25 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <div class="hero">
   <div class="wrap">
     <div class="eyebrow" data-i18n="hero.pill">Coming soon</div>
-    <h1 data-i18n="hero.h1">See every file<br><span class="fade">your agents create.</span></h1>
+    <h1 data-i18n="hero.h1">Take control of every file<br><span class="fade">your agents create.</span></h1>
     <p class="lede" data-i18n="hero.value"><b>Jin AI is a visual workspace for the files AI agents write on your own computer.</b></p>
     <p class="lede" data-i18n="hero.lede">
-      Claude Code, Codex and Copilot write, rewrite and rename files on your machine all day. They do not ask where
-      things belong, and they do not show you what they changed. Jin AI is being built to put those files on one
-      screen. The real files, in the folders they are already in. So you can see what your agents did, correct it,
-      and tell them to do it differently next time.
+      Claude Code, Codex and Copilot write, rewrite and rename files on your machine all day. They pick the folders,
+      and they do not ask. Jin AI is being built to put those files on one screen. The real files, in the folders they
+      are already in. You see what changed, move it where it belongs, undo what you did not want, and the rules you
+      set are the ones your agents follow next.
     </p>
     <div class="agentrow">
       <span class="plain" data-i18n="hero.works">Designed for workflows using:</span>
       <span>Claude Code</span><span>Codex</span><span>Copilot Cowork</span><span>GitHub Copilot</span><span>Scout</span>
     </div>
 
-    <div class="wait">
-      <a class="btn btn-p" href="https://www.linkedin.com/in/yu-asano-6878571a6/" target="_blank" rel="noopener">Request early access</a>
+    <!-- GENERATED:CTA_HERO:START -->
+<div class="wait">
+      <a class="btn btn-p" href="https://www.linkedin.com/in/yu-asano-6878571a6/" target="_blank" rel="noopener">Join the waitlist</a>
     </div>
-    <div class="waitnote">Message Yu Asano on LinkedIn to join the early-access list.</div>
+    <div class="waitnote">Message Yu Asano on LinkedIn to join the waitlist.</div>
+<!-- GENERATED:CTA_HERO:END -->
 
     <div class="shotwrap">
       <div class="shotframe"><img src="shots/shot-notebook-en.png" alt="Jin AI: colour-coded projects on the left, a working page on the right with a live slide inside it" width="1750" height="1025" fetchpriority="high"></div>
@@ -492,12 +495,12 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <section id="problem">
   <div class="wrap">
     <div class="eyebrow" data-i18n="problem.eyebrow">The problem</div>
-    <h2 class="h2" data-i18n="problem.h2">You cannot see what your agents are doing.</h2>
+    <h2 class="h2" data-i18n="problem.h2">Your agents decide. You are not asked.</h2>
     <p class="sub" data-i18n="problem.sub">
-      An agent reports that the task is done. Somewhere on your disk it created files, rewrote others and left a few
-      behind. You did not watch it happen and nothing handed you a list. You find out later, when you need the file or
-      when something is wrong. <strong>And because you never see the output, you cannot tell the agent to do it
-      differently.</strong> So the same thing happens again tomorrow.
+      An agent reports that the task is done. Somewhere on your disk it created files, rewrote others and picked the
+      folders they live in. You did not watch it happen and nothing handed you a list. You find out later, when you
+      need the file or when something is wrong. <strong>And because you never see the output, you cannot tell the
+      agent to do it differently.</strong> So the same thing happens again tomorrow.
     </p>
 
     <div class="quotes">
@@ -569,11 +572,11 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <section id="solution">
   <div class="wrap">
     <div class="eyebrow" data-i18n="sol.eyebrow">The solution</div>
-    <h2 class="h2" data-i18n="sol.h2">One screen for everything your agents wrote.</h2>
+    <h2 class="h2" data-i18n="sol.h2">You decide where things go. Not the agent.</h2>
     <p class="sub" data-i18n="sol.sub">
       Jin AI is being built so it does not change how your agents work. It will read the folders they already write
       to and draw what is in them. <strong>The files stay on your machine, in place, in the format your agents
-      expect.</strong> You just get to look at them.
+      expect.</strong> What changes is who is in charge of the structure.
     </p>
 
     <div class="worlds three">
@@ -587,7 +590,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       </div>
       <div class="world">
         <div class="wt" data-i18n="sol.t2">Fix</div>
-        <h3 data-i18n="sol.h3b">Move things like normal files</h3>
+        <h3 data-i18n="sol.h3b">Put things where they belong</h3>
         <p data-i18n="sol.p2">
           Rename it. Move it. Regroup the project. When an agent puts something in the wrong place, you drag it to
           the right one. You are not rebuilding a folder tree by hand.
@@ -595,7 +598,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       </div>
       <div class="world">
         <div class="wt" data-i18n="sol.t3">Undo</div>
-        <h3 data-i18n="sol.h3c">See exactly what each agent changed</h3>
+        <h3 data-i18n="sol.h3c">Undo an agent&rsquo;s change, not your own</h3>
         <p data-i18n="sol.p3">
           &ldquo;Claude Code updated this file 3 minutes ago &mdash; 2 changes.&rdquo; Your edits and each agent&rsquo;s
           edits are recorded separately, so you can read the change and roll back just that part.
@@ -625,12 +628,11 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
     </div>
 
     <div class="syncnote" data-i18n="sync.note">
-      <b>Planned next: this is how your agents get better.</b>
-      Once you can see the output, you can see the pattern. Move a project boundary, rename a category or hide
-      something, and Jin AI will write that decision into <strong>the instruction files your agents already
-      read</strong>: <code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>copilot-instructions.md</code> and the
-      rest. The next file an agent writes lands where you would have put it. No plugin and no API. Just the Markdown
-      they are reading anyway.
+      <b>Planned next: your decisions become the rules your agents follow.</b>
+      Move a project boundary, rename a category or hide something, and Jin AI will write that decision into
+      <strong>the instruction files your agents already read</strong>: <code>CLAUDE.md</code>, <code>AGENTS.md</code>,
+      <code>copilot-instructions.md</code> and the rest. The next file an agent writes lands where you would have put
+      it. No plugin and no API. Just the Markdown they are reading anyway.
       <span class="never">You will not need to open <code>CLAUDE.md</code>. Jin AI is being designed to keep it correct.</span>
     </div>
 
@@ -838,7 +840,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
     <div class="faq">
       <article id="faq-what-is-jin-ai">
         <h3>What is Jin AI?</h3>
-        <p>Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to show you what your agents created and changed, let you correct it, and carry those corrections into the instruction files agents already read.</p>
+        <p>Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to give you control of that output: see what an agent created and changed, put it where it belongs, undo an individual agent's edit, and have those decisions written into the instruction files agents already read.</p>
       </article>
       <article id="faq-who-is-jin-ai-for">
         <h3>Who is Jin AI for?</h3>
@@ -858,7 +860,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       </article>
       <article id="faq-how-do-agents-learn-the-structure">
         <h3>How does Jin AI make my agents better?</h3>
-        <p>Seeing the output is what makes it correctable. A planned next capability will write your structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md, which agents already read, so the next file lands where you would have put it. No plugin or API is planned to be required.</p>
+        <p>Your decisions become the rules. A planned next capability will write your structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md, which agents already read, so the next file lands where you would have put it. No plugin or API is planned to be required.</p>
       </article>
       <article id="faq-is-jin-ai-available">
         <h3>Is Jin AI available now?</h3>
@@ -876,13 +878,15 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 <!-- WAITLIST -->
 <section class="final" id="waitlist">
   <div class="wrap">
-    <div class="eyebrow" data-i18n="final.eyebrow">Request early access</div>
-    <h2 data-i18n="final.h2">See what your agents have been writing.</h2>
+    <div class="eyebrow" data-i18n="final.eyebrow">Join the waitlist</div>
+    <h2 data-i18n="final.h2">Take back control of what your agents write.</h2>
     <p data-i18n="final.sub">Jin AI is in build. Early access will open in small batches.</p>
-    <div class="wait">
-      <a class="btn btn-p" href="https://www.linkedin.com/in/yu-asano-6878571a6/" target="_blank" rel="noopener">Message Yu Asano on LinkedIn</a>
+    <!-- GENERATED:CTA_FINAL:START -->
+<div class="wait">
+      <a class="btn btn-p" href="https://www.linkedin.com/in/yu-asano-6878571a6/" target="_blank" rel="noopener">Join the waitlist</a>
     </div>
-    <div class="waitnote" data-i18n="final.note">Request early access directly; no placeholder form or unusable email address.</div>
+    <div class="waitnote" data-i18n="final.note">Message Yu Asano on LinkedIn to join the waitlist.</div>
+<!-- GENERATED:CTA_FINAL:END -->
   </div>
 </section>
 </main>
