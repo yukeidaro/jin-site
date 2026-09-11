@@ -256,11 +256,11 @@
     "label": "Join the waitlist",
     "note": "We will email you when your invite is ready, plus occasional product updates.",
     "form": {
-      "action": "https://docs.google.com/forms/d/e/1FAIpQLSd45IxIFq9nKdkVwbdflQ6MEaZ6MUPEaiKEmG6ulIVXdFXvig/formResponse",
+      "action": "https://docs.google.com/forms/d/e/1FAIpQLScB3SoTxA2gaUlOakUKqbZH2PtlDaQLkfh7XGkt-OsejLGTTA/formResponse",
       "fields": {
-        "name": "entry.648754583",
-        "email": "entry.440219398",
-        "role": "entry.113570650"
+        "name": "entry.739060147",
+        "email": "entry.908221759",
+        "role": "entry.442318499"
       },
       "success": {
         "heading": "You are on the list.",
