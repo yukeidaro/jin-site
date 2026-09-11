@@ -33,7 +33,8 @@ function validate(source) {
   for (const key of ["name", "email", "role"]) {
     assert(/^entry\.\d+$/.test(access.form.fields?.[key] || ""), `The waitlist form is missing the ${key} field id.`);
   }
-  assert(access.form.success, "The waitlist form needs a success message.");
+  assert(access.form.success?.heading && access.form.success?.body, "The waitlist needs a success heading and body.");
+  assert(access.contact_email === "hello@jinai.md", "The waitlist must send from hello@jinai.md.");
   const community = access.community;
   if (community && community.url !== null && community.url !== undefined) {
     assert(
@@ -95,9 +96,7 @@ function renderCta(source, { centred }) {
   }
 
   const fields = access.form.fields;
-  const community_button = hasCommunity
-    ? `\n    <p class="waitalt">Already building with agents? <a href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a> ${escapeHtml(community.note)}</p>`
-    : "";
+  const success = access.form.success;
 
   return `<form class="signup" id="waitlistForm" action="${escapeHtml(access.form.action)}" method="post" target="waitlistSink">
       <div class="signup-row">
@@ -115,8 +114,13 @@ function renderCta(source, { centred }) {
       <button class="btn btn-p" type="submit">${escapeHtml(access.label)}</button>
       <p class="waitnote">${escapeHtml(access.note)}</p>
     </form>
-    <p class="signup-done" id="waitlistDone" role="status" hidden>${escapeHtml(access.form.success)}</p>
-    <iframe name="waitlistSink" id="waitlistSink" title="Waitlist submission target" hidden></iframe>${community_button}`;
+    <div class="signup-done" id="waitlistDone" role="status" hidden>
+      <h3>${escapeHtml(success.heading)}</h3>
+      <p>${escapeHtml(success.body)}</p>
+      <a class="btn btn-p" href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a>
+      <p class="signup-fallback">${escapeHtml(success.fallback)}</p>
+    </div>
+    <iframe name="waitlistSink" id="waitlistSink" title="Waitlist submission target" hidden></iframe>`;
 }
 
 function renderFaq(source) {

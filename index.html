@@ -192,7 +192,11 @@ header{position:sticky;top:0;z-index:50;background:rgba(245,243,239,.86);backdro
 .signup input:focus{outline:none;border-color:var(--ink)}
 .signup button{width:100%;justify-content:center;margin-top:4px;padding:12px 18px}
 .signup .waitnote{text-align:center;margin-top:2px}
-.signup-done{max-width:420px;margin:32px auto 0;padding:18px 20px;border:1px solid var(--cobalt);border-radius:var(--r);background:var(--cobalt-50);font-size:15px;color:var(--ink);line-height:1.7}
+.signup-done{max-width:420px;margin:32px auto 0;padding:26px 24px 24px;border:1px solid var(--cobalt);border-radius:var(--r);background:var(--cobalt-50);text-align:center}
+.signup-done h3{font-family:var(--serif);font-size:24px;font-weight:700;letter-spacing:-.025em;color:var(--ink)}
+.signup-done p{font-size:14.5px;color:var(--ink-2);line-height:1.8;margin-top:10px}
+.signup-done .btn{margin-top:18px;justify-content:center;padding:12px 22px}
+.signup-done .signup-fallback{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.03em;line-height:1.8;margin-top:16px}
 #waitlistSink{display:none}
 .waitalt{margin-top:22px;font-size:14px;color:var(--ink-3);line-height:1.8}
 .waitnote.ok{color:var(--green)}
@@ -455,6 +459,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
     <!-- GENERATED:CTA_HERO:START -->
 <div class="wait">
       <a class="btn btn-p" href="#waitlist">Join the waitlist</a>
+      <a class="btn btn-s" href="https://discord.gg/hn8eG4d9f" target="_blank" rel="noopener">Join the Discord</a>
     </div>
     <div class="waitnote">We will email you when your invite is ready, plus occasional product updates.</div>
 <!-- GENERATED:CTA_HERO:END -->
@@ -859,7 +864,12 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
       <button class="btn btn-p" type="submit">Join the waitlist</button>
       <p class="waitnote">We will email you when your invite is ready, plus occasional product updates.</p>
     </form>
-    <p class="signup-done" id="waitlistDone" role="status" hidden>You are on the list. We will email you when your invite is ready.</p>
+    <div class="signup-done" id="waitlistDone" role="status" hidden>
+      <h3>You are on the list.</h3>
+      <p>A welcome email is on its way from hello@jinai.md with your Discord invite. While you wait, you can join now.</p>
+      <a class="btn btn-p" href="https://discord.gg/hn8eG4d9f" target="_blank" rel="noopener">Join the Discord</a>
+      <p class="signup-fallback">No email after a few minutes? Check your spam folder, or use the button above.</p>
+    </div>
     <iframe name="waitlistSink" id="waitlistSink" title="Waitlist submission target" hidden></iframe>
 <!-- GENERATED:CTA_FINAL:END -->
   </div>
