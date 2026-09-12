@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { CONSENT_VERSION, isAppsScriptEndpoint } from "../waitlist.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const checkOnly = process.argv.includes("--check");
@@ -29,11 +30,11 @@ function validate(source) {
 
   const access = source.early_access;
   assert(access?.label && access?.note, "Early access needs a label and a note.");
-  assert(/^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/formResponse$/.test(access.form?.action || ""), "The waitlist form must post to a Google Forms response endpoint.");
-  for (const key of ["name", "email", "role"]) {
-    assert(/^entry\.\d+$/.test(access.form.fields?.[key] || ""), `The waitlist form is missing the ${key} field id.`);
-  }
-  assert(access.form.success?.heading && access.form.success?.body, "The waitlist needs a success heading and body.");
+  assert(access.form?.provider === "apps_script", "The waitlist must use Apps Script directly.");
+  assert(isAppsScriptEndpoint(access.form.endpoint) ||
+    (access.form.endpoint === null && access.status === "setup_pending"),
+  "The waitlist needs a deployed Apps Script /exec endpoint, or an explicit setup_pending state.");
+  assert(access.form.consent_version === CONSENT_VERSION, "The waitlist consent version has drifted.");
   assert(access.contact_email === "hello@jinai.md", "The waitlist must send from hello@jinai.md.");
   const community = access.community;
   if (community && community.url !== null && community.url !== undefined) {
@@ -95,32 +96,40 @@ function renderCta(source, { centred }) {
     <div class="waitnote">${escapeHtml(access.note)}</div>`;
   }
 
-  const fields = access.form.fields;
-  const success = access.form.success;
-
-  return `<form class="signup" id="waitlistForm" action="${escapeHtml(access.form.action)}" method="post" target="waitlistSink">
+  const endpoint = access.form.endpoint || "";
+  const action = endpoint ? ` action="${escapeHtml(endpoint)}"` : "";
+  return `<form class="signup" id="waitlistForm"${action} data-endpoint="${escapeHtml(endpoint)}" method="post">
       <div class="signup-row">
         <label for="wl-name">Name</label>
-        <input id="wl-name" name="${escapeHtml(fields.name)}" type="text" autocomplete="name" required>
+        <input id="wl-name" name="name" type="text" autocomplete="name" maxlength="120" required>
       </div>
       <div class="signup-row">
         <label for="wl-email">Email</label>
-        <input id="wl-email" name="${escapeHtml(fields.email)}" type="email" autocomplete="email" required>
+        <input id="wl-email" name="email" type="email" autocomplete="email" maxlength="254" required>
       </div>
       <div class="signup-row">
         <label for="wl-role">What do you do?</label>
-        <input id="wl-role" name="${escapeHtml(fields.role)}" type="text" autocomplete="organization-title" placeholder="Founder, PM, consultant, researcher&hellip;">
+        <input id="wl-role" name="role" type="text" autocomplete="organization-title" maxlength="160" placeholder="Founder, PM, consultant, researcher&hellip;" required>
       </div>
-      <button class="btn btn-p" type="submit">${escapeHtml(access.label)}</button>
+      <div class="signup-trap" aria-hidden="true">
+        <label for="wl-website">Leave this field empty</label>
+        <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </div>
+      <button class="btn btn-p" type="submit" disabled>${escapeHtml(access.label)}</button>
       <p class="waitnote">${escapeHtml(access.note)}</p>
     </form>
-    <div class="signup-done" id="waitlistDone" role="status" hidden>
-      <h3>${escapeHtml(success.heading)}</h3>
-      <p>${escapeHtml(success.body)}</p>
+    <noscript><p class="waitalt">Please enable JavaScript to register here. You can also join our Discord below.</p></noscript>
+    <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+    <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
+      <h3 id="waitlistHeading"></h3>
+      <dl class="signup-results">
+        <div><dt>Registration</dt><dd id="waitlistRegistration"></dd></div>
+        <div><dt>Welcome email</dt><dd id="waitlistEmail"></dd></div>
+      </dl>
+      <p id="waitlistDetail"></p>
       <a class="btn btn-p" href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a>
-      <p class="signup-fallback">${escapeHtml(success.fallback)}</p>
     </div>
-    <iframe name="waitlistSink" id="waitlistSink" title="Waitlist submission target" hidden></iframe>`;
+    <p class="waitalt">Questions or feedback? <a href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a>.</p>`;
 }
 
 function renderFaq(source) {

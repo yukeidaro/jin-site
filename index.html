@@ -192,12 +192,22 @@ header{position:sticky;top:0;z-index:50;background:rgba(245,243,239,.86);backdro
 .signup input:focus{outline:none;border-color:var(--ink)}
 .signup button{width:100%;justify-content:center;margin-top:4px;padding:12px 18px}
 .signup .waitnote{text-align:center;margin-top:2px}
-.signup-done{max-width:420px;margin:32px auto 0;padding:26px 24px 24px;border:1px solid var(--cobalt);border-radius:var(--r);background:var(--cobalt-50);text-align:center}
+.signup-done{max-width:460px;margin:32px auto 0;padding:26px 24px 24px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--paper);text-align:left}
 .signup-done h3{font-family:var(--serif);font-size:24px;font-weight:700;letter-spacing:-.025em;color:var(--ink)}
 .signup-done p{font-size:14.5px;color:var(--ink-2);line-height:1.8;margin-top:10px}
 .signup-done .btn{margin-top:18px;justify-content:center;padding:12px 22px}
 .signup-done .signup-fallback{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.03em;line-height:1.8;margin-top:16px}
-#waitlistSink{display:none}
+.signup[hidden],.signup-done[hidden],.signup-status[hidden]{display:none}
+.signup button:disabled{opacity:.6;cursor:wait}
+.signup-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+.signup-status{max-width:460px;margin:20px auto 0;font-size:14px;line-height:1.7}
+.signup-status[data-kind="error"]{color:var(--red)}
+.signup-results{display:grid;gap:8px;margin-top:20px;font-size:14px}
+.signup-results div{display:flex;justify-content:space-between;gap:20px}
+.signup-results dt{color:var(--ink-3)}
+.signup-results dd{font-weight:600;text-align:right}
+.signup-done[data-kind="success"]{border-color:var(--green)}
+.signup-done[data-kind="error"]{border-color:var(--red)}
 .waitalt{margin-top:22px;font-size:14px;color:var(--ink-3);line-height:1.8}
 .waitnote.ok{color:var(--green)}
 .waitnote.bad{color:var(--red)}
@@ -848,29 +858,38 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
     <h2 data-i18n="final.h2">Take back control of what your agents write.</h2>
     <p data-i18n="final.sub">Jin AI is in build. Early access will open in small batches.</p>
     <!-- GENERATED:CTA_FINAL:START -->
-<form class="signup" id="waitlistForm" action="https://docs.google.com/forms/d/e/1FAIpQLScB3SoTxA2gaUlOakUKqbZH2PtlDaQLkfh7XGkt-OsejLGTTA/formResponse" method="post" target="waitlistSink">
+<form class="signup" id="waitlistForm" data-endpoint="" method="post">
       <div class="signup-row">
         <label for="wl-name">Name</label>
-        <input id="wl-name" name="entry.739060147" type="text" autocomplete="name" required>
+        <input id="wl-name" name="name" type="text" autocomplete="name" maxlength="120" required>
       </div>
       <div class="signup-row">
         <label for="wl-email">Email</label>
-        <input id="wl-email" name="entry.908221759" type="email" autocomplete="email" required>
+        <input id="wl-email" name="email" type="email" autocomplete="email" maxlength="254" required>
       </div>
       <div class="signup-row">
         <label for="wl-role">What do you do?</label>
-        <input id="wl-role" name="entry.442318499" type="text" autocomplete="organization-title" placeholder="Founder, PM, consultant, researcher&hellip;">
+        <input id="wl-role" name="role" type="text" autocomplete="organization-title" maxlength="160" placeholder="Founder, PM, consultant, researcher&hellip;" required>
       </div>
-      <button class="btn btn-p" type="submit">Join the waitlist</button>
+      <div class="signup-trap" aria-hidden="true">
+        <label for="wl-website">Leave this field empty</label>
+        <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </div>
+      <button class="btn btn-p" type="submit" disabled>Join the waitlist</button>
       <p class="waitnote">We will email you when your invite is ready, plus occasional product updates.</p>
     </form>
-    <div class="signup-done" id="waitlistDone" role="status" hidden>
-      <h3>You are on the list.</h3>
-      <p>A welcome email is on its way from hello@jinai.md with your Discord invite. While you wait, you can join now.</p>
+    <noscript><p class="waitalt">Please enable JavaScript to register here. You can also join our Discord below.</p></noscript>
+    <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+    <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
+      <h3 id="waitlistHeading"></h3>
+      <dl class="signup-results">
+        <div><dt>Registration</dt><dd id="waitlistRegistration"></dd></div>
+        <div><dt>Welcome email</dt><dd id="waitlistEmail"></dd></div>
+      </dl>
+      <p id="waitlistDetail"></p>
       <a class="btn btn-p" href="https://discord.gg/hn8eG4d9f" target="_blank" rel="noopener">Join the Discord</a>
-      <p class="signup-fallback">No email after a few minutes? Check your spam folder, or use the button above.</p>
     </div>
-    <iframe name="waitlistSink" id="waitlistSink" title="Waitlist submission target" hidden></iframe>
+    <p class="waitalt">Questions or feedback? <a href="https://discord.gg/hn8eG4d9f" target="_blank" rel="noopener">Join the Discord</a>.</p>
 <!-- GENERATED:CTA_FINAL:END -->
   </div>
 </section>
@@ -891,24 +910,6 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
   </div>
 </footer>
 
-<script>
-/* The waitlist posts into a hidden iframe so the visitor never leaves the page
-   and the site needs no backend. The iframe load event is the success signal. */
-(() => {
-  const form = document.getElementById('waitlistForm');
-  const done = document.getElementById('waitlistDone');
-  const sink = document.getElementById('waitlistSink');
-  if (!form || !done || !sink) return;
-
-  let sent = false;
-  form.addEventListener('submit', () => { sent = true; });
-  sink.addEventListener('load', () => {
-    if (!sent) return;
-    form.hidden = true;
-    done.hidden = false;
-    done.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  });
-})();
-</script>
+<script type="module" src="waitlist.mjs"></script>
 </body>
 </html>

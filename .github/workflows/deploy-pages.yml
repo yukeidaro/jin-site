@@ -33,6 +33,9 @@ jobs:
       - name: Verify generated AEO content
         run: node scripts/generate-aeo.mjs --check
 
+      - name: Test waitlist registration and email states
+        run: node --test scripts/waitlist.test.mjs
+
       - name: Build allowlisted site
         run: node scripts/build-pages.mjs
 

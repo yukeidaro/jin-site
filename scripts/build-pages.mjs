@@ -9,6 +9,7 @@ const files = [
   ".nojekyll",
   "CNAME",
   "index.html",
+  "waitlist.mjs",
   "robots.txt",
   "sitemap.xml",
   "llms.txt",

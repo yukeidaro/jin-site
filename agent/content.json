@@ -252,21 +252,13 @@
     }
   ],
   "early_access": {
-    "status": "open",
+    "status": "setup_pending",
     "label": "Join the waitlist",
     "note": "We will email you when your invite is ready, plus occasional product updates.",
     "form": {
-      "action": "https://docs.google.com/forms/d/e/1FAIpQLScB3SoTxA2gaUlOakUKqbZH2PtlDaQLkfh7XGkt-OsejLGTTA/formResponse",
-      "fields": {
-        "name": "entry.739060147",
-        "email": "entry.908221759",
-        "role": "entry.442318499"
-      },
-      "success": {
-        "heading": "You are on the list.",
-        "body": "A welcome email is on its way from hello@jinai.md with your Discord invite. While you wait, you can join now.",
-        "fallback": "No email after a few minutes? Check your spam folder, or use the button above."
-      }
+      "provider": "apps_script",
+      "endpoint": null,
+      "consent_version": "waitlist-product-updates-v1"
     },
     "community": {
       "name": "Discord",

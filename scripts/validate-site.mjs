@@ -1,6 +1,7 @@
 import { readFile, readdir, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { isAppsScriptEndpoint } from "../waitlist.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const site = path.join(root, "_site");
@@ -46,7 +47,8 @@ const expectedFiles = [
   "shots/app-hero-en.jpg",
   "shots/app-page-en.jpg",
   "shots/app-workspace-en.jpg",
-  "sitemap.xml"
+  "sitemap.xml",
+  "waitlist.mjs"
 ].sort();
 
 const deployedFiles = await listFiles(site);
@@ -109,8 +111,16 @@ check(content.product.name === "Jin AI", "Structured data product name is invali
 check(content.product.status === "in_build", "Structured data must state the in-build status.");
 
 const access = content.early_access;
-check(home.includes(`action="${access.form.action}"`), "The waitlist form must post to the declared endpoint.");
-check(home.includes(`name="${access.form.fields.email}"`), "The waitlist form must carry the email field id.");
+check(access.form.provider === "apps_script", "The waitlist must use Apps Script directly.");
+check(isAppsScriptEndpoint(access.form.endpoint) ||
+  (access.form.endpoint === null && access.status === "setup_pending"), "The Apps Script endpoint must be configured or explicitly pending.");
+check(home.includes(`data-endpoint="${access.form.endpoint || ""}"`), "The waitlist form must use the declared endpoint.");
+for (const name of ["name", "email", "role"]) {
+  check(home.includes(`name="${name}"`), `The waitlist is missing its ${name} field.`);
+}
+check(home.includes('src="waitlist.mjs"'), "The waitlist client must be loaded.");
+check(!home.includes("waitlistSink") && !home.includes("formResponse"), "Google Forms and iframe-load confirmations must not be used.");
+check(!home.includes("A welcome email is on its way"), "The page must not promise email before the server confirms a send.");
 check(count(home, /<form[^>]+id="waitlistForm"/g) === 1, "There must be exactly one waitlist form.");
 check(home.includes('href="#waitlist"'), "The hero CTA must jump to the waitlist form.");
 check(!/<a[^>]*class="btn[^"]*"[^>]*href="#?"/.test(home), "No CTA may link to an empty or placeholder target.");
@@ -118,7 +128,7 @@ if (access.community?.url) {
   check(home.includes(`href="${access.community.url}"`), "Community CTA must be published once its URL is set.");
 }
 
-const customerFacingTextFiles = deployedFiles.filter((file) => /\.(html|json|txt|xml|svg)$/.test(file));
+const customerFacingTextFiles = deployedFiles.filter((file) => /\.(html|json|txt|xml|svg|mjs)$/.test(file));
 for (const relativePath of customerFacingTextFiles) {
   const source = await text(relativePath);
   check(!source.includes("JinAI"), `${relativePath} contains the obsolete JinAI spelling.`);
