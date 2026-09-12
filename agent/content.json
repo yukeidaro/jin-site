@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "content_version": "2.0",
-  "last_updated": "2026-09-10",
+  "last_updated": "2026-09-12",
   "language": "en",
   "canonical_url": "https://jinai.md/",
   "resources": {
@@ -252,12 +252,12 @@
     }
   ],
   "early_access": {
-    "status": "setup_pending",
+    "status": "open",
     "label": "Join the waitlist",
     "note": "We will email you when your invite is ready, plus occasional product updates.",
     "form": {
       "provider": "apps_script",
-      "endpoint": null,
+      "endpoint": "https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec",
       "consent_version": "waitlist-product-updates-v1"
     },
     "community": {

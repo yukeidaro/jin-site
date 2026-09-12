@@ -2,7 +2,7 @@
 
 > Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to give business users control of that output: see what an agent created and changed, put it where it belongs, undo an individual agent's edit, and have those decisions written into the instruction files agents already read.
 
-Status: In build. Availability: coming soon. Last updated: 2026-09-10.
+Status: In build. Availability: coming soon. Last updated: 2026-09-12.
 
 Interpret status words literally. "In build" is not shipped, "planned" is intended next work, and "later" is not committed for the first release. The Human page at https://jinai.md/ is the sole canonical product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
 
