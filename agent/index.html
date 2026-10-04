@@ -65,46 +65,41 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font:12px var(--mono
 <!-- GENERATED:AGENT_CONTENT:START -->
 <article data-content-version="2.0">
   <h1>Jin AI for agents</h1>
-  <p class="dek">Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to give business users control of that output: see what an agent created and changed, put it where it belongs, undo an individual agent's edit, and have those decisions written into the instruction files agents already read.</p>
+  <p class="dek">Jin AI learns how you work from the files and AI chat history already on your computer, and gives that context to the AI tools you use, so you stop re-explaining yourself. What it learns is kept as plain Markdown you can read and fix. It is in build, and a first beta is opening in small batches.</p>
   <div class="statusline">
     <span class="badge" data-status="in_build">In build</span>
-    <span class="badge">Availability: coming soon</span>
-    <span class="badge">Updated: 2026-09-12</span>
+    <span class="badge">Availability: first beta opening in small batches</span>
+    <span class="badge">Updated: 2026-10-02</span>
   </div>
 
   <h2>Direct answer</h2>
-  <p class="answer"><strong>Jin AI</strong> is a visual workspace for the files AI agents create, with Markdown as the spine. It is for business users working with AI agents and is currently <strong>in build</strong>.</p>
+  <p class="answer"><strong>Jin AI</strong> is a context layer that learns how you work and briefs the AI tools you use, with Markdown as the spine. It is for founders and operators who use more than one AI every day and is currently <strong>in build</strong>.</p>
 
   <h2>Problem</h2>
-  <p class="answer"><strong>Your agents decide and you are not asked.</strong> Agents create, rewrite and file documents on your own machine, choosing the structure without approval and without reporting what changed.</p>
-  <p>Each agent creates files according to its own logic, on the user's own machine, picking folders without asking and without reporting what changed. The user loses both visibility and control, and because the output is never visible it cannot be corrected, so the same problem repeats.</p>
+  <p class="answer"><strong>You keep re-prompting AI, and it still misses what you mean.</strong> AI gets the first draft right, then drifts. People retype the same context, and writing instruction files for every AI has become a job of its own.</p>
+  <p>AI does not know which details must be exact and which it can decide. People compensate by repeating themselves in every chat and by writing instruction files such as CLAUDE.md, AGENTS.md and custom instructions, which they then have to keep up to date by hand. Each AI keeps its own memory, so the work starts over in every tool.</p>
 
   <h2>Evidence and limits</h2>
-  <section id="founder-laptop-markdown-volume">
-      <h3>On one founder's laptop, agents created 3,950 Markdown files in one week; 89% were not reopened within the following week; 283 were named README.md.</h3>
-      <p class="caveat"><strong>Scope:</strong> One founder's laptop only <strong>Caveat:</strong> This is not market-wide evidence. Jin AI has not surveyed anyone else yet.</p>
-      <p>Source: Internal observation.</p>
-    </section>
-    <section id="file-retrieval-navigation-preference">
-      <h3>Participants estimated that they reached files by navigation 56–68% of the time and by search 4–15%, with little change after search tools were improved.</h3>
-      <p class="caveat"><strong>Scope:</strong> Desktop personal-information-management studies; not research on AI-generated files or Jin AI users.</p>
-      <p><a href="https://dl.acm.org/doi/10.1145/1402256.1402259">Improved search engines and navigation preference in personal information management</a> (2008)</p>
+  <section id="workday-ai-rework">
+      <h3>Nearly 40% of the time employees save with AI is lost to rework: correcting errors, rewriting content and verifying output.</h3>
+      <p class="caveat"><strong>Scope:</strong> Survey of 3,200 employees and business leaders, fielded by Hanover Research in November 2025. Not research on Jin AI users.</p>
+      <p><a href="https://www.prnewswire.com/news-releases/new-workday-research-companies-are-leaving-ai-gains-on-the-table-302660517.html">New Workday Research: Companies Are Leaving AI Gains on the Table</a> (2026)</p>
     </section>
 
   <h2>Planned product behavior</h2>
-  <p>You decide where things go, not the agent. The agent can still reach everything. You just do not need to see everything.</p>
+  <p>Jin AI learns how you work, then briefs your AI on every request. You should not have to write instructions for your AI. You should be able to read and fix the ones it uses.</p>
   <div class="steps">
       <section class="card">
-        <h3>See</h3>
-        <p>Read the actual files an agent created or changed, grouped by project, person, recency, topic or file type, without moving anything.</p>
+        <h3>Learn</h3>
+        <p>Read the files and AI chat history already on your computer and work out how you work: what must be exact, and what the AI can decide.</p>
       </section>
       <section class="card">
-        <h3>Fix</h3>
-        <p>Put an item where it belongs by renaming, moving, regrouping or hiding it when an agent filed it somewhere a person would not have.</p>
+        <h3>Brief</h3>
+        <p>With each request, give the AI only the memories that matter for that task, so the last answer is as good as the first.</p>
       </section>
       <section class="card">
-        <h3>Undo</h3>
-        <p>Roll back an individual agent's change without touching your own edits, because the two are recorded separately.</p>
+        <h3>Show</h3>
+        <p>Keep everything it learned as plain Markdown, show which memories each AI received, and let you correct any of them.</p>
       </section>
   </div>
 
@@ -113,43 +108,48 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font:12px var(--mono
   <div class="capabilities">
       <section class="card">
         <span class="badge" data-status="in_build">In build</span>
-        <h3>Visual workspace with projects and subprojects</h3>
-        <p>Target stage: The workspace.</p>
+        <h3>Learn how you work from local files and AI chat history</h3>
+        <p>Target stage: The first beta.</p>
       </section>
       <section class="card">
         <span class="badge" data-status="in_build">In build</span>
-        <h3>Visual Markdown reading and editing</h3>
-        <p>Target stage: The workspace.</p>
+        <h3>Memory kept as plain Markdown you can read, search and fix</h3>
+        <p>Target stage: The first beta.</p>
       </section>
       <section class="card">
         <span class="badge" data-status="in_build">In build</span>
-        <h3>Views by project, person and recency</h3>
-        <p>Target stage: The workspace.</p>
+        <h3>Add the relevant memories to each request in Claude Code</h3>
+        <p>Target stage: The first beta.</p>
       </section>
       <section class="card">
         <span class="badge" data-status="in_build">In build</span>
-        <h3>History showing what each agent changed and when</h3>
-        <p>Target stage: The workspace.</p>
+        <h3>Show which memories each AI received and used</h3>
+        <p>Target stage: The first beta.</p>
       </section>
       <section class="card">
         <span class="badge" data-status="planned">Planned</span>
-        <h3>Write structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md</h3>
-        <p>Target stage: The sync.</p>
+        <h3>Plugins for ChatGPT, Codex and GitHub Copilot</h3>
+        <p>Target stage: Every AI you use.</p>
       </section>
       <section class="card">
         <span class="badge" data-status="planned">Planned</span>
-        <h3>Separate agent-only instructions, memory, logs and intermediate outputs</h3>
-        <p>Target stage: The sync.</p>
+        <h3>Keep CLAUDE.md, AGENTS.md and copilot-instructions.md current</h3>
+        <p>Target stage: Every AI you use.</p>
       </section>
       <section class="card">
         <span class="badge" data-status="planned">Planned</span>
-        <h3>Regroup files with a plain-language instruction</h3>
-        <p>Target stage: The sync.</p>
+        <h3>Learn from Google Drive and Notion</h3>
+        <p>Target stage: Pro.</p>
+      </section>
+      <section class="card">
+        <span class="badge" data-status="planned">Planned</span>
+        <h3>Memory synced across your computer and phone</h3>
+        <p>Target stage: Pro.</p>
       </section>
       <section class="card">
         <span class="badge" data-status="later">Later</span>
-        <h3>Secure shared storage, access control and governance</h3>
-        <p>Target stage: The organisation.</p>
+        <h3>Shared memory for teams</h3>
+        <p>Target stage: Teams.</p>
       </section>
   </div>
 
@@ -157,41 +157,45 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font:12px var(--mono
   <div class="answers">
       <div class="card" id="what-is-jin-ai">
         <h3>What is Jin AI?</h3>
-        <p>Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to give you control of that output: see what an agent created and changed, put it where it belongs, undo an individual agent's edit, and have those decisions written into the instruction files agents already read.</p>
+        <p>Jin AI learns how you work from the files and AI chat history already on your computer, and gives that context to the AI tools you use, so you stop re-explaining yourself. What it learns is kept as plain Markdown you can read and fix.</p>
       </div>
       <div class="card" id="who-is-jin-ai-for">
         <h3>Who is Jin AI for?</h3>
-        <p>Jin AI is for business users who work with AI agents but do not want file names, folders, links, tags, Markdown syntax or developer tools to become a second job.</p>
+        <p>Founders and operators who use two or more AIs every day, know they should set up instructions such as CLAUDE.md or custom instructions, and never quite did, or gave up keeping them current.</p>
       </div>
-      <div class="card" id="why-not-just-use-my-file-explorer">
-        <h3>Why not just look in my file explorer?</h3>
-        <p>A file explorer shows names and dates, not what an agent produced or changed. It does not separate agent-only files from your deliverables, and it cannot tell you which agent made which edit.</p>
+      <div class="card" id="how-is-this-different-from-chatgpt-or-claude-memory">
+        <h3>How is this different from ChatGPT or Claude memory?</h3>
+        <p>Built-in memory is a short list of facts that stays inside one AI. Jin AI learns from your files as well as your chats, keeps what it learns structured by what must be exact and what the AI can decide, and is designed to brief every AI you use.</p>
       </div>
-      <div class="card" id="does-jin-ai-replace-markdown">
-        <h3>Does Jin AI replace Markdown?</h3>
-        <p>No. Markdown remains the spine so agents can keep working. The planned visual interface means people will not need to learn Markdown syntax.</p>
+      <div class="card" id="do-i-have-to-write-instructions">
+        <h3>Do I have to write CLAUDE.md or custom instructions?</h3>
+        <p>No. Jin AI learns from what you already have. Keeping CLAUDE.md, AGENTS.md and copilot-instructions.md current for you is planned, not shipped.</p>
       </div>
-      <div class="card" id="does-jin-ai-move-or-upload-files">
-        <h3>Does Jin AI move or upload local files?</h3>
-        <p>The planned local edition is designed to read files in their existing locations without moving them. Sharing and cloud storage are optional planned paid capabilities.</p>
+      <div class="card" id="does-jin-ai-record-my-screen-or-upload-files">
+        <h3>Does Jin AI record my screen or upload my files?</h3>
+        <p>Jin AI never records your screen. The free version learns from files and chat history on your own computer, and your files stay where they are. Syncing across devices is a planned, optional Pro feature.</p>
       </div>
-      <div class="card" id="how-do-agents-learn-the-structure">
-        <h3>How does Jin AI make my agents better?</h3>
-        <p>Your decisions become the rules. A planned next capability will write your structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md, which agents already read, so the next file lands where you would have put it. No plugin or API is planned to be required.</p>
+      <div class="card" id="can-i-see-what-it-remembers">
+        <h3>Can I see and change what it remembers?</h3>
+        <p>Yes. Everything Jin AI learns is plain Markdown. You can read it, search it, correct it, and see which memories each AI received for a request.</p>
+      </div>
+      <div class="card" id="which-ai-tools-does-it-work-with">
+        <h3>Which AI tools does it work with?</h3>
+        <p>Claude Code first. Plugins for ChatGPT, Codex and GitHub Copilot are planned.</p>
       </div>
       <div class="card" id="is-jin-ai-available">
         <h3>Is Jin AI available now?</h3>
-        <p>Not yet. Jin AI is in build and early access is planned to open in small batches.</p>
+        <p>Not publicly. The desktop app is in build and a first beta is opening in small batches. Join the waitlist to be considered.</p>
       </div>
       <div class="card" id="how-much-will-jin-ai-cost">
         <h3>How much will Jin AI cost?</h3>
-        <p>Individual local use is planned to be free. Individual collaboration is planned at $15 per month plus usage-based cloud storage. Company pricing is not final.</p>
+        <p>Free on your own computer. Pro is proposed at $10 per month for Google Drive and Notion sources and memory across devices. Team plans start with a conversation. All prices are being tested in the beta.</p>
       </div>
   </div>
 
   <h2>Business model</h2>
-  <p><strong>Free on your laptop. Paid when it leaves.</strong> Planned to be free, with no account required and files remaining on the device in plain Markdown. Planned at $15 per month, plus usage-based cloud storage. Planned per-seat enterprise pricing for shared workspaces, secure storage, governance and audit.</p>
-  <p class="caveat">Not final; to be validated with early customers.</p>
+  <p><strong>Free on your computer. Pro follows you everywhere.</strong> Free: Jin AI learns from the files and AI chat history on your own computer. Pro, proposed at $10 per month: adds sources such as Google Drive and Notion, and memory synced across your computer and phone. Teams: we start with a conversation and shape the plan around what the team needs.</p>
+  <p class="caveat">All prices are a proposal we are testing in the beta. Nothing is charged today.</p>
 
   <h2>Founders</h2>
   <dl>
@@ -207,7 +211,7 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font:12px var(--mono
     <li><a href="https://jinai.md/llms.txt">LLM index (text)</a></li>
     <li><a href="https://jinai.md/">Canonical Human page</a></li>
   </ul>
-  <p class="meta">Generated from agent/content.json · content version 2.0 · updated 2026-09-12</p>
+  <p class="meta">Generated from agent/content.json · content version 2.0 · updated 2026-10-02</p>
 </article>
 <!-- GENERATED:AGENT_CONTENT:END -->
 </main>

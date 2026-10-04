@@ -3,7 +3,7 @@
  * Deploy with scripts/appsscript.json, execute as the deploying account, and
  * allow Anyone. Run setupWaitlist first; see README.md for the remaining steps.
  */
-var WAITLIST_VERSION = '2026-09-12.1';
+var WAITLIST_VERSION = '2026-10-04.1';
 var WAITLIST_FROM = 'hello@jinai.md';
 var WAITLIST_DISCORD = 'https://discord.gg/hn8eG4d9f';
 var WAITLIST_CONSENT = 'waitlist-product-updates-v1';
@@ -25,6 +25,23 @@ var WAITLIST_COLUMNS = [
   ['messageId', 'Gmail message ID'],
   ['errorCode', 'Last error code']
 ];
+var SURVEY_SHEET = 'Survey';
+var SURVEY_ID = 'ai-friction-v1';
+var SURVEY_OPTIONS = {
+  A: 'Correcting small things over and over',
+  B: 'Updating the settings that teach AI my preferences and rules (Skills and similar)',
+  C: 'Finding the right documents and files to hand to AI',
+  D: 'Re-explaining my requirements and background every time I switch between ChatGPT, Claude and others'
+};
+var SURVEY_COLUMNS = [
+  ['answeredAt', 'Answered at'],
+  ['email', 'Email'],
+  ['requestId', 'Request ID'],
+  ['surveyId', 'Survey ID'],
+  ['answer', 'Answer'],
+  ['answerLabel', 'Answer label'],
+  ['updatedAt', 'Updated at']
+];
 
 function doGet() {
   return jsonOutput_({ service: 'jin-ai-waitlist', version: WAITLIST_VERSION });
@@ -34,7 +51,8 @@ function doPost(e) {
   var input;
   try {
     if (!e || !e.postData || typeof e.postData.contents !== 'string' ||
-        e.postData.contents.length > 4096) {
+        e.postData.contents.length > 4096 ||
+        Utilities.newBlob(e.postData.contents).getBytes().length > 4096) {
       throw waitlistError_('invalid_request');
     }
     input = JSON.parse(e.postData.contents);
@@ -42,7 +60,9 @@ function doPost(e) {
     console.warn('waitlist: invalid request body');
     return jsonOutput_(result_(null, 'not_saved', 'not_attempted', 'invalid_request'));
   }
-  return jsonOutput_(registerWaitlist_(input, productionDependencies_()));
+  return jsonOutput_(input && input.type === 'survey' ?
+    recordSurvey_(input, productionDependencies_()) :
+    registerWaitlist_(input, productionDependencies_()));
 }
 
 function jsonOutput_(data) {
@@ -60,18 +80,44 @@ function result_(requestId, registration, welcome, code) {
   };
 }
 
+function surveyResult_(requestId, survey, code) {
+  return { version: 1, requestId: requestId, survey: survey, code: code || null };
+}
+
 function waitlistError_(code) {
   var error = new Error(code);
   error.code = code;
   return error;
 }
 
+function validRequestId_(value) {
+  return typeof value === 'string' &&
+    /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(value);
+}
+
+function cleanEmail_(value) {
+  if (typeof value !== 'string' || /[\u0000-\u001f\u007f]/.test(value)) {
+    throw waitlistError_('invalid_email');
+  }
+  var email = value.trim().toLowerCase();
+  if (email.length > 254 ||
+      !/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/i.test(email) ||
+      email.split('@')[0].length > 64 ||
+      /^\.|\.\.|\.@/.test(email)) {
+    throw waitlistError_('invalid_email');
+  }
+  return email;
+}
+
+function validSource_(value) {
+  return value === 'https://jinai.md' || value === 'https://www.jinai.md';
+}
+
 function validateSignup_(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) {
     throw waitlistError_('invalid_input');
   }
-  if (typeof input.requestId !== 'string' ||
-      !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(input.requestId)) {
+  if (!validRequestId_(input.requestId)) {
     throw waitlistError_('invalid_request_id');
   }
   var cleaned = {};
@@ -83,17 +129,9 @@ function validateSignup_(input) {
   });
   if (!cleaned.name || cleaned.name.length > 120) throw waitlistError_('invalid_name');
   if (!cleaned.role || cleaned.role.length > 160) throw waitlistError_('invalid_role');
-  cleaned.email = cleaned.email.toLowerCase();
-  if (cleaned.email.length > 254 ||
-      !/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/i.test(cleaned.email) ||
-      cleaned.email.split('@')[0].length > 64 ||
-      /^\.|\.\.|\.@/.test(cleaned.email)) {
-    throw waitlistError_('invalid_email');
-  }
+  cleaned.email = cleanEmail_(cleaned.email);
   if (input.website !== '' && input.website !== undefined) throw waitlistError_('invalid_input');
-  if (input.source !== 'https://jinai.md' && input.source !== 'https://www.jinai.md') {
-    throw waitlistError_('invalid_source');
-  }
+  if (!validSource_(input.source)) throw waitlistError_('invalid_source');
   if (input.consentVersion !== WAITLIST_CONSENT) throw waitlistError_('invalid_consent');
   cleaned.requestId = input.requestId;
   cleaned.source = input.source;
@@ -159,6 +197,73 @@ function registerWaitlist_(input, deps) {
   }
 }
 
+function validateSurvey_(input) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    throw waitlistError_('invalid_input');
+  }
+  if (!validRequestId_(input.requestId)) throw waitlistError_('invalid_request_id');
+  var email = cleanEmail_(input.email);
+  if (input.surveyId !== SURVEY_ID) throw waitlistError_('invalid_survey');
+  if (typeof input.answer !== 'string' ||
+      !Object.prototype.hasOwnProperty.call(SURVEY_OPTIONS, input.answer)) {
+    throw waitlistError_('invalid_answer');
+  }
+  if (!validSource_(input.source)) throw waitlistError_('invalid_source');
+  return {
+    requestId: input.requestId,
+    email: email,
+    surveyId: input.surveyId,
+    answer: input.answer
+  };
+}
+
+function recordSurvey_(input, deps) {
+  var requestId = input && typeof input.requestId === 'string' &&
+    /^[a-f0-9-]{36}$/i.test(input.requestId) ? input.requestId : null;
+  var survey;
+  try {
+    survey = validateSurvey_(input);
+  } catch (error) {
+    deps.log('survey', requestId, error.code || 'invalid_input');
+    return surveyResult_(requestId, 'not_saved', error.code || 'invalid_input');
+  }
+
+  try {
+    return deps.store.withLock(function () {
+      var registration = deps.store.find('requestId', survey.requestId);
+      if (registration && registration.email !== survey.email) {
+        throw waitlistError_('request_conflict');
+      }
+      registration = registration || deps.store.find('email', survey.email);
+      if (!registration || registration.registration !== 'saved') {
+        throw waitlistError_('not_registered');
+      }
+      var record = deps.surveyStore.findBy(survey.email, survey.surveyId);
+      var now = new Date(deps.now()).toISOString();
+      if (record) {
+        record.answer = survey.answer;
+        record.answerLabel = SURVEY_OPTIONS[survey.answer];
+        record.updatedAt = now;
+        deps.surveyStore.update(record);
+      } else {
+        deps.surveyStore.append({
+          answeredAt: now,
+          email: survey.email,
+          requestId: survey.requestId,
+          surveyId: survey.surveyId,
+          answer: survey.answer,
+          answerLabel: SURVEY_OPTIONS[survey.answer],
+          updatedAt: now
+        });
+      }
+      return surveyResult_(survey.requestId, 'saved', null);
+    });
+  } catch (error) {
+    deps.log('survey', survey.requestId, error.code || 'storage_error');
+    return surveyResult_(survey.requestId, 'not_saved', error.code || 'storage_error');
+  }
+}
+
 function attemptWelcome_(record, deps) {
   try {
     deps.sender.assertReady();
@@ -206,6 +311,7 @@ function attemptWelcome_(record, deps) {
 function productionDependencies_() {
   return {
     store: sheetStore_(),
+    surveyStore: sheetStore_(SURVEY_SHEET, SURVEY_COLUMNS),
     sender: {
       assertReady: function () {
         var aliases;
@@ -246,29 +352,31 @@ function productionDependencies_() {
   };
 }
 
-function sheetStore_() {
+function sheetStore_(sheetName, columns) {
+  sheetName = sheetName || WAITLIST_SHEET;
+  columns = columns || WAITLIST_COLUMNS;
   var sheet;
   function getSheet() {
     if (sheet) return sheet;
     var id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
     if (!id) throw waitlistError_('storage_not_configured');
-    sheet = SpreadsheetApp.openById(id).getSheetByName(WAITLIST_SHEET);
+    sheet = SpreadsheetApp.openById(id).getSheetByName(sheetName);
     if (!sheet) throw waitlistError_('storage_not_configured');
-    var headers = sheet.getRange(1, 1, 1, WAITLIST_COLUMNS.length).getValues()[0];
-    if (JSON.stringify(headers) !== JSON.stringify(WAITLIST_COLUMNS.map(function (column) { return column[1]; }))) {
+    var headers = sheet.getRange(1, 1, 1, columns.length).getValues()[0];
+    if (JSON.stringify(headers) !== JSON.stringify(columns.map(function (column) { return column[1]; }))) {
       throw waitlistError_('storage_schema_mismatch');
     }
     return sheet;
   }
   function values(record) {
-    return WAITLIST_COLUMNS.map(function (column) {
+    return columns.map(function (column) {
       return safeCell_(record[column[0]]);
     });
   }
   function readRow(number, cells) {
-    cells = cells || getSheet().getRange(number, 1, 1, WAITLIST_COLUMNS.length).getValues()[0];
+    cells = cells || getSheet().getRange(number, 1, 1, columns.length).getValues()[0];
     var record = { row: number };
-    WAITLIST_COLUMNS.forEach(function (column, i) {
+    columns.forEach(function (column, i) {
       record[column[0]] = cells[i] instanceof Date ? cells[i].toISOString() : cells[i];
     });
     return record;
@@ -282,27 +390,41 @@ function sheetStore_() {
     find: function (key, value) {
       var target = getSheet();
       if (target.getLastRow() < 2) return null;
-      var index = WAITLIST_COLUMNS.map(function (column) { return column[0]; }).indexOf(key);
+      var index = columns.map(function (column) { return column[0]; }).indexOf(key);
       if (index < 0) throw waitlistError_('invalid_lookup');
       var found = target.getRange(2, index + 1, target.getLastRow() - 1, 1)
         .createTextFinder(value).matchEntireCell(true).useRegularExpression(false).findNext();
       return found ? readRow(found.getRow()) : null;
     },
+    findBy: function (email, surveyId) {
+      var target = getSheet();
+      if (target.getLastRow() < 2) return null;
+      var keys = columns.map(function (column) { return column[0]; });
+      var emailIndex = keys.indexOf('email');
+      if (emailIndex < 0 || keys.indexOf('surveyId') < 0) throw waitlistError_('invalid_lookup');
+      var matches = target.getRange(2, emailIndex + 1, target.getLastRow() - 1, 1)
+        .createTextFinder(email).matchEntireCell(true).useRegularExpression(false).findAll();
+      for (var i = 0; i < matches.length; i++) {
+        var record = readRow(matches[i].getRow());
+        if (record.email === email && record.surveyId === surveyId) return record;
+      }
+      return null;
+    },
     append: function (record) {
       record.row = getSheet().getLastRow() + 1;
-      getSheet().getRange(record.row, 1, 1, WAITLIST_COLUMNS.length).setValues([values(record)]);
+      getSheet().getRange(record.row, 1, 1, columns.length).setValues([values(record)]);
       SpreadsheetApp.flush();
       return record;
     },
     update: function (record) {
-      getSheet().getRange(record.row, 1, 1, WAITLIST_COLUMNS.length).setValues([values(record)]);
+      getSheet().getRange(record.row, 1, 1, columns.length).setValues([values(record)]);
       SpreadsheetApp.flush();
     },
     pending: function (dueAt) {
       var target = getSheet();
       var records = [];
       if (target.getLastRow() < 2) return records;
-      var rows = target.getRange(2, 1, target.getLastRow() - 1, WAITLIST_COLUMNS.length).getValues();
+      var rows = target.getRange(2, 1, target.getLastRow() - 1, columns.length).getValues();
       for (var i = 0; i < rows.length; i++) {
         var record = readRow(i + 2, rows[i]);
         if (record.welcome === 'pending' &&
@@ -328,18 +450,24 @@ function setupWaitlist() {
   var spreadsheet = id ? SpreadsheetApp.openById(id) : SpreadsheetApp.getActiveSpreadsheet();
   if (!spreadsheet) throw waitlistError_('set_SPREADSHEET_ID_first');
   properties.setProperty('SPREADSHEET_ID', spreadsheet.getId());
-  var sheet = spreadsheet.getSheetByName(WAITLIST_SHEET);
-  if (!sheet) {
-    sheet = spreadsheet.insertSheet(WAITLIST_SHEET);
-    sheet.getRange(1, 1, 1, WAITLIST_COLUMNS.length)
-      .setValues([WAITLIST_COLUMNS.map(function (column) { return column[1]; })])
-      .setFontWeight('bold');
-    sheet.setFrozenRows(1);
-    sheet.setColumnWidths(1, WAITLIST_COLUMNS.length, 170);
-    sheet.setColumnWidth(3, 260);
-  }
-  sheetStore_().find('requestId', 'setup-check');
-  console.log(JSON.stringify({ storage: 'ready', spreadsheet: spreadsheet.getUrl(), sheet: WAITLIST_SHEET }));
+  [[WAITLIST_SHEET, WAITLIST_COLUMNS], [SURVEY_SHEET, SURVEY_COLUMNS]].forEach(function (definition) {
+    var name = definition[0];
+    var columns = definition[1];
+    var sheet = spreadsheet.getSheetByName(name);
+    if (!sheet) {
+      sheet = spreadsheet.insertSheet(name);
+      sheet.getRange(1, 1, 1, columns.length)
+        .setValues([columns.map(function (column) { return column[1]; })])
+        .setFontWeight('bold');
+      sheet.setFrozenRows(1);
+      sheet.setColumnWidths(1, columns.length, 170);
+      sheet.setColumnWidth(columns.map(function (column) { return column[0]; }).indexOf('email') + 1, 260);
+    }
+    sheetStore_(name, columns).find('requestId', 'setup-check');
+  });
+  console.log(JSON.stringify({
+    storage: 'ready', spreadsheet: spreadsheet.getUrl(), sheet: WAITLIST_SHEET, surveySheet: SURVEY_SHEET
+  }));
 }
 
 function inspectWaitlistSender() {

@@ -36,6 +36,19 @@ function validate(source) {
   "The waitlist needs a deployed Apps Script /exec endpoint, or an explicit setup_pending state.");
   assert(access.form.consent_version === CONSENT_VERSION, "The waitlist consent version has drifted.");
   assert(access.contact_email === "hello@jinai.md", "The waitlist must send from hello@jinai.md.");
+  const survey = access.survey;
+  assert(typeof survey?.id === "string" && survey.id.trim(), "The survey needs an id.");
+  assert(typeof survey.question === "string" && survey.question.trim(), "The survey needs a question.");
+  assert(typeof survey.hint === "string" && survey.hint.trim(), "The survey needs a hint.");
+  assert(Array.isArray(survey.options) && survey.options.length >= 2 && survey.options.length <= 6,
+    "The survey needs two to six options.");
+  const values = new Set();
+  for (const option of survey.options) {
+    assert(typeof option?.value === "string" && /^[A-Z]$/.test(option.value) && !values.has(option.value),
+      "Survey values must be unique uppercase letters.");
+    assert(typeof option.label === "string" && option.label.trim(), "Each survey option needs a label.");
+    values.add(option.value);
+  }
   const community = access.community;
   if (community && community.url !== null && community.url !== undefined) {
     assert(
@@ -98,6 +111,10 @@ function renderCta(source, { centred }) {
 
   const endpoint = access.form.endpoint || "";
   const action = endpoint ? ` action="${escapeHtml(endpoint)}"` : "";
+  const survey = access.survey;
+  const options = survey.options.map((option) =>
+    `            <label class="signup-survey-option"><input type="radio" name="answer" value="${escapeHtml(option.value)}" required><span>${escapeHtml(option.label)}</span></label>`
+  ).join("\n");
   return `<form class="signup" id="waitlistForm"${action} data-endpoint="${escapeHtml(endpoint)}" method="post">
       <div class="signup-row">
         <label for="wl-name">Name</label>
@@ -127,27 +144,20 @@ function renderCta(source, { centred }) {
         <div><dt>Welcome email</dt><dd id="waitlistEmail"></dd></div>
       </dl>
       <p id="waitlistDetail"></p>
+      <form class="signup-survey" id="waitlistSurvey" data-survey-id="${escapeHtml(survey.id)}" hidden>
+        <fieldset aria-describedby="waitlistSurveyHint">
+          <legend>${escapeHtml(survey.question)}</legend>
+          <p class="waitnote" id="waitlistSurveyHint">${escapeHtml(survey.hint)}</p>
+          <div class="signup-survey-options">
+${options}
+          </div>
+        </fieldset>
+        <button class="btn btn-p" type="submit">Send answer</button>
+      </form>
+      <p class="signup-survey-status" id="waitlistSurveyStatus" role="status" aria-live="polite" hidden></p>
       <a class="btn btn-p" href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a>
     </div>
     <p class="waitalt">Questions or feedback? <a href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a>.</p>`;
-}
-
-function renderFaq(source) {
-  const cards = source.direct_answers.map((item) => `
-      <article id="faq-${escapeHtml(item.id)}">
-        <h3>${escapeHtml(item.question)}</h3>
-        <p>${escapeHtml(item.answer)}</p>
-      </article>`).join("");
-
-  return `<section id="faq">
-  <div class="wrap">
-    <div class="eyebrow">Direct answers</div>
-    <h2 class="h2">The questions people ask first.</h2>
-    <p class="sub">Where the product actually is today, what it will cost, and what it does not do.</p>
-    <div class="faq">${cards}
-    </div>
-  </div>
-</section>`;
 }
 
 function renderJsonLd(source) {
@@ -300,7 +310,7 @@ function renderAgent(source) {
 
 function renderLlms(source) {
   const answerLinks = source.direct_answers.map((item) =>
-    `- [${item.question}](${source.canonical_url}#faq-${item.id}): ${item.answer}`
+    `- [${item.question}](${source.resources.agent_page}#${item.id}): ${item.answer}`
   ).join("\n");
 
   const evidenceLinks = source.evidence.map((item) => {
@@ -318,8 +328,8 @@ Interpret status words literally. "In build" is not shipped, "planned" is intend
 
 ## Primary resources
 
-- [Canonical Human page](${source.resources.human_page}): Complete product narrative, evidence, roadmap, team and direct-answer FAQ.
-- [Agent reference](${source.resources.agent_page}): Concise status-aware HTML for automated research.
+- [Canonical Human page](${source.resources.human_page}): The problem Jin AI addresses and how it solves it.
+- [Agent reference](${source.resources.agent_page}): Concise status-aware HTML for automated research, including direct answers, capability status, pricing status, roadmap and founders.
 - [Structured fact source](${source.resources.structured_data}): Public JSON used to generate agent-facing derivatives.
 - [Sitemap](${source.resources.sitemap}): Canonical indexable URL.
 
@@ -353,7 +363,6 @@ validate(data);
 
 await updateGeneratedFile(path.join(root, "index.html"), [
   ["JSON_LD", renderJsonLd(data)],
-  ["FAQ", renderFaq(data)],
   ["CTA_HERO", renderCta(data, { centred: false })],
   ["CTA_FINAL", renderCta(data, { centred: true })]
 ]);
