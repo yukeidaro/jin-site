@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "content_version": "2.0",
-  "last_updated": "2026-09-12",
+  "last_updated": "2026-10-02",
   "language": "en",
   "canonical_url": "https://jinai.md/",
   "resources": {
@@ -19,147 +19,131 @@
   },
   "product": {
     "name": "Jin AI",
-    "headline": "Structured for AI. Simple for people.",
-    "category": "Visual workspace for the files AI agents create",
-    "description": "Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to give business users control of that output: see what an agent created and changed, put it where it belongs, undo an individual agent's edit, and have those decisions written into the instruction files agents already read.",
+    "headline": "Every AI you use, already briefed.",
+    "category": "Context layer that learns how you work and briefs the AI tools you use",
+    "description": "Jin AI learns how you work from the files and AI chat history already on your computer, and gives that context to the AI tools you use, so you stop re-explaining yourself. What it learns is kept as plain Markdown you can read and fix. It is in build, and a first beta is opening in small batches.",
     "status": "in_build",
-    "availability": "coming_soon",
+    "availability": "first_beta_opening_in_small_batches",
     "planned_platforms": [
       "macOS",
       "Windows"
     ],
-    "industry": "Enterprise"
+    "industry": "Productivity software"
   },
   "audience": {
-    "primary": "Business users working with AI agents",
+    "primary": "Founders and operators who use more than one AI every day",
     "designed_for_workflows_using": [
       "Claude Code",
+      "ChatGPT",
       "Codex",
-      "Copilot Cowork",
-      "GitHub Copilot",
-      "Scout"
+      "GitHub Copilot"
     ]
   },
   "problem": {
-    "headline": "Your agents decide and you are not asked",
-    "short_answer": "Agents create, rewrite and file documents on your own machine, choosing the structure without approval and without reporting what changed.",
-    "description": "Each agent creates files according to its own logic, on the user's own machine, picking folders without asking and without reporting what changed. The user loses both visibility and control, and because the output is never visible it cannot be corrected, so the same problem repeats."
+    "headline": "You keep re-prompting AI, and it still misses what you mean",
+    "short_answer": "AI gets the first draft right, then drifts. People retype the same context, and writing instruction files for every AI has become a job of its own.",
+    "description": "AI does not know which details must be exact and which it can decide. People compensate by repeating themselves in every chat and by writing instruction files such as CLAUDE.md, AGENTS.md and custom instructions, which they then have to keep up to date by hand. Each AI keeps its own memory, so the work starts over in every tool."
   },
   "evidence": [
     {
-      "claim_id": "founder-laptop-markdown-volume",
-      "status": "observed",
-      "finding": "On one founder's laptop, agents created 3,950 Markdown files in one week; 89% were not reopened within the following week; 283 were named README.md.",
-      "metrics": {
-        "markdown_files_created": 3950,
-        "creation_period": "one week",
-        "not_reopened_within_following_week_percent": 89,
-        "files_named_readme_md": 283
-      },
-      "scope": "One founder's laptop only",
-      "caveat": "This is not market-wide evidence. Jin AI has not surveyed anyone else yet.",
-      "source_type": "Internal observation",
-      "source_url": null
-    },
-    {
-      "claim_id": "file-retrieval-navigation-preference",
+      "claim_id": "workday-ai-rework",
       "status": "published_research",
-      "finding": "Participants estimated that they reached files by navigation 56–68% of the time and by search 4–15%, with little change after search tools were improved.",
+      "finding": "Nearly 40% of the time employees save with AI is lost to rework: correcting errors, rewriting content and verifying output.",
       "metrics": {
-        "navigation_percent_range": [
-          56,
-          68
-        ],
-        "search_percent_range": [
-          4,
-          15
-        ]
+        "time_savings_lost_to_rework_percent_approx": 40,
+        "respondents": 3200
       },
-      "scope": "Desktop personal-information-management studies; not research on AI-generated files or Jin AI users.",
-      "source_type": "Peer-reviewed research",
-      "source_title": "Improved search engines and navigation preference in personal information management",
-      "source_url": "https://dl.acm.org/doi/10.1145/1402256.1402259",
-      "published": "2008"
+      "scope": "Survey of 3,200 employees and business leaders, fielded by Hanover Research in November 2025. Not research on Jin AI users.",
+      "source_type": "Industry survey",
+      "source_title": "New Workday Research: Companies Are Leaving AI Gains on the Table",
+      "source_url": "https://www.prnewswire.com/news-releases/new-workday-research-companies-are-leaving-ai-gains-on-the-table-302660517.html",
+      "published": "2026"
     }
   ],
   "solution": {
-    "headline": "You decide where things go, not the agent",
+    "headline": "Jin AI learns how you work, then briefs your AI on every request",
     "status": "in_build",
     "steps": [
       {
-        "name": "See",
-        "description": "Read the actual files an agent created or changed, grouped by project, person, recency, topic or file type, without moving anything."
+        "name": "Learn",
+        "description": "Read the files and AI chat history already on your computer and work out how you work: what must be exact, and what the AI can decide."
       },
       {
-        "name": "Fix",
-        "description": "Put an item where it belongs by renaming, moving, regrouping or hiding it when an agent filed it somewhere a person would not have."
+        "name": "Brief",
+        "description": "With each request, give the AI only the memories that matter for that task, so the last answer is as good as the first."
       },
       {
-        "name": "Undo",
-        "description": "Roll back an individual agent's change without touching your own edits, because the two are recorded separately."
+        "name": "Show",
+        "description": "Keep everything it learned as plain Markdown, show which memories each AI received, and let you correct any of them."
       }
     ],
-    "principle": "The agent can still reach everything. You just do not need to see everything."
+    "principle": "You should not have to write instructions for your AI. You should be able to read and fix the ones it uses."
   },
   "capabilities": [
     {
-      "id": "visual-workspace",
-      "name": "Visual workspace with projects and subprojects",
+      "id": "learn-from-files-and-chats",
+      "name": "Learn how you work from local files and AI chat history",
       "status": "in_build",
-      "target_stage": "The workspace"
+      "target_stage": "The first beta"
     },
     {
-      "id": "visual-markdown-editor",
-      "name": "Visual Markdown reading and editing",
+      "id": "readable-memory",
+      "name": "Memory kept as plain Markdown you can read, search and fix",
       "status": "in_build",
-      "target_stage": "The workspace"
+      "target_stage": "The first beta"
     },
     {
-      "id": "multiple-file-views",
-      "name": "Views by project, person and recency",
+      "id": "per-request-context-claude-code",
+      "name": "Add the relevant memories to each request in Claude Code",
       "status": "in_build",
-      "target_stage": "The workspace"
+      "target_stage": "The first beta"
     },
     {
-      "id": "agent-change-history",
-      "name": "History showing what each agent changed and when",
+      "id": "context-receipts",
+      "name": "Show which memories each AI received and used",
       "status": "in_build",
-      "target_stage": "The workspace"
+      "target_stage": "The first beta"
+    },
+    {
+      "id": "plugins-for-other-ais",
+      "name": "Plugins for ChatGPT, Codex and GitHub Copilot",
+      "status": "planned",
+      "target_stage": "Every AI you use"
     },
     {
       "id": "instruction-file-sync",
-      "name": "Write structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md",
+      "name": "Keep CLAUDE.md, AGENTS.md and copilot-instructions.md current",
       "status": "planned",
-      "target_stage": "The sync",
+      "target_stage": "Every AI you use",
       "plugin_required": false,
       "api_required": false
     },
     {
-      "id": "agent-only-separation",
-      "name": "Separate agent-only instructions, memory, logs and intermediate outputs",
+      "id": "cloud-sources",
+      "name": "Learn from Google Drive and Notion",
       "status": "planned",
-      "target_stage": "The sync"
+      "target_stage": "Pro"
     },
     {
-      "id": "plain-language-regrouping",
-      "name": "Regroup files with a plain-language instruction",
+      "id": "cross-device-memory",
+      "name": "Memory synced across your computer and phone",
       "status": "planned",
-      "target_stage": "The sync"
+      "target_stage": "Pro"
     },
     {
-      "id": "secure-team-storage",
-      "name": "Secure shared storage, access control and governance",
+      "id": "team-memory",
+      "name": "Shared memory for teams",
       "status": "later",
-      "target_stage": "The organisation"
+      "target_stage": "Teams"
     }
   ],
   "business_model": {
-    "headline": "Free on your laptop. Paid when it leaves.",
+    "headline": "Free on your computer. Pro follows you everywhere.",
     "status": "planned",
-    "individual_local": "Planned to be free, with no account required and files remaining on the device in plain Markdown.",
-    "individual_collaboration": "Planned at $15 per month, plus usage-based cloud storage.",
-    "companies": "Planned per-seat enterprise pricing for shared workspaces, secure storage, governance and audit.",
-    "company_pricing_status": "Not final; to be validated with early customers."
+    "individual_local": "Free: Jin AI learns from the files and AI chat history on your own computer.",
+    "individual_collaboration": "Pro, proposed at $10 per month: adds sources such as Google Drive and Notion, and memory synced across your computer and phone.",
+    "companies": "Teams: we start with a conversation and shape the plan around what the team needs.",
+    "company_pricing_status": "All prices are a proposal we are testing in the beta. Nothing is charged today."
   },
   "founders": [
     {
@@ -178,34 +162,31 @@
   "roadmap": [
     {
       "stage": "in_build",
-      "name": "The workspace",
+      "name": "The first beta",
       "items": [
-        "Folder scanning",
-        "Project, person and recent views",
-        "Agent change history",
-        "Visual Markdown editing",
-        "Planned macOS and Windows support"
+        "Desktop app that learns from your local files and AI chat history",
+        "Memory as plain Markdown you can read, search and fix",
+        "Relevant memories added to each Claude Code request",
+        "A record of what each AI received",
+        "Small batches of users, interviewed as we build"
       ]
     },
     {
       "stage": "planned",
-      "name": "The sync",
+      "name": "Every AI you use",
       "items": [
-        "Write structural decisions into agent instruction files",
-        "Separate agent-only files automatically",
-        "Manage projects and subprojects visually",
-        "Regroup with plain-language instructions",
-        "Open-source release"
+        "Plugins for ChatGPT, Codex and GitHub Copilot",
+        "CLAUDE.md, AGENTS.md and copilot-instructions.md kept current",
+        "Pro: Google Drive and Notion as sources",
+        "Pro: memory on your computer and phone"
       ]
     },
     {
       "stage": "later",
-      "name": "The organisation",
+      "name": "Teams",
       "items": [
-        "Secure shared storage",
-        "Access control and governance",
-        "One place employees and agents both reach",
-        "Microsoft 365 integration"
+        "Shared memory for a team",
+        "Plans shaped with the first teams"
       ]
     }
   ],
@@ -213,42 +194,47 @@
     {
       "id": "what-is-jin-ai",
       "question": "What is Jin AI?",
-      "answer": "Jin AI is a visual workspace for the files AI agents write on your own computer. It is being built to give you control of that output: see what an agent created and changed, put it where it belongs, undo an individual agent's edit, and have those decisions written into the instruction files agents already read."
+      "answer": "Jin AI learns how you work from the files and AI chat history already on your computer, and gives that context to the AI tools you use, so you stop re-explaining yourself. What it learns is kept as plain Markdown you can read and fix."
     },
     {
       "id": "who-is-jin-ai-for",
       "question": "Who is Jin AI for?",
-      "answer": "Jin AI is for business users who work with AI agents but do not want file names, folders, links, tags, Markdown syntax or developer tools to become a second job."
+      "answer": "Founders and operators who use two or more AIs every day, know they should set up instructions such as CLAUDE.md or custom instructions, and never quite did, or gave up keeping them current."
     },
     {
-      "id": "why-not-just-use-my-file-explorer",
-      "question": "Why not just look in my file explorer?",
-      "answer": "A file explorer shows names and dates, not what an agent produced or changed. It does not separate agent-only files from your deliverables, and it cannot tell you which agent made which edit."
+      "id": "how-is-this-different-from-chatgpt-or-claude-memory",
+      "question": "How is this different from ChatGPT or Claude memory?",
+      "answer": "Built-in memory is a short list of facts that stays inside one AI. Jin AI learns from your files as well as your chats, keeps what it learns structured by what must be exact and what the AI can decide, and is designed to brief every AI you use."
     },
     {
-      "id": "does-jin-ai-replace-markdown",
-      "question": "Does Jin AI replace Markdown?",
-      "answer": "No. Markdown remains the spine so agents can keep working. The planned visual interface means people will not need to learn Markdown syntax."
+      "id": "do-i-have-to-write-instructions",
+      "question": "Do I have to write CLAUDE.md or custom instructions?",
+      "answer": "No. Jin AI learns from what you already have. Keeping CLAUDE.md, AGENTS.md and copilot-instructions.md current for you is planned, not shipped."
     },
     {
-      "id": "does-jin-ai-move-or-upload-files",
-      "question": "Does Jin AI move or upload local files?",
-      "answer": "The planned local edition is designed to read files in their existing locations without moving them. Sharing and cloud storage are optional planned paid capabilities."
+      "id": "does-jin-ai-record-my-screen-or-upload-files",
+      "question": "Does Jin AI record my screen or upload my files?",
+      "answer": "Jin AI never records your screen. The free version learns from files and chat history on your own computer, and your files stay where they are. Syncing across devices is a planned, optional Pro feature."
     },
     {
-      "id": "how-do-agents-learn-the-structure",
-      "question": "How does Jin AI make my agents better?",
-      "answer": "Your decisions become the rules. A planned next capability will write your structural decisions into CLAUDE.md, AGENTS.md and copilot-instructions.md, which agents already read, so the next file lands where you would have put it. No plugin or API is planned to be required."
+      "id": "can-i-see-what-it-remembers",
+      "question": "Can I see and change what it remembers?",
+      "answer": "Yes. Everything Jin AI learns is plain Markdown. You can read it, search it, correct it, and see which memories each AI received for a request."
+    },
+    {
+      "id": "which-ai-tools-does-it-work-with",
+      "question": "Which AI tools does it work with?",
+      "answer": "Claude Code first. Plugins for ChatGPT, Codex and GitHub Copilot are planned."
     },
     {
       "id": "is-jin-ai-available",
       "question": "Is Jin AI available now?",
-      "answer": "Not yet. Jin AI is in build and early access is planned to open in small batches."
+      "answer": "Not publicly. The desktop app is in build and a first beta is opening in small batches. Join the waitlist to be considered."
     },
     {
       "id": "how-much-will-jin-ai-cost",
       "question": "How much will Jin AI cost?",
-      "answer": "Individual local use is planned to be free. Individual collaboration is planned at $15 per month plus usage-based cloud storage. Company pricing is not final."
+      "answer": "Free on your own computer. Pro is proposed at $10 per month for Google Drive and Notion sources and memory across devices. Team plans start with a conversation. All prices are being tested in the beta."
     }
   ],
   "early_access": {
@@ -259,6 +245,17 @@
       "provider": "apps_script",
       "endpoint": "https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec",
       "consent_version": "waitlist-product-updates-v1"
+    },
+    "survey": {
+      "id": "ai-friction-v1",
+      "question": "What should AI make easier for you?",
+      "hint": "Optional. One question, pick one.",
+      "options": [
+        { "value": "A", "label": "Correcting small things over and over" },
+        { "value": "B", "label": "Updating the settings that teach AI my preferences and rules (Skills and similar)" },
+        { "value": "C", "label": "Finding the right documents and files to hand to AI" },
+        { "value": "D", "label": "Re-explaining my requirements and background every time I switch between ChatGPT, Claude and others" }
+      ]
     },
     "community": {
       "name": "Discord",

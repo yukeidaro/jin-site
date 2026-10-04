@@ -67,7 +67,8 @@ const [home, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson
 
 check(count(home, /<link rel="canonical" href="https:\/\/jinai\.md\/">/g) === 1, "Root must have one self-canonical.");
 check(home.includes("<main>") && home.includes("</main>"), "Root must have a main landmark.");
-check(home.includes('id="faq-what-is-jin-ai"'), "Generated FAQ is missing.");
+check(home.includes('id="problem"') && home.includes('id="solution"'), "Root must present the problem and the solution.");
+check(agent.includes('id="what-is-jin-ai"'), "Agent page must carry the generated direct answers.");
 check(!/<img(?![^>]*\bsrc=)[^>]*>/i.test(home), "Every root image must have a static src.");
 check(!/<img(?![^>]*\balt=)[^>]*>/i.test(home), "Every root image must have alt text.");
 check(!/<img(?![^>]*\bwidth=)[^>]*>/i.test(home), "Every root image must have intrinsic width.");
@@ -122,6 +123,18 @@ check(home.includes('src="waitlist.mjs"'), "The waitlist client must be loaded."
 check(!home.includes("waitlistSink") && !home.includes("formResponse"), "Google Forms and iframe-load confirmations must not be used.");
 check(!home.includes("A welcome email is on its way"), "The page must not promise email before the server confirms a send.");
 check(count(home, /<form[^>]+id="waitlistForm"/g) === 1, "There must be exactly one waitlist form.");
+const surveyForm = home.match(/<form\b[^>]*\bid="waitlistSurvey"[^>]*>[\s\S]*?<\/form>/);
+check(count(home, /id="waitlistSurvey"/g) === 1 && Boolean(surveyForm), "There must be exactly one survey form.");
+if (surveyForm) {
+  const opening = surveyForm[0].slice(0, surveyForm[0].indexOf(">") + 1);
+  check(/\shidden(?:\s|>)/.test(opening), "The survey must be hidden until registration is saved.");
+  check(opening.includes(`data-survey-id="${access.survey?.id}"`), "The survey id must match structured data.");
+  const radios = [...surveyForm[0].matchAll(/<input\b[^>]*\btype="radio"[^>]*>/g)].map((match) => match[0]);
+  check(radios.length === 4 && radios.every((radio) => radio.includes('name="answer"')),
+    "The survey must offer four answer radios.");
+  check(radios.map((radio) => radio.match(/\bvalue="([^"]*)"/)?.[1]).join() ===
+    access.survey?.options.map((option) => option.value).join(), "The survey answers must match structured data.");
+}
 check(home.includes('href="#waitlist"'), "The hero CTA must jump to the waitlist form.");
 check(!/<a[^>]*class="btn[^"]*"[^>]*href="#?"/.test(home), "No CTA may link to an empty or placeholder target.");
 if (access.community?.url) {

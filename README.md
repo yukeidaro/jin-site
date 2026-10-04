@@ -32,7 +32,6 @@ node scripts/generate-aeo.mjs
 
 It updates:
 
-- the visible FAQ in `index.html`;
 - the root JSON-LD graph;
 - the content of `agent/index.html`;
 - `llms.txt`.
@@ -43,15 +42,30 @@ in check mode and fails when a derivative has drifted.
 ## Content rules
 
 - Product name: **Jin AI**
-- Headline: **Structured for AI. Simple for people.**
-- Markdown remains the spine of the product story.
-- The solution is explained as **See -> Fix -> Undo**.
+- The Human page (`/`) presents only **the problem and the solution**, plus
+  the waitlist. Pricing, roadmap, founders, comparison and direct answers live
+  in `agent/content.json` and its derivatives (`/agent/`, `llms.txt`), not on
+  the Human page.
+- Headline: **Every AI you use, already briefed.** Supporting line, shared with
+  the October 2026 pitch: *Jin AI gives every AI your context, automatically.*
+- Positioning: Jin AI learns how you work from your files and AI chat history,
+  and gives that context to the AI tools you use, so you stop re-prompting.
+  The earlier "visual workspace for agent files / See -> Fix -> Undo" story is
+  retired.
+- The solution is explained as **Learn -> Brief -> Show**: learn what must be
+  exact and what AI can decide; add the relevant memories to each request;
+  keep everything as plain Markdown the user can read and fix.
 - In-build, planned and later capabilities must remain distinguishable.
-- Instruction-file synchronization is planned, not shipped. It will write to
-  `CLAUDE.md`, `AGENTS.md` and `copilot-instructions.md`.
-- The founder-laptop observation must keep its scope and caveat: 3,950 Markdown
-  files in one week, 89% not reopened within the following week and 283 named
-  `README.md`; this is one founder's machine, not market-wide evidence.
+  Claude Code is the first integration; ChatGPT, Codex and Copilot plugins are
+  planned.
+- Instruction-file synchronization is planned, not shipped. It will keep
+  `CLAUDE.md`, `AGENTS.md` and `copilot-instructions.md` current.
+- Prices (Free / Pro $10 per month / Teams by conversation) are a proposal
+  being tested in the beta. Say so wherever a price appears.
+- The Workday rework figure (nearly 40% of AI time savings lost to rework,
+  n=3,200, November 2025) must keep its source link and its scope.
+- Product visuals on the page are drawn in HTML with sample data and are
+  labelled as such. Do not present them as real user data.
 - Do not add `FAQPage` schema, active offers, ratings or reviews unless they
   become truthful and applicable.
 
@@ -65,6 +79,8 @@ The custom website form submits JSON directly to an Apps Script web app.
 **Google Forms, response receipts, hidden iframes, and form-submit triggers are
 not part of this flow.** `waitlist.mjs` waits for a matching, server-confirmed
 response and displays registration and welcome-email status separately.
+After a saved registration, an optional one-question survey records an answer
+in a separate `Survey` tab; retrying an answer updates the same email and survey.
 
 The backend source is `scripts/waitlist-mailer.gs`; its manifest is
 `scripts/appsscript.json`. These files are never included in the Pages artifact.
@@ -80,8 +96,8 @@ as" identity. There is no fallback to a personal Gmail From address.
    set its `SPREADSHEET_ID` script property to a spreadsheet the deploying account
    can edit. Copy the `.gs` source and manifest into the editor.
 3. Run `setupWaitlist`, authorize the listed permissions, then run
-   `inspectWaitlistSender`. Both must succeed. Setup creates a new `Waitlist`
-   tab; it does not modify or delete earlier form responses.
+   `inspectWaitlistSender`. Both must succeed. Setup creates `Waitlist` and
+   `Survey` tabs as needed; it does not modify or delete earlier form responses.
 4. Deploy a **Web app**, **Execute as: Me**, **Who has access: Anyone**.
    Anonymous visitors must not have to sign in to Google. Use the full `/exec`
    URL, not an editor URL or a `/dev` test deployment.
@@ -96,7 +112,8 @@ as" identity. There is no fallback to a personal Gmail From address.
    address before calling the welcome-email setup complete.
 
 Updating an Apps Script project does not update a versioned web app deployment.
-Use **Deploy > Manage deployments > Edit > New version** after source changes.
+For the survey update, re-run `setupWaitlist` once to create the `Survey` tab,
+then use **Deploy > Manage deployments > Edit > New version** after source changes.
 
 ### Storage and delivery states
 
@@ -105,6 +122,9 @@ request ID, welcome-mail status, attempts, timestamps, Gmail message ID and last
 error code. Names and roles are validated and protected against sheet formulas.
 Emails are normalized and deduplicated under a script lock. Retrying a request
 cannot insert another registration or resend an already-sent welcome.
+The private `Survey` tab has `Answered at`, `Email`, `Request ID`, `Survey ID`,
+`Answer`, `Answer label` and `Updated at` columns. Answers are accepted only for
+registered emails; one row per email and survey ID is updated on retries.
 
 | Registration | Welcome email | Meaning |
 | --- | --- | --- |
