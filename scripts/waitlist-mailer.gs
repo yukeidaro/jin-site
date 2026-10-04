@@ -3,7 +3,7 @@
  * Deploy with scripts/appsscript.json, execute as the deploying account, and
  * allow Anyone. Run setupWaitlist first; see README.md for the remaining steps.
  */
-var WAITLIST_VERSION = '2026-10-04.1';
+var WAITLIST_VERSION = '2026-10-04.2';
 var WAITLIST_FROM = 'hello@jinai.md';
 var WAITLIST_DISCORD = 'https://discord.gg/hn8eG4d9f';
 var WAITLIST_CONSENT = 'waitlist-product-updates-v1';
@@ -511,17 +511,19 @@ function welcomeText_(name) {
     '',
     "You're on the Jin AI waitlist.",
     '',
-    'Jin AI is a visual workspace for Markdown and other local files created by',
-    'AI agents. See what changed, organize the files, and stay in control of the work.',
+    'Jin AI learns how you work from the files and AI chat history already on your',
+    'computer, and gives that context to the AI tools you use, so you stop',
+    're-explaining yourself. What it learns is plain Markdown you can read and fix.',
     '',
     'JOIN OUR DISCORD',
     WAITLIST_DISCORD,
     '',
     "We'll share product releases, collect feedback, answer questions, and track",
-    'bug reports there. Come introduce yourself and tell us what you are working on.',
+    'bug reports there. Come introduce yourself and tell us which AI tools you use.',
     '',
     'WHAT HAPPENS NEXT',
-    "We'll email you when early access is ready, along with occasional product updates.",
+    'The first beta is opening in small batches. We will email you when your invite',
+    'is ready, along with occasional product updates.',
     '',
     'Yu Asano',
     'Co-founder, Jin AI',
@@ -543,13 +545,13 @@ function welcomeHtml_(name) {
     '<p style="margin:0 0 28px;font-size:22px;font-weight:700;">Jin AI</p>',
     '<p style="' + paragraph + '">' + greeting + '</p>',
     '<h1 style="margin:0 0 20px;font-size:26px;line-height:1.3;">You&#39;re on the waitlist.</h1>',
-    '<p style="' + paragraph + '">Jin AI is a visual workspace for Markdown and other local files created by AI agents. See what changed, organize the files, and stay in control of the work.</p>',
+    '<p style="' + paragraph + '">Jin AI learns how you work from the files and AI chat history already on your computer, and gives that context to the AI tools you use, so you stop re-explaining yourself. What it learns is plain Markdown you can read and fix.</p>',
     '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0;"><tr><td style="background:#252525;border-radius:6px;">',
     '<a href="' + WAITLIST_DISCORD + '" style="display:inline-block;padding:14px 24px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;">Join our Discord</a>',
     '</td></tr></table>',
-    '<p style="' + paragraph + '">We&#39;ll share product releases, collect feedback, answer questions, and track bug reports there. Come introduce yourself and tell us what you are working on.</p>',
+    '<p style="' + paragraph + '">We&#39;ll share product releases, collect feedback, answer questions, and track bug reports there. Come introduce yourself and tell us which AI tools you use.</p>',
     '<h2 style="margin:28px 0 12px;font-size:18px;">What happens next</h2>',
-    '<p style="' + paragraph + '">We&#39;ll email you when early access is ready, along with occasional product updates.</p>',
+    '<p style="' + paragraph + '">The first beta is opening in small batches. We&#39;ll email you when your invite is ready, along with occasional product updates.</p>',
     '<p style="margin:28px 0 0;font-size:15px;line-height:1.7;">Yu Asano<br>Co-founder, Jin AI<br><a href="https://jinai.md/" style="color:#252525;">jinai.md</a></p>',
     '<p style="margin:28px 0 0;padding-top:20px;border-top:1px solid #dddad5;font-size:12px;line-height:1.7;color:#616161;">',
     'Button not working? <a href="' + WAITLIST_DISCORD + '" style="color:#616161;">' + WAITLIST_DISCORD + '</a><br>',

@@ -391,6 +391,8 @@ test("the welcome MIME has the real From, plain text, readable HTML and exact Di
     assert.ok(body.includes("Hi Yu,"));
     assert.ok(body.includes("product updates"));
     assert.ok(!body.includes("No newsletter"));
+    assert.ok(body.includes("gives that context to the AI tools you use"));
+    assert.ok(!/visual workspace|created by AI agents/.test(body), "The retired positioning must not reach new signups.");
   }
 });
 
