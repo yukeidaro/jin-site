@@ -9,3 +9,6 @@ _site/
 # on this site. Host the video externally (YouTube, Vimeo, a CDN) and embed
 # it, or drop a compressed web cut in and un-ignore that single file.
 pitch-video/
+
+# Per-session git worktrees (Claude Code desktop, Copilot CLI). Never commit them.
+.claude/worktrees/

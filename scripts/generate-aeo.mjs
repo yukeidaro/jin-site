@@ -347,8 +347,18 @@ ${source.founders.map((founder) => `- [${founder.name}](${founder.profile_url}):
 `;
 }
 
+// Windows checkouts (core.autocrlf) use CRLF; compare as LF and write back the file's own line endings.
+async function readText(filePath) {
+  const raw = await readFile(filePath, "utf8");
+  return { text: raw.replace(/\r\n/g, "\n"), eol: raw.includes("\r\n") ? "\r\n" : "\n" };
+}
+
+async function writeText(filePath, text, eol) {
+  await writeFile(filePath, text.replace(/\n/g, eol), "utf8");
+}
+
 async function updateGeneratedFile(filePath, transforms) {
-  const current = await readFile(filePath, "utf8");
+  const { text: current, eol } = await readText(filePath);
   const expected = transforms.reduce((document, [name, generated]) => replaceBlock(document, name, generated), current);
 
   if (checkOnly) {
@@ -356,7 +366,7 @@ async function updateGeneratedFile(filePath, transforms) {
     return;
   }
 
-  if (current !== expected) await writeFile(filePath, expected, "utf8");
+  if (current !== expected) await writeText(filePath, expected, eol);
 }
 
 validate(data);
@@ -373,11 +383,11 @@ await updateGeneratedFile(path.join(root, "agent", "index.html"), [
 
 const llmsPath = path.join(root, "llms.txt");
 const expectedLlms = renderLlms(data);
-const currentLlms = await readFile(llmsPath, "utf8");
+const { text: currentLlms, eol: llmsEol } = await readText(llmsPath);
 if (checkOnly) {
   assert(currentLlms === expectedLlms, "llms.txt is out of date. Run node scripts/generate-aeo.mjs.");
 } else if (currentLlms !== expectedLlms) {
-  await writeFile(llmsPath, expectedLlms, "utf8");
+  await writeText(llmsPath, expectedLlms, llmsEol);
 }
 
 console.log(checkOnly ? "AEO derivatives are current." : "Generated AEO derivatives.");

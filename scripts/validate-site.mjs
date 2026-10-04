@@ -12,7 +12,8 @@ function check(condition, message) {
 }
 
 async function text(relativePath) {
-  return readFile(path.join(site, relativePath), "utf8");
+  // Windows checkouts (core.autocrlf) use CRLF; CI uses LF. Check the same text either way.
+  return (await readFile(path.join(site, relativePath), "utf8")).replace(/\r\n/g, "\n");
 }
 
 async function listFiles(directory, base = directory) {
