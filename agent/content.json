@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "content_version": "2.0",
-  "last_updated": "2026-10-02",
+  "last_updated": "2026-10-04",
   "language": "en",
   "canonical_url": "https://jinai.md/",
   "resources": {
@@ -19,9 +19,9 @@
   },
   "product": {
     "name": "Jin AI",
-    "headline": "Every AI you use, already briefed.",
-    "category": "Context layer that learns how you work and briefs the AI tools you use",
-    "description": "Jin AI learns how you work from the files and AI chat history already on your computer, and gives that context to the AI tools you use, so you stop re-explaining yourself. What it learns is kept as plain Markdown you can read and fix. It is in build, and a first beta is opening in small batches.",
+    "headline": "The one-click setup that makes AI know you from the start",
+    "category": "One-click AI setup for business professionals",
+    "description": "Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build, with a beta opening in small batches.",
     "status": "in_build",
     "availability": "first_beta_opening_in_small_batches",
     "planned_platforms": [
@@ -31,132 +31,116 @@
     "industry": "Productivity software"
   },
   "audience": {
-    "primary": "Founders and operators who use more than one AI every day",
+    "primary": "Business professionals who use AI at work",
     "designed_for_workflows_using": [
       "Claude Code",
       "ChatGPT",
-      "Codex",
       "GitHub Copilot"
     ]
   },
   "problem": {
-    "headline": "You keep re-prompting AI, and it still misses what you mean",
-    "short_answer": "AI gets the first draft right, then drifts. People retype the same context, and writing instruction files for every AI has become a job of its own.",
-    "description": "AI does not know which details must be exact and which it can decide. People compensate by repeating themselves in every chat and by writing instruction files such as CLAUDE.md, AGENTS.md and custom instructions, which they then have to keep up to date by hand. Each AI keeps its own memory, so the work starts over in every tool."
+    "headline": "AI does not start with the context it needs",
+    "short_answer": "Your files, slides and chats contain the details that make an answer useful, but each AI starts without them.",
+    "description": "Introducing yourself again, writing long prompts and finding the right files for every request take time. Jin AI is building a setup that brings the relevant context to your AI."
   },
-  "evidence": [
-    {
-      "claim_id": "workday-ai-rework",
-      "status": "published_research",
-      "finding": "Nearly 40% of the time employees save with AI is lost to rework: correcting errors, rewriting content and verifying output.",
-      "metrics": {
-        "time_savings_lost_to_rework_percent_approx": 40,
-        "respondents": 3200
-      },
-      "scope": "Survey of 3,200 employees and business leaders, fielded by Hanover Research in November 2025. Not research on Jin AI users.",
-      "source_type": "Industry survey",
-      "source_title": "New Workday Research: Companies Are Leaving AI Gains on the Table",
-      "source_url": "https://www.prnewswire.com/news-releases/new-workday-research-companies-are-leaving-ai-gains-on-the-table-302660517.html",
-      "published": "2026"
-    }
-  ],
+  "evidence": [],
   "solution": {
-    "headline": "Jin AI learns how you work, then briefs your AI on every request",
+    "headline": "After you use Jin AI",
     "status": "in_build",
     "steps": [
       {
-        "name": "Learn",
-        "description": "Read the files and AI chat history already on your computer and work out how you work: what must be exact, and what the AI can decide."
+        "name": "You don't need to write long prompts.",
+        "description": "Jin AI learns from your files, slides and chats, and fills in your context."
       },
       {
-        "name": "Brief",
-        "description": "With each request, give the AI only the memories that matter for that task, so the last answer is as good as the first."
+        "name": "You only tell AI once.",
+        "description": "Who you are and how you work, available across every AI you use."
       },
       {
-        "name": "Show",
-        "description": "Keep everything it learned as plain Markdown, show which memories each AI received, and let you correct any of them."
+        "name": "The right files come to the right chats.",
+        "description": "Jin AI brings in what each request needs from the files on your PC."
       }
     ],
-    "principle": "You should not have to write instructions for your AI. You should be able to read and fix the ones it uses."
+    "principle": "You choose what it reads, and what it shares."
+  },
+  "privacy": {
+    "on_device": [
+      { "name": "Never records your screen", "description": "Jin AI never records your screen." },
+      { "name": "Learns on your computer", "description": "The free version learns from files and chat history on your own computer." },
+      { "name": "Your files stay where they are", "description": "Jin AI doesn't move your files." },
+      { "name": "Never trained on your data", "description": "Jin AI itself never trains on your data." },
+      { "name": "You choose", "description": "You choose what it reads, and what it shares." }
+    ],
+    "cloud_sync": {
+      "status": "planned",
+      "label": "Coming with Pro",
+      "description": "Google Drive and Notion connections, sync between your PC and phone."
+    }
   },
   "capabilities": [
     {
       "id": "learn-from-files-and-chats",
-      "name": "Learn how you work from local files and AI chat history",
+      "name": "Learn from files, slides and chats on your computer",
       "status": "in_build",
       "target_stage": "The first beta"
     },
     {
-      "id": "readable-memory",
-      "name": "Memory kept as plain Markdown you can read, search and fix",
+      "id": "one-click-setup",
+      "name": "Set up your AI context with one click",
       "status": "in_build",
       "target_stage": "The first beta"
     },
     {
-      "id": "per-request-context-claude-code",
-      "name": "Add the relevant memories to each request in Claude Code",
+      "id": "right-files",
+      "name": "Bring the right files on your PC into the right chats",
       "status": "in_build",
       "target_stage": "The first beta"
     },
     {
-      "id": "context-receipts",
-      "name": "Show which memories each AI received and used",
+      "id": "claude-code",
+      "name": "Make your context available in Claude Code",
       "status": "in_build",
       "target_stage": "The first beta"
     },
     {
       "id": "plugins-for-other-ais",
-      "name": "Plugins for ChatGPT, Codex and GitHub Copilot",
+      "name": "Make your context available in ChatGPT and GitHub Copilot",
       "status": "planned",
-      "target_stage": "Every AI you use"
+      "target_stage": "Additional AI integrations"
     },
     {
-      "id": "instruction-file-sync",
-      "name": "Keep CLAUDE.md, AGENTS.md and copilot-instructions.md current",
+      "id": "access-controls",
+      "name": "Choose what Jin AI reads and shares",
       "status": "planned",
-      "target_stage": "Every AI you use",
-      "plugin_required": false,
-      "api_required": false
+      "target_stage": "After the first beta"
     },
     {
       "id": "cloud-sources",
-      "name": "Learn from Google Drive and Notion",
+      "name": "Google Drive and Notion connections",
       "status": "planned",
       "target_stage": "Pro"
     },
     {
-      "id": "cross-device-memory",
-      "name": "Memory synced across your computer and phone",
+      "id": "cross-device-sync",
+      "name": "Sync between your PC and phone",
       "status": "planned",
       "target_stage": "Pro"
-    },
-    {
-      "id": "team-memory",
-      "name": "Shared memory for teams",
-      "status": "later",
-      "target_stage": "Teams"
     }
   ],
   "business_model": {
-    "headline": "Free on your computer. Pro follows you everywhere.",
+    "headline": "Free on your computer. Cloud Sync is planned for Pro.",
     "status": "planned",
-    "individual_local": "Free: Jin AI learns from the files and AI chat history on your own computer.",
-    "individual_collaboration": "Pro, proposed at $10 per month: adds sources such as Google Drive and Notion, and memory synced across your computer and phone.",
-    "companies": "Teams: we start with a conversation and shape the plan around what the team needs.",
+    "individual_local": "The free version learns from files and chat history on your own computer.",
+    "individual_collaboration": "Pro, proposed at $10 per month, would add Google Drive and Notion connections and sync between your PC and phone.",
+    "companies": "Team plans are under consideration.",
     "company_pricing_status": "All prices are a proposal we are testing in the beta. Nothing is charged today."
   },
   "founders": [
     {
       "name": "Yu Asano",
-      "role": "Co-founder",
-      "bio": "AI product builder and Microsoft GTM engineer. Built Baby Voice Recorder end to end while leading Azure go-to-market at Microsoft Japan and launched Microsoft's first TikTok account in Asia.",
+      "role": "Founder",
+      "bio": "Builder of Jin AI and Baby Voice Recorder. Previously launched Microsoft's first official TikTok account in Asia.",
       "profile_url": "https://www.linkedin.com/in/yu-asano-6878571a6/"
-    },
-    {
-      "name": "Tomoya Kato",
-      "role": "Co-founder, business and sales",
-      "bio": "Business and sales co-founder.",
-      "profile_url": "https://www.linkedin.com/in/tomoya-kato-a0a078162/"
     }
   ],
   "roadmap": [
@@ -164,29 +148,19 @@
       "stage": "in_build",
       "name": "The first beta",
       "items": [
-        "Desktop app that learns from your local files and AI chat history",
-        "Memory as plain Markdown you can read, search and fix",
-        "Relevant memories added to each Claude Code request",
-        "A record of what each AI received",
-        "Small batches of users, interviewed as we build"
+        "One-click AI setup from files, slides and chats on your computer",
+        "Relevant context and files available in Claude Code",
+        "Beta opening in small batches"
       ]
     },
     {
       "stage": "planned",
-      "name": "Every AI you use",
+      "name": "Additional integrations",
       "items": [
-        "Plugins for ChatGPT, Codex and GitHub Copilot",
-        "CLAUDE.md, AGENTS.md and copilot-instructions.md kept current",
-        "Pro: Google Drive and Notion as sources",
-        "Pro: memory on your computer and phone"
-      ]
-    },
-    {
-      "stage": "later",
-      "name": "Teams",
-      "items": [
-        "Shared memory for a team",
-        "Plans shaped with the first teams"
+        "Context available in ChatGPT and GitHub Copilot",
+        "Controls for what Jin AI reads and shares",
+        "Pro: Google Drive and Notion connections",
+        "Pro: sync between your PC and phone"
       ]
     }
   ],
@@ -194,53 +168,55 @@
     {
       "id": "what-is-jin-ai",
       "question": "What is Jin AI?",
-      "answer": "Jin AI learns how you work from the files and AI chat history already on your computer, and gives that context to the AI tools you use, so you stop re-explaining yourself. What it learns is kept as plain Markdown you can read and fix."
+      "answer": "Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build; support for more AI tools is planned."
     },
     {
       "id": "who-is-jin-ai-for",
       "question": "Who is Jin AI for?",
-      "answer": "Founders and operators who use two or more AIs every day, know they should set up instructions such as CLAUDE.md or custom instructions, and never quite did, or gave up keeping them current."
+      "answer": "Business professionals who want their AI tools to know who they are, how they work and which files matter."
     },
     {
       "id": "how-is-this-different-from-chatgpt-or-claude-memory",
       "question": "How is this different from ChatGPT or Claude memory?",
-      "answer": "Built-in memory is a short list of facts that stays inside one AI. Jin AI learns from your files as well as your chats, keeps what it learns structured by what must be exact and what the AI can decide, and is designed to brief every AI you use."
+      "answer": "Each AI's built-in memory stays in its own product. Jin AI is building one setup from your files, slides and chats that can work across AI tools. ChatGPT and Copilot integrations are planned."
     },
     {
-      "id": "do-i-have-to-write-instructions",
-      "question": "Do I have to write CLAUDE.md or custom instructions?",
-      "answer": "No. Jin AI learns from what you already have. Keeping CLAUDE.md, AGENTS.md and copilot-instructions.md current for you is planned, not shipped."
+      "id": "what-happens-after-setup",
+      "question": "What happens after setup?",
+      "answer": "Jin AI learns from your files, slides and chats, and fills in your context. The right files come to the right chats. These features are being built for the beta."
     },
     {
       "id": "does-jin-ai-record-my-screen-or-upload-files",
       "question": "Does Jin AI record my screen or upload my files?",
-      "answer": "Jin AI never records your screen. The free version learns from files and chat history on your own computer, and your files stay where they are. Syncing across devices is a planned, optional Pro feature."
+      "answer": "Jin AI never records your screen. The free version learns from files and chat history on your own computer. Jin AI doesn't move your files. Cloud Sync is planned for Pro."
     },
     {
-      "id": "can-i-see-what-it-remembers",
-      "question": "Can I see and change what it remembers?",
-      "answer": "Yes. Everything Jin AI learns is plain Markdown. You can read it, search it, correct it, and see which memories each AI received for a request."
+      "id": "does-jin-ai-train-on-my-data",
+      "question": "Does Jin AI train on my data?",
+      "answer": "Jin AI itself never trains on your data. You choose what it reads, and what it shares; access controls are planned as the beta develops."
     },
     {
       "id": "which-ai-tools-does-it-work-with",
       "question": "Which AI tools does it work with?",
-      "answer": "Claude Code first. Plugins for ChatGPT, Codex and GitHub Copilot are planned."
+      "answer": "Claude Code is the first integration being built. ChatGPT and GitHub Copilot integrations are planned, not shipped."
     },
     {
       "id": "is-jin-ai-available",
       "question": "Is Jin AI available now?",
-      "answer": "Not publicly. The desktop app is in build and a first beta is opening in small batches. Join the waitlist to be considered."
+      "answer": "The app is in build and a beta is opening in small batches. Join the waitlist to show your interest."
     },
     {
       "id": "how-much-will-jin-ai-cost",
       "question": "How much will Jin AI cost?",
-      "answer": "Free on your own computer. Pro is proposed at $10 per month for Google Drive and Notion sources and memory across devices. Team plans start with a conversation. All prices are being tested in the beta."
+      "answer": "The version that learns on your computer is free. Pro is proposed at $10 per month for planned Google Drive and Notion connections and sync between your PC and phone. The price is being tested in the beta."
     }
   ],
   "early_access": {
     "status": "open",
     "label": "Join the waitlist",
     "note": "We will email you when your invite is ready, plus occasional product updates.",
+    "hero_label": "Join →",
+    "hero_note": "Show your interest in joining the beta",
     "form": {
       "provider": "apps_script",
       "endpoint": "https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec",

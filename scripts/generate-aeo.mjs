@@ -29,7 +29,8 @@ function validate(source) {
   assert(Array.isArray(source.identity.same_as) && source.identity.same_as.length >= 1, "Identity must declare a sameAs list for entity disambiguation.");
 
   const access = source.early_access;
-  assert(access?.label && access?.note, "Early access needs a label and a note.");
+  assert(access?.label && access?.note && access?.hero_label && access?.hero_note,
+    "Early access needs form and hero labels and notes.");
   assert(access.form?.provider === "apps_script", "The waitlist must use Apps Script directly.");
   assert(isAppsScriptEndpoint(access.form.endpoint) ||
     (access.form.endpoint === null && access.status === "setup_pending"),
@@ -68,6 +69,8 @@ function validate(source) {
   for (const capability of source.capabilities) {
     assert(allowedStatuses.has(capability.status), `Invalid capability status: ${capability.id}`);
   }
+  assert(source.privacy?.on_device?.length === 5, "On-device privacy needs five facts.");
+  assert(source.privacy?.cloud_sync?.status === "planned", "Cloud Sync must remain planned.");
 
   const serialized = JSON.stringify(source);
   assert(!serialized.includes("JinAI"), "Customer-facing data must spell the product name Jin AI.");
@@ -97,16 +100,12 @@ function replaceBlock(document, blockName, generated) {
 function renderCta(source, { centred }) {
   const access = source.early_access;
   const community = access.community;
-  const hasCommunity = Boolean(community?.url);
 
   if (!centred) {
-    const secondary = hasCommunity
-      ? `\n      <a class="btn btn-s" href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a>`
-      : "";
     return `<div class="wait">
-      <a class="btn btn-p" href="#waitlist">${escapeHtml(access.label)}</a>${secondary}
+      <a class="btn btn-p" href="#waitlist">${escapeHtml(access.hero_label)}</a>
     </div>
-    <div class="waitnote">${escapeHtml(access.note)}</div>`;
+    <div class="waitnote">${escapeHtml(access.hero_note)}</div>`;
   }
 
   const endpoint = access.form.endpoint || "";
@@ -257,6 +256,9 @@ function renderAgent(source) {
       <dt><a href="${escapeHtml(founder.profile_url)}">${escapeHtml(founder.name)}</a> — ${escapeHtml(founder.role)}</dt>
       <dd>${escapeHtml(founder.bio)}</dd>`).join("");
 
+  const privacyItems = source.privacy.on_device.map((item) => `
+    <li><strong>${escapeHtml(item.name)}</strong> — ${escapeHtml(item.description)}</li>`).join("");
+
   return `<article data-content-version="${escapeHtml(source.content_version)}">
   <h1>${escapeHtml(source.product.name)} for agents</h1>
   <p class="dek">${escapeHtml(source.product.description)}</p>
@@ -267,19 +269,23 @@ function renderAgent(source) {
   </div>
 
   <h2>Direct answer</h2>
-  <p class="answer"><strong>${escapeHtml(source.product.name)}</strong> is a ${escapeHtml(lowerFirst(source.product.category))}, with Markdown as the spine. It is for ${escapeHtml(lowerFirst(source.audience.primary))} and is currently <strong>${statusLabels[source.product.status].toLowerCase()}</strong>.</p>
+  <p class="answer"><strong>${escapeHtml(source.product.name)}</strong> is a ${escapeHtml(lowerFirst(source.product.category))}. It is for ${escapeHtml(lowerFirst(source.audience.primary))} and is currently <strong>${statusLabels[source.product.status].toLowerCase()}</strong>.</p>
 
   <h2>Problem</h2>
   <p class="answer"><strong>${escapeHtml(source.problem.headline)}.</strong> ${escapeHtml(source.problem.short_answer)}</p>
   <p>${escapeHtml(source.problem.description)}</p>
 
-  <h2>Evidence and limits</h2>
-  ${evidence}
+${source.evidence.length ? `  <h2>Evidence and limits</h2>\n  ${evidence}\n` : ""}
 
-  <h2>Planned product behavior</h2>
+  <h2>After you use Jin AI</h2>
   <p>${escapeHtml(source.solution.headline)}. ${escapeHtml(source.solution.principle)}</p>
   <div class="steps">${solutionCards}
   </div>
+
+  <h2>Private by design</h2>
+  <ul>${privacyItems}
+  </ul>
+  <p><strong>Cloud Sync — ${escapeHtml(source.privacy.cloud_sync.label)} (Planned):</strong> ${escapeHtml(source.privacy.cloud_sync.description)}</p>
 
   <h2>Capability status</h2>
   <p>Status vocabulary is explicit: <strong>In build</strong> means active development, <strong>Planned</strong> means intended next work, and <strong>Later</strong> is not committed for the first release.</p>
@@ -318,6 +324,10 @@ function renderLlms(source) {
     return `- [Structured evidence record](${source.resources.structured_data}): ${item.finding} Scope: ${item.scope}. ${item.caveat}`;
   }).join("\n");
 
+  const privacy = source.privacy.on_device.map((item) =>
+    `- ${item.name}: ${item.description}`
+  ).join("\n");
+
   return `# ${source.product.name}
 
 > ${source.product.description}
@@ -328,7 +338,7 @@ Interpret status words literally. "In build" is not shipped, "planned" is intend
 
 ## Primary resources
 
-- [Canonical Human page](${source.resources.human_page}): The problem Jin AI addresses and how it solves it.
+- [Canonical Human page](${source.resources.human_page}): One-click AI setup, its benefits and privacy.
 - [Agent reference](${source.resources.agent_page}): Concise status-aware HTML for automated research, including direct answers, capability status, pricing status, roadmap and founders.
 - [Structured fact source](${source.resources.structured_data}): Public JSON used to generate agent-facing derivatives.
 - [Sitemap](${source.resources.sitemap}): Canonical indexable URL.
@@ -337,11 +347,12 @@ Interpret status words literally. "In build" is not shipped, "planned" is intend
 
 ${answerLinks}
 
-## Evidence and sources
+## Private by design
 
-${evidenceLinks}
+${privacy}
+- Cloud Sync (${source.privacy.cloud_sync.label}; planned): ${source.privacy.cloud_sync.description}
 
-## Founders
+${source.evidence.length ? `## Evidence and sources\n\n${evidenceLinks}\n\n` : ""}## Founders
 
 ${source.founders.map((founder) => `- [${founder.name}](${founder.profile_url}): ${founder.role}. ${founder.bio}`).join("\n")}
 `;

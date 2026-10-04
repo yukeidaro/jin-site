@@ -7,16 +7,17 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | Route | Purpose |
 | --- | --- |
 | `/` | Complete English Human landing page and sole product canonical |
+| `/ja/` | Full Japanese Human landing page with its own canonical |
 | `/human/` | `noindex` compatibility alias that opens `/` |
 | `/en/` | `noindex` English alias that opens `/` |
 | `/agent/` | Crawlable, status-aware reference generated for machine readers |
 | `/agent/content.json` | Public fact source for Human and Agent derivatives |
 | `/llms.txt` | Concise LLM index generated from the fact source |
 | `/robots.txt` | Search policy; model-training crawlers are blocked by default |
-| `/sitemap.xml` | Contains only the canonical root |
+| `/sitemap.xml` | Contains the English and Japanese canonical routes |
 
-The site has no language toggle or design-direction chooser. Customer-facing
-content is English-only.
+The footer links between the English page at `/` and the Japanese page at
+`/ja/`. Both pages link their hreflang alternates.
 
 ## Content source and generation
 
@@ -42,38 +43,35 @@ in check mode and fails when a derivative has drifted.
 ## Content rules
 
 - Product name: **Jin AI**
-- The Human page (`/`) presents only **the problem and the solution**, plus
-  the waitlist. Pricing, roadmap, founders, comparison and direct answers live
-  in `agent/content.json` and its derivatives (`/agent/`, `llms.txt`), not on
-  the Human page.
-- Headline: **Every AI you use, already briefed.** Supporting line, shared with
-  the October 2026 pitch: *Jin AI gives every AI your context, automatically.*
-- Positioning: Jin AI learns how you work from your files and AI chat history,
-  and gives that context to the AI tools you use, so you stop re-prompting.
-  The earlier "visual workspace for agent files / See -> Fix -> Undo" story is
-  retired.
-- The solution is explained as **Learn -> Brief -> Show**: learn what must be
-  exact and what AI can decide; add the relevant memories to each request;
-  keep everything as plain Markdown the user can read and fix.
-- In-build, planned and later capabilities must remain distinguishable.
-  Claude Code is the first integration; ChatGPT, Codex and Copilot plugins are
-  planned.
-- Instruction-file synchronization is planned, not shipped. It will keep
-  `CLAUDE.md`, `AGENTS.md` and `copilot-instructions.md` current.
-- Prices (Free / Pro $10 per month / Teams by conversation) are a proposal
-  being tested in the beta. Say so wherever a price appears.
-- The Workday rework figure (nearly 40% of AI time savings lost to rework,
-  n=3,200, November 2025) must keep its source link and its scope.
-- Product visuals on the page are drawn in HTML with sample data and are
-  labelled as such. Do not present them as real user data.
+- The Human pages (`/` and `/ja/`) contain only the hero, **After you use
+  Jin AI**, **Private by design**, and the waitlist. Pricing, roadmap, founders,
+  comparisons and direct answers belong in the status-aware Agent derivatives.
+- Headline: **The one-click setup that makes AI know you from the start.**
+  Supporting line: *Jin AI gives you the AI setup engineers have. One click,
+  and every AI learns about you.* Use the approved English and Japanese copy
+  in `mockup/v6/BRIEF.md` verbatim.
+- The three benefits are short prompts, telling AI once across tools, and
+  bringing the right local files to the right chats. Show Claude, ChatGPT and
+  Copilot as text, not as a row of identical feature cards.
+- **Private by design** distinguishes on-device facts from planned Cloud Sync
+  for Pro. Jin AI never records your screen, learns locally in the free version,
+  never moves your files, never trains on your data itself, and lets you choose
+  what it reads and shares. Google Drive, Notion and PC/phone sync are planned.
+- Keep **In build**, **Planned**, and **Later** distinct; do not present a
+  planned integration or access control as already shipped. Prices in the
+  Agent reference are proposals being tested in the beta.
+- The hero uses `shots/plugin-screen.png`, a real product screen, rather
+  than an illustrative memory mockup or unverified user data.
 - Do not add `FAQPage` schema, active offers, ratings or reviews unless they
   become truthful and applicable.
 
 ## Waitlist and community
 
-Both waitlist CTAs are generated from `early_access` in `agent/content.json`, so the
-label and destination live in one place and cannot drift between the hero and the
-closing section.
+The English hero CTA is generated from `early_access.hero_label` and
+`early_access.hero_note` in `agent/content.json`. The existing waitlist form
+uses `early_access.label` and `early_access.note` and must not change as part
+of the page-content update. The Japanese page uses the same endpoint, field
+names and survey values with localized labels.
 
 The custom website form submits JSON directly to an Apps Script web app.
 **Google Forms, response receipts, hidden iframes, and form-submit triggers are
@@ -175,9 +173,10 @@ not a discovery channel.
 GitHub Pages deploys through `.github/workflows/deploy-pages.yml`. The build
 copies only the allowlist in `scripts/build-pages.mjs` into `_site`.
 
-Historical source directories such as `archive/`, `ja/` and `mockup/`, along
-with repository documentation and generation scripts, are intentionally absent
-from the production artifact.
+The production artifact includes `/ja/`, `shots/plugin-screen.png` and the
+shared page assets. Historical source directories such as `archive/` and
+`mockup/`, along with repository documentation and generation scripts, are
+intentionally absent from the production artifact.
 
 ## Local validation
 
@@ -189,4 +188,5 @@ node scripts/validate-site.mjs
 python -m http.server 8777 --directory _site
 ```
 
-Open <http://127.0.0.1:8777/> and <http://127.0.0.1:8777/agent/>.
+Open <http://127.0.0.1:8777/>, <http://127.0.0.1:8777/ja/> and
+<http://127.0.0.1:8777/agent/>.
