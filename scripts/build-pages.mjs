@@ -12,6 +12,8 @@ const files = [
   "site.css",
   "privacy-tabs.mjs",
   "ja/index.html",
+  "ja/how-it-works/index.html",
+  "how-it-works/index.html",
   "waitlist.mjs",
   "robots.txt",
   "sitemap.xml",

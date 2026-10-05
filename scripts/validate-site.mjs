@@ -43,6 +43,8 @@ const expectedFiles = [
   "human/index.html",
   "index.html",
   "ja/index.html",
+  "ja/how-it-works/index.html",
+  "how-it-works/index.html",
   "llms.txt",
   "preview-a-paper.jpg",
   "privacy-tabs.mjs",
@@ -131,9 +133,11 @@ Allow: /
 Sitemap: https://jinai.md/sitemap.xml
 `, "robots.txt policy has drifted.");
 
-check(count(sitemap, /<loc>/g) === 2 &&
+check(count(sitemap, /<loc>/g) === 4 &&
+  sitemap.includes("<loc>https://jinai.md/how-it-works/</loc>") &&
+  sitemap.includes("<loc>https://jinai.md/ja/how-it-works/</loc>") &&
   sitemap.includes("<loc>https://jinai.md/</loc>") &&
-  sitemap.includes("<loc>https://jinai.md/ja/</loc>"), "Sitemap must contain both canonical language routes.");
+  sitemap.includes("<loc>https://jinai.md/ja/</loc>"), "Sitemap must contain the home and How it works routes in both languages.");
 check(!llms.includes(".md)"), "llms.txt must not link to Markdown mirrors.");
 check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blockquote summary.");
 
@@ -186,10 +190,9 @@ const customerFacingTextFiles = deployedFiles.filter((file) => /\.(html|json|txt
 for (const relativePath of customerFacingTextFiles) {
   const source = await text(relativePath);
   check(!source.includes("JinAI"), `${relativePath} contains the obsolete JinAI spelling.`);
-  if (relativePath !== "ja/index.html") {
-    const englishSource = relativePath === "index.html"
-      ? source.replace('<a href="ja/" lang="ja">日本語</a>', "")
-      : source;
+  if (!relativePath.startsWith("ja/")) {
+    // English pages may carry only the language switch link in Japanese.
+    const englishSource = source.replace(/<a href="[^"]*" lang="ja"[^>]*>日本語<\/a>/g, "");
     check(!/[\u3040-\u30ff\u3400-\u9fff]/u.test(englishSource),
       `${relativePath} contains CJK characters outside the Japanese page and its language link.`);
   }
