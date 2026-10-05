@@ -1,35 +1,39 @@
 # Jin AI
 
-> Jin AI learns how you work from the files and AI chat history already on your computer, and gives that context to the AI tools you use, so you stop re-explaining yourself. What it learns is kept as plain Markdown you can read and fix. It is in build, and a first beta is opening in small batches.
+> Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build, with a beta opening in small batches.
 
-Status: In build. Availability: first beta opening in small batches. Last updated: 2026-10-02.
+Status: In build. Availability: first beta opening in small batches. Last updated: 2026-10-04.
 
 Interpret status words literally. "In build" is not shipped, "planned" is intended next work, and "later" is not committed for the first release. The Human page at https://jinai.md/ is the sole canonical product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
 
 ## Primary resources
 
-- [Canonical Human page](https://jinai.md/): The problem Jin AI addresses and how it solves it.
+- [Canonical Human page](https://jinai.md/): One-click AI setup, its benefits and privacy.
 - [Agent reference](https://jinai.md/agent/): Concise status-aware HTML for automated research, including direct answers, capability status, pricing status, roadmap and founders.
 - [Structured fact source](https://jinai.md/agent/content.json): Public JSON used to generate agent-facing derivatives.
 - [Sitemap](https://jinai.md/sitemap.xml): Canonical indexable URL.
 
 ## Direct answers
 
-- [What is Jin AI?](https://jinai.md/agent/#what-is-jin-ai): Jin AI learns how you work from the files and AI chat history already on your computer, and gives that context to the AI tools you use, so you stop re-explaining yourself. What it learns is kept as plain Markdown you can read and fix.
-- [Who is Jin AI for?](https://jinai.md/agent/#who-is-jin-ai-for): Founders and operators who use two or more AIs every day, know they should set up instructions such as CLAUDE.md or custom instructions, and never quite did, or gave up keeping them current.
-- [How is this different from ChatGPT or Claude memory?](https://jinai.md/agent/#how-is-this-different-from-chatgpt-or-claude-memory): Built-in memory is a short list of facts that stays inside one AI. Jin AI learns from your files as well as your chats, keeps what it learns structured by what must be exact and what the AI can decide, and is designed to brief every AI you use.
-- [Do I have to write CLAUDE.md or custom instructions?](https://jinai.md/agent/#do-i-have-to-write-instructions): No. Jin AI learns from what you already have. Keeping CLAUDE.md, AGENTS.md and copilot-instructions.md current for you is planned, not shipped.
-- [Does Jin AI record my screen or upload my files?](https://jinai.md/agent/#does-jin-ai-record-my-screen-or-upload-files): Jin AI never records your screen. The free version learns from files and chat history on your own computer, and your files stay where they are. Syncing across devices is a planned, optional Pro feature.
-- [Can I see and change what it remembers?](https://jinai.md/agent/#can-i-see-what-it-remembers): Yes. Everything Jin AI learns is plain Markdown. You can read it, search it, correct it, and see which memories each AI received for a request.
-- [Which AI tools does it work with?](https://jinai.md/agent/#which-ai-tools-does-it-work-with): Claude Code first. Plugins for ChatGPT, Codex and GitHub Copilot are planned.
-- [Is Jin AI available now?](https://jinai.md/agent/#is-jin-ai-available): Not publicly. The desktop app is in build and a first beta is opening in small batches. Join the waitlist to be considered.
-- [How much will Jin AI cost?](https://jinai.md/agent/#how-much-will-jin-ai-cost): Free on your own computer. Pro is proposed at $10 per month for Google Drive and Notion sources and memory across devices. Team plans start with a conversation. All prices are being tested in the beta.
+- [What is Jin AI?](https://jinai.md/agent/#what-is-jin-ai): Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build; support for more AI tools is planned.
+- [Who is Jin AI for?](https://jinai.md/agent/#who-is-jin-ai-for): Business professionals who want their AI tools to know who they are, how they work and which files matter.
+- [How is this different from ChatGPT or Claude memory?](https://jinai.md/agent/#how-is-this-different-from-chatgpt-or-claude-memory): Each AI's built-in memory stays in its own product. Jin AI is building one setup from your files, slides and chats that can work across AI tools. ChatGPT and Copilot integrations are planned.
+- [What happens after setup?](https://jinai.md/agent/#what-happens-after-setup): Jin AI learns from your files, slides and chats, and fills in your context. The right files come to the right chats. These features are being built for the beta.
+- [Does Jin AI record my screen or upload my files?](https://jinai.md/agent/#does-jin-ai-record-my-screen-or-upload-files): Jin AI never records your screen. The free version learns from files and chat history on your own computer. Jin AI doesn't move your files. Cloud Sync is planned for Pro.
+- [Does Jin AI train on my data?](https://jinai.md/agent/#does-jin-ai-train-on-my-data): Jin AI itself never trains on your data. You choose what it reads, and what it shares; access controls are planned as the beta develops.
+- [Which AI tools does it work with?](https://jinai.md/agent/#which-ai-tools-does-it-work-with): Claude Code is the first integration being built. ChatGPT and GitHub Copilot integrations are planned, not shipped.
+- [Is Jin AI available now?](https://jinai.md/agent/#is-jin-ai-available): The app is in build and a beta is opening in small batches. Join the waitlist to show your interest.
+- [How much will Jin AI cost?](https://jinai.md/agent/#how-much-will-jin-ai-cost): The version that learns on your computer is free. Pro is proposed at $10 per month for planned Google Drive and Notion connections and sync between your PC and phone. The price is being tested in the beta.
 
-## Evidence and sources
+## Private by design
 
-- [New Workday Research: Companies Are Leaving AI Gains on the Table](https://www.prnewswire.com/news-releases/new-workday-research-companies-are-leaving-ai-gains-on-the-table-302660517.html): Nearly 40% of the time employees save with AI is lost to rework: correcting errors, rewriting content and verifying output. Scope: Survey of 3,200 employees and business leaders, fielded by Hanover Research in November 2025. Not research on Jin AI users.
+- Never records your screen: Jin AI never records your screen.
+- Learns on your computer: The free version learns from files and chat history on your own computer.
+- Your files stay where they are: Jin AI doesn't move your files.
+- Never trained on your data: Jin AI itself never trains on your data.
+- You choose: You choose what it reads, and what it shares.
+- Cloud Sync (Coming with Pro; planned): Google Drive and Notion connections, sync between your PC and phone.
 
 ## Founders
 
-- [Yu Asano](https://www.linkedin.com/in/yu-asano-6878571a6/): Co-founder. AI product builder and Microsoft GTM engineer. Built Baby Voice Recorder end to end while leading Azure go-to-market at Microsoft Japan and launched Microsoft's first TikTok account in Asia.
-- [Tomoya Kato](https://www.linkedin.com/in/tomoya-kato-a0a078162/): Co-founder, business and sales. Business and sales co-founder.
+- [Yu Asano](https://www.linkedin.com/in/yu-asano-6878571a6/): Founder. Builder of Jin AI and Baby Voice Recorder. Previously launched Microsoft's first official TikTok account in Asia.

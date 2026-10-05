@@ -9,6 +9,9 @@ const files = [
   ".nojekyll",
   "CNAME",
   "index.html",
+  "site.css",
+  "privacy-tabs.mjs",
+  "ja/index.html",
   "waitlist.mjs",
   "robots.txt",
   "sitemap.xml",
@@ -21,6 +24,7 @@ const files = [
   "agent/index.html",
   "agent/content.json",
   "brand/jin-mark.svg",
+  "shots/plugin-screen.png",
   "shots/app-hero-en.jpg",
   "shots/app-workspace-en.jpg",
   "shots/app-page-en.jpg"
