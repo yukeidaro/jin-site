@@ -261,3 +261,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
   .navright{gap:8px}
   .audience-switch a{padding:6px 9px;font-size:10.5px}
 }
+.benefit-ill img{display:block;width:100%;max-width:300px;height:auto;margin-left:auto}
+.benefit-ill .cap{text-align:right}
+.shot figcaption{margin-bottom:16px;font-size:15.5px;color:var(--ink-2)}
+@media (max-width:720px){.benefit-ill img{margin:0;max-width:240px}.benefit-ill .cap{text-align:left}}
