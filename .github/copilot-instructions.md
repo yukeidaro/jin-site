@@ -34,6 +34,21 @@ The Human page (`index.html`) contains only the hero, the problem, the solution 
 - Vary weight: one dominant visual per section.
 - Must work at 375px wide with no horizontal scroll.
 
+## Parallel work
+
+Several agent sessions (Claude Code, Copilot CLI) work on this repo at the same time. Never switch branches in a checkout another session may be using, and never commit another session's changes.
+
+- Start each task in its own worktree from the latest `main`:
+
+  ```
+  git fetch origin
+  git worktree add .claude/worktrees/<task> -b <branch> origin/main
+  ```
+
+- Work, test, commit and push from that folder only. Stage files by path (`git add <paths>`), not `git add -A`.
+- After the PR merges, remove it: `git worktree remove .claude/worktrees/<task>`.
+- Do not use bare `git stash`; the stash is shared by every worktree.
+
 ## Before you finish
 
 Run and report the result of:
