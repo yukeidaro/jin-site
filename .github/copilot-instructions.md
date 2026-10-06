@@ -56,6 +56,7 @@ Run and report the result of:
 ```
 node scripts/generate-aeo.mjs --check
 node --test scripts/waitlist.test.mjs
+node --test scripts/daily-report.test.mjs
 node scripts/build-pages.mjs
 node scripts/validate-site.mjs
 ```

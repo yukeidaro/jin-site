@@ -36,6 +36,9 @@ jobs:
       - name: Test waitlist registration and email states
         run: node --test scripts/waitlist.test.mjs
 
+      - name: Test daily email report
+        run: node --test scripts/daily-report.test.mjs
+
       - name: Build allowlisted site
         run: node scripts/build-pages.mjs
 
