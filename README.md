@@ -113,6 +113,33 @@ Updating an Apps Script project does not update a versioned web app deployment.
 For the survey update, re-run `setupWaitlist` once to create the `Survey` tab,
 then use **Deploy > Manage deployments > Edit > New version** after source changes.
 
+### Daily report
+
+The daily report emails the previous JST calendar day's external waitlist signups,
+survey answers and Cloudflare Web Analytics traffic to Yu. It also includes a
+seven-day JST traffic trend. The report contains names and roles but no signup
+email addresses; it sends from the executing Workspace account's default Gmail
+address, not the welcome email's `hello@jinai.md` alias.
+
+1. In the same Apps Script project (under the Workspace account), add a script
+   file named `daily-report` containing `scripts/daily-report.gs`. Update the
+   project's `appsscript.json` from `scripts/appsscript.json` to include the
+   `script.external_request` scope.
+2. Under **Project Settings > Script properties**, set `CF_API_TOKEN` to a
+   Cloudflare API token with **Account > Account Analytics > Read** permission,
+   `CF_ACCOUNT_ID` to the Cloudflare account ID and `CF_SITE_TAG` to the Web
+   Analytics site tag (from its beacon configuration). Keep the token out of
+   source control. Without all three, the email explicitly says analytics is
+   not configured.
+3. Run `inspectDailyReport` once to preview the text and authorize the new
+   external-request scope. Run `sendDailyReport` once to check the received
+   email, then run `installDailyReport` to create the daily trigger.
+
+The trigger runs around 08:00 **Asia/Tokyo**; Apps Script does not guarantee
+an exact minute. Time-driven triggers use the latest saved project code, so a
+new web app deployment is **not** needed for this report. Saving a manifest
+scope change does require re-authorization.
+
 ### Storage and delivery states
 
 The private `Waitlist` tab records the original registration, consent version,
@@ -183,6 +210,7 @@ intentionally absent from the production artifact.
 ```powershell
 node scripts/generate-aeo.mjs --check
 node --test scripts/waitlist.test.mjs
+node --test scripts/daily-report.test.mjs
 node scripts/build-pages.mjs
 node scripts/validate-site.mjs
 python -m http.server 8777 --directory _site
