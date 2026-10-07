@@ -52,11 +52,11 @@ const expectedFiles = [
   "shots/app-hero-en.jpg",
   "shots/app-page-en.jpg",
   "shots/app-workspace-en.jpg",
-  "shots/og-en.png",
+  "shots/og-en-2.png",
   "shots/ill-files.png",
   "shots/ill-once.png",
   "shots/ill-prompts.png",
-  "shots/og-ja.png",
+  "shots/og-ja-2.png",
   "shots/plugin-screen.png",
   "site.css",
   "sitemap.xml",
@@ -95,8 +95,8 @@ for (const [page, source] of [["English", home], ["Japanese", japanese]]) {
 }
 check(home.includes("<main>") && home.includes("</main>"), "Root must have a main landmark.");
 check(!/id="(?:problem|work|solution)"/.test(home), "Root must not publish retired sections.");
-check(home.includes("The one-click setup that makes AI know you from the start"), "Root must use the approved headline.");
-check(japanese.replaceAll("<wbr>", "").includes("ワンクリックで、AIが最初からあなたを知っている状態に。"),
+check(home.includes("Turn the AI you already use into an assistant that actually knows you."), "Root must use the approved headline.");
+check(japanese.replaceAll("<wbr>", "").includes("いつものAIを、あなたを本当に理解するアシスタントに。"),
   "Japanese page must use the approved headline.");
 check(agent.includes('id="what-is-jin-ai"'), "Agent page must carry the generated direct answers.");
 check(!/<img(?![^>]*\bsrc=)[^>]*>/i.test(home), "Every root image must have a static src.");
