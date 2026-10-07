@@ -46,7 +46,7 @@ in check mode and fails when a derivative has drifted.
 - The Human pages (`/` and `/ja/`) contain only the hero, **After you use
   Jin AI**, **Private by design**, and the waitlist. Pricing, roadmap, founders,
   comparisons and direct answers belong in the status-aware Agent derivatives.
-- Headline: **The one-click setup that makes AI know you from the start.**
+- Headline: **Turn the AI you already use into an assistant that actually knows you.** (Japanese: **いつものAIを、あなたを本当に理解するアシスタントに。**)
   Supporting line: *Jin AI gives you the AI setup engineers have. One click,
   and every AI learns about you.* Use the approved English and Japanese copy
   in `mockup/v6/BRIEF.md` verbatim.
