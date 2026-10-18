@@ -85,17 +85,56 @@ for (const [page, source] of [["English", home], ["Japanese", japanese]]) {
     check(source.includes(`<link rel="alternate" hreflang="${language}" href="${url}">`),
       `${page} page must link its ${language} hreflang alternate.`);
   }
-  check(source.includes('id="benefits"') && source.includes('id="privacy"') && source.includes('id="waitlist"'),
-    `${page} page must have benefits, privacy and waitlist sections.`);
-  check(source.includes('role="tablist"') && count(source, /role="tab"/g) === 2 &&
-    source.includes('aria-selected="true"') && source.includes('aria-selected="false"'),
-  `${page} page must expose both accessible privacy tabs.`);
-  check(source.includes('plugin-screen.png') && source.includes('src="') &&
-    source.includes('privacy-tabs.mjs'), `${page} page must include the product image and tab interaction.`);
 }
+check(japanese.includes('id="benefits"') && japanese.includes('id="privacy"') && japanese.includes('id="waitlist"'),
+  "Japanese page must have benefits, privacy and waitlist sections.");
+check(japanese.includes('role="tablist"') && count(japanese, /role="tab"/g) === 2 &&
+  japanese.includes('aria-selected="true"') && japanese.includes('aria-selected="false"'),
+  "Japanese page must expose both accessible privacy tabs.");
+check(japanese.includes('plugin-screen.png') && japanese.includes('src="') &&
+  japanese.includes('privacy-tabs.mjs'), "Japanese page must include the product image and tab interaction.");
 check(home.includes("<main>") && home.includes("</main>"), "Root must have a main landmark.");
-check(!/id="(?:problem|work|solution)"/.test(home), "Root must not publish retired sections.");
-check(home.includes("Turn the AI you already use into an assistant that actually knows you."), "Root must use the approved headline.");
+const homeSections = [...home.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
+check(homeSections.length === 6 && homeSections[0]?.[1].includes('class="hero"') &&
+  homeSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() ===
+  "problem,solution,how,data,demo", "Root must contain only hero, problem, solution, how, data and demo sections, in order.");
+check(count(home, /<h1>/g) === 1 &&
+  home.includes("<h1>Keep your top performers' AI harnesses inside the company.</h1>"),
+  "Root must use the approved H1 once.");
+const homeTitle = "Jin AI | Keep your top performers' AI harnesses inside the company";
+check(home.includes(`<title>${homeTitle}</title>`), "Root must use the approved title.");
+for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:title"],
+  ["property", "og:image:alt"], ["name", "twitter:image:alt"]]) {
+  check(home.includes(`<meta ${attribute}="${name}" content="${homeTitle}">`), `Root must use the approved ${name}.`);
+}
+const homeDescription = "Jin AI keeps the AI harnesses your best people build safe for every employee and reusable for the company.";
+for (const [attribute, name] of [["name", "description"], ["property", "og:description"], ["name", "twitter:description"]]) {
+  check(home.includes(`<meta ${attribute}="${name}" content="${homeDescription}">`), `Root must use the approved ${name}.`);
+}
+const hero = homeSections[0]?.[2] || "";
+check(!/<(?:img|p)\b|class="(?:eyebrow|lede|waitnote)"/.test(hero),
+  "The hero must not contain a subtitle, status tag, note or product image.");
+check(hero.includes('href="#how">How it works</a>'), "The hero must link to How it works.");
+check(home.includes('<a href="#how">How it works</a>') &&
+  home.includes('<a class="btn btn-p" href="#demo">Request a demo</a>'),
+  "The nav must link to How it works and the demo.");
+const problemSection = homeSections.find((match) => match[1].includes('id="problem"'))?.[2] || "";
+const illustrations = [...problemSection.matchAll(/<div\b[^>]*\bclass="art"[^>]*>/g)].map((match) => match[0]);
+check(illustrations.length === 3 && illustrations.every((art) =>
+  art.includes('role="img"') && /\baria-label="[^"]*\S[^"]*"/.test(art)),
+  "The problem must contain three role=img illustrations with non-empty aria-labels.");
+for (const id of ["sa-svg", "ho-svg", "ed-svg"]) {
+  check(count(problemSection, new RegExp(`<svg\\b[^>]*\\bid="${id}"`, "g")) === 1,
+    `The problem must include the inline ${id} illustration once.`);
+}
+check(!home.includes("Turn the AI you already use into an assistant that actually knows you") &&
+  !home.includes("plugin-screen.png") && !home.includes("privacy-tabs.mjs") &&
+  !/<section\b[^>]*\bid="(?:what|benefits|privacy|waitlist)"/.test(home),
+  "Root must not publish the old headline, product image, privacy tabs or retired sections.");
+check(!/[\u2013\u2014\u2018\u2019\u201c\u201d]/u.test(home),
+  "Root must not contain em dashes, en dashes or curly quotes.");
+check(!/(?:\$|\bPro\b|\bDiscord\b|Cloud Sync|Baby Voice|TikTok|\bsetup\b)/i.test(home),
+  "Root contains retired offers, products or terminology.");
 check(japanese.replaceAll("<wbr>", "").includes("いつものAIを、あなたを本当に理解するアシスタントに。"),
   "Japanese page must use the approved headline.");
 check(agent.includes('id="what-is-jin-ai"'), "Agent page must carry the generated direct answers.");
@@ -143,7 +182,42 @@ check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blo
 
 const content = JSON.parse(contentJson);
 check(content.product.name === "Jin AI", "Structured data product name is invalid.");
-check(content.product.status === "in_build", "Structured data must state the in-build status.");
+check(content.product.status === "building", "Structured data must state the Building status.");
+check(home.includes(`<h2 class="h2">${content.problem.headline}</h2>`), "Root must use the approved problem heading.");
+for (const point of content.problem.points) {
+  check(problemSection.includes(`<h3>${point.name}</h3>`) && problemSection.includes(`<p>${point.description}</p>`),
+    `Root must use the approved ${point.name} copy.`);
+}
+const solutionSection = homeSections.find((match) => match[1].includes('id="solution"'))?.[2] || "";
+check(solutionSection.includes(`<h2 class="h2">${content.solution.steps.map((step) => step.name).join("<br>")}</h2>`) &&
+  content.solution.steps.every((step) => solutionSection.includes(`<p>${step.description}</p>`)) &&
+  !/<(?:img|svg)\b|class="(?:ph|eyebrow)"/.test(solutionSection),
+  "Root must use the two-line solution heading and approved copy without labels or placeholder images.");
+const howSection = homeSections.find((match) => match[1].includes('id="how"'))?.[2] || "";
+check(howSection.includes('<h2 class="h2">How it works</h2>') &&
+  howSection.includes(`<p class="harness-definition">${content.product.harness_definition}</p>`) &&
+  howSection.indexOf('class="harness-definition"') < howSection.indexOf('class="home-columns"'),
+  "How it works must define an AI harness directly above its columns.");
+check(howSection.includes('class="how-audience">Employee</h3>') &&
+  howSection.includes('class="how-audience">Admin</h3>') &&
+  howSection.includes('href="how-it-works/">Read more</a>'),
+  "How it works must include Employee, Admin and Read more.");
+const companyCapabilities = content.capabilities.filter((capability) => capability.id !== "workspace-beta");
+check(companyCapabilities.length === 4 && companyCapabilities.every((capability, index) =>
+  howSection.includes(`<h4>${index + 1}. ${capability.name}</h4>`) &&
+  howSection.includes(`<p>${capability.description}</p>`)),
+  "How it works must use all four approved steps.");
+check(count(howSection, /<small class="harness-status">Building: Claude Code first<\/small>/g) === 1 &&
+  count(howSection, /<small class="harness-status">Building<\/small>/g) === 1 &&
+  count(howSection, /<small class="harness-status next">Next<\/small>/g) === 2,
+  "How it works must distinguish the two Building steps from the two Next steps.");
+const dataSection = homeSections.find((match) => match[1].includes('id="data"'))?.[2] || "";
+check(dataSection.includes(`<h2 class="h2">${content.data_principles.headline}</h2>`) &&
+  content.data_principles.items.every((item) => dataSection.includes(`<li>${item}</li>`)),
+  "Root must use all approved data promises.");
+const demoSection = homeSections.find((match) => match[1].includes('id="demo"'))?.[2] || "";
+check(demoSection.includes("<h2>See what is inside your company's AI harnesses.</h2>") &&
+  demoSection.includes('id="waitlistForm"'), "The demo section must contain the approved heading and form.");
 
 const access = content.early_access;
 check(access.form.provider === "apps_script", "The waitlist must use Apps Script directly.");
@@ -180,7 +254,9 @@ check(Boolean(japaneseSurvey) && japaneseSurvey.includes(`data-survey-id="${acce
   [...japaneseSurvey.matchAll(/<input\b[^>]*\btype="radio"[^>]*>/g)]
     .map((match) => match[0].match(/\bvalue="([^"]*)"/)?.[1]).join() ===
   access.survey?.options.map((option) => option.value).join(), "Japanese survey must keep the same id and answer values.");
-check(home.includes('href="#waitlist"'), "The hero CTA must jump to the waitlist form.");
+check(hero.includes(`<a class="btn btn-p" href="#demo">${access.hero_label}</a>`),
+  "The hero CTA must jump to the demo form.");
+check(demoSection.includes(`<p class="waitnote">${access.note}</p>`), "The demo form must retain its generated note.");
 check(!/<a[^>]*class="btn[^"]*"[^>]*href="#?"/.test(home), "No CTA may link to an empty or placeholder target.");
 if (access.community?.url) {
   check(home.includes(`href="${access.community.url}"`), "Community CTA must be published once its URL is set.");

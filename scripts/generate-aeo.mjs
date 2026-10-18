@@ -117,9 +117,8 @@ function renderCta(source, { centred }) {
 
   if (!centred) {
     return `<div class="wait">
-      <a class="btn btn-p" href="#waitlist">${escapeHtml(access.hero_label)}</a>
-    </div>
-    <div class="waitnote">${escapeHtml(access.hero_note)}</div>`;
+      <a class="btn btn-p" href="#demo">${escapeHtml(access.hero_label)}</a>
+    </div>`;
   }
 
   const endpoint = access.form.endpoint || "";
