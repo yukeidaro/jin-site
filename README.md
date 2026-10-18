@@ -8,6 +8,8 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | --- | --- |
 | `/` | Complete English Human landing page and sole product canonical |
 | `/how-it-works/` | English companion page with four steps and their delivery status |
+| `/privacy/` | Approved website privacy policy |
+| `/accessibility/` | Accessibility goal, known limits and contact details |
 | `/ja/` | `noindex,follow` compatibility redirect to `/` |
 | `/ja/how-it-works/` | `noindex,follow` compatibility redirect to `/how-it-works/` |
 | `/human/` | `noindex` compatibility alias that opens `/` |
@@ -16,11 +18,14 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/agent/content.json` | Public fact source for Human and Agent derivatives |
 | `/llms.txt` | Concise LLM index generated from the fact source |
 | `/robots.txt` | Search policy; model-training crawlers are blocked by default |
-| `/sitemap.xml` | Contains only `/` and `/how-it-works/` |
+| `/sitemap.xml` | Contains `/`, `/how-it-works/`, `/privacy/` and `/accessibility/` |
 
 The public pages are English-only, without language switches or hreflang
 alternates. Legacy Japanese routes keep their English fallback links and use
 both meta refresh and `location.replace` redirects.
+The English content pages link to Privacy and Accessibility from their footers.
+The approved legal text describes the forthcoming demo form; its fields and
+backend remain unchanged until the form migration.
 
 ## Content source and generation
 

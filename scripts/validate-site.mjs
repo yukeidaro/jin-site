@@ -35,6 +35,7 @@ const expectedFiles = [
   ".nojekyll",
   "6252d6a938298e86f40672b512227d4b.txt",
   "CNAME",
+  "accessibility/index.html",
   "agent/content.json",
   "agent/index.html",
   "brand/jin-mark.svg",
@@ -46,6 +47,7 @@ const expectedFiles = [
   "ja/how-it-works/index.html",
   "how-it-works/index.html",
   "llms.txt",
+  "privacy/index.html",
   "robots.txt",
   "shots/og-b2b.png",
   "site.css",
@@ -56,7 +58,7 @@ const expectedFiles = [
 const deployedFiles = await listFiles(site);
 check(JSON.stringify(deployedFiles) === JSON.stringify(expectedFiles), `Unexpected Pages artifact: ${deployedFiles.join(", ")}`);
 
-const [home, japanese, howPage, japaneseHowAlias, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson] = await Promise.all([
+const [home, japanese, howPage, japaneseHowAlias, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson, privacy, accessibility] = await Promise.all([
   text("index.html"),
   text("ja/index.html"),
   text("how-it-works/index.html"),
@@ -67,13 +69,57 @@ const [home, japanese, howPage, japaneseHowAlias, agent, humanAlias, englishAlia
   text("robots.txt"),
   text("sitemap.xml"),
   text("llms.txt"),
-  text("agent/content.json")
+  text("agent/content.json"),
+  text("privacy/index.html"),
+  text("accessibility/index.html")
 ]);
+
+const legalPages = [
+  ["privacy", privacy, "Privacy Policy", "How Jin AI collects and uses the information you give us on jinai.md."],
+  ["accessibility", accessibility, "Accessibility", "Our accessibility goal for jinai.md and how to report a problem."]
+];
+for (const [route, source, heading, description] of legalPages) {
+  const title = `${heading} | Jin AI`;
+  check(count(source, /<link\b[^>]*\brel="canonical"/g) === 1 &&
+    source.includes(`<link rel="canonical" href="https://jinai.md/${route}/">`),
+    `${heading} must have one self-canonical.`);
+  check(count(source, /<h1\b/g) === 1 && source.includes(`<h1>${heading}</h1>`) &&
+    /<main\b[^>]*>[\s\S]*<\/main>/.test(source),
+    `${heading} must have its approved H1 and main landmark.`);
+  check(source.includes(`<title>${title}</title>`), `${heading} must have its approved title.`);
+  for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:title"]]) {
+    check(source.includes(`<meta ${attribute}="${name}" content="${title}">`),
+      `${heading} must use the approved ${name}.`);
+  }
+  for (const [attribute, name] of [["name", "description"], ["property", "og:description"], ["name", "twitter:description"]]) {
+    check(source.includes(`<meta ${attribute}="${name}" content="${description}">`),
+      `${heading} must use the approved ${name}.`);
+  }
+  check(source.includes(`<meta property="og:url" content="https://jinai.md/${route}/">`) &&
+    !/<meta\b[^>]*\bcontent="[^"]*\bnoindex\b/i.test(source),
+    `${heading} must advertise its public URL and remain indexable.`);
+}
+for (const [relativePath, source] of [
+  ["index.html", home], ["how-it-works/index.html", howPage], ["agent/index.html", agent],
+  ["privacy/index.html", privacy], ["accessibility/index.html", accessibility]
+]) {
+  const footer = source.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] || "";
+  const baseUrl = new URL(relativePath, "https://jinai.md/");
+  for (const [route, label] of [["privacy", "Privacy"], ["accessibility", "Accessibility"]]) {
+    check([...footer.matchAll(/<a\b[^>]*\bhref="([^"]+)"[^>]*>([^<]+)<\/a>/g)].some((match) =>
+      match[2] === label && new URL(match[1], baseUrl).href === `https://jinai.md/${route}/`),
+      `${relativePath} footer must link to ${label}.`);
+  }
+  if (relativePath !== "agent/index.html") {
+    check(footer.includes("Visits are counted with Cloudflare Web Analytics. No cookies."),
+      `${relativePath} footer must retain its analytics notice.`);
+  }
+}
 
 check(count(home, /<link rel="canonical" href="https:\/\/jinai\.md\/">/g) === 1, "Root must have one self-canonical.");
 check(count(howPage, /<link rel="canonical" href="https:\/\/jinai\.md\/how-it-works\/">/g) === 1,
   "How it works must have one self-canonical.");
-for (const [page, source] of [["Root", home], ["How it works", howPage]]) {
+for (const [page, source] of [["Root", home], ["How it works", howPage], ...legalPages.map(([, source, heading]) => [heading, source])]) {
   check(!/\bhreflang=|aria-label="Language"/.test(source),
     `${page} must not publish hreflang alternates or a language switch.`);
   for (const [attribute, name] of [["property", "og:image"], ["name", "twitter:image"]]) {
@@ -184,8 +230,9 @@ Sitemap: https://jinai.md/sitemap.xml
 `, "robots.txt policy has drifted.");
 
 const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).sort();
-check(JSON.stringify(sitemapUrls) === JSON.stringify(["https://jinai.md/", "https://jinai.md/how-it-works/"]),
-  "Sitemap must contain exactly the English home and How it works URLs.");
+check(JSON.stringify(sitemapUrls) === JSON.stringify([
+  "https://jinai.md/", "https://jinai.md/accessibility/", "https://jinai.md/how-it-works/", "https://jinai.md/privacy/"
+]), "Sitemap must contain exactly the English home, How it works, Privacy and Accessibility URLs.");
 check(!llms.includes(".md)"), "llms.txt must not link to Markdown mirrors.");
 check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blockquote summary.");
 

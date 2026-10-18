@@ -13,6 +13,8 @@ const files = [
   "ja/index.html",
   "ja/how-it-works/index.html",
   "how-it-works/index.html",
+  "privacy/index.html",
+  "accessibility/index.html",
   "waitlist.mjs",
   "robots.txt",
   "sitemap.xml",
