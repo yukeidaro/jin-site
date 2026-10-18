@@ -4,7 +4,7 @@ import { test } from "node:test";
 import vm from "node:vm";
 import {
   CONSENT_VERSION, SURVEY_ID, describeResult, isAppsScriptEndpoint, submitSignup, submitSurvey,
-  validateResponse, validateSurveyResponse
+  validateResponse, validateSurveyResponse, validateDemoFields, initializeWaitlist
 } from "../waitlist.mjs";
 
 const source = await readFile(new URL("./waitlist-mailer.gs", import.meta.url), "utf8");
@@ -23,7 +23,14 @@ const requestId = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
 const endpoint = "https://script.google.com/macros/s/test-deployment/exec";
 const input = (overrides = {}) => ({
   requestId, name: "Example Tester", email: "example@example.com", role: "Founder",
-  source: "https://jinai.md", consentVersion: CONSENT_VERSION, website: "", ...overrides
+  source: "https://jinai.md", consentVersion: backend.WAITLIST_CONSENT, website: "", ...overrides
+});
+const demoInput = (overrides = {}) => ({
+  type: "demo", requestId, email: "example@example.com", firstName: "Alex",
+  lastName: "Sample", jobTitle: "Head of IT", phone: "+1 (202) 555-0142",
+  company: "Example Company", industry: "Technology", companySize: "50-199",
+  country: "United States", website: "", source: "https://jinai.md",
+  consentVersion: "demo-request-v1", ...overrides
 });
 const surveyInput = (overrides = {}) => ({
   type: "survey", requestId, email: "example@example.com", surveyId: SURVEY_ID,
@@ -54,7 +61,10 @@ function fixture() {
         records.push(structuredClone(saved));
         return saved;
       },
-      update: (record) => { records[record.row - 2] = structuredClone(record); }
+      update: (record) => { records[record.row - 2] = structuredClone(record); },
+      pending: (dueAt) => records.filter((record) => record.welcome === "pending" &&
+        (!record.nextAttemptAt || Date.parse(record.nextAttemptAt) <= dueAt))
+        .map((record) => structuredClone(record))
     },
     surveyStore: {
       findBy: (email, surveyId) => {
@@ -70,10 +80,11 @@ function fixture() {
     },
     sender: {
       assertReady() {},
-      send: () => {
+      send: (record) => {
         sends++;
-        assert.equal(records[0].registration, "saved");
-        assert.equal(records[0].welcome, "sending", "The send intent must already be persistent.");
+        const stored = records.find((item) => item.requestId === record.requestId);
+        assert.equal(stored.registration, "saved");
+        assert.equal(stored.welcome, "sending", "The send intent must already be persistent.");
         return "gmail-message-id";
       }
     }
@@ -222,12 +233,24 @@ test("lock contention is explicit and cannot start a send", () => {
   assert.equal(f.sends(), 0);
 });
 
-test("survey options and IDs match the public fact source", async () => {
+test("demo choices match the public facts and legacy survey options remain unchanged", async () => {
   const content = JSON.parse(await readFile(new URL("../agent/content.json", import.meta.url), "utf8"));
-  assert.equal(content.early_access.survey.id, SURVEY_ID);
   assert.equal(backend.SURVEY_ID, SURVEY_ID);
   assert.deepEqual(Object.entries(backend.SURVEY_OPTIONS),
-    content.early_access.survey.options.map(({ value, label }) => [value, label]));
+    [
+      ["A", "Correcting small things over and over"],
+      ["B", "Updating the settings that teach AI my preferences and rules (Skills and similar)"],
+      ["C", "Finding the right documents and files to hand to AI"],
+      ["D", "Re-explaining my requirements and background every time I switch between ChatGPT, Claude and others"]
+    ]);
+  const form = content.early_access.form;
+  assert.equal(content.early_access.survey, undefined);
+  assert.equal(form.consent_version, CONSENT_VERSION);
+  assert.equal(form.consent_version, backend.DEMO_CONSENT);
+  assert.deepEqual(form.fields.find((field) => field.name === "industry").options,
+    Array.from(backend.DEMO_INDUSTRIES));
+  assert.deepEqual(form.fields.find((field) => field.name === "companySize").options,
+    Array.from(backend.DEMO_COMPANY_SIZES));
 });
 
 test("a registered signup can save and update one survey answer per email and survey", () => {
@@ -460,7 +483,7 @@ test("Survey sheet lookups filter by survey ID and every written cell is formula
   assert.equal(rows[1][5], "'=updated");
 });
 
-test("setupWaitlist creates and validates the Survey tab without changing Waitlist", () => {
+test("setupWaitlist creates Survey and Demo requests without changing existing sheets", () => {
   const waitlist = sheetFixture(Array.from(backend.WAITLIST_COLUMNS, (column) => column[1]));
   const tabs = new Map([["Waitlist", waitlist]]);
   let id = null;
@@ -484,11 +507,20 @@ test("setupWaitlist creates and validates the Survey tab without changing Waitli
   backend.setupWaitlist();
   backend.setupWaitlist();
   const survey = tabs.get("Survey");
-  assert.equal(tabs.size, 2);
+  assert.equal(tabs.size, 3);
   assert.deepEqual(survey.rows[0], Array.from(backend.SURVEY_COLUMNS, (column) => column[1]));
   assert.equal(survey.sheet.headerWeight, "bold");
   assert.equal(survey.sheet.frozenRows, 1);
   assert.equal(waitlist.sheet.headerWeight, null);
+  const demo = tabs.get("Demo requests");
+  assert.deepEqual(demo.rows[0], Array.from(backend.DEMO_COLUMNS, (column) => column[1]));
+  assert.equal(demo.sheet.headerWeight, "bold");
+  assert.equal(demo.sheet.frozenRows, 1);
+  survey.rows.push(["Existing survey response"]);
+  waitlist.rows.push(["Existing waitlist registration"]);
+  const before = structuredClone([waitlist.rows, survey.rows, demo.rows]);
+  backend.setupWaitlist();
+  assert.deepEqual([waitlist.rows, survey.rows, demo.rows], before);
 });
 
 test("the client accepts only a deployed Apps Script endpoint", () => {
@@ -525,7 +557,8 @@ test("client copy never conflates saving with sending", () => {
     assert.equal(description.saved, true);
     assert.equal(description.registration, "Saved");
     assert.notEqual(description.welcome, "Sent");
-    assert.ok(description.detail.includes("do not need to register again"));
+    assert.ok(description.detail.includes("do not need to submit again"));
+    assert.ok(description.detail.includes("still reply"));
   }
   assert.equal(describeResult(response("not_saved", "not_attempted")).saved, false);
   assert.equal(describeResult(response("unknown", "not_attempted")).registration, "Not confirmed");
@@ -578,4 +611,449 @@ test("HTTP errors, login HTML, mismatched responses and timeouts never become su
       options.signal.addEventListener("abort", () => reject(new Error("aborted")), { once: true });
     })
   }), /aborted/);
+});
+
+test("a demo saves every field before sending exactly one confirmation, including on retry", () => {
+  const f = fixture();
+  const payload = demoInput({ email: "EXAMPLE@example.com" });
+  assert.equal(backend.registerDemo_(payload, f.deps).welcome, "sent");
+  const saved = f.records[0];
+  for (const field of ["firstName", "lastName", "jobTitle", "phone", "company",
+    "industry", "companySize", "country", "requestId", "source", "consentVersion"]) {
+    assert.equal(saved[field], payload[field], field);
+  }
+  assert.equal(saved.email, "example@example.com");
+  assert.equal(saved.messageId, "gmail-message-id");
+  assert.equal(saved.attempts, 1);
+  assert.equal(saved.createdAt, "2026-09-12T02:00:00.000Z");
+  assert.equal(backend.registerDemo_(payload, f.deps).welcome, "sent");
+  assert.equal(f.records.length, 1);
+  assert.equal(f.sends(), 1);
+  assert.equal(f.surveyRecords.length, 0);
+});
+
+test("a new demo request ID preserves a later intentional request from the same buyer", () => {
+  const f = fixture();
+  backend.registerDemo_(demoInput(), f.deps);
+  const second = backend.registerDemo_(demoInput({
+    requestId: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb", company: "Another Example Company"
+  }), f.deps);
+  assert.equal(second.welcome, "sent");
+  assert.equal(f.records.length, 2);
+  assert.equal(f.records[1].company, "Another Example Company");
+  assert.equal(f.sends(), 2);
+  const conflict = backend.registerDemo_(demoInput({ email: "other@example.com" }), f.deps);
+  assert.equal(conflict.code, "request_conflict");
+  assert.equal(conflict.registration, "not_saved");
+  assert.equal(f.records.length, 2);
+  assert.equal(f.sends(), 2);
+});
+
+for (const [field, code, invalid] of [
+  ["email", "invalid_email", ["", null, "a..b@example.com", "x".repeat(65) + "@example.com", "ok@example.com\r\nBcc:x@example.com"]],
+  ["firstName", "invalid_first_name", ["", " ", undefined, "x".repeat(81), "Alex\nSample"]],
+  ["lastName", "invalid_last_name", ["", " ", 12, "x".repeat(81), "Sample\u007f"]],
+  ["jobTitle", "invalid_job_title", ["", null, "x".repeat(121), "Head\tIT"]],
+  ["phone", "invalid_phone", [undefined, 123, "x".repeat(41), "+1/202", "+1\n202", "Call me", "+1\u0000202"]],
+  ["company", "invalid_company", ["", false, "x".repeat(161), "Example\rCompany"]],
+  ["industry", "invalid_industry", ["", null, "technology", "Unknown", "Technology\n"]],
+  ["companySize", "invalid_company_size", ["", 50, "50-200", "1000+", "50-199\t"]],
+  ["country", "invalid_country", ["", " ", null, "x".repeat(81), "Japan\n"]]
+]) {
+  test(`demo rejects invalid ${field} with ${code} and no writes or sends`, () => {
+    for (const value of invalid) {
+      const f = fixture();
+      const result = backend.registerDemo_(demoInput({ [field]: value }), f.deps);
+      assert.equal(result.code, code, String(value));
+      assert.equal(result.registration, "not_saved");
+      assert.equal(result.welcome, "not_attempted");
+      assert.equal(f.records.length, 0);
+      assert.equal(f.sends(), 0);
+      assert.equal(f.log.length, 1);
+    }
+  });
+}
+
+test("demo accepts boundary lengths, trims names, and allows an empty optional phone", () => {
+  const payload = backend.validateDemo_(demoInput({
+    firstName: "  " + "a".repeat(80) + " ", lastName: "b".repeat(80),
+    jobTitle: "c".repeat(120), company: "d".repeat(160), country: "e".repeat(80), phone: ""
+  }));
+  assert.equal(payload.firstName.length, 80);
+  assert.equal(payload.phone, "");
+  assert.equal(backend.validateDemo_(demoInput({ phone: "+1 (202) 555-0142 . 0" })).phone,
+    "+1 (202) 555-0142 . 0");
+  for (const industry of backend.DEMO_INDUSTRIES) {
+    assert.equal(backend.validateDemo_(demoInput({ industry })).industry, industry);
+  }
+  for (const companySize of backend.DEMO_COMPANY_SIZES) {
+    assert.equal(backend.validateDemo_(demoInput({ companySize })).companySize, companySize);
+  }
+});
+
+test("demo rejects a filled honeypot, stale consent, invalid source and malformed request IDs", () => {
+  for (const [changes, code] of [
+    [{ website: "spam.example" }, "invalid_input"],
+    [{ consentVersion: "waitlist-product-updates-v1" }, "invalid_consent"],
+    [{ source: "https://other.example" }, "invalid_source"],
+    [{ requestId: "invalid" }, "invalid_request_id"]
+  ]) {
+    const f = fixture();
+    const result = backend.registerDemo_(demoInput(changes), f.deps);
+    assert.equal(result.code, code);
+    assert.equal(result.registration, "not_saved");
+    assert.equal(f.records.length, 0);
+    assert.equal(f.sends(), 0);
+  }
+  const f = fixture();
+  for (const value of [null, [], "text"]) {
+    assert.equal(backend.registerDemo_(value, f.deps).code, "invalid_input");
+  }
+});
+
+test("demo delivery retains honest pending, failed, unknown and interrupted states", () => {
+  for (const state of ["pending", "failed", "unknown", "sending"]) {
+    const f = fixture();
+    if (state === "pending") {
+      f.deps.sender.assertReady = () => { throw Object.assign(new Error("alias"), { code: "sender_not_verified" }); };
+    } else {
+      f.deps.sender.send = () => { throw new Error(state === "failed" ? "Invalid recipient" : "network timeout"); };
+    }
+    const result = backend.registerDemo_(demoInput(), f.deps);
+    assert.equal(result.registration, "saved");
+    assert.equal(result.welcome, state === "sending" ? "unknown" : state);
+    if (state === "sending") f.records[0].welcome = "sending";
+    const attempts = f.records[0].attempts;
+    backend.registerDemo_(demoInput(), f.deps);
+    assert.equal(f.records[0].attempts, attempts);
+    assert.equal(f.records.length, 1);
+  }
+});
+
+test("demo storage failures, lock contention and quota never claim a send", () => {
+  for (const [change, expected, code] of [
+    [(deps) => { deps.store.append = () => { throw new Error("offline"); }; }, "unknown", "storage_error"],
+    [(deps) => { deps.store.withLock = () => { throw Object.assign(new Error("busy"), { code: "busy" }); }; }, "not_saved", "busy"],
+    [(deps) => { deps.reserveEmail = () => false; }, "saved", "daily_email_limit"]
+  ]) {
+    const f = fixture();
+    change(f.deps);
+    const result = backend.registerDemo_(demoInput(), f.deps);
+    assert.equal(result.registration, expected);
+    assert.equal(result.code, code);
+    assert.equal(f.sends(), 0);
+  }
+});
+
+test("the scheduled retry processes both queues and never resends sent or ambiguous demos", () => {
+  const legacy = fixture();
+  const demo = fixture();
+  for (const f of [legacy, demo]) f.deps.reserveEmail = () => false;
+  backend.registerWaitlist_(input(), legacy.deps);
+  backend.registerDemo_(demoInput(), demo.deps);
+  const production = backend.productionDependencies_;
+  backend.productionDependencies_ = (type) => type === "demo" ? demo.deps : legacy.deps;
+  try {
+    backend.retryPendingWelcomeEmails();
+    assert.equal(demo.sends(), 0);
+    for (const f of [legacy, demo]) {
+      f.advance(15 * 60 * 1000);
+      f.deps.reserveEmail = () => true;
+    }
+    backend.retryPendingWelcomeEmails();
+    assert.equal(demo.sends(), 1);
+    assert.equal(legacy.sends(), 1);
+    for (const state of ["sent", "sending", "unknown", "failed"]) {
+      demo.records[0].welcome = state;
+      backend.retryPendingWelcomeEmails();
+      assert.equal(demo.sends(), 1);
+    }
+  } finally {
+    backend.productionDependencies_ = production;
+  }
+});
+
+test("demo MIME is a short transactional confirmation with the verified From and safe greeting", () => {
+  const mime = Buffer.from(backend.demoMime_(demoInput()), "base64url").toString("utf8");
+  assert.match(mime, /^From: Jin AI <hello@jinai\.md>\r\nReply-To: hello@jinai\.md/);
+  assert.match(mime, /\r\nSubject: We received your Jin AI demo request\r\n/);
+  const parts = [...mime.matchAll(/Content-Transfer-Encoding: base64\r\n\r\n([\s\S]*?)\r\n--jin-demo-/g)];
+  assert.equal(parts.length, 2);
+  for (const part of parts) {
+    const body = Buffer.from(part[1].replace(/\s/g, ""), "base64").toString("utf8");
+    assert.ok(body.includes("Hi Alex,"));
+    assert.ok(body.includes("We will email you to set up a time."));
+    assert.ok(body.includes("reply to this email with questions"));
+    assert.ok(body.includes("because you requested a demo on"));
+    assert.doesNotMatch(body, /Discord|marketing|product updates|waitlist/i);
+    for (const url of body.match(/https:\/\/[^"<\s]+/g) || []) {
+      assert.ok(["https://jinai.md/", "https://jinai.md/privacy/"].includes(url));
+    }
+  }
+  assert.match(backend.demoHtml_("<img src=x>"), /Hi &lt;img src=x&gt;,/);
+  assert.doesNotMatch(backend.demoHtml_("<img src=x>"), /<img/);
+});
+
+test("production demo routing uses only Demo requests and the demo MIME", () => {
+  const columns = Array.from(backend.DEMO_COLUMNS, (column) => Array.from(column));
+  const { sheet, rows } = sheetFixture(columns.map((column) => column[1]));
+  let locks = 0;
+  let releases = 0;
+  let sends = 0;
+  const properties = {};
+  backend.PropertiesService = { getScriptProperties: () => ({
+    getProperty: (key) => key === "SPREADSHEET_ID" ? "sheet-id" : properties[key],
+    setProperties: (values) => Object.assign(properties, values)
+  }) };
+  backend.LockService = { getScriptLock: () => ({
+    tryLock: () => { locks++; return true; },
+    releaseLock: () => { releases++; }
+  }) };
+  backend.SpreadsheetApp = {
+    openById: () => ({ getSheetByName: (name) => {
+      assert.equal(name, "Demo requests", "Demo requests must never access the legacy tabs.");
+      return sheet;
+    } }),
+    flush() {}
+  };
+  backend.Gmail = { Users: {
+    Settings: { SendAs: { list: () => ({ sendAs: [
+      { sendAsEmail: "hello@jinai.md", verificationStatus: "accepted" }
+    ] }) } },
+    Messages: { send: ({ raw }) => {
+      sends++;
+      assert.match(Buffer.from(raw, "base64url").toString("utf8"),
+        /Subject: We received your Jin AI demo request/);
+      return { id: "demo-message-id" };
+    } }
+  } };
+  backend.ContentService = {
+    MimeType: { JSON: "json" },
+    createTextOutput: (body) => ({ setMimeType: () => ({ body }) })
+  };
+  try {
+    const payload = demoInput({
+      firstName: "=1+1", lastName: "@Sample", jobTitle: "-Director",
+      company: "+Example Company", country: "=country"
+    });
+    const post = () => JSON.parse(backend.doPost({ postData: { contents: JSON.stringify(payload) } }).body);
+    assert.equal(post().welcome, "sent");
+    assert.equal(post().welcome, "sent");
+    assert.equal(rows.length, 2);
+    assert.equal(sends, 1);
+    assert.equal(locks, 2);
+    assert.equal(releases, 2);
+    for (const field of ["firstName", "lastName", "jobTitle", "phone", "company", "country"]) {
+      const index = columns.findIndex(([key]) => key === field);
+      assert.equal(rows[1][index], "'" + payload[field], field);
+    }
+    assert.equal(rows[1][columns.findIndex(([key]) => key === "welcome")], "sent");
+    assert.equal(backend.WAITLIST_VERSION, "2026-10-19.1");
+  } finally {
+    for (const key of ["PropertiesService", "LockService", "SpreadsheetApp", "Gmail", "ContentService"]) {
+      delete backend[key];
+    }
+  }
+});
+
+async function clientFixture(t, fetchImpl, configured = true) {
+  const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
+  const formHtml = html.match(/<form\b[^>]*\bid="waitlistForm"[^>]*>[\s\S]*?<\/form>/)[0];
+  const elements = new Map();
+  const controls = new Map();
+  const listeners = new Map();
+  const errorLogs = [];
+  const document = { getElementById: (id) => elements.get(id), activeElement: null };
+  function element(id, attributes = {}) {
+    const node = {
+      id, hidden: false, textContent: "", dataset: {}, value: "", ...attributes,
+      getAttribute: (name) => attributes[name] ?? null,
+      setAttribute: (name, value) => { attributes[name] = value; },
+      removeAttribute: (name) => { delete attributes[name]; },
+      focus() { document.activeElement = node; },
+      scrollIntoView() {}
+    };
+    elements.set(id, node);
+    return node;
+  }
+  for (const match of formHtml.matchAll(/<(input|select)\b([^>]*)>/g)) {
+    const attributes = Object.fromEntries([...match[2].matchAll(/([\w-]+)="([^"]*)"/g)]
+      .map((attribute) => [attribute[1], attribute[2]]));
+    const control = element(attributes.id, attributes);
+    if (match[1] === "select") {
+      const options = formHtml.match(new RegExp(`<select\\b[^>]*id="${attributes.id}"[^>]*>([\\s\\S]*?)<\\/select>`))[1];
+      control.options = [...options.matchAll(/<option value="([^"]*)">/g)].map((option) => ({ value: option[1] }));
+    }
+    controls.set(attributes.name, control);
+    if (attributes["aria-describedby"]) {
+      assert.ok(formHtml.includes(`id="${attributes["aria-describedby"]}" hidden`));
+      element(attributes["aria-describedby"], { hidden: true });
+    }
+  }
+  const button = element("submit", { textContent: "Request a demo", disabled: true });
+  const form = element("waitlistForm", {
+    dataset: { endpoint: configured ? endpoint : "" },
+    querySelector: (selector) => selector === 'button[type="submit"]' ? button :
+      controls.get(selector.match(/name="([^"]+)"/)?.[1]),
+    addEventListener: (name, listener) => listeners.set(name, listener)
+  });
+  for (const id of ["waitlistStatus", "waitlistDone", "waitlistHeading",
+    "waitlistRegistration", "waitlistEmail", "waitlistDetail"]) {
+    assert.ok(html.includes(`id="${id}"`));
+    element(id, { hidden: id === "waitlistStatus" || id === "waitlistDone" });
+  }
+  t.mock.method(globalThis, "FormData", function MockFormData() {
+    this.get = (name) => controls.get(name)?.value ?? null;
+  });
+  t.mock.method(console, "error", (...args) => errorLogs.push(args));
+  initializeWaitlist(document, { fetchImpl });
+  return {
+    document, form, button, controls, elements, errorLogs,
+    fill(overrides = {}) {
+      const payload = demoInput(overrides);
+      for (const [name, control] of controls) control.value = payload[name] || "";
+    },
+    submit: () => listeners.get("submit")({ preventDefault() {} }),
+    input: (name) => listeners.get("input")({ target: controls.get(name) })
+  };
+}
+
+test("client validation rejects every invalid field and accepts optional phone with listed choices", async () => {
+  const content = JSON.parse(await readFile(new URL("../agent/content.json", import.meta.url), "utf8"));
+  const choices = Object.fromEntries(content.early_access.form.fields
+    .filter((field) => field.type === "select").map((field) => [field.name, field.options]));
+  assert.deepEqual(validateDemoFields(demoInput({ phone: "" }), choices), {});
+  for (const [field, value] of [
+    ["email", "a..b@example.com"], ["firstName", "a".repeat(81)], ["lastName", "Sample\n"],
+    ["jobTitle", ""], ["phone", "call me"], ["company", "a".repeat(161)],
+    ["industry", "Unknown"], ["companySize", "1000+"], ["country", "Unknown"]
+  ]) {
+    assert.deepEqual(Object.keys(validateDemoFields(demoInput({ [field]: value }), choices)), [field]);
+  }
+});
+
+test("empty client submission connects inline errors and focuses the first invalid field", async (t) => {
+  let requests = 0;
+  const f = await clientFixture(t, async () => { requests++; });
+  await f.submit();
+  assert.equal(requests, 0);
+  assert.equal(f.document.activeElement.id, "demo-email");
+  for (const [name, control] of f.controls) {
+    if (name === "phone" || name === "website") continue;
+    assert.equal(control.getAttribute("aria-invalid"), "true");
+    const error = f.document.getElementById(control.getAttribute("aria-describedby"));
+    assert.equal(error.hidden, false);
+    assert.ok(error.textContent.startsWith("Please"));
+  }
+  assert.equal(f.document.getElementById("demo-phone-error").hidden, true);
+  f.controls.get("email").value = "buyer@example.com";
+  f.input("email");
+  assert.equal(f.controls.get("email").getAttribute("aria-invalid"), null);
+  assert.equal(f.document.getElementById("demo-email-error").hidden, true);
+  await f.submit();
+  assert.equal(f.document.activeElement.id, "demo-firstName");
+});
+
+for (const welcome of ["sent", "pending", "failed", "unknown"]) {
+  test(`client presents saved demo and ${welcome} email honestly without a survey`, async (t) => {
+    let payload;
+    const f = await clientFixture(t, async (url, options) => {
+      assert.equal(url, endpoint);
+      payload = JSON.parse(options.body);
+      return { ok: true, json: async () => ({ ...response("saved", welcome), requestId: payload.requestId }) };
+    });
+    f.fill({ phone: "", firstName: "  Alex  " });
+    await f.submit();
+    assert.equal(payload.type, "demo");
+    assert.equal(payload.firstName, "Alex");
+    assert.equal(payload.phone, "");
+    assert.equal(payload.consentVersion, "demo-request-v1");
+    assert.deepEqual(Object.keys(payload), [
+      "type", "email", "firstName", "lastName", "jobTitle", "phone", "company",
+      "industry", "companySize", "country", "website", "source", "consentVersion", "requestId"
+    ]);
+    assert.equal(f.form.hidden, true);
+    assert.equal(f.elements.get("waitlistDone").hidden, false);
+    assert.equal(f.elements.get("waitlistRegistration").textContent, "Saved");
+    assert.equal(f.elements.get("waitlistEmail").textContent, describeResult(response("saved", welcome)).welcome);
+    assert.equal(f.document.activeElement.id, "waitlistDone");
+    assert.equal(f.document.getElementById("waitlistSurvey"), undefined);
+    assert.equal(f.button.disabled, false);
+    assert.equal(f.form.getAttribute("aria-busy"), null);
+    assert.doesNotMatch(f.elements.get("waitlistDetail").textContent, /Discord|waitlist/);
+  });
+}
+
+test("client marks server-rejected fields and focuses the rejected field", async (t) => {
+  const f = await clientFixture(t, async (_url, options) => ({
+    ok: true,
+    json: async () => ({ ...response("not_saved", "not_attempted", "invalid_company"),
+      requestId: JSON.parse(options.body).requestId })
+  }));
+  f.fill();
+  await f.submit();
+  assert.equal(f.form.hidden, false);
+  assert.equal(f.document.activeElement.id, "demo-company");
+  assert.equal(f.controls.get("company").getAttribute("aria-invalid"), "true");
+  assert.match(f.elements.get("demo-company-error").textContent, /company/);
+  assert.equal(f.elements.get("waitlistRegistration").textContent, "Not saved");
+});
+
+test("client transport retry reuses the same ID and reaches backend storage and delivery once", async (t) => {
+  const backendFixture = fixture();
+  const requests = [];
+  const f = await clientFixture(t, async (_url, options) => {
+    const payload = JSON.parse(options.body);
+    requests.push(payload);
+    const result = backend.registerDemo_(payload, backendFixture.deps);
+    if (requests.length === 1) throw new Error("response lost after storage");
+    return { ok: true, json: async () => result };
+  });
+  f.fill();
+  await f.submit();
+  assert.equal(f.form.hidden, false);
+  assert.match(f.elements.get("waitlistStatus").textContent, /could not confirm/);
+  assert.equal(f.errorLogs.length, 1);
+  await f.submit();
+  assert.equal(requests[0].requestId, requests[1].requestId);
+  assert.equal(backendFixture.records.length, 1);
+  assert.equal(backendFixture.sends(), 1);
+  assert.equal(f.elements.get("waitlistEmail").textContent, "Sent");
+});
+
+test("client prevents concurrent sends and uses a new ID when unsaved request details change", async (t) => {
+  const requests = [];
+  let release;
+  const f = await clientFixture(t, (_url, options) => {
+    const payload = JSON.parse(options.body);
+    requests.push(payload);
+    return new Promise((resolve) => {
+      release = () => resolve({
+        ok: true, json: async () => ({ ...response("not_saved", "not_attempted", "busy"),
+          requestId: payload.requestId })
+      });
+    });
+  });
+  f.fill();
+  const first = f.submit();
+  assert.equal(f.button.disabled, true);
+  assert.equal(f.form.getAttribute("aria-busy"), "true");
+  await f.submit();
+  assert.equal(requests.length, 1);
+  release();
+  await first;
+  f.controls.get("company").value = "Another Example Company";
+  const second = f.submit();
+  assert.notEqual(requests[0].requestId, requests[1].requestId);
+  release();
+  await second;
+  assert.equal(f.form.hidden, false);
+  assert.equal(f.button.disabled, false);
+});
+
+test("an unconfigured demo client disables submission and gives a contact fallback", async (t) => {
+  const f = await clientFixture(t, async () => assert.fail("No request is allowed"), false);
+  assert.equal(f.button.disabled, true);
+  assert.equal(f.elements.get("waitlistStatus").hidden, false);
+  assert.match(f.elements.get("waitlistStatus").textContent, /unavailable.*hello@jinai.md/);
 });

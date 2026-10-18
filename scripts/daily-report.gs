@@ -110,6 +110,29 @@ function summarizeSurvey_(rows, window) {
   };
 }
 
+function summarizeDemoRequests_(rows, window) {
+  var newRows = [];
+  rows.forEach(function (record) {
+    if (isInternalEmail_(record.email)) return;
+    var createdAt = reportTimestamp_(record.createdAt, 'demo_timestamp');
+    if (createdAt < window.dayStartMs || createdAt >= window.dayEndMs) return;
+    function safeDetail(value) {
+      return reportSafeText_(value).replace(/\+?(?:\d[ ().-]*){6,}\d/g, '[phone omitted]');
+    }
+    newRows.push({
+      createdAtMs: createdAt,
+      time: new Date(createdAt + REPORT_JST_MS).toISOString().slice(11, 16),
+      company: safeDetail(record.company),
+      companySize: safeDetail(record.companySize),
+      industry: safeDetail(record.industry),
+      country: safeDetail(record.country),
+      jobTitle: safeDetail(record.jobTitle)
+    });
+  });
+  newRows.sort(function (a, b) { return a.createdAtMs - b.createdAtMs; });
+  return { newCount: newRows.length, newRows: newRows };
+}
+
 function cloudflareQuery_(accountTag, siteTag, window) {
   var definitions = ['$accountTag: string', '$siteTag: string'];
   var variables = { accountTag: accountTag, siteTag: siteTag };
@@ -286,7 +309,11 @@ function buildDailyReport_(data) {
   var window = data.window;
   var waitlist = data.waitlist;
   var survey = data.survey;
+  var demo = data.demo;
   var analytics = data.analytics;
+  var demoRows = demo.newRows.map(function (row) {
+    return [row.time, row.company, row.companySize, row.industry, row.country, row.jobTitle];
+  });
   var newRows = waitlist.newRows.map(function (row) {
     return [row.time, row.name, row.role, row.welcome];
   });
@@ -300,13 +327,20 @@ function buildDailyReport_(data) {
   var subject = '[JinAI] 日次レポート ' + window.label + '（新規 ' + waitlist.newCount +
     ' 人 / PV ' + (analytics ? analytics.yesterday.pageViews : '未計測') + '）';
   var text = [
+    'Demo requests',
+    "Yesterday's requests (external): " + demo.newCount,
+    'Previous JST day: ' + window.label,
+    demoRows.length ? 'Time (JST)  Company  Company size  Industry  Country  Job title' : 'None'
+  ];
+  demoRows.forEach(function (row) { text.push(row.map(reportSafeText_).join('  ')); });
+  text.push('',
     'ウェイトリスト',
     '昨日の新規登録（社外）: ' + waitlist.newCount + ' 人（ユニーク ' +
       waitlist.newUniqueCount + ' 件）',
     '累計（社外、ユニークなメールアドレス数）: ' + waitlist.cumulativeUniqueCount + ' 件',
     '昨日の新規一覧（JST）:',
     newRows.length ? '時刻  名前  役割  歓迎メール' : '該当なし'
-  ];
+  );
   newRows.forEach(function (row) { text.push(row.map(reportSafeText_).join('  ')); });
   text.push('歓迎メールの要対応: ' + waitlist.attentionCount + ' 件');
   attentionRows.forEach(function (row) { text.push(row.map(reportSafeText_).join('  ')); });
@@ -322,6 +356,10 @@ function buildDailyReport_(data) {
     '<body style="margin:0;padding:24px;color:#252525;font-family:Arial,sans-serif;line-height:1.6;">',
     '<main style="max-width:640px;margin:0 auto;">',
     '<h1 style="font-size:20px;">Jin AI 日次レポート ' + escapeEmailHtml_(window.label) + '</h1>',
+    '<h2 style="font-size:17px;">Demo requests</h2>',
+    '<p>Yesterday&#39;s requests (external): ' + demo.newCount +
+      '<br>Previous JST day: ' + escapeEmailHtml_(window.label) + '</p>',
+    reportHtmlTable_(['Time (JST)', 'Company', 'Company size', 'Industry', 'Country', 'Job title'], demoRows),
     '<h2 style="font-size:17px;">ウェイトリスト</h2>',
     '<p>昨日の新規登録（社外）: ' + waitlist.newCount + ' 人（ユニーク ' +
       waitlist.newUniqueCount + ' 件）<br>累計（社外、ユニークなメールアドレス数）: ' +
@@ -466,11 +504,14 @@ function collectDailyReport_() {
     reportSheetRecords_(spreadsheet, WAITLIST_SHEET, WAITLIST_COLUMNS), window);
   var survey = summarizeSurvey_(
     reportSheetRecords_(spreadsheet, SURVEY_SHEET, SURVEY_COLUMNS), window);
+  var demo = summarizeDemoRequests_(
+    reportSheetRecords_(spreadsheet, DEMO_SHEET, DEMO_COLUMNS), window);
   var traffic = fetchCloudflare_(properties, window);
   return buildDailyReport_({
     window: window,
     waitlist: waitlist,
     survey: survey,
+    demo: demo,
     analytics: traffic.analytics,
     analyticsError: traffic.analyticsError,
     sheetUrl: spreadsheet.getUrl()

@@ -51,25 +51,38 @@ function validate(source) {
   const access = source.early_access;
   assert(access?.label && access?.note && access?.hero_label && access?.hero_note,
     "Early access needs form and hero labels and notes.");
-  assert(access.form?.provider === "apps_script", "The waitlist must use Apps Script directly.");
+  assert(access.form?.provider === "apps_script", "The demo form must use Apps Script directly.");
   assert(isAppsScriptEndpoint(access.form.endpoint) ||
     (access.form.endpoint === null && access.status === "setup_pending"),
-  "The waitlist needs a deployed Apps Script /exec endpoint, or an explicit setup_pending state.");
-  assert(access.form.consent_version === CONSENT_VERSION, "The waitlist consent version has drifted.");
-  assert(access.contact_email === "hello@jinai.md", "The waitlist must send from hello@jinai.md.");
-  const survey = access.survey;
-  assert(typeof survey?.id === "string" && survey.id.trim(), "The survey needs an id.");
-  assert(typeof survey.question === "string" && survey.question.trim(), "The survey needs a question.");
-  assert(typeof survey.hint === "string" && survey.hint.trim(), "The survey needs a hint.");
-  assert(Array.isArray(survey.options) && survey.options.length >= 2 && survey.options.length <= 6,
-    "The survey needs two to six options.");
-  const values = new Set();
-  for (const option of survey.options) {
-    assert(typeof option?.value === "string" && /^[A-Z]$/.test(option.value) && !values.has(option.value),
-      "Survey values must be unique uppercase letters.");
-    assert(typeof option.label === "string" && option.label.trim(), "Each survey option needs a label.");
-    values.add(option.value);
+  "The demo form needs a deployed Apps Script /exec endpoint, or an explicit setup_pending state.");
+  assert(access.form.consent_version === CONSENT_VERSION, "The demo consent version has drifted.");
+  assert(access.contact_email === "hello@jinai.md", "Demo confirmations must send from hello@jinai.md.");
+  assert(access.form.privacy_url === "privacy/" && access.form.privacy_note?.trim(),
+    "The demo form must explain its purpose and link to the Privacy Policy.");
+  assert(!access.survey, "Demo requests must not include a survey.");
+  const fields = access.form.fields;
+  assert(Array.isArray(fields) && fields.map((field) => field.name).join() ===
+    "email,firstName,lastName,jobTitle,phone,company,industry,companySize,country",
+  "The demo form fields must follow the approved order.");
+  for (const field of fields) {
+    assert(typeof field.label === "string" && field.label.trim(), "Each form field needs a label.");
+    assert(field.required === (field.name !== "phone"), "Only the phone field may be optional.");
+    if (field.type === "select") {
+      assert(field.placeholder?.trim() && Array.isArray(field.options) && field.options.length > 0 &&
+        field.options.every((option) => typeof option === "string" && option.trim()) &&
+        new Set(field.options).size === field.options.length,
+      `The ${field.name} select needs a placeholder and unique choices.`);
+    } else {
+      assert(["text", "email", "tel"].includes(field.type) && field.autocomplete?.trim() &&
+        Number.isInteger(field.max_length) && field.max_length > 0,
+      `The ${field.name} input needs its type, autocomplete and length limit.`);
+    }
   }
+  const countries = fields.find((field) => field.name === "country").options;
+  assert(countries[0] === "United States" && countries[1] === "Japan" &&
+    countries.length === 249 && countries.every((country) => country.length <= 80) &&
+    JSON.stringify(countries.slice(2)) === JSON.stringify([...countries.slice(2)].sort()),
+  "Country choices must cover ISO countries and territories, with United States and Japan first, then alphabetical English names.");
   assert(access.community?.url === null, "Community links must remain unpublished.");
 
   const ids = new Set();
@@ -123,50 +136,44 @@ function renderCta(source, { centred }) {
 
   const endpoint = access.form.endpoint || "";
   const action = endpoint ? ` action="${escapeHtml(endpoint)}"` : "";
-  const survey = access.survey;
-  const options = survey.options.map((option) =>
-    `            <label class="signup-survey-option"><input type="radio" name="answer" value="${escapeHtml(option.value)}" required><span>${escapeHtml(option.label)}</span></label>`
-  ).join("\n");
-  return `<form class="signup" id="waitlistForm"${action} data-endpoint="${escapeHtml(endpoint)}" method="post">
-      <div class="signup-row">
-        <label for="wl-name">Name</label>
-        <input id="wl-name" name="name" type="text" autocomplete="name" maxlength="120" required>
-      </div>
-      <div class="signup-row">
-        <label for="wl-email">Email</label>
-        <input id="wl-email" name="email" type="email" autocomplete="email" maxlength="254" required>
-      </div>
-      <div class="signup-row">
-        <label for="wl-role">What do you do?</label>
-        <input id="wl-role" name="role" type="text" autocomplete="organization-title" maxlength="160" placeholder="Founder, PM, consultant, researcher&hellip;" required>
-      </div>
+  const fields = access.form.fields.map((field) => {
+    const id = `demo-${field.name}`;
+    const attributes = `id="${id}" name="${field.name}"` +
+      (field.autocomplete ? ` autocomplete="${escapeHtml(field.autocomplete)}"` : "") +
+      ` aria-describedby="${id}-error"` + (field.required ? " required" : "");
+    const control = field.type === "select" ?
+      `<select ${attributes}>
+            <option value="">${escapeHtml(field.placeholder)}</option>
+${field.options.map((option) => `            <option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join("\n")}
+          </select>` :
+      `<input ${attributes} type="${field.type}" maxlength="${field.max_length}">`;
+    return `        <div class="signup-field">
+          <label for="${id}">${escapeHtml(field.label)}</label>
+          ${control}
+          <p class="signup-error" id="${id}-error" hidden></p>
+        </div>`;
+  });
+  const rows = [fields.slice(0, 1), fields.slice(1, 3), fields.slice(3, 5), fields.slice(5, 7), fields.slice(7, 9)]
+    .map((row) => `      <div class="signup-row">\n${row.join("\n")}\n      </div>`).join("\n");
+  return `<form class="signup" id="waitlistForm"${action} data-endpoint="${escapeHtml(endpoint)}" method="post" novalidate>
+${rows}
       <div class="signup-trap" aria-hidden="true">
         <label for="wl-website">Leave this field empty</label>
         <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
       </div>
       <button class="btn btn-p" type="submit" disabled>${escapeHtml(access.label)}</button>
       <p class="waitnote">${escapeHtml(access.note)}</p>
+      <p class="signup-privacy">${escapeHtml(access.form.privacy_note)} See our <a href="${escapeHtml(access.form.privacy_url)}">Privacy Policy</a>.</p>
     </form>
     <noscript><p class="waitalt">Please enable JavaScript to request a demo here. You can also email <a href="mailto:${escapeHtml(access.contact_email)}">${escapeHtml(access.contact_email)}</a>.</p></noscript>
     <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
       <h3 id="waitlistHeading"></h3>
       <dl class="signup-results">
-        <div><dt>Registration</dt><dd id="waitlistRegistration"></dd></div>
-        <div><dt>Welcome email</dt><dd id="waitlistEmail"></dd></div>
+        <div><dt>Request</dt><dd id="waitlistRegistration"></dd></div>
+        <div><dt>Confirmation email</dt><dd id="waitlistEmail"></dd></div>
       </dl>
       <p id="waitlistDetail"></p>
-      <form class="signup-survey" id="waitlistSurvey" data-survey-id="${escapeHtml(survey.id)}" hidden>
-        <fieldset aria-describedby="waitlistSurveyHint">
-          <legend>${escapeHtml(survey.question)}</legend>
-          <p class="waitnote" id="waitlistSurveyHint">${escapeHtml(survey.hint)}</p>
-          <div class="signup-survey-options">
-${options}
-          </div>
-        </fieldset>
-        <button class="btn btn-p" type="submit">Send answer</button>
-      </form>
-      <p class="signup-survey-status" id="waitlistSurveyStatus" role="status" aria-live="polite" hidden></p>
     </div>
     <p class="waitalt">Questions or feedback? <a href="mailto:${escapeHtml(access.contact_email)}">${escapeHtml(access.contact_email)}</a>.</p>`;
 }

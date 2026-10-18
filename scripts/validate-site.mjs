@@ -1,7 +1,7 @@
 import { readFile, readdir, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { isAppsScriptEndpoint } from "../waitlist.mjs";
+import { CONSENT_VERSION, isAppsScriptEndpoint } from "../waitlist.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const site = path.join(root, "_site");
@@ -314,29 +314,78 @@ check(demoSection.includes("<h2>See what is inside your company's AI harnesses.<
   demoSection.includes('id="waitlistForm"'), "The demo section must contain the approved heading and form.");
 
 const access = content.early_access;
-check(access.form.provider === "apps_script", "The waitlist must use Apps Script directly.");
+check(access.form.provider === "apps_script", "The demo form must use Apps Script directly.");
 check(isAppsScriptEndpoint(access.form.endpoint) ||
   (access.form.endpoint === null && access.status === "setup_pending"), "The Apps Script endpoint must be configured or explicitly pending.");
-check(home.includes(`data-endpoint="${access.form.endpoint || ""}"`), "The waitlist form must use the declared endpoint.");
-for (const name of ["name", "email", "role"]) {
-  check(home.includes(`name="${name}"`), `The waitlist is missing its ${name} field.`);
+check(home.includes(`data-endpoint="${access.form.endpoint || ""}"`), "The demo form must use the declared endpoint.");
+check(access.form.consent_version === CONSENT_VERSION && CONSENT_VERSION === "demo-request-v1",
+  "Demo requests must use demo-request-v1 consent.");
+const form = home.match(/<form\b[^>]*\bid="waitlistForm"[^>]*>[\s\S]*?<\/form>/)?.[0] || "";
+const controls = [...form.matchAll(/<(input|select)\b[^>]*>/g)];
+const fieldSpecs = [
+  ["email", "Work email", "email", "email", 254],
+  ["firstName", "First name", "text", "given-name", 80],
+  ["lastName", "Last name", "text", "family-name", 80],
+  ["jobTitle", "Job title", "text", "organization-title", 120],
+  ["phone", "Phone (optional)", "tel", "tel", 40],
+  ["company", "Company", "text", "organization", 160],
+  ["industry", "Industry", "select"],
+  ["companySize", "Company size", "select"],
+  ["country", "Country", "select", "country-name"]
+];
+check(controls.map(([tag]) => tag.match(/\bname="([^"]+)"/)?.[1]).join() ===
+  [...fieldSpecs.map(([name]) => name), "website"].join(),
+  "The demo controls and native tab order must match the approved visual field order.");
+for (const [name, label, type, autocomplete, maxLength] of fieldSpecs) {
+  const control = controls.find(([tag]) => tag.includes(`name="${name}"`))?.[0] || "";
+  const id = control.match(/\bid="([^"]+)"/)?.[1];
+  check(form.includes(`<label for="${id}">${label}</label>`), `${name} needs its matching label.`);
+  check(type === "select" ? control.startsWith("<select ") : control.includes(`type="${type}"`),
+    `${name} must use the approved native control type.`);
+  check(!autocomplete || control.includes(`autocomplete="${autocomplete}"`),
+    `${name} must use the approved autocomplete.`);
+  check(!maxLength || control.includes(`maxlength="${maxLength}"`), `${name} has an incorrect length limit.`);
+  check(/\srequired(?:\s|>)/.test(control) === (name !== "phone"), `${name} has an incorrect required state.`);
+  check(control.includes(`aria-describedby="${id}-error"`) &&
+    form.includes(`<p class="signup-error" id="${id}-error" hidden></p>`),
+    `${name} needs a connected inline error message.`);
+  check(!/\btabindex=/.test(control), `${name} must retain native tab order.`);
 }
-check(home.includes('src="waitlist.mjs"'), "The waitlist client must be loaded.");
+const expectedOptions = {
+  industry: ["Select an industry", "Technology", "Financial services", "Professional services",
+    "Education", "Energy", "Government", "Healthcare", "Manufacturing", "Media", "Nonprofit",
+    "Real estate", "Retail", "Telecommunications", "Transportation", "Other"],
+  companySize: ["Select a range", "1-49", "50-199", "200-999", "1,000+"],
+  country: ["Select a country", ...access.form.fields.find((field) => field.name === "country").options]
+};
+for (const [name, options] of Object.entries(expectedOptions)) {
+  const select = form.match(new RegExp(`<select\\b[^>]*\\bname="${name}"[^>]*>([\\s\\S]*?)<\\/select>`))?.[1] || "";
+  const actual = [...select.matchAll(/<option value="([^"]*)">([^<]+)<\/option>/g)];
+  check(JSON.stringify(actual.map((match) => match[2])) === JSON.stringify(options) &&
+    actual.every((match, index) => match[1] === (index === 0 ? "" : options[index])),
+  `${name} must contain the approved placeholder and options in order.`);
+}
+const countries = expectedOptions.country.slice(1);
+check(countries.length === 249 && new Set(countries).size === 249 &&
+  countries[0] === "United States" && countries[1] === "Japan" &&
+  JSON.stringify(countries.slice(2)) === JSON.stringify([...countries.slice(2)].sort()),
+  "Country options must cover countries and territories, with the two priority choices then English alphabetical order.");
+check(controls.length === 10 &&
+  form.includes('<label for="wl-website">Leave this field empty</label>') &&
+  /<input\b[^>]*\bname="website"[^>]*\btabindex="-1"/.test(form),
+  "Keep the labeled honeypot outside the tab order.");
+check(count(form, /<select\b/g) === 3, "The demo form must use three native selects.");
+check(form.includes('novalidate') &&
+  form.includes('We use these details only to reply about your demo. See our <a href="privacy/">Privacy Policy</a>.'),
+  "The demo form must show the approved privacy notice and use accessible inline validation.");
+check(home.includes('src="waitlist.mjs"'), "The demo client must be loaded.");
 check(!home.includes("waitlistSink") && !home.includes("formResponse"), "Google Forms and iframe-load confirmations must not be used.");
 check(!home.includes("A welcome email is on its way"), "The page must not promise email before the server confirms a send.");
-check(count(home, /<form[^>]+id="waitlistForm"/g) === 1, "There must be exactly one waitlist form.");
-const surveyForm = home.match(/<form\b[^>]*\bid="waitlistSurvey"[^>]*>[\s\S]*?<\/form>/);
-check(count(home, /id="waitlistSurvey"/g) === 1 && Boolean(surveyForm), "There must be exactly one survey form.");
-if (surveyForm) {
-  const opening = surveyForm[0].slice(0, surveyForm[0].indexOf(">") + 1);
-  check(/\shidden(?:\s|>)/.test(opening), "The survey must be hidden until registration is saved.");
-  check(opening.includes(`data-survey-id="${access.survey?.id}"`), "The survey id must match structured data.");
-  const radios = [...surveyForm[0].matchAll(/<input\b[^>]*\btype="radio"[^>]*>/g)].map((match) => match[0]);
-  check(radios.length === 4 && radios.every((radio) => radio.includes('name="answer"')),
-    "The survey must offer four answer radios.");
-  check(radios.map((radio) => radio.match(/\bvalue="([^"]*)"/)?.[1]).join() ===
-    access.survey?.options.map((option) => option.value).join(), "The survey answers must match structured data.");
-}
+check(count(home, /<form\b/g) === 1 && Boolean(form), "There must be exactly one demo form.");
+check(!access.survey && !/waitlistSurvey|signup-survey|type="radio"/.test(home),
+  "The demo page must not contain the post-signup survey.");
+check(form.includes('type="submit" disabled>Request a demo</button>'),
+  "The demo button must remain disabled until the client is ready.");
 check(hero.includes(`<a class="btn btn-p" href="#demo">${access.hero_label}</a>`),
   "The hero CTA must jump to the demo form.");
 check(demoSection.includes(`<p class="waitnote">${access.note}</p>`), "The demo form must retain its generated note.");
@@ -354,6 +403,7 @@ for (const relativePath of customerFacingTextFiles) {
   check(!/[\u2013\u2014\u2018\u2019\u201c\u201d]/u.test(source),
     `${relativePath} contains em dashes, en dashes or curly quotes.`);
   check(!/\bsetup\b/i.test(source), `${relativePath} contains the retired word setup.`);
+  check(!/\bDiscord\b/i.test(source), `${relativePath} contains a retired community mention.`);
 }
 
 const htmlFiles = deployedFiles.filter((file) => file.endsWith(".html"));

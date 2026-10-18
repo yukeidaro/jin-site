@@ -24,8 +24,8 @@ The public pages are English-only, without language switches or hreflang
 alternates. Legacy Japanese routes keep their English fallback links and use
 both meta refresh and `location.replace` redirects.
 The English content pages link to Privacy and Accessibility from their footers.
-The approved legal text describes the forthcoming demo form; its fields and
-backend remain unchanged until the form migration.
+The approved legal text describes the demo request form and how its details
+are used to reply about the request.
 
 ## Content source and generation
 
@@ -42,7 +42,7 @@ node scripts/generate-aeo.mjs
 It updates:
 
 - the root JSON-LD graph;
-- the hero and final demo-request CTAs, including the existing form;
+- the hero and final demo-request CTAs, including the company-details form;
 - the content and title of `agent/index.html`;
 - `llms.txt`.
 
@@ -71,8 +71,8 @@ in check mode and fails when a derivative has drifted.
   separate. Jin AI never records your screen. Jin AI itself never trains on
   your data. Do not claim that Jin AI does not read conversation histories.
 - CTA: **Request a demo**. Note: **We will email you to set up a demo.**
-  Keep the existing form fields, endpoint, consent version and survey until
-  the form migration.
+  The form uses `demo-request-v1` consent and links to the Privacy Policy.
+  Keep the endpoint and the legacy backend routes working for cached pages.
 - No prices anywhere on the site, including machine-readable formats.
   Do not publish currency amounts, Pro, Team or free-version offers, Cloud Sync,
   Google Drive or Notion connections, PC and phone sync, Discord, Baby Voice
@@ -94,20 +94,24 @@ in check mode and fails when a derivative has drifted.
 - Do not add `FAQPage` schema, active offers, ratings or reviews unless they
   become truthful and applicable.
 
-## Demo request and existing waitlist backend
+## Demo request and legacy waitlist backend
 
 The English hero CTA is generated from `early_access.hero_label` and
-`early_access.hero_note` in `agent/content.json`. The existing waitlist form
-uses `early_access.label` and `early_access.note`. Both now request a demo.
-The form fields, endpoint, consent version and survey remain unchanged.
+`early_access.hero_note` in `agent/content.json`. The demo form uses
+`early_access.label`, `early_access.note` and `early_access.form.fields`.
+It asks for work email, first and last name, job title, optional phone,
+company, industry, company size and country. It sends `type: "demo"` with
+consent version `demo-request-v1` to the unchanged Apps Script endpoint.
+Details are used only to reply about the demo; the form links to `privacy/`.
+There is no post-request survey.
 Legacy localized routes redirect to English and do not carry separate forms.
 
 The custom website form submits JSON directly to an Apps Script web app.
 **Google Forms, response receipts, hidden iframes, and form-submit triggers are
 not part of this flow.** `waitlist.mjs` waits for a matching, server-confirmed
-response and displays registration and welcome-email status separately.
-After a saved registration, an optional one-question survey records an answer
-in a separate `Survey` tab; retrying an answer updates the same email and survey.
+response and displays saved-request and confirmation-email status separately.
+Field errors are connected to their inputs, and the first invalid field gets
+focus. Retrying an unchanged request reuses its request ID.
 
 The backend source is `scripts/waitlist-mailer.gs`; its manifest is
 `scripts/appsscript.json`. These files are never included in the Pages artifact.
@@ -123,37 +127,50 @@ as" identity. There is no fallback to a personal Gmail From address.
    set its `SPREADSHEET_ID` script property to a spreadsheet the deploying account
    can edit. Copy the `.gs` source and manifest into the editor.
 3. Run `setupWaitlist`, authorize the listed permissions, then run
-   `inspectWaitlistSender`. Both must succeed. Setup creates `Waitlist` and
-   `Survey` tabs as needed; it does not modify or delete earlier form responses.
+   `inspectWaitlistSender`. Both must succeed. This creates the `Demo requests`
+   tab with its own header row, plus `Waitlist` and `Survey` if missing.
+   Existing tabs, columns and response history are not modified or deleted.
 4. Deploy a **Web app**, **Execute as: Me**, **Who has access: Anyone**.
    Anonymous visitors must not have to sign in to Google. Use the full `/exec`
    URL, not an editor URL or a `/dev` test deployment.
 5. Set `early_access.form.endpoint` in `agent/content.json` to that URL and
    `early_access.status` to `open`. Until an endpoint is configured, the form
-   is explicitly unavailable and cannot pretend a registration succeeded.
+   is explicitly unavailable and cannot pretend a request succeeded.
 6. Run `installWaitlistRetry` once as the deploying account. It installs a
-   15-minute retry for records whose mail has not yet been attempted or was
-   explicitly rejected by Gmail. Do not retain any old form-submit mail trigger.
-7. Regenerate, test, build and publish the site. Confirm a real registration,
+   15-minute retry for both demo confirmations and legacy welcome emails whose
+   mail has not yet been attempted or was explicitly rejected by Gmail.
+   It does not resend an already-sent or ambiguous email.
+   Do not retain any old form-submit mail trigger.
+7. Regenerate, test, build and publish the site. Confirm a real demo request,
    its saved row, the Gmail send result, and the received message's actual From
-   address before calling the welcome-email setup complete.
+   address before calling confirmation-email delivery complete.
 
 Updating an Apps Script project does not update a versioned web app deployment.
-For the survey update, re-run `setupWaitlist` once to create the `Survey` tab,
-then use **Deploy > Manage deployments > Edit > New version** after source changes.
+**After merging this migration, Yu must copy the updated mailer and daily report
+source into the same project, run `setupWaitlist` once, and redeploy the existing
+web app with Deploy > Manage deployments > Edit > New version > Deploy.**
+Keep the current deployment and `/exec` URL; do not create a replacement endpoint.
+Run `inspectWaitlistSender` and ensure `installWaitlistRetry` has been run.
+The source version is `2026-10-19.1`. Do this before publishing the new form:
+the old deployed backend cannot accept demo requests. Source changes alone do
+not deploy anything or send any real request.
 
 ### Daily report
 
-The daily report emails the previous JST calendar day's external waitlist signups,
-survey answers and Cloudflare Web Analytics traffic to Yu. It also includes a
-seven-day JST traffic trend. The report contains names and roles but no signup
-email addresses; it sends from the executing Workspace account's default Gmail
-address, not the welcome email's `hello@jinai.md` alias.
+The daily report emails the previous JST calendar day's external demo requests,
+legacy waitlist signups, survey answers and Cloudflare Web Analytics traffic to
+Yu. For each demo it includes company, company size, industry, country and job
+title, without email addresses or phone numbers. Contact information pasted
+into those details is redacted. It also includes a seven-day JST traffic trend.
+Legacy signup entries retain names and roles but not email addresses. The report
+sends from the executing Workspace account's default Gmail address, not the
+confirmation email's `hello@jinai.md` alias.
 
 1. In the same Apps Script project (under the Workspace account), add a script
    file named `daily-report` containing `scripts/daily-report.gs`. Update the
    project's `appsscript.json` from `scripts/appsscript.json` to include the
-   `script.external_request` scope.
+   `script.external_request` scope. Run `setupWaitlist` first so all three sheet
+   schemas, including `Demo requests`, exist.
 2. Under **Project Settings > Script properties**, set `CF_API_TOKEN` to a
    Cloudflare API token with **Account > Account Analytics > Read** permission,
    `CF_ACCOUNT_ID` to the Cloudflare account ID and `CF_SITE_TAG` to the Web
@@ -171,16 +188,35 @@ scope change does require re-authorization.
 
 ### Storage and delivery states
 
-The private `Waitlist` tab records the original registration, consent version,
+The private `Demo requests` tab records created time, request ID, source,
+`demo-request-v1` consent, all nine form fields, confirmation status, attempts,
+last and next attempt time, sent time, Gmail message ID and last error code.
+Text cells are protected against formulas. A script lock prevents simultaneous
+retries from duplicating a row or confirmation. A new request ID is a separate
+intentional demo request, even if the email is the same, so later company
+details are not silently discarded.
+
+The confirmation subject is **We received your Jin AI demo request**. The short
+plain-text and HTML alternatives thank the buyer by first name, say we will
+email to arrange a time, and invite questions by reply to `hello@jinai.md`.
+They explain why the message was sent and link only to the website and Privacy
+Policy. No marketing consent is requested or recorded for demos.
+
+The private legacy `Waitlist` tab records the original registration, consent version,
 request ID, welcome-mail status, attempts, timestamps, Gmail message ID and last
 error code. Names and roles are validated and protected against sheet formulas.
 Emails are normalized and deduplicated under a script lock. Retrying a request
 cannot insert another registration or resend an already-sent welcome.
+Its `waitlist-product-updates-v1` consent and old welcome-email path remain
+available to cached pages; they do not write demo requests into legacy tabs.
 The private `Survey` tab has `Answered at`, `Email`, `Request ID`, `Survey ID`,
 `Answer`, `Answer label` and `Updated at` columns. Answers are accepted only for
 registered emails; one row per email and survey ID is updated on retries.
 
-| Registration | Welcome email | Meaning |
+The JSON response keeps the legacy keys `registration` and `welcome` for both
+request types. For demos these mean request storage and confirmation delivery.
+
+| Request storage | Email | Meaning |
 | --- | --- | --- |
 | `saved` | `sent` | Gmail returned a message ID. This is not proof of inbox delivery. |
 | `saved` | `pending` | Saved; sender setup, a sending limit, or a known rejection is delaying email. |
@@ -194,17 +230,9 @@ alias. `sender_unavailable` means sender authorization or Gmail service setup
 must be fixed. Run `inspectWaitlistSender` after fixing the account or scopes.
 The default `DAILY_EMAIL_LIMIT` is a conservative 90 attempts per UTC day;
 raise that script property only within the deploying account's Gmail limits.
-Registrations remain saved when that limit is reached.
-
-The HTML welcome email has a plain-text alternative and this exact invitation:
-<https://discord.gg/hn8eG4d9f>. It honestly allows future product updates, with
-unsubscribe requests handled by reply to `hello@jinai.md`. Process those replies
-before sending future campaigns. Existing response history is not automatically
-emailed during migration.
-
-Discord is no longer a published site CTA. Keep `early_access.community.url`
-`null`; the generator omits community links. The existing backend welcome-email
-invitation above is unchanged until the form and email migration.
+The limit is shared by both mail queues. Requests remain saved when it is
+reached. Existing response history is not automatically emailed during migration.
+Keep `early_access.community.url` `null`; the generator omits community links.
 
 ## Deployment boundary
 

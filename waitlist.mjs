@@ -1,4 +1,4 @@
-export const CONSENT_VERSION = "waitlist-product-updates-v1";
+export const CONSENT_VERSION = "demo-request-v1";
 export const REQUEST_TIMEOUT_MS = 45000;
 export const SURVEY_ID = "ai-friction-v1";
 
@@ -8,9 +8,49 @@ const validationMessages = {
   invalid_name: "Please enter your name (up to 120 characters).",
   invalid_email: "Please enter a valid email address.",
   invalid_role: "Please enter what you do (up to 160 characters).",
-  invalid_consent: "Please refresh the page before registering.",
-  busy: "Registration is busy right now. Please try again in a moment."
+  invalid_first_name: "Please enter your first name (up to 80 characters).",
+  invalid_last_name: "Please enter your last name (up to 80 characters).",
+  invalid_job_title: "Please enter your job title (up to 120 characters).",
+  invalid_phone: "Use up to 40 characters: digits, spaces, +, -, (, ), or .",
+  invalid_company: "Please enter your company (up to 160 characters).",
+  invalid_industry: "Please select an industry from the list.",
+  invalid_company_size: "Please select a company size from the list.",
+  invalid_country: "Please select a country from the list.",
+  invalid_consent: "Please refresh the page before requesting a demo.",
+  invalid_input: "Your request was not accepted. Please try again or email hello@jinai.md.",
+  invalid_source: "Please request a demo from jinai.md or email hello@jinai.md.",
+  invalid_request_id: "Please refresh the page and try again.",
+  request_conflict: "This request ID belongs to a different request. Please refresh the page and try again.",
+  busy: "Demo requests are busy right now. Please try again in a moment."
 };
+const fieldLimits = {
+  email: 254, firstName: 80, lastName: 80, jobTitle: 120, phone: 40,
+  company: 160, industry: 80, companySize: 20, country: 80
+};
+const fieldCodes = {
+  email: "invalid_email", firstName: "invalid_first_name", lastName: "invalid_last_name",
+  jobTitle: "invalid_job_title", phone: "invalid_phone", company: "invalid_company",
+  industry: "invalid_industry", companySize: "invalid_company_size", country: "invalid_country"
+};
+
+export function validateDemoFields(payload, choices) {
+  const errors = {};
+  for (const [field, limit] of Object.entries(fieldLimits)) {
+    const raw = payload[field];
+    const value = typeof raw === "string" ? raw.trim() : "";
+    let invalid = typeof raw !== "string" || /[\u0000-\u001f\u007f]/.test(raw) ||
+      (!value && field !== "phone") || value.length > limit;
+    if (field === "email" && !invalid) {
+      invalid = !/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/i.test(value) ||
+        value.split("@")[0].length > 64 || /^\.|\.\.|\.@/.test(value);
+    }
+    if (field === "phone" && !/^[0-9 +().-]*$/.test(value)) invalid = true;
+    if (["industry", "companySize", "country"].includes(field) &&
+        !choices[field].includes(value)) invalid = true;
+    if (invalid) errors[field] = validationMessages[fieldCodes[field]];
+  }
+  return errors;
+}
 
 export function isAppsScriptEndpoint(value) {
   return typeof value === "string" &&
@@ -22,7 +62,7 @@ export function validateResponse(value, requestId) {
       !registrationStates.has(value.registration) || !welcomeStates.has(value.welcome) ||
       (value.registration !== "saved" && value.welcome !== "not_attempted") ||
       (value.registration === "saved" && value.welcome === "not_attempted")) {
-    throw new Error("The registration service returned an invalid confirmation.");
+    throw new Error("The demo request service returned an invalid confirmation.");
   }
   return value;
 }
@@ -42,44 +82,44 @@ export function describeResult(result) {
   if (result.registration !== "saved") {
     return {
       saved: false,
-      heading: result.registration === "not_saved" ? "Registration was not saved." : "Registration is not confirmed.",
+      heading: result.registration === "not_saved" ? "Your request was not saved." : "Your request is not confirmed.",
       registration: result.registration === "not_saved" ? "Not saved" : "Not confirmed",
       welcome: "Not sent",
       detail: validationMessages[result.code] ||
-        "We could not confirm that your registration was saved. Please try again; retries will not create duplicate signups.",
+        "We could not confirm that your request was saved. Please try again; retries will not create duplicate requests.",
       kind: "error"
     };
   }
   const messages = {
     sent: {
       welcome: "Sent",
-      detail: "Your welcome email was sent from hello@jinai.md with your Discord invite. Check your inbox and spam folder.",
+      detail: "Thanks. Your request is saved and a confirmation email is on its way from hello@jinai.md.",
       kind: "success"
     },
     pending: {
       welcome: "Pending - not sent yet",
-      detail: "Your registration is saved. Your welcome email is pending; you do not need to register again. You can join Discord below.",
+      detail: "Your request is saved. Your confirmation email is pending, but we will still reply about your demo. You do not need to submit again.",
       kind: "pending"
     },
     failed: {
       welcome: "Not sent",
-      detail: "Your registration is saved, but we could not send your welcome email. You do not need to register again. You can join Discord below.",
+      detail: "Your request is saved, but we could not send your confirmation email. We will still reply about your demo. You do not need to submit again.",
       kind: "pending"
     },
     unknown: {
       welcome: "Not confirmed",
-      detail: "Your registration is saved, but we could not confirm the email send. You do not need to register again. You can join Discord below.",
+      detail: "Your request is saved, but we could not confirm the email send. We will still reply about your demo. You do not need to submit again.",
       kind: "pending"
     }
   };
-  return { saved: true, heading: "You're on the waitlist.", registration: "Saved", ...messages[result.welcome] };
+  return { saved: true, heading: "Your demo request is saved.", registration: "Saved", ...messages[result.welcome] };
 }
 
 async function postJson(endpoint, payload, {
   fetchImpl = globalThis.fetch.bind(globalThis),
   timeoutMs = REQUEST_TIMEOUT_MS
-} = {}, label = "Registration") {
-  if (!isAppsScriptEndpoint(endpoint)) throw new Error("The registration service is not configured.");
+} = {}, label = "Demo") {
+  if (!isAppsScriptEndpoint(endpoint)) throw new Error("The request service is not configured.");
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -111,26 +151,45 @@ export function initializeWaitlist(document, dependencies = {}) {
   const form = document.getElementById("waitlistForm");
   const status = document.getElementById("waitlistStatus");
   const done = document.getElementById("waitlistDone");
-  const survey = document.getElementById("waitlistSurvey");
-  const surveyStatus = document.getElementById("waitlistSurveyStatus");
-  if (!form || !status || !done || !survey || !surveyStatus) {
-    throw new Error("The waitlist form is missing its status elements.");
+  if (!form || !status || !done) {
+    throw new Error("The demo form is missing its status elements.");
   }
-  if (survey.dataset.surveyId !== SURVEY_ID) throw new Error("The waitlist survey is not configured correctly.");
   const button = form.querySelector('button[type="submit"]');
-  const surveyButton = survey.querySelector('button[type="submit"]');
-  if (!button || !surveyButton) throw new Error("The waitlist form is missing its submit buttons.");
+  if (!button) throw new Error("The demo form is missing its submit button.");
+  const fields = Object.fromEntries(Object.keys(fieldLimits).map((name) => {
+    const control = form.querySelector(`[name="${name}"]`);
+    const error = document.getElementById(`demo-${name}-error`);
+    if (!control || !error || control.getAttribute("aria-describedby") !== error.id) {
+      throw new Error(`The demo form is missing the ${name} field or its error description.`);
+    }
+    return [name, { control, error }];
+  }));
+  const choices = Object.fromEntries(["industry", "companySize", "country"].map((name) =>
+    [name, [...fields[name].control.options].map((option) => option.value).filter(Boolean)]));
   const endpoint = form.dataset.endpoint;
   const originalLabel = button.textContent;
-  const originalSurveyLabel = surveyButton.textContent;
   let pending = false;
-  let surveyPending = false;
   let requestId = null;
   let fingerprint = null;
-  let confirmedSignup = null;
+
+  function showFieldErrors(errors) {
+    let firstInvalid = null;
+    for (const [name, { control, error }] of Object.entries(fields)) {
+      const message = errors[name];
+      error.textContent = message || "";
+      error.hidden = !message;
+      if (message) {
+        control.setAttribute("aria-invalid", "true");
+        firstInvalid ||= control;
+      } else {
+        control.removeAttribute("aria-invalid");
+      }
+    }
+    return firstInvalid;
+  }
 
   if (!isAppsScriptEndpoint(endpoint)) {
-    status.textContent = "Email registration is temporarily unavailable.";
+    status.textContent = "Demo requests are temporarily unavailable. Please email hello@jinai.md.";
     status.dataset.kind = "pending";
     status.hidden = false;
     button.disabled = true;
@@ -138,68 +197,36 @@ export function initializeWaitlist(document, dependencies = {}) {
   }
   button.disabled = false;
 
-  survey.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    if (surveyPending || survey.hidden || !confirmedSignup || !survey.reportValidity()) return;
-    const answer = new FormData(survey).get("answer");
-    const allowedAnswers = new Set([...survey.querySelectorAll('input[type="radio"][name="answer"]')]
-      .map((radio) => radio.value));
-    if (typeof answer !== "string" || !allowedAnswers.has(answer)) {
-      surveyStatus.textContent = "Please choose one of the listed answers.";
-      surveyStatus.dataset.kind = "error";
-      surveyStatus.hidden = false;
-      return;
-    }
-    const payload = {
-      type: "survey",
-      requestId: confirmedSignup.requestId,
-      email: confirmedSignup.email,
-      surveyId: SURVEY_ID,
-      answer,
-      source: "https://jinai.md"
-    };
-    surveyPending = true;
-    surveyButton.disabled = true;
-    surveyButton.textContent = "Sending...";
-    survey.setAttribute("aria-busy", "true");
-    surveyStatus.textContent = "Sending your answer...";
-    surveyStatus.dataset.kind = "pending";
-    surveyStatus.hidden = false;
-
-    try {
-      const result = await submitSurvey(endpoint, payload, dependencies);
-      if (result.survey === "saved") {
-        survey.hidden = true;
-        surveyStatus.textContent = "Thanks. Your answer is saved.";
-        surveyStatus.dataset.kind = "success";
-      } else {
-        surveyStatus.textContent = "Your answer was not saved. Please try again or email hello@jinai.md.";
-        surveyStatus.dataset.kind = "error";
-      }
-    } catch (error) {
-      console.error("Waitlist survey confirmation failed:", error);
-      surveyStatus.textContent = "We could not confirm your answer was saved. Please try again; retries will not create duplicate answers.";
-      surveyStatus.dataset.kind = "error";
-    } finally {
-      surveyPending = false;
-      surveyButton.disabled = false;
-      surveyButton.textContent = originalSurveyLabel;
-      survey.removeAttribute("aria-busy");
+  form.addEventListener("input", (event) => {
+    const field = fields[event.target.name];
+    if (field) {
+      field.control.removeAttribute("aria-invalid");
+      field.error.hidden = true;
+      field.error.textContent = "";
     }
   });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (pending || !form.reportValidity()) return;
+    if (pending) return;
     const values = new FormData(form);
     const payload = {
-      name: String(values.get("name") || "").trim(),
-      email: String(values.get("email") || "").trim(),
-      role: String(values.get("role") || "").trim(),
+      type: "demo",
+      ...Object.fromEntries(Object.keys(fields).map((name) => [name, String(values.get(name) || "")])),
       website: String(values.get("website") || ""),
       source: "https://jinai.md",
       consentVersion: CONSENT_VERSION
     };
+    const invalid = showFieldErrors(validateDemoFields(payload, choices));
+    if (invalid) {
+      done.hidden = true;
+      status.textContent = "Please check the marked fields.";
+      status.dataset.kind = "error";
+      status.hidden = false;
+      invalid.focus();
+      return;
+    }
+    for (const name of Object.keys(fields)) payload[name] = payload[name].trim();
     const nextFingerprint = JSON.stringify(payload);
     if (nextFingerprint !== fingerprint) {
       requestId = crypto.randomUUID();
@@ -208,15 +235,12 @@ export function initializeWaitlist(document, dependencies = {}) {
     payload.requestId = requestId;
     pending = true;
     button.disabled = true;
-    button.textContent = "Saving your registration...";
+    button.textContent = "Saving your request...";
     form.setAttribute("aria-busy", "true");
-    status.textContent = "Saving your registration. Please keep this page open.";
+    status.textContent = "Saving your demo request. Please keep this page open.";
     status.dataset.kind = "pending";
     status.hidden = false;
     done.hidden = true;
-    confirmedSignup = null;
-    survey.hidden = true;
-    surveyStatus.hidden = true;
 
     try {
       const result = await submitSignup(endpoint, payload, dependencies);
@@ -229,15 +253,18 @@ export function initializeWaitlist(document, dependencies = {}) {
       done.hidden = false;
       status.hidden = true;
       form.hidden = presentation.saved;
-      if (presentation.saved) {
-        confirmedSignup = { requestId: payload.requestId, email: payload.email };
-        survey.hidden = false;
+      const field = !presentation.saved &&
+        Object.keys(fields).find((name) => fieldCodes[name] === result.code);
+      const invalid = showFieldErrors(field ? { [field]: validationMessages[result.code] } : {});
+      if (invalid) {
+        invalid.focus();
+      } else {
+        done.focus({ preventScroll: true });
+        done.scrollIntoView({ block: "center", behavior: "smooth" });
       }
-      done.focus({ preventScroll: true });
-      done.scrollIntoView({ block: "center", behavior: "smooth" });
     } catch (error) {
-      console.error("Waitlist confirmation failed:", error);
-      status.textContent = "We could not confirm your registration or email status. Please try again; retries will not create duplicate signups.";
+      console.error("Demo request confirmation failed:", error);
+      status.textContent = "We could not confirm your request or email status. Please try again; retries will not create duplicate requests.";
       status.dataset.kind = "error";
       status.hidden = false;
       form.hidden = false;

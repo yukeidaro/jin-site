@@ -150,17 +150,86 @@
     "form": {
       "provider": "apps_script",
       "endpoint": "https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec",
-      "consent_version": "waitlist-product-updates-v1"
-    },
-    "survey": {
-      "id": "ai-friction-v1",
-      "question": "What should AI make easier for you?",
-      "hint": "Optional. One question, pick one.",
-      "options": [
-        { "value": "A", "label": "Correcting small things over and over" },
-        { "value": "B", "label": "Updating the settings that teach AI my preferences and rules (Skills and similar)" },
-        { "value": "C", "label": "Finding the right documents and files to hand to AI" },
-        { "value": "D", "label": "Re-explaining my requirements and background every time I switch between ChatGPT, Claude and others" }
+      "consent_version": "demo-request-v1",
+      "privacy_url": "privacy/",
+      "privacy_note": "We use these details only to reply about your demo.",
+      "fields": [
+        { "name": "email", "label": "Work email", "type": "email", "required": true, "autocomplete": "email", "max_length": 254 },
+        { "name": "firstName", "label": "First name", "type": "text", "required": true, "autocomplete": "given-name", "max_length": 80 },
+        { "name": "lastName", "label": "Last name", "type": "text", "required": true, "autocomplete": "family-name", "max_length": 80 },
+        { "name": "jobTitle", "label": "Job title", "type": "text", "required": true, "autocomplete": "organization-title", "max_length": 120 },
+        { "name": "phone", "label": "Phone (optional)", "type": "tel", "required": false, "autocomplete": "tel", "max_length": 40 },
+        { "name": "company", "label": "Company", "type": "text", "required": true, "autocomplete": "organization", "max_length": 160 },
+        {
+          "name": "industry", "label": "Industry", "type": "select", "required": true,
+          "placeholder": "Select an industry",
+          "options": [
+            "Technology", "Financial services", "Professional services", "Education",
+            "Energy", "Government", "Healthcare", "Manufacturing", "Media", "Nonprofit",
+            "Real estate", "Retail", "Telecommunications", "Transportation", "Other"
+          ]
+        },
+        {
+          "name": "companySize", "label": "Company size", "type": "select", "required": true,
+          "placeholder": "Select a range",
+          "options": ["1-49", "50-199", "200-999", "1,000+"]
+        },
+        {
+          "name": "country", "label": "Country", "type": "select", "required": true,
+          "autocomplete": "country-name", "placeholder": "Select a country",
+          "options": [
+            "United States", "Japan",
+            "Afghanistan", "Aland Islands", "Albania", "Algeria", "American Samoa",
+            "Andorra", "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda",
+            "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan",
+            "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium",
+            "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia",
+            "Bonaire, Sint Eustatius and Saba", "Bosnia and Herzegovina", "Botswana",
+            "Bouvet Island", "Brazil", "British Indian Ocean Territory",
+            "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+            "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Cayman Islands",
+            "Central African Republic", "Chad", "Chile", "China", "Christmas Island",
+            "Cocos (Keeling) Islands", "Colombia", "Comoros", "Congo", "Cook Islands",
+            "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Curacao", "Cyprus", "Czechia",
+            "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica",
+            "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea",
+            "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Falkland Islands",
+            "Faroe Islands", "Fiji", "Finland", "France", "French Guiana",
+            "French Polynesia", "French Southern Territories", "Gabon", "Gambia",
+            "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada",
+            "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea-Bissau",
+            "Guyana", "Haiti", "Heard Island and McDonald Islands", "Honduras",
+            "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
+            "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Jersey", "Jordan",
+            "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos",
+            "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein",
+            "Lithuania", "Luxembourg", "Macao", "Madagascar", "Malawi", "Malaysia",
+            "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania",
+            "Mauritius", "Mayotte", "Mexico", "Micronesia", "Moldova", "Monaco",
+            "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar",
+            "Namibia", "Nauru", "Nepal", "Netherlands", "New Caledonia", "New Zealand",
+            "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", "North Korea",
+            "North Macedonia", "Northern Mariana Islands", "Norway", "Oman",
+            "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay",
+            "Peru", "Philippines", "Pitcairn Islands", "Poland", "Portugal", "Puerto Rico",
+            "Qatar", "Reunion", "Romania", "Russia", "Rwanda", "Saint Barthelemy",
+            "Saint Helena, Ascension and Tristan da Cunha", "Saint Kitts and Nevis",
+            "Saint Lucia", "Saint Martin", "Saint Pierre and Miquelon",
+            "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+            "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles",
+            "Sierra Leone", "Singapore", "Sint Maarten", "Slovakia", "Slovenia",
+            "Solomon Islands", "Somalia", "South Africa",
+            "South Georgia and the South Sandwich Islands", "South Korea", "South Sudan",
+            "Spain", "Sri Lanka", "Sudan", "Suriname", "Svalbard and Jan Mayen",
+            "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania",
+            "Thailand", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago",
+            "Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands", "Tuvalu",
+            "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
+            "United States Minor Outlying Islands", "United States Virgin Islands",
+            "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam",
+            "Wallis and Futuna", "Western Sahara", "Yemen", "Zambia", "Zimbabwe"
+          ]
+        }
       ]
     },
     "community": {

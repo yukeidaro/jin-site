@@ -3,7 +3,7 @@
  * Deploy with scripts/appsscript.json, execute as the deploying account, and
  * allow Anyone. Run setupWaitlist first; see README.md for the remaining steps.
  */
-var WAITLIST_VERSION = '2026-10-04.2';
+var WAITLIST_VERSION = '2026-10-19.1';
 var WAITLIST_FROM = 'hello@jinai.md';
 var WAITLIST_DISCORD = 'https://discord.gg/hn8eG4d9f';
 var WAITLIST_CONSENT = 'waitlist-product-updates-v1';
@@ -19,6 +19,36 @@ var WAITLIST_COLUMNS = [
   ['registration', 'Registration status'],
   ['welcome', 'Welcome email status'],
   ['attempts', 'Welcome attempts'],
+  ['lastAttemptAt', 'Last attempt at'],
+  ['nextAttemptAt', 'Next attempt at'],
+  ['sentAt', 'Sent at'],
+  ['messageId', 'Gmail message ID'],
+  ['errorCode', 'Last error code']
+];
+var DEMO_SHEET = 'Demo requests';
+var DEMO_CONSENT = 'demo-request-v1';
+var DEMO_INDUSTRIES = [
+  'Technology', 'Financial services', 'Professional services', 'Education',
+  'Energy', 'Government', 'Healthcare', 'Manufacturing', 'Media', 'Nonprofit',
+  'Real estate', 'Retail', 'Telecommunications', 'Transportation', 'Other'
+];
+var DEMO_COMPANY_SIZES = ['1-49', '50-199', '200-999', '1,000+'];
+var DEMO_COLUMNS = [
+  ['createdAt', 'Created at'],
+  ['requestId', 'Request ID'],
+  ['source', 'Source'],
+  ['consentVersion', 'Consent version'],
+  ['email', 'Email'],
+  ['firstName', 'First name'],
+  ['lastName', 'Last name'],
+  ['jobTitle', 'Job title'],
+  ['phone', 'Phone'],
+  ['company', 'Company'],
+  ['industry', 'Industry'],
+  ['companySize', 'Company size'],
+  ['country', 'Country'],
+  ['welcome', 'Confirmation status'],
+  ['attempts', 'Attempts'],
   ['lastAttemptAt', 'Last attempt at'],
   ['nextAttemptAt', 'Next attempt at'],
   ['sentAt', 'Sent at'],
@@ -59,6 +89,9 @@ function doPost(e) {
   } catch (error) {
     console.warn('waitlist: invalid request body');
     return jsonOutput_(result_(null, 'not_saved', 'not_attempted', 'invalid_request'));
+  }
+  if (input && input.type === 'demo') {
+    return jsonOutput_(registerDemo_(input, productionDependencies_('demo')));
   }
   return jsonOutput_(input && input.type === 'survey' ?
     recordSurvey_(input, productionDependencies_()) :
@@ -140,11 +173,53 @@ function validateSignup_(input) {
 }
 
 function registerWaitlist_(input, deps) {
+  return registerRequest_(input, deps, validateSignup_, true);
+}
+
+function validateDemo_(input) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    throw waitlistError_('invalid_input');
+  }
+  if (!validRequestId_(input.requestId)) throw waitlistError_('invalid_request_id');
+  var cleaned = { email: cleanEmail_(input.email) };
+  [
+    ['firstName', 'first_name', 80], ['lastName', 'last_name', 80],
+    ['jobTitle', 'job_title', 120], ['phone', 'phone', 40],
+    ['company', 'company', 160], ['industry', 'industry', 80],
+    ['companySize', 'company_size', 20], ['country', 'country', 80]
+  ].forEach(function (field) {
+    var value = input[field[0]];
+    if (typeof value !== 'string' || /[\u0000-\u001f\u007f]/.test(value)) {
+      throw waitlistError_('invalid_' + field[1]);
+    }
+    value = value.trim();
+    if ((!value && field[0] !== 'phone') || value.length > field[2]) {
+      throw waitlistError_('invalid_' + field[1]);
+    }
+    cleaned[field[0]] = value;
+  });
+  if (!/^[0-9 +().-]*$/.test(cleaned.phone)) throw waitlistError_('invalid_phone');
+  if (DEMO_INDUSTRIES.indexOf(cleaned.industry) === -1) throw waitlistError_('invalid_industry');
+  if (DEMO_COMPANY_SIZES.indexOf(cleaned.companySize) === -1) throw waitlistError_('invalid_company_size');
+  if (input.website !== '' && input.website !== undefined) throw waitlistError_('invalid_input');
+  if (!validSource_(input.source)) throw waitlistError_('invalid_source');
+  if (input.consentVersion !== DEMO_CONSENT) throw waitlistError_('invalid_consent');
+  cleaned.requestId = input.requestId;
+  cleaned.source = input.source;
+  cleaned.consentVersion = input.consentVersion;
+  return cleaned;
+}
+
+function registerDemo_(input, deps) {
+  return registerRequest_(input, deps, validateDemo_, false);
+}
+
+function registerRequest_(input, deps, validate, deduplicateEmail) {
   var signup;
   var requestId = input && typeof input.requestId === 'string' &&
     /^[a-f0-9-]{36}$/i.test(input.requestId) ? input.requestId : null;
   try {
-    signup = validateSignup_(input);
+    signup = validate(input);
   } catch (error) {
     deps.log('validation', requestId, error.code || 'invalid_input');
     return result_(requestId, 'not_saved', 'not_attempted', error.code || 'invalid_input');
@@ -158,16 +233,10 @@ function registerWaitlist_(input, deps) {
       if (record && record.email !== signup.email) {
         throw waitlistError_('request_conflict');
       }
-      record = record || deps.store.find('email', signup.email);
+      if (!record && deduplicateEmail) record = deps.store.find('email', signup.email);
       if (!record) {
-        record = {
+        record = Object.assign({}, signup, {
           createdAt: new Date(deps.now()).toISOString(),
-          name: signup.name,
-          email: signup.email,
-          role: signup.role,
-          requestId: signup.requestId,
-          source: signup.source,
-          consentVersion: signup.consentVersion,
           registration: 'saved',
           welcome: 'pending',
           attempts: 0,
@@ -176,7 +245,7 @@ function registerWaitlist_(input, deps) {
           sentAt: '',
           messageId: '',
           errorCode: ''
-        };
+        });
         record = deps.store.append(record);
       }
       saved = true;
@@ -308,9 +377,10 @@ function attemptWelcome_(record, deps) {
   deps.store.update(record);
 }
 
-function productionDependencies_() {
+function productionDependencies_(type) {
+  var demo = type === 'demo';
   return {
-    store: sheetStore_(),
+    store: demo ? sheetStore_(DEMO_SHEET, DEMO_COLUMNS) : sheetStore_(),
     surveyStore: sheetStore_(SURVEY_SHEET, SURVEY_COLUMNS),
     sender: {
       assertReady: function () {
@@ -328,7 +398,9 @@ function productionDependencies_() {
         if (!ready) throw waitlistError_('sender_not_verified');
       },
       send: function (record) {
-        var response = Gmail.Users.Messages.send({ raw: welcomeMime_(record) }, 'me');
+        var response = Gmail.Users.Messages.send({
+          raw: demo ? demoMime_(record) : welcomeMime_(record)
+        }, 'me');
         return response && response.id;
       }
     },
@@ -450,7 +522,10 @@ function setupWaitlist() {
   var spreadsheet = id ? SpreadsheetApp.openById(id) : SpreadsheetApp.getActiveSpreadsheet();
   if (!spreadsheet) throw waitlistError_('set_SPREADSHEET_ID_first');
   properties.setProperty('SPREADSHEET_ID', spreadsheet.getId());
-  [[WAITLIST_SHEET, WAITLIST_COLUMNS], [SURVEY_SHEET, SURVEY_COLUMNS]].forEach(function (definition) {
+  [
+    [WAITLIST_SHEET, WAITLIST_COLUMNS], [SURVEY_SHEET, SURVEY_COLUMNS],
+    [DEMO_SHEET, DEMO_COLUMNS]
+  ].forEach(function (definition) {
     var name = definition[0];
     var columns = definition[1];
     var sheet = spreadsheet.getSheetByName(name);
@@ -466,7 +541,8 @@ function setupWaitlist() {
     sheetStore_(name, columns).find('requestId', 'setup-check');
   });
   console.log(JSON.stringify({
-    storage: 'ready', spreadsheet: spreadsheet.getUrl(), sheet: WAITLIST_SHEET, surveySheet: SURVEY_SHEET
+    storage: 'ready', spreadsheet: spreadsheet.getUrl(), sheet: WAITLIST_SHEET,
+    surveySheet: SURVEY_SHEET, demoSheet: DEMO_SHEET
   }));
 }
 
@@ -487,6 +563,11 @@ function installWaitlistRetry() {
 function retryPendingWelcomeEmails() {
   var deps = productionDependencies_();
   deps.sender.assertReady();
+  retryPendingEmails_(deps);
+  retryPendingEmails_(productionDependencies_('demo'));
+}
+
+function retryPendingEmails_(deps) {
   var pending = deps.store.withLock(function () { return deps.store.pending(deps.now()); });
   pending.forEach(function (snapshot) {
     deps.store.withLock(function () {
@@ -561,7 +642,44 @@ function welcomeHtml_(name) {
 }
 
 function welcomeMime_(record) {
-  var boundary = 'jin-waitlist-' + record.requestId;
+  return requestMime_(record, 'waitlist', 'You are on the Jin AI waitlist',
+    welcomeText_(record.name), welcomeHtml_(record.name));
+}
+
+function demoText_(firstName) {
+  return [
+    'Hi ' + firstName + ',',
+    '',
+    'Thanks for requesting a Jin AI demo.',
+    'We will email you to set up a time. You can reply to this email with questions.',
+    '',
+    'You received this email because you requested a demo on jinai.md.',
+    'https://jinai.md/',
+    'Privacy Policy: https://jinai.md/privacy/'
+  ].join('\r\n');
+}
+
+function demoHtml_(firstName) {
+  return [
+    '<!doctype html><html lang="en"><head><meta charset="utf-8"></head>',
+    '<body style="font-family:Arial,sans-serif;line-height:1.7;color:#252525;">',
+    '<p>Hi ' + escapeEmailHtml_(firstName) + ',</p>',
+    '<p>Thanks for requesting a Jin AI demo.</p>',
+    '<p>We will email you to set up a time. You can reply to this email with questions.</p>',
+    '<p>You received this email because you requested a demo on ',
+    '<a href="https://jinai.md/">jinai.md</a>.</p>',
+    '<p><a href="https://jinai.md/privacy/">Privacy Policy</a></p>',
+    '</body></html>'
+  ].join('');
+}
+
+function demoMime_(record) {
+  return requestMime_(record, 'demo', 'We received your Jin AI demo request',
+    demoText_(record.firstName), demoHtml_(record.firstName));
+}
+
+function requestMime_(record, type, subject, text, html) {
+  var boundary = 'jin-' + type + '-' + record.requestId;
   function bodyPart(text) {
     return Utilities.base64Encode(text, Utilities.Charset.UTF_8).match(/.{1,76}/g).join('\r\n');
   }
@@ -569,8 +687,8 @@ function welcomeMime_(record) {
     'From: Jin AI <' + WAITLIST_FROM + '>',
     'Reply-To: ' + WAITLIST_FROM,
     'To: <' + record.email + '>',
-    'Subject: You are on the Jin AI waitlist',
-    'Message-ID: <waitlist-' + record.requestId + '@jinai.md>',
+    'Subject: ' + subject,
+    'Message-ID: <' + type + '-' + record.requestId + '@jinai.md>',
     'MIME-Version: 1.0',
     'Content-Type: multipart/alternative; boundary="' + boundary + '"',
     '',
@@ -578,12 +696,12 @@ function welcomeMime_(record) {
     'Content-Type: text/plain; charset=UTF-8',
     'Content-Transfer-Encoding: base64',
     '',
-    bodyPart(welcomeText_(record.name)),
+    bodyPart(text),
     '--' + boundary,
     'Content-Type: text/html; charset=UTF-8',
     'Content-Transfer-Encoding: base64',
     '',
-    bodyPart(welcomeHtml_(record.name)),
+    bodyPart(html),
     '--' + boundary + '--',
     ''
   ].join('\r\n');
