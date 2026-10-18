@@ -130,7 +130,7 @@ export function initializeWaitlist(document, dependencies = {}) {
   let confirmedSignup = null;
 
   if (!isAppsScriptEndpoint(endpoint)) {
-    status.textContent = "Email registration is temporarily unavailable while we finish setup. You can still join our Discord.";
+    status.textContent = "Email registration is temporarily unavailable.";
     status.dataset.kind = "pending";
     status.hidden = false;
     button.disabled = true;

@@ -7,17 +7,20 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | Route | Purpose |
 | --- | --- |
 | `/` | Complete English Human landing page and sole product canonical |
-| `/ja/` | Full Japanese Human landing page with its own canonical |
+| `/how-it-works/` | English companion page with four steps and their delivery status |
+| `/ja/` | `noindex,follow` compatibility redirect to `/` |
+| `/ja/how-it-works/` | `noindex,follow` compatibility redirect to `/how-it-works/` |
 | `/human/` | `noindex` compatibility alias that opens `/` |
 | `/en/` | `noindex` English alias that opens `/` |
 | `/agent/` | Crawlable, status-aware reference generated for machine readers |
 | `/agent/content.json` | Public fact source for Human and Agent derivatives |
 | `/llms.txt` | Concise LLM index generated from the fact source |
 | `/robots.txt` | Search policy; model-training crawlers are blocked by default |
-| `/sitemap.xml` | Contains the English and Japanese canonical routes |
+| `/sitemap.xml` | Contains only `/` and `/how-it-works/` |
 
-The footer links between the English page at `/` and the Japanese page at
-`/ja/`. Both pages link their hreflang alternates.
+The public pages are English-only, without language switches or hreflang
+alternates. Legacy Japanese routes keep their English fallback links and use
+both meta refresh and `location.replace` redirects.
 
 ## Content source and generation
 
@@ -35,7 +38,7 @@ It updates:
 
 - the root JSON-LD graph;
 - the hero and final demo-request CTAs, including the existing form;
-- the content of `agent/index.html`;
+- the content and title of `agent/index.html`;
 - `llms.txt`.
 
 Do not edit content inside `GENERATED:*` markers directly. CI runs the generator
@@ -92,8 +95,7 @@ The English hero CTA is generated from `early_access.hero_label` and
 `early_access.hero_note` in `agent/content.json`. The existing waitlist form
 uses `early_access.label` and `early_access.note`. Both now request a demo.
 The form fields, endpoint, consent version and survey remain unchanged.
-The legacy localized page still uses the same endpoint, field names and
-survey values; its visible copy is outside this facts-and-generator update.
+Legacy localized routes redirect to English and do not carry separate forms.
 
 The custom website form submits JSON directly to an Apps Script web app.
 **Google Forms, response receipts, hidden iframes, and form-submit triggers are
@@ -204,8 +206,11 @@ invitation above is unchanged until the form and email migration.
 GitHub Pages deploys through `.github/workflows/deploy-pages.yml`. The build
 copies only the allowlist in `scripts/build-pages.mjs` into `_site`.
 
-The production artifact includes `/ja/`, `shots/plugin-screen.png` and the
-shared page assets. Historical source directories such as `archive/` and
+The production artifact includes the compatibility redirects, shared page assets
+and `shots/og-b2b.png`, the shared 1200 x 630 social image.
+Its source, `shots/og-b2b-src.html`, is not deployed. Retired screenshots and
+illustrations remain in the repository but are not in the allowlist.
+Historical source directories such as `archive/` and
 `mockup/`, along with repository documentation and generation scripts, are
 intentionally absent from the production artifact.
 
@@ -217,8 +222,9 @@ node --test scripts/waitlist.test.mjs
 node --test scripts/daily-report.test.mjs
 node scripts/build-pages.mjs
 node scripts/validate-site.mjs
-python -m http.server 8777 --directory _site
+python -m http.server 8793 --bind 127.0.0.1 --directory _site
 ```
 
-Open <http://127.0.0.1:8777/>, <http://127.0.0.1:8777/ja/> and
-<http://127.0.0.1:8777/agent/>.
+Open <http://127.0.0.1:8793/>, <http://127.0.0.1:8793/how-it-works/>,
+<http://127.0.0.1:8793/ja/> (redirects to English) and
+<http://127.0.0.1:8793/agent/>. Stop the server when finished.

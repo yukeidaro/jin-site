@@ -46,18 +46,8 @@ const expectedFiles = [
   "ja/how-it-works/index.html",
   "how-it-works/index.html",
   "llms.txt",
-  "preview-a-paper.jpg",
-  "privacy-tabs.mjs",
   "robots.txt",
-  "shots/app-hero-en.jpg",
-  "shots/app-page-en.jpg",
-  "shots/app-workspace-en.jpg",
-  "shots/og-en-2.png",
-  "shots/ill-files.png",
-  "shots/ill-once.png",
-  "shots/ill-prompts.png",
-  "shots/og-ja-2.png",
-  "shots/plugin-screen.png",
+  "shots/og-b2b.png",
   "site.css",
   "sitemap.xml",
   "waitlist.mjs"
@@ -66,9 +56,11 @@ const expectedFiles = [
 const deployedFiles = await listFiles(site);
 check(JSON.stringify(deployedFiles) === JSON.stringify(expectedFiles), `Unexpected Pages artifact: ${deployedFiles.join(", ")}`);
 
-const [home, japanese, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson] = await Promise.all([
+const [home, japanese, howPage, japaneseHowAlias, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson] = await Promise.all([
   text("index.html"),
   text("ja/index.html"),
+  text("how-it-works/index.html"),
+  text("ja/how-it-works/index.html"),
   text("agent/index.html"),
   text("human/index.html"),
   text("en/index.html"),
@@ -79,20 +71,30 @@ const [home, japanese, agent, humanAlias, englishAlias, robots, sitemap, llms, c
 ]);
 
 check(count(home, /<link rel="canonical" href="https:\/\/jinai\.md\/">/g) === 1, "Root must have one self-canonical.");
-check(count(japanese, /<link rel="canonical" href="https:\/\/jinai\.md\/ja\/">/g) === 1, "Japanese page must have one self-canonical.");
-for (const [page, source] of [["English", home], ["Japanese", japanese]]) {
-  for (const [language, url] of [["en", "https://jinai.md/"], ["ja", "https://jinai.md/ja/"], ["x-default", "https://jinai.md/"]]) {
-    check(source.includes(`<link rel="alternate" hreflang="${language}" href="${url}">`),
-      `${page} page must link its ${language} hreflang alternate.`);
+check(count(howPage, /<link rel="canonical" href="https:\/\/jinai\.md\/how-it-works\/">/g) === 1,
+  "How it works must have one self-canonical.");
+for (const [page, source] of [["Root", home], ["How it works", howPage]]) {
+  check(!/\bhreflang=|aria-label="Language"/.test(source),
+    `${page} must not publish hreflang alternates or a language switch.`);
+  for (const [attribute, name] of [["property", "og:image"], ["name", "twitter:image"]]) {
+    check(source.includes(`<meta ${attribute}="${name}" content="https://jinai.md/shots/og-b2b.png">`),
+      `${page} must use the B2B ${name}.`);
+  }
+  for (const dimension of ["width", "height"]) {
+    check(source.includes(`<meta property="og:image:${dimension}" content="${dimension === "width" ? 1200 : 630}">`),
+      `${page} must declare the share image ${dimension}.`);
+  }
+  for (const [attribute, name] of [["property", "og:image:alt"], ["name", "twitter:image:alt"]]) {
+    check(source.includes(`<meta ${attribute}="${name}" content="Jin AI: Keep your top performers' AI harnesses inside the company">`),
+      `${page} must use the approved ${name}.`);
   }
 }
-check(japanese.includes('id="benefits"') && japanese.includes('id="privacy"') && japanese.includes('id="waitlist"'),
-  "Japanese page must have benefits, privacy and waitlist sections.");
-check(japanese.includes('role="tablist"') && count(japanese, /role="tab"/g) === 2 &&
-  japanese.includes('aria-selected="true"') && japanese.includes('aria-selected="false"'),
-  "Japanese page must expose both accessible privacy tabs.");
-check(japanese.includes('plugin-screen.png') && japanese.includes('src="') &&
-  japanese.includes('privacy-tabs.mjs'), "Japanese page must include the product image and tab interaction.");
+const shareImage = await readFile(path.join(site, "shots", "og-b2b.png"));
+check(shareImage.length >= 24 &&
+  shareImage.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])) &&
+  shareImage.toString("ascii", 12, 16) === "IHDR" &&
+  shareImage.readUInt32BE(16) === 1200 && shareImage.readUInt32BE(20) === 630,
+  "The B2B share image must be a 1200 x 630 PNG.");
 check(home.includes("<main>") && home.includes("</main>"), "Root must have a main landmark.");
 const homeSections = [...home.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
 check(homeSections.length === 6 && homeSections[0]?.[1].includes('class="hero"') &&
@@ -103,8 +105,7 @@ check(count(home, /<h1>/g) === 1 &&
   "Root must use the approved H1 once.");
 const homeTitle = "Jin AI | Keep your top performers' AI harnesses inside the company";
 check(home.includes(`<title>${homeTitle}</title>`), "Root must use the approved title.");
-for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:title"],
-  ["property", "og:image:alt"], ["name", "twitter:image:alt"]]) {
+for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:title"]]) {
   check(home.includes(`<meta ${attribute}="${name}" content="${homeTitle}">`), `Root must use the approved ${name}.`);
 }
 const homeDescription = "Jin AI keeps the AI harnesses your best people build safe for every employee and reusable for the company.";
@@ -135,8 +136,6 @@ check(!/[\u2013\u2014\u2018\u2019\u201c\u201d]/u.test(home),
   "Root must not contain em dashes, en dashes or curly quotes.");
 check(!/(?:\$|\bPro\b|\bDiscord\b|Cloud Sync|Baby Voice|TikTok|\bsetup\b)/i.test(home),
   "Root contains retired offers, products or terminology.");
-check(japanese.replaceAll("<wbr>", "").includes("いつものAIを、あなたを本当に理解するアシスタントに。"),
-  "Japanese page must use the approved headline.");
 check(agent.includes('id="what-is-jin-ai"'), "Agent page must carry the generated direct answers.");
 check(!/<img(?![^>]*\bsrc=)[^>]*>/i.test(home), "Every root image must have a static src.");
 check(!/<img(?![^>]*\balt=)[^>]*>/i.test(home), "Every root image must have alt text.");
@@ -148,13 +147,25 @@ const jsonLdMatches = [...home.matchAll(/<script type="application\/ld\+json">\s
 check(jsonLdMatches.length === 1, "Root must contain one generated JSON-LD graph.");
 if (jsonLdMatches.length === 1) JSON.parse(jsonLdMatches[0][1]);
 
-for (const [name, alias] of [["human", humanAlias], ["English", englishAlias]]) {
-  check(alias.includes('content="0;url=/"'), `${name} alias must redirect to root.`);
-  check(alias.includes('location.replace(\'/\')'), `${name} alias must use a JavaScript root redirect.`);
+for (const [name, alias, target] of [
+  ["human", humanAlias, "/"], ["English", englishAlias, "/"],
+  ["Japanese", japanese, "/"], ["Japanese How it works", japaneseHowAlias, "/how-it-works/"]
+]) {
+  check(alias.includes(`content="0;url=${target}"`), `${name} alias must redirect to ${target}.`);
+  check(alias.includes(`location.replace('${target}')`), `${name} alias must use a JavaScript redirect to ${target}.`);
   check(alias.includes('content="noindex,follow"'), `${name} alias must be noindex,follow.`);
-  check(alias.includes('href="https://jinai.md/"'), `${name} alias must canonicalize to root.`);
+  check(count(alias, /<link rel="canonical"/g) === 1 &&
+    alias.includes(`<link rel="canonical" href="https://jinai.md${target}">`),
+    `${name} alias must canonicalize to ${target}.`);
+  check(alias.includes("<title>Jin AI | Redirecting</title>"), `${name} alias must use the redirect title.`);
+  check(alias.includes('<html lang="en">') &&
+    new RegExp(`<a href="${target}">[^<]*\\S[^<]*</a>`).test(alias),
+    `${name} alias must have a visible English fallback link.`);
+  check(!/<form\b|\bhreflang=/.test(alias), `${name} alias must not contain forms or hreflang alternates.`);
 }
 
+check(agent.includes("<title>Jin AI for agents | Product facts and status</title>"),
+  "Agent page must use the approved title.");
 check(count(agent, /<link rel="canonical" href="https:\/\/jinai\.md\/">/g) === 1, "Agent page must have one root canonical.");
 check(count(agent, /<link rel="alternate" type="application\/json" href="https:\/\/jinai\.md\/agent\/content\.json">/g) === 1, "Agent page must advertise structured JSON once.");
 check(count(agent, /<meta name="robots" content="index,follow,max-snippet:-1">/g) === 1, "Agent page must remain crawlable.");
@@ -172,11 +183,9 @@ Allow: /
 Sitemap: https://jinai.md/sitemap.xml
 `, "robots.txt policy has drifted.");
 
-check(count(sitemap, /<loc>/g) === 4 &&
-  sitemap.includes("<loc>https://jinai.md/how-it-works/</loc>") &&
-  sitemap.includes("<loc>https://jinai.md/ja/how-it-works/</loc>") &&
-  sitemap.includes("<loc>https://jinai.md/</loc>") &&
-  sitemap.includes("<loc>https://jinai.md/ja/</loc>"), "Sitemap must contain the home and How it works routes in both languages.");
+const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).sort();
+check(JSON.stringify(sitemapUrls) === JSON.stringify(["https://jinai.md/", "https://jinai.md/how-it-works/"]),
+  "Sitemap must contain exactly the English home and How it works URLs.");
 check(!llms.includes(".md)"), "llms.txt must not link to Markdown mirrors.");
 check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blockquote summary.");
 
@@ -211,6 +220,44 @@ check(count(howSection, /<small class="harness-status">Building: Claude Code fir
   count(howSection, /<small class="harness-status">Building<\/small>/g) === 1 &&
   count(howSection, /<small class="harness-status next">Next<\/small>/g) === 2,
   "How it works must distinguish the two Building steps from the two Next steps.");
+const howTitle = "How it works | Jin AI";
+const howDescription = "How Jin AI connects to your AI tools, sorts each AI harness by category, and lets the company decide what can move.";
+check(howPage.includes(`<title>${howTitle}</title>`) &&
+  count(howPage, /<h1>/g) === 1 && howPage.includes("<h1>How it works</h1>") &&
+  howPage.includes("<main>") && howPage.includes("</main>"),
+  "The companion page must have its approved title, H1 and main landmark.");
+for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:title"]]) {
+  check(howPage.includes(`<meta ${attribute}="${name}" content="${howTitle}">`),
+    `The companion page must use the approved ${name}.`);
+}
+for (const [attribute, name] of [["name", "description"], ["property", "og:description"], ["name", "twitter:description"]]) {
+  check(howPage.includes(`<meta ${attribute}="${name}" content="${howDescription}">`),
+    `The companion page must use the approved ${name}.`);
+}
+check(howPage.includes(`<p class="harness-definition">${content.product.harness_definition}</p>`) &&
+  howPage.includes('<h2 class="how-audience">Employee</h2>') &&
+  howPage.includes('<h2 class="how-audience">Admin</h2>') &&
+  count(howPage, /<ol class="harness-steps"/g) === 2 && howPage.includes('start="3"'),
+  "The companion page must define an AI harness and separate Employee and Admin steps.");
+const companionSteps = [...howPage.matchAll(/<li><h3>([^<]+)<\/h3>([\s\S]*?)<\/li>/g)];
+const companionStatuses = ["Building: Claude Code first", "Building", "Next", "Next"];
+check(companionSteps.length === 4 && companyCapabilities.every((capability, index) =>
+  companionSteps[index]?.[1] === capability.name &&
+  companionSteps[index]?.[2].includes(`<p>${capability.description}</p>`) &&
+  companionSteps[index]?.[2].includes(
+    `<small class="harness-status${capability.status === "next" ? " next" : ""}">${companionStatuses[index]}</small>`)),
+  "The companion page must use all four approved steps with their own Building or Next status.");
+for (const sentence of ["<p>Claude Code first. Other AI tools are next.</p>",
+  "<p>For example: <code>CLAUDE.md</code>, skills, memory files and MCP settings.</p>",
+  "<p>In pilots, the company approves by hand today.</p>"]) {
+  check(howPage.includes(sentence), "The companion page must retain the approved examples and manual pilot caveat.");
+}
+check(howPage.includes(`<h2 class="h2">${content.data_principles.headline}</h2>`) &&
+  content.data_principles.items.every((item) => howPage.includes(`<li>${item}</li>`)) &&
+  howPage.includes('<a class="btn btn-p" href="../#demo">Request a demo</a>'),
+  "The companion page must include all data promises and the demo CTA.");
+check(!/plugin-screen\.png|personal MCP|your own memory|#waitlist|Join &rarr;/.test(howPage),
+  "The companion page must not publish the retired consumer copy or CTA.");
 const dataSection = homeSections.find((match) => match[1].includes('id="data"'))?.[2] || "";
 check(dataSection.includes(`<h2 class="h2">${content.data_principles.headline}</h2>`) &&
   content.data_principles.items.every((item) => dataSection.includes(`<li>${item}</li>`)),
@@ -224,7 +271,6 @@ check(access.form.provider === "apps_script", "The waitlist must use Apps Script
 check(isAppsScriptEndpoint(access.form.endpoint) ||
   (access.form.endpoint === null && access.status === "setup_pending"), "The Apps Script endpoint must be configured or explicitly pending.");
 check(home.includes(`data-endpoint="${access.form.endpoint || ""}"`), "The waitlist form must use the declared endpoint.");
-check(japanese.includes(`data-endpoint="${access.form.endpoint || ""}"`), "The Japanese form must use the declared endpoint.");
 for (const name of ["name", "email", "role"]) {
   check(home.includes(`name="${name}"`), `The waitlist is missing its ${name} field.`);
 }
@@ -232,11 +278,6 @@ check(home.includes('src="waitlist.mjs"'), "The waitlist client must be loaded."
 check(!home.includes("waitlistSink") && !home.includes("formResponse"), "Google Forms and iframe-load confirmations must not be used.");
 check(!home.includes("A welcome email is on its way"), "The page must not promise email before the server confirms a send.");
 check(count(home, /<form[^>]+id="waitlistForm"/g) === 1, "There must be exactly one waitlist form.");
-check(count(japanese, /<form[^>]+id="waitlistForm"/g) === 1, "There must be exactly one Japanese waitlist form.");
-for (const name of ["name", "email", "role"]) {
-  check(japanese.includes(`name="${name}"`), `The Japanese waitlist is missing its ${name} field.`);
-}
-check(japanese.includes('src="../waitlist.mjs"'), "The Japanese waitlist client must be loaded.");
 const surveyForm = home.match(/<form\b[^>]*\bid="waitlistSurvey"[^>]*>[\s\S]*?<\/form>/);
 check(count(home, /id="waitlistSurvey"/g) === 1 && Boolean(surveyForm), "There must be exactly one survey form.");
 if (surveyForm) {
@@ -249,11 +290,6 @@ if (surveyForm) {
   check(radios.map((radio) => radio.match(/\bvalue="([^"]*)"/)?.[1]).join() ===
     access.survey?.options.map((option) => option.value).join(), "The survey answers must match structured data.");
 }
-const japaneseSurvey = japanese.match(/<form\b[^>]*\bid="waitlistSurvey"[^>]*>[\s\S]*?<\/form>/)?.[0];
-check(Boolean(japaneseSurvey) && japaneseSurvey.includes(`data-survey-id="${access.survey?.id}"`) &&
-  [...japaneseSurvey.matchAll(/<input\b[^>]*\btype="radio"[^>]*>/g)]
-    .map((match) => match[0].match(/\bvalue="([^"]*)"/)?.[1]).join() ===
-  access.survey?.options.map((option) => option.value).join(), "Japanese survey must keep the same id and answer values.");
 check(hero.includes(`<a class="btn btn-p" href="#demo">${access.hero_label}</a>`),
   "The hero CTA must jump to the demo form.");
 check(demoSection.includes(`<p class="waitnote">${access.note}</p>`), "The demo form must retain its generated note.");
@@ -262,16 +298,15 @@ if (access.community?.url) {
   check(home.includes(`href="${access.community.url}"`), "Community CTA must be published once its URL is set.");
 }
 
-const customerFacingTextFiles = deployedFiles.filter((file) => /\.(html|json|txt|xml|svg|mjs)$/.test(file));
+const customerFacingTextFiles = deployedFiles.filter((file) => /\.(html|css|json|txt|xml|svg|mjs)$/.test(file));
 for (const relativePath of customerFacingTextFiles) {
   const source = await text(relativePath);
   check(!source.includes("JinAI"), `${relativePath} contains the obsolete JinAI spelling.`);
-  if (!relativePath.startsWith("ja/")) {
-    // English pages may carry only the language switch link in Japanese.
-    const englishSource = source.replace(/<a href="[^"]*" lang="ja"[^>]*>日本語<\/a>/g, "");
-    check(!/[\u3040-\u30ff\u3400-\u9fff]/u.test(englishSource),
-      `${relativePath} contains CJK characters outside the Japanese page and its language link.`);
-  }
+  check(!/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\u3000-\u303f]/u.test(source),
+    `${relativePath} contains CJK characters.`);
+  check(!/[\u2013\u2014\u2018\u2019\u201c\u201d]/u.test(source),
+    `${relativePath} contains em dashes, en dashes or curly quotes.`);
+  check(!/\bsetup\b/i.test(source), `${relativePath} contains the retired word setup.`);
 }
 
 const htmlFiles = deployedFiles.filter((file) => file.endsWith(".html"));

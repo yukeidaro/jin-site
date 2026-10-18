@@ -415,9 +415,10 @@ async function writeText(filePath, text, eol) {
   await writeFile(filePath, text.replace(/\n/g, eol), "utf8");
 }
 
-async function updateGeneratedFile(filePath, transforms) {
+async function updateGeneratedFile(filePath, transforms, title) {
   const { text: current, eol } = await readText(filePath);
-  const expected = transforms.reduce((document, [name, generated]) => replaceBlock(document, name, generated), current);
+  const updated = transforms.reduce((document, [name, generated]) => replaceBlock(document, name, generated), current);
+  const expected = title ? updated.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`) : updated;
 
   if (checkOnly) {
     assert(current === expected, `${path.relative(root, filePath)} is out of date. Run node scripts/generate-aeo.mjs.`);
@@ -437,7 +438,7 @@ await updateGeneratedFile(path.join(root, "index.html"), [
 
 await updateGeneratedFile(path.join(root, "agent", "index.html"), [
   ["AGENT_CONTENT", renderAgent(data)]
-]);
+], "Jin AI for agents | Product facts and status");
 
 const llmsPath = path.join(root, "llms.txt");
 const expectedLlms = renderLlms(data);

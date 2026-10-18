@@ -10,7 +10,6 @@ const files = [
   "CNAME",
   "index.html",
   "site.css",
-  "privacy-tabs.mjs",
   "ja/index.html",
   "ja/how-it-works/index.html",
   "how-it-works/index.html",
@@ -20,21 +19,12 @@ const files = [
   "llms.txt",
   "googled8075da2e5b1406b.html",
   "6252d6a938298e86f40672b512227d4b.txt",
-  "preview-a-paper.jpg",
   "human/index.html",
   "en/index.html",
   "agent/index.html",
   "agent/content.json",
   "brand/jin-mark.svg",
-  "shots/og-en-2.png",
-  "shots/ill-files.png",
-  "shots/ill-once.png",
-  "shots/ill-prompts.png",
-  "shots/og-ja-2.png",
-  "shots/plugin-screen.png",
-  "shots/app-hero-en.jpg",
-  "shots/app-workspace-en.jpg",
-  "shots/app-page-en.jpg"
+  "shots/og-b2b.png"
 ];
 
 await rm(output, { recursive: true, force: true });
