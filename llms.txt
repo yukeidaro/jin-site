@@ -1,39 +1,65 @@
 # Jin AI
 
-> Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build, with a beta opening in small batches.
+> Keep your top performers' AI harnesses inside the company. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
 
-Status: In build. Availability: first beta opening in small batches. Last updated: 2026-10-04.
+Status: Building. Last updated: 2026-10-19.
+The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.
 
-Interpret status words literally. "In build" is not shipped, "planned" is intended next work, and "later" is not committed for the first release. The Human page at https://jinai.md/ is the sole canonical product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
+Live means available now. Building means active development. Next means intended next work. Never present Building or Next as shipped. The Human page at https://jinai.md/ is the sole canonical product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
+
+For AI-forward companies.
+
+## AI harness
+
+An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.
 
 ## Primary resources
 
-- [Canonical Human page](https://jinai.md/): One-click AI setup, its benefits and privacy.
-- [Agent reference](https://jinai.md/agent/): Concise status-aware HTML for automated research, including direct answers, capability status, pricing status, roadmap and founders.
+- [Canonical Human page](https://jinai.md/): Company and employee value, how it works, data and demo request.
+- [Agent reference](https://jinai.md/agent/): Status-aware HTML with direct answers, capabilities, data principles and founders.
 - [Structured fact source](https://jinai.md/agent/content.json): Public JSON used to generate agent-facing derivatives.
 - [Sitemap](https://jinai.md/sitemap.xml): Canonical indexable URL.
 
 ## Direct answers
 
-- [What is Jin AI?](https://jinai.md/agent/#what-is-jin-ai): Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build; support for more AI tools is planned.
-- [Who is Jin AI for?](https://jinai.md/agent/#who-is-jin-ai-for): Business professionals who want their AI tools to know who they are, how they work and which files matter.
-- [How is this different from ChatGPT or Claude memory?](https://jinai.md/agent/#how-is-this-different-from-chatgpt-or-claude-memory): Each AI's built-in memory stays in its own product. Jin AI is building one setup from your files, slides and chats that can work across AI tools. ChatGPT and Copilot integrations are planned.
-- [What happens after setup?](https://jinai.md/agent/#what-happens-after-setup): Jin AI learns from your files, slides and chats, and fills in your context. The right files come to the right chats. These features are being built for the beta.
-- [Does Jin AI record my screen or upload my files?](https://jinai.md/agent/#does-jin-ai-record-my-screen-or-upload-files): Jin AI never records your screen. The free version learns from files and chat history on your own computer. Jin AI doesn't move your files. Cloud Sync is planned for Pro.
-- [Does Jin AI train on my data?](https://jinai.md/agent/#does-jin-ai-train-on-my-data): Jin AI itself never trains on your data. You choose what it reads, and what it shares; access controls are planned as the beta develops.
-- [Which AI tools does it work with?](https://jinai.md/agent/#which-ai-tools-does-it-work-with): Claude Code is the first integration being built. ChatGPT and GitHub Copilot integrations are planned, not shipped.
-- [Is Jin AI available now?](https://jinai.md/agent/#is-jin-ai-available): The app is in build and a beta is opening in small batches. Join the waitlist to show your interest.
-- [How much will Jin AI cost?](https://jinai.md/agent/#how-much-will-jin-ai-cost): The version that learns on your computer is free. Pro is proposed at $10 per month for planned Google Drive and Notion connections and sync between your PC and phone. The price is being tested in the beta.
+- [What is Jin AI?](https://jinai.md/agent/#what-is-jin-ai): Keep your top performers' AI harnesses inside the company. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
+- [What is an AI harness?](https://jinai.md/agent/#what-is-an-ai-harness): An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.
+- [Is Jin AI available now?](https://jinai.md/agent/#is-jin-ai-available): The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.
+- [Which AI tools does it work with?](https://jinai.md/agent/#which-ai-tools-does-it-work-with): Claude Code first. Other AI tools are next.
+- [Where does the data live?](https://jinai.md/agent/#where-does-the-data-live): Jin AI keeps each company's context separate.
+- [How is this different from banning AI tools?](https://jinai.md/agent/#how-is-this-different-from-banning-ai-tools): Banning AI tools also removes the harnesses that work. Jin AI keeps confidential data in and lets the company reuse what works.
 
-## Private by design
+## Problem
 
-- Never records your screen: Jin AI never records your screen.
-- Learns on your computer: The free version learns from files and chat history on your own computer.
-- Your files stay where they are: Jin AI doesn't move your files.
-- Never trained on your data: Jin AI itself never trains on your data.
-- You choose: You choose what it reads, and what it shares.
-- Cloud Sync (Coming with Pro; planned): Google Drive and Notion connections, sync between your PC and phone.
+Your best AI skills live with people, not with the company.
+
+- Shadow AI: Your heaviest AI users already run personal AI, and work context ends up there.
+- Lost at handover: When people leave, they take their AI workflows with them. No one is left knowing how they ran.
+- AI training: Teaching everyone to use AI well is slow and costly. Your top performers already figured it out.
+
+## Solution (Building)
+
+- Safe for every employee. Put your personal context in securely, and take it out safely. Also usable in your personal AI.
+- Reusable for the company. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
+
+## How it works and status
+
+- Workspace beta (Live)
+- Connect once. (Building): Jin AI connects to your AI tools through MCP. Claude Code first.
+- See every harness by category. (Building): Skills, instructions, memory and MCP settings, sorted for each person.
+- See it by role. (Next): Which harnesses each role uses, and how often.
+- Decide what can move. (Next): Parts marked confidential connect only to the AI tools you approve.
+
+## Your company's context stays yours.
+
+- Each company's context is kept separate.
+- Jin AI never records your screen.
+- Jin AI itself never trains on your data.
 
 ## Founders
 
-- [Yu Asano](https://www.linkedin.com/in/yu-asano-6878571a6/): Founder. Builder of Jin AI and Baby Voice Recorder. Previously launched Microsoft's first official TikTok account in Asia.
+- [Yu Asano](https://www.linkedin.com/in/yu-asano-6878571a6/): Founder. Four years of B2B SaaS go-to-market for Microsoft 365 and Azure. Built Jin AI's beta solo.
+
+## Request a demo
+
+[Request a demo](https://jinai.md/#waitlist). We will email you to set up a demo.

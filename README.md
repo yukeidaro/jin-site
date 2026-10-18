@@ -22,8 +22,8 @@ The footer links between the English page at `/` and the Japanese page at
 ## Content source and generation
 
 `agent/content.json` is the status-aware fact source. It records product status,
-capability delivery stages, direct answers, pricing status, founders, evidence,
-sources and caveats.
+capability delivery stages, the AI harness definition, company and employee
+value, data principles, direct answers, founders, evidence, sources and caveats.
 
 Run the zero-dependency generator after changing facts:
 
@@ -34,6 +34,7 @@ node scripts/generate-aeo.mjs
 It updates:
 
 - the root JSON-LD graph;
+- the hero and final demo-request CTAs, including the existing form;
 - the content of `agent/index.html`;
 - `llms.txt`.
 
@@ -42,36 +43,57 @@ in check mode and fails when a derivative has drifted.
 
 ## Content rules
 
-- Product name: **Jin AI**
-- The Human pages (`/` and `/ja/`) contain only the hero, **After you use
-  Jin AI**, **Private by design**, and the waitlist. Pricing, roadmap, founders,
-  comparisons and direct answers belong in the status-aware Agent derivatives.
-- Headline: **Turn the AI you already use into an assistant that actually knows you.** (Japanese: **いつものAIを、あなたを本当に理解するアシスタントに。**)
-  Supporting line: *Jin AI gives you the AI setup engineers have. One click,
-  and every AI learns about you.* Use the approved English and Japanese copy
-  in `mockup/v6/BRIEF.md` verbatim.
-- The three benefits are short prompts, telling AI once across tools, and
-  bringing the right local files to the right chats. Show Claude, ChatGPT and
-  Copilot as text, not as a row of identical feature cards.
-- **Private by design** distinguishes on-device facts from planned Cloud Sync
-  for Pro. Jin AI never records your screen, learns locally in the free version,
-  never moves your files, never trains on your data itself, and lets you choose
-  what it reads and shares. Google Drive, Notion and PC/phone sync are planned.
-- Keep **In build**, **Planned**, and **Later** distinct; do not present a
-  planned integration or access control as already shipped. Prices in the
-  Agent reference are proposals being tested in the beta.
-- The hero uses `shots/plugin-screen.png`, a real product screen, rather
-  than an illustrative memory mockup or unverified user data.
+- Product name: **Jin AI**. It is a B2B product for AI-forward companies.
+  Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
+- Headline: **Keep your top performers' AI harnesses inside the company.**
+- Use **AI harness** or **harnesses**, never "setup" for this concept.
+  An AI harness is the instructions, skills, memory and connected tools around
+  an AI agent that make it work for a role.
+- The home page contains only the hero, problem, solution, how it works, data
+  and demo request. Do not show pricing or founders on the home page.
+  Founders and direct answers belong in the Agent reference.
+- Problem: **Your best AI skills live with people, not with the company.**
+  Shadow AI is a problem label, not a claim that Jin AI blocks it.
+- Solution: **Safe for every employee.** **Reusable for the company.**
+  Keep both employee and company value in the story.
+- Status values are `live`, `building`, `next`; labels are **Live**, **Building**,
+  **Next**. Never present Building or Next as shipped. The workspace beta is
+  Live. Company features are Building, starting with Claude Code.
+- Data: **Your company's context stays yours.** Each company's context is kept
+  separate. Jin AI never records your screen. Jin AI itself never trains on
+  your data. Do not claim that Jin AI does not read conversation histories.
+- CTA: **Request a demo**. Note: **We will email you to set up a demo.**
+  Keep the existing form fields, endpoint, consent version and survey until
+  the form migration.
+- No prices anywhere on the site, including machine-readable formats.
+  Do not publish currency amounts, Pro, Team or free-version offers, Cloud Sync,
+  Google Drive or Notion connections, PC and phone sync, Discord, Baby Voice
+  Recorder, TikTok, market size, competitor names, pilot candidate counts,
+  Nov 13, know-how or DelightX. These are exclusions, not product facts.
+- Write plain, specific English with short sentences. No CJK characters,
+  em dashes, en dashes or curly quotes. Do not invent claims, metrics,
+  testimonials, logos, ratings or user counts. Every number needs a source
+  line directly under it.
+- Avoid supercharge, unlock, seamless, effortless, revolutionize, game-changer,
+  empower, leverage, cutting-edge and next-level. Do not repeat "No more X"
+  headlines or claim nobody else does this.
+- Keep the paper background, Source Serif headings, Inter body, JetBrains Mono
+  labels, 4px radius and existing spacing. The only accent color is `#a84a1c`.
+  No gradients, glows, new blurs or shadows, emoji, rows of identical icon
+  cards, numbered circles, positioning grids or letter-spaced all-caps labels.
+  Prefer prose, lists, tables and real product screenshots. Use one dominant
+  visual per section. At 375px wide, there must be no horizontal scroll.
 - Do not add `FAQPage` schema, active offers, ratings or reviews unless they
   become truthful and applicable.
 
-## Waitlist and community
+## Demo request and existing waitlist backend
 
 The English hero CTA is generated from `early_access.hero_label` and
 `early_access.hero_note` in `agent/content.json`. The existing waitlist form
-uses `early_access.label` and `early_access.note` and must not change as part
-of the page-content update. The Japanese page uses the same endpoint, field
-names and survey values with localized labels.
+uses `early_access.label` and `early_access.note`. Both now request a demo.
+The form fields, endpoint, consent version and survey remain unchanged.
+The legacy localized page still uses the same endpoint, field names and
+survey values; its visible copy is outside this facts-and-generator update.
 
 The custom website form submits JSON directly to an Apps Script web app.
 **Google Forms, response receipts, hidden iframes, and form-submit triggers are
@@ -173,27 +195,9 @@ unsubscribe requests handled by reply to `hello@jinai.md`. Process those replies
 before sending future campaigns. Existing response history is not automatically
 emailed during migration.
 
-To publish the Discord invite as a second CTA, set the URL and regenerate:
-
-```jsonc
-// agent/content.json
-"early_access": {
-  "community": { "url": "https://discord.gg/xxxxxxx" }
-}
-```
-
-```powershell
-node scripts/generate-aeo.mjs
-```
-
-Use a permanent invite (Discord invite settings: *Expire after: Never*, *Max uses:
-No limit*). Validation rejects anything that is not a real `discord.gg` or
-`discord.com/invite` link, and the Discord button is omitted entirely while
-`community.url` is `null`.
-
-Discord conversations are not indexed by search engines: `discord.com/robots.txt`
-contains `Disallow: /channels`. Treat Discord as a feedback and support surface,
-not a discovery channel.
+Discord is no longer a published site CTA. Keep `early_access.community.url`
+`null`; the generator omits community links. The existing backend welcome-email
+invitation above is unchanged until the form and email migration.
 
 ## Deployment boundary
 

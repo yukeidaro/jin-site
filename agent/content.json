@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "content_version": "2.0",
-  "last_updated": "2026-10-04",
+  "last_updated": "2026-10-19",
   "language": "en",
   "canonical_url": "https://jinai.md/",
   "resources": {
@@ -19,204 +19,134 @@
   },
   "product": {
     "name": "Jin AI",
-    "headline": "Turn the AI you already use into an assistant that actually knows you.",
-    "category": "One-click AI setup for business professionals",
-    "description": "Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build, with a beta opening in small batches.",
-    "status": "in_build",
-    "availability": "first_beta_opening_in_small_batches",
-    "planned_platforms": [
-      "macOS",
-      "Windows"
-    ],
-    "industry": "Productivity software"
+    "headline": "Keep your top performers' AI harnesses inside the company.",
+    "category": "AI harnesses for companies",
+    "description": "Keep your top performers' AI harnesses inside the company. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.",
+    "harness_definition": "An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.",
+    "status": "building",
+    "availability": "The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.",
+    "industry": "B2B"
   },
   "audience": {
-    "primary": "Business professionals who use AI at work",
-    "designed_for_workflows_using": [
-      "Claude Code",
-      "ChatGPT",
-      "GitHub Copilot"
-    ]
+    "primary": "AI-forward companies"
   },
   "problem": {
-    "headline": "AI does not start with the context it needs",
-    "short_answer": "Your files, slides and chats contain the details that make an answer useful, but each AI starts without them.",
-    "description": "Introducing yourself again, writing long prompts and finding the right files for every request take time. Jin AI is building a setup that brings the relevant context to your AI."
+    "headline": "Your best AI skills live with people, not with the company.",
+    "points": [
+      {
+        "name": "Shadow AI",
+        "description": "Your heaviest AI users already run personal AI, and work context ends up there."
+      },
+      {
+        "name": "Lost at handover",
+        "description": "When people leave, they take their AI workflows with them. No one is left knowing how they ran."
+      },
+      {
+        "name": "AI training",
+        "description": "Teaching everyone to use AI well is slow and costly. Your top performers already figured it out."
+      }
+    ]
   },
   "evidence": [],
   "solution": {
-    "headline": "After you use Jin AI",
-    "status": "in_build",
+    "status": "building",
     "steps": [
       {
-        "name": "You don't need to write long prompts.",
-        "description": "Jin AI learns from your files, slides and chats, and fills in your context."
+        "name": "Safe for every employee.",
+        "description": "Put your personal context in securely, and take it out safely. Also usable in your personal AI."
       },
       {
-        "name": "You only tell AI once.",
-        "description": "Who you are and how you work, available across every AI you use."
-      },
-      {
-        "name": "The right files come to the right chats.",
-        "description": "Jin AI brings in what each request needs from the files on your PC."
+        "name": "Reusable for the company.",
+        "description": "Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
       }
-    ],
-    "principle": "You choose what it reads, and what it shares."
+    ]
   },
-  "privacy": {
-    "on_device": [
-      { "name": "Never records your screen", "description": "Jin AI never records your screen." },
-      { "name": "Learns on your computer", "description": "The free version learns from files and chat history on your own computer." },
-      { "name": "Your files stay where they are", "description": "Jin AI doesn't move your files." },
-      { "name": "Never trained on your data", "description": "Jin AI itself never trains on your data." },
-      { "name": "You choose", "description": "You choose what it reads, and what it shares." }
-    ],
-    "cloud_sync": {
-      "status": "planned",
-      "label": "Coming with Pro",
-      "description": "Google Drive and Notion connections, sync between your PC and phone."
-    }
+  "data_principles": {
+    "headline": "Your company's context stays yours.",
+    "items": [
+      "Each company's context is kept separate.",
+      "Jin AI never records your screen.",
+      "Jin AI itself never trains on your data."
+    ]
   },
   "capabilities": [
     {
-      "id": "learn-from-files-and-chats",
-      "name": "Learn from files, slides and chats on your computer",
-      "status": "in_build",
-      "target_stage": "The first beta"
+      "id": "workspace-beta",
+      "name": "Workspace beta",
+      "status": "live"
     },
     {
-      "id": "one-click-setup",
-      "name": "Set up your AI context with one click",
-      "status": "in_build",
-      "target_stage": "The first beta"
+      "id": "connect-once",
+      "name": "Connect once.",
+      "description": "Jin AI connects to your AI tools through MCP.",
+      "status": "building",
+      "note": "Claude Code first"
     },
     {
-      "id": "right-files",
-      "name": "Bring the right files on your PC into the right chats",
-      "status": "in_build",
-      "target_stage": "The first beta"
+      "id": "harnesses-by-category",
+      "name": "See every harness by category.",
+      "description": "Skills, instructions, memory and MCP settings, sorted for each person.",
+      "status": "building"
     },
     {
-      "id": "claude-code",
-      "name": "Make your context available in Claude Code",
-      "status": "in_build",
-      "target_stage": "The first beta"
+      "id": "harnesses-by-role",
+      "name": "See it by role.",
+      "description": "Which harnesses each role uses, and how often.",
+      "status": "next"
     },
     {
-      "id": "plugins-for-other-ais",
-      "name": "Make your context available in ChatGPT and GitHub Copilot",
-      "status": "planned",
-      "target_stage": "Additional AI integrations"
-    },
-    {
-      "id": "access-controls",
-      "name": "Choose what Jin AI reads and shares",
-      "status": "planned",
-      "target_stage": "After the first beta"
-    },
-    {
-      "id": "cloud-sources",
-      "name": "Google Drive and Notion connections",
-      "status": "planned",
-      "target_stage": "Pro"
-    },
-    {
-      "id": "cross-device-sync",
-      "name": "Sync between your PC and phone",
-      "status": "planned",
-      "target_stage": "Pro"
+      "id": "approved-portability",
+      "name": "Decide what can move.",
+      "description": "Parts marked confidential connect only to the AI tools you approve.",
+      "status": "next"
     }
   ],
-  "business_model": {
-    "headline": "Free on your computer. Cloud Sync is planned for Pro.",
-    "status": "planned",
-    "individual_local": "The free version learns from files and chat history on your own computer.",
-    "individual_collaboration": "Pro, proposed at $10 per month, would add Google Drive and Notion connections and sync between your PC and phone.",
-    "companies": "Team plans are under consideration.",
-    "company_pricing_status": "All prices are a proposal we are testing in the beta. Nothing is charged today."
-  },
   "founders": [
     {
       "name": "Yu Asano",
       "role": "Founder",
-      "bio": "Builder of Jin AI and Baby Voice Recorder. Previously launched Microsoft's first official TikTok account in Asia.",
+      "bio": "Four years of B2B SaaS go-to-market for Microsoft 365 and Azure. Built Jin AI's beta solo.",
       "profile_url": "https://www.linkedin.com/in/yu-asano-6878571a6/"
-    }
-  ],
-  "roadmap": [
-    {
-      "stage": "in_build",
-      "name": "The first beta",
-      "items": [
-        "One-click AI setup from files, slides and chats on your computer",
-        "Relevant context and files available in Claude Code",
-        "Beta opening in small batches"
-      ]
-    },
-    {
-      "stage": "planned",
-      "name": "Additional integrations",
-      "items": [
-        "Context available in ChatGPT and GitHub Copilot",
-        "Controls for what Jin AI reads and shares",
-        "Pro: Google Drive and Notion connections",
-        "Pro: sync between your PC and phone"
-      ]
     }
   ],
   "direct_answers": [
     {
       "id": "what-is-jin-ai",
       "question": "What is Jin AI?",
-      "answer": "Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build; support for more AI tools is planned."
+      "answer": "Keep your top performers' AI harnesses inside the company. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
     },
     {
-      "id": "who-is-jin-ai-for",
-      "question": "Who is Jin AI for?",
-      "answer": "Business professionals who want their AI tools to know who they are, how they work and which files matter."
-    },
-    {
-      "id": "how-is-this-different-from-chatgpt-or-claude-memory",
-      "question": "How is this different from ChatGPT or Claude memory?",
-      "answer": "Each AI's built-in memory stays in its own product. Jin AI is building one setup from your files, slides and chats that can work across AI tools. ChatGPT and Copilot integrations are planned."
-    },
-    {
-      "id": "what-happens-after-setup",
-      "question": "What happens after setup?",
-      "answer": "Jin AI learns from your files, slides and chats, and fills in your context. The right files come to the right chats. These features are being built for the beta."
-    },
-    {
-      "id": "does-jin-ai-record-my-screen-or-upload-files",
-      "question": "Does Jin AI record my screen or upload my files?",
-      "answer": "Jin AI never records your screen. The free version learns from files and chat history on your own computer. Jin AI doesn't move your files. Cloud Sync is planned for Pro."
-    },
-    {
-      "id": "does-jin-ai-train-on-my-data",
-      "question": "Does Jin AI train on my data?",
-      "answer": "Jin AI itself never trains on your data. You choose what it reads, and what it shares; access controls are planned as the beta develops."
-    },
-    {
-      "id": "which-ai-tools-does-it-work-with",
-      "question": "Which AI tools does it work with?",
-      "answer": "Claude Code is the first integration being built. ChatGPT and GitHub Copilot integrations are planned, not shipped."
+      "id": "what-is-an-ai-harness",
+      "question": "What is an AI harness?",
+      "answer": "An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role."
     },
     {
       "id": "is-jin-ai-available",
       "question": "Is Jin AI available now?",
-      "answer": "The app is in build and a beta is opening in small batches. Join the waitlist to show your interest."
+      "answer": "The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot."
     },
     {
-      "id": "how-much-will-jin-ai-cost",
-      "question": "How much will Jin AI cost?",
-      "answer": "The version that learns on your computer is free. Pro is proposed at $10 per month for planned Google Drive and Notion connections and sync between your PC and phone. The price is being tested in the beta."
+      "id": "which-ai-tools-does-it-work-with",
+      "question": "Which AI tools does it work with?",
+      "answer": "Claude Code first. Other AI tools are next."
+    },
+    {
+      "id": "where-does-the-data-live",
+      "question": "Where does the data live?",
+      "answer": "Jin AI keeps each company's context separate."
+    },
+    {
+      "id": "how-is-this-different-from-banning-ai-tools",
+      "question": "How is this different from banning AI tools?",
+      "answer": "Banning AI tools also removes the harnesses that work. Jin AI keeps confidential data in and lets the company reuse what works."
     }
   ],
   "early_access": {
     "status": "open",
-    "label": "Join the waitlist",
-    "note": "We will email you when your invite is ready, plus occasional product updates.",
-    "hero_label": "Join →",
-    "hero_note": "Show your interest in joining the beta",
+    "label": "Request a demo",
+    "note": "We will email you to set up a demo.",
+    "hero_label": "Request a demo",
+    "hero_note": "We will email you to set up a demo.",
     "form": {
       "provider": "apps_script",
       "endpoint": "https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec",
@@ -234,10 +164,7 @@
       ]
     },
     "community": {
-      "name": "Discord",
-      "label": "Join the Discord",
-      "url": "https://discord.gg/hn8eG4d9f",
-      "note": "See the build in progress, ask questions and report bugs."
+      "url": null
     },
     "contact_email": "hello@jinai.md"
   }
