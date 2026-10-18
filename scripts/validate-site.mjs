@@ -38,6 +38,8 @@ const expectedFiles = [
   "accessibility/index.html",
   "agent/content.json",
   "agent/index.html",
+  "assets/demo/demo-employee-categories.webp",
+  "assets/demo/demo-admin-by-role.webp",
   "brand/jin-mark.svg",
   "en/index.html",
   "googled8075da2e5b1406b.html",
@@ -258,6 +260,23 @@ check(howSection.includes('class="how-audience">Employee</h3>') &&
   howSection.includes('class="how-audience">Admin</h3>') &&
   howSection.includes('href="how-it-works/">Read more</a>'),
   "How it works must include Employee, Admin and Read more.");
+const demoScreens = [
+  ["Employee", "demo-employee-categories.webp", "Jin AI employee workspace with Claude Code connected. Harness parts are sorted by category, such as instructions, skills, agent definitions, tools and memory, and each part is marked Can move or Confidential."],
+  ["Admin", "demo-admin-by-role.webp", "Jin AI admin console showing teams by role and the Sales team's most-used harnesses, with the share of team members using each one and who built it."]
+];
+for (const [page, source, prefix] of [
+  ["Root #how", howSection, ""],
+  ["How it works #steps", howPage.match(/<section id="steps">([\s\S]*?)<\/section>/)?.[1] || "", "../"]
+]) {
+  check(count(source, /<img\b/g) === 2, `${page} must contain exactly two demo screens.`);
+  for (const [audience, filename, alt] of demoScreens) {
+    const image = source.match(new RegExp(
+      `<h([23]) class="how-audience">${audience}<\\/h\\1>\\s*<figure class="shot">(<img\\b[^>]*>)<\\/figure>\\s*<ol class="harness-steps"`
+    ))?.[2];
+    check(image === `<img src="${prefix}assets/demo/${filename}" width="2880" height="1664" loading="lazy" alt="${alt}">`,
+      `${page} must show the approved ${audience} screen and exact alt text between its heading and steps, without a caption.`);
+  }
+}
 const companyCapabilities = content.capabilities.filter((capability) => capability.id !== "workspace-beta");
 check(companyCapabilities.length === 4 && companyCapabilities.every((capability, index) =>
   howSection.includes(`<h4>${index + 1}. ${capability.name}</h4>`) &&

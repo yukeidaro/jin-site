@@ -26,6 +26,8 @@ const files = [
   "agent/index.html",
   "agent/content.json",
   "brand/jin-mark.svg",
+  "assets/demo/demo-employee-categories.webp",
+  "assets/demo/demo-admin-by-role.webp",
   "shots/og-b2b.png"
 ];
 

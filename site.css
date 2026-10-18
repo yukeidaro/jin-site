@@ -289,6 +289,8 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 .solution-copy p{max-width:28em}
 .harness-definition{margin-top:28px;max-width:56em;color:var(--ink-2)}
 .how-audience{font:500 13px/1.5 var(--mono);color:var(--dim)}
+.home-columns .shot{margin:16px 0 20px;border:1px solid var(--edge);border-radius:8px;overflow:hidden;background:#fff}
+.home-columns .shot img{border:0;border-radius:0}
 .harness-steps{list-style:none;display:grid;gap:28px;margin-top:24px}
 .harness-steps h3,.harness-steps h4{font:600 19px/1.35 var(--serif);letter-spacing:-.01em}
 .harness-steps p{margin-top:8px;color:var(--ink-2);font-size:15.5px}
