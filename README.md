@@ -64,9 +64,9 @@ in check mode and fails when a derivative has drifted.
   Shadow AI is a problem label, not a claim that Jin AI blocks it.
 - Solution: **Safe for every employee.** **Reusable for the company.**
   Keep both employee and company value in the story.
-- Status values are `live`, `building`, `next`; labels are **Live**, **Building**,
-  **Next**. Never present Building or Next as shipped. The workspace beta is
-  Live. Company features are Building, starting with Claude Code.
+- Human pages (`/`, `/how-it-works/`) do not show status labels (Yu, 2026-10-19).
+  `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`.
+  Never claim a Building or Next item is available today in any copy.
 - Data: **Your company's context stays yours.** Each company's context is kept
   separate. Jin AI never records your screen. Jin AI itself never trains on
   your data. Do not claim that Jin AI does not read conversation histories.

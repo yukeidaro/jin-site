@@ -244,18 +244,24 @@
     <div class="home-columns">
       <div>
         <h3 class="how-audience">Employee</h3>
-        <figure class="shot"><img src="assets/demo/demo-employee-categories.webp" width="2880" height="1664" loading="lazy" alt="Jin AI employee workspace with Claude Code connected. Harness parts are sorted by category, such as instructions, skills, agent definitions, tools and memory, and each part is marked Can move or Confidential."></figure>
+        <div class="screen" role="img" aria-label="Jin AI employee workspace. The camera moves across the list of AI tools in the MCP connection panel, then across harness parts sorted by category, each marked Can move or Confidential.">
+          <img class="screen-connect" src="assets/demo/demo-1-connect.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+          <img class="screen-categories" src="assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+        </div>
         <ol class="harness-steps">
-          <li><h4>1. Connect once.</h4><p>Jin AI connects to your AI tools through MCP.</p><small class="harness-status">Building: Claude Code first</small></li>
-          <li><h4>2. See every harness by category.</h4><p>Skills, instructions, memory and MCP settings, sorted for each person.</p><small class="harness-status">Building</small></li>
+          <li><h4>1. Connect once.</h4><p>Jin AI connects to your AI tools through MCP.</p></li>
+          <li><h4>2. See every harness by category.</h4><p>Skills, instructions, memory and MCP settings, sorted for each person.</p></li>
         </ol>
       </div>
       <div>
         <h3 class="how-audience">Admin</h3>
-        <figure class="shot"><img src="assets/demo/demo-admin-by-role.webp" width="2880" height="1664" loading="lazy" alt="Jin AI admin console showing teams by role and the Sales team's most-used harnesses, with the share of team members using each one and who built it."></figure>
+        <div class="screen" role="img" aria-label="Jin AI admin console. The camera moves across teams by role and their most-used harnesses, then across the harness policies and the approved and not approved AI tools.">
+          <img class="screen-by-role" src="assets/demo/demo-3-by-role.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+          <img class="screen-what-can-move" src="assets/demo/demo-4-what-can-move.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+        </div>
         <ol class="harness-steps" start="3">
-          <li><h4>3. See it by role.</h4><p>Which harnesses each role uses, and how often.</p><small class="harness-status next">Next</small></li>
-          <li><h4>4. Decide what can move.</h4><p>Parts marked confidential connect only to the AI tools you approve.</p><small class="harness-status next">Next</small></li>
+          <li><h4>3. See it by role.</h4><p>Which harnesses each role uses, and how often.</p></li>
+          <li><h4>4. Decide what can move.</h4><p>Parts marked confidential connect only to the AI tools you approve.</p></li>
         </ol>
       </div>
     </div>
@@ -645,6 +651,24 @@
 </footer>
 
 <script type="module" src="waitlist.mjs"></script>
+<script>
+(()=>{
+  const screens=document.querySelectorAll('.screen');
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const visible=new Set();
+  const update=()=>screens.forEach(screen=>{
+    screen.classList.toggle('screen-running',visible.has(screen)&&!reduced.matches);
+  });
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(({target,isIntersecting})=>{
+      if(isIntersecting){visible.add(target)}else{visible.delete(target)}
+    });
+    update();
+  });
+  screens.forEach(screen=>observer.observe(screen));
+  reduced.addEventListener('change',update);
+})();
+</script>
 <script>
 (function(){
 const shadow=document.getElementById('sa-svg');

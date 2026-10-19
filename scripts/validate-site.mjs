@@ -38,8 +38,10 @@ const expectedFiles = [
   "accessibility/index.html",
   "agent/content.json",
   "agent/index.html",
-  "assets/demo/demo-employee-categories.webp",
-  "assets/demo/demo-admin-by-role.webp",
+  "assets/demo/demo-1-connect.webp",
+  "assets/demo/demo-2-categories.webp",
+  "assets/demo/demo-3-by-role.webp",
+  "assets/demo/demo-4-what-can-move.webp",
   "brand/jin-mark.svg",
   "en/index.html",
   "googled8075da2e5b1406b.html",
@@ -261,31 +263,46 @@ check(howSection.includes('class="how-audience">Employee</h3>') &&
   howSection.includes('href="how-it-works/">Read more</a>'),
   "How it works must include Employee, Admin and Read more.");
 const demoScreens = [
-  ["Employee", "demo-employee-categories.webp", "Jin AI employee workspace with Claude Code connected. Harness parts are sorted by category, such as instructions, skills, agent definitions, tools and memory, and each part is marked Can move or Confidential."],
-  ["Admin", "demo-admin-by-role.webp", "Jin AI admin console showing teams by role and the Sales team's most-used harnesses, with the share of team members using each one and who built it."]
+  ["Employee", "Jin AI employee workspace. The camera moves across the list of AI tools in the MCP connection panel, then across harness parts sorted by category, each marked Can move or Confidential.", [
+    ["screen-connect", "demo-1-connect.webp"], ["screen-categories", "demo-2-categories.webp"]
+  ]],
+  ["Admin", "Jin AI admin console. The camera moves across teams by role and their most-used harnesses, then across the harness policies and the approved and not approved AI tools.", [
+    ["screen-by-role", "demo-3-by-role.webp"], ["screen-what-can-move", "demo-4-what-can-move.webp"]
+  ]]
 ];
 for (const [page, source, prefix] of [
   ["Root #how", howSection, ""],
   ["How it works #steps", howPage.match(/<section id="steps">([\s\S]*?)<\/section>/)?.[1] || "", "../"]
 ]) {
-  check(count(source, /<img\b/g) === 2, `${page} must contain exactly two demo screens.`);
-  for (const [audience, filename, alt] of demoScreens) {
-    const image = source.match(new RegExp(
-      `<h([23]) class="how-audience">${audience}<\\/h\\1>\\s*<figure class="shot">(<img\\b[^>]*>)<\\/figure>\\s*<ol class="harness-steps"`
-    ))?.[2];
-    check(image === `<img src="${prefix}assets/demo/${filename}" width="2880" height="1664" loading="lazy" alt="${alt}">`,
-      `${page} must show the approved ${audience} screen and exact alt text between its heading and steps, without a caption.`);
+  check(count(source, /<div\b[^>]*\bclass="screen"/g) === 2 && count(source, /<img\b/g) === 4,
+    `${page} must contain exactly two screen frames with two scenes each.`);
+  for (const [audience, label, scenes] of demoScreens) {
+    const frame = source.match(new RegExp(
+      `<h([23]) class="how-audience">${audience}<\\/h\\1>\\s*(<div class="screen"[^>]*>)([\\s\\S]*?)<\\/div>\\s*<ol class="harness-steps"`
+    ));
+    check(frame?.[2] === `<div class="screen" role="img" aria-label="${label}">`,
+      `${page} must show the ${audience} frame with its exact accessible label between its heading and steps.`);
+    const images = [...(frame?.[3] || "").matchAll(/<img\b[^>]*>/g)].map((match) => match[0]);
+    check(images.length === 2 && scenes.every(([className, filename], index) =>
+      images[index] === `<img class="${className}" src="${prefix}assets/demo/${filename}" width="2880" height="1664" alt="" decoding="async" loading="eager">`) &&
+      (frame?.[3] || "").replace(/<img\b[^>]*>/g, "").trim() === "",
+      `${page} must contain only the two ordered ${audience} scenes, eagerly loaded with intrinsic dimensions, async decoding and decorative alt text.`);
   }
+}
+for (const [page, source] of [["Root", home], ["How it works", howPage]]) {
+  const visibleCopy = source.replace(/<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, "")
+    .replace(/<[^>]*>/g, " ");
+  check(!/\bclass="[^"]*\b(?:st|harness-status)\b/.test(source) &&
+    !/\b(?:Building|Next)\b|Claude Code first/.test(visibleCopy),
+    `${page} must not show status labels or the retired Claude Code first sentence.`);
+  check(!/demo-employee-categories\.webp|demo-admin-by-role\.webp/.test(source),
+    `${page} must not reference the retired demo screens.`);
 }
 const companyCapabilities = content.capabilities.filter((capability) => capability.id !== "workspace-beta");
 check(companyCapabilities.length === 4 && companyCapabilities.every((capability, index) =>
   howSection.includes(`<h4>${index + 1}. ${capability.name}</h4>`) &&
   howSection.includes(`<p>${capability.description}</p>`)),
   "How it works must use all four approved steps.");
-check(count(howSection, /<small class="harness-status">Building: Claude Code first<\/small>/g) === 1 &&
-  count(howSection, /<small class="harness-status">Building<\/small>/g) === 1 &&
-  count(howSection, /<small class="harness-status next">Next<\/small>/g) === 2,
-  "How it works must distinguish the two Building steps from the two Next steps.");
 const howTitle = "How it works | Jin AI";
 const howDescription = "How Jin AI connects to your AI tools, sorts each AI harness by category, and lets the company decide what can move.";
 check(howPage.includes(`<title>${howTitle}</title>`) &&
@@ -306,14 +323,11 @@ check(howPage.includes(`<p class="harness-definition">${content.product.harness_
   count(howPage, /<ol class="harness-steps"/g) === 2 && howPage.includes('start="3"'),
   "The companion page must define an AI harness and separate Employee and Admin steps.");
 const companionSteps = [...howPage.matchAll(/<li><h3>([^<]+)<\/h3>([\s\S]*?)<\/li>/g)];
-const companionStatuses = ["Building: Claude Code first", "Building", "Next", "Next"];
 check(companionSteps.length === 4 && companyCapabilities.every((capability, index) =>
   companionSteps[index]?.[1] === capability.name &&
-  companionSteps[index]?.[2].includes(`<p>${capability.description}</p>`) &&
-  companionSteps[index]?.[2].includes(
-    `<small class="harness-status${capability.status === "next" ? " next" : ""}">${companionStatuses[index]}</small>`)),
-  "The companion page must use all four approved steps with their own Building or Next status.");
-for (const sentence of ["<p>Claude Code first. Other AI tools are next.</p>",
+  companionSteps[index]?.[2].includes(`<p>${capability.description}</p>`)),
+  "The companion page must use all four approved steps.");
+for (const sentence of [
   "<p>For example: <code>CLAUDE.md</code>, skills, memory files and MCP settings.</p>",
   "<p>In pilots, the company approves by hand today.</p>"]) {
   check(howPage.includes(sentence), "The companion page must retain the approved examples and manual pilot caveat.");

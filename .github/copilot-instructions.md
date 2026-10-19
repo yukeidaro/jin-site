@@ -27,7 +27,7 @@ CTA: **Request a demo**. Note: **We will email you to set up a demo.** Keep the 
 ## Facts and status
 
 - `agent/content.json` is the single fact source. Change facts there, then run `node scripts/generate-aeo.mjs`. Never edit inside `GENERATED:*` markers by hand.
-- Status values are `live`, `building`, `next`; labels are Live, Building, Next. Never present Building or Next as shipped. The workspace beta is Live. Company features are Building, starting with Claude Code.
+- Human pages (`/`, `/how-it-works/`) do not show status labels (Yu, 2026-10-19). `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`. Never claim a Building or Next item is available today in any copy.
 - No prices anywhere on the site, including machine-readable formats.
 - Do not publish currency amounts, Pro, Team or free-version offers, Cloud Sync, Google Drive or Notion connections, PC and phone sync, Discord, Baby Voice Recorder, TikTok, market size, competitor names, pilot candidate counts, Nov 13, know-how or DelightX. These are exclusions, not product facts. Keep `early_access.community.url` null.
 - Every number needs a source line directly under it. Do not invent metrics, testimonials, logos, ratings or user counts.

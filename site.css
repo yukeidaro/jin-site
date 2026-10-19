@@ -289,13 +289,46 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 .solution-copy p{max-width:28em}
 .harness-definition{margin-top:28px;max-width:56em;color:var(--ink-2)}
 .how-audience{font:500 13px/1.5 var(--mono);color:var(--dim)}
-.home-columns .shot{margin:16px 0 20px;border:1px solid var(--edge);border-radius:8px;overflow:hidden;background:#fff}
-.home-columns .shot img{border:0;border-radius:0}
+.screen{position:relative;aspect-ratio:2880 / 1664;margin:16px 0 20px;border:1px solid var(--edge);border-radius:8px;overflow:hidden;background:#fff}
+.screen img{position:absolute;inset:0;display:block;width:100%;height:100%;transform-origin:0 0;animation-duration:18s;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-play-state:paused}
+.screen .screen-connect{animation-name:screen-connect}
+.screen .screen-by-role{animation-name:screen-by-role}
+.screen .screen-categories{opacity:0;animation-name:screen-categories,screen-crossfade;animation-timing-function:ease-in-out,linear}
+.screen .screen-what-can-move{opacity:0;animation-name:screen-what-can-move,screen-crossfade;animation-timing-function:ease-in-out,linear}
+.screen-running img{animation-play-state:running;will-change:transform}
+/* Each camera returns to the full screen before its half of the loop ends.
+   Edge targets are clamped to keep the entire frame covered. */
+@keyframes screen-connect{
+  0%,8.333%,47.778%,100%{transform:translate(0,0) scale(1)}
+  16.667%{transform:translate(-19.3%,-44.5%) scale(2.1)}
+  33.333%{transform:translate(-19.3%,-110%) scale(2.1)}
+  41.667%{transform:translate(-13%,-40%) scale(1.5)}
+}
+@keyframes screen-categories{
+  0%,56.667%,97.778%,100%{transform:translate(0,0) scale(1)}
+  65.556%{transform:translate(-6%,-38%) scale(1.6)}
+  80.556%{transform:translate(-60%,-54%) scale(1.6)}
+  91.667%{transform:translate(-16%,-20%) scale(1.2)}
+}
+@keyframes screen-by-role{
+  0%,6.667%,47.778%,100%{transform:translate(0,0) scale(1)}
+  15.556%{transform:translate(0,-22%) scale(1.8)}
+  28.889%{transform:translate(-47.5%,-25%) scale(1.5)}
+  41.667%{transform:translate(-16%,-10%) scale(1.2)}
+}
+@keyframes screen-what-can-move{
+  0%,56.667%,97.778%,100%{transform:translate(0,0) scale(1)}
+  65.556%{transform:translate(-14%,-38%) scale(1.6)}
+  80%{transform:translate(-80%,-22%) scale(1.8)}
+  91.667%{transform:translate(-20%,-16%) scale(1.2)}
+}
+@keyframes screen-crossfade{
+  0%,46.667%,100%{opacity:0}
+  50%,96.667%{opacity:1}
+}
 .harness-steps{list-style:none;display:grid;gap:28px;margin-top:24px}
 .harness-steps h3,.harness-steps h4{font:600 19px/1.35 var(--serif);letter-spacing:-.01em}
 .harness-steps p{margin-top:8px;color:var(--ink-2);font-size:15.5px}
-.harness-status{display:block;margin-top:8px;font:400 12.5px/1.6 var(--mono);color:var(--accent)}
-.harness-status.next{color:var(--dim)}
 .read-more{display:inline-block;margin-top:36px}
 .data-promises{list-style:none;display:grid;gap:10px;margin-top:28px;font-size:18px}
 .home-page .final h2{margin-top:0}
@@ -339,6 +372,8 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 }
 @media(prefers-reduced-motion:reduce){
   html:has(.home-page){scroll-behavior:auto}
+  .screen img{animation:none;transform:none;will-change:auto}
+  .screen img+img{opacity:0}
   .art *{animation:none!important}
   .sa-trail,.sa-spark,.ho-ghost,.ed-lit,.ed-arw{opacity:1!important}
   .sa-tick{opacity:0!important}
