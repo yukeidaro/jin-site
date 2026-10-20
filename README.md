@@ -53,7 +53,7 @@ in check mode and fails when a derivative has drifted.
 
 - Product name: **Jin AI**. It is a B2B product for AI-forward companies.
   Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
-- Headline: **Keep your top performers' AI harnesses inside the company.**
+- Headline: **Make every employee your best AI user.**
 - Use **AI harness** or **harnesses**, never "setup" for this concept.
   An AI harness is the instructions, skills, memory and connected tools around
   an AI agent that make it work for a role.

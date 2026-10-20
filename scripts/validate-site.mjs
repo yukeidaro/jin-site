@@ -135,7 +135,7 @@ for (const [page, source] of [["Root", home], ["How it works", howPage], ...lega
       `${page} must declare the share image ${dimension}.`);
   }
   for (const [attribute, name] of [["property", "og:image:alt"], ["name", "twitter:image:alt"]]) {
-    check(source.includes(`<meta ${attribute}="${name}" content="Jin AI: Keep your top performers' AI harnesses inside the company">`),
+    check(source.includes(`<meta ${attribute}="${name}" content="Jin AI: Make every employee your best AI user">`),
       `${page} must use the approved ${name}.`);
   }
 }
@@ -151,9 +151,9 @@ check(homeSections.length === 6 && homeSections[0]?.[1].includes('class="hero"')
   homeSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() ===
   "problem,solution,how,data,demo", "Root must contain only hero, problem, solution, how, data and demo sections, in order.");
 check(count(home, /<h1>/g) === 1 &&
-  home.includes("<h1>Keep your top performers' AI harnesses inside the company.</h1>"),
+  home.includes("<h1>Make every employee your best AI user.</h1>"),
   "Root must use the approved H1 once.");
-const homeTitle = "Jin AI | Keep your top performers' AI harnesses inside the company";
+const homeTitle = "Jin AI | Make every employee your best AI user";
 check(home.includes(`<title>${homeTitle}</title>`), "Root must use the approved title.");
 for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:title"]]) {
   check(home.includes(`<meta ${attribute}="${name}" content="${homeTitle}">`), `Root must use the approved ${name}.`);

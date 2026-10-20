@@ -19,9 +19,9 @@
   },
   "product": {
     "name": "Jin AI",
-    "headline": "Keep your top performers' AI harnesses inside the company.",
+    "headline": "Make every employee your best AI user.",
     "category": "AI harnesses for companies",
-    "description": "Keep your top performers' AI harnesses inside the company. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.",
+    "description": "Make every employee your best AI user. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.",
     "harness_definition": "An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.",
     "status": "building",
     "availability": "The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.",
@@ -113,7 +113,7 @@
     {
       "id": "what-is-jin-ai",
       "question": "What is Jin AI?",
-      "answer": "Keep your top performers' AI harnesses inside the company. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
+      "answer": "Make every employee your best AI user. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
     },
     {
       "id": "what-is-an-ai-harness",

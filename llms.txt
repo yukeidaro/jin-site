@@ -1,6 +1,6 @@
 # Jin AI
 
-> Keep your top performers' AI harnesses inside the company. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
+> Make every employee your best AI user. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
 
 Status: Building. Last updated: 2026-10-19.
 The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.
@@ -22,7 +22,7 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 
 ## Direct answers
 
-- [What is Jin AI?](https://jinai.md/agent/#what-is-jin-ai): Keep your top performers' AI harnesses inside the company. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
+- [What is Jin AI?](https://jinai.md/agent/#what-is-jin-ai): Make every employee your best AI user. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
 - [What is an AI harness?](https://jinai.md/agent/#what-is-an-ai-harness): An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.
 - [Is Jin AI available now?](https://jinai.md/agent/#is-jin-ai-available): The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.
 - [Which AI tools does it work with?](https://jinai.md/agent/#which-ai-tools-does-it-work-with): Claude Code first. Other AI tools are next.
