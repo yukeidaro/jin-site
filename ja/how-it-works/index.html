@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
+<script id="jin-nav-paint">document.documentElement.classList.add("js-nav");</script>
 <script src="/language.js" defer></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>仕組み | Jin AI</title>
@@ -19,67 +20,111 @@
 <meta property="og:image" content="https://jinai.md/shots/og-b2b.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Jin AI: Make every employee your best AI user">
+<meta property="og:image:alt" content="Jin AI: 全社員の AI の使い方を、底上げする">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="仕組み | Jin AI">
 <meta name="twitter:description" content="Jin AI が AI ツールにつながり、AI ハーネスを種類ごとに整理し、持ち出せるものを会社が決める仕組みです。">
 <meta name="twitter:image" content="https://jinai.md/shots/og-b2b.png">
-<meta name="twitter:image:alt" content="Jin AI: Make every employee your best AI user">
+<meta name="twitter:image:alt" content="Jin AI: 全社員の AI の使い方を、底上げする">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../site.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@400&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/base.css">
+<link rel="stylesheet" href="/theme-en.css">
+<link rel="stylesheet" href="/theme-ja.css">
 </head>
 <body class="home-page">
 
 <header>
   <div class="wrap nav">
-    <a class="brand" href="../"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
-    <nav class="navlinks" aria-label="ページの案内">
-      <a href="./" aria-current="page">仕組み</a>
+    <a class="brand" href="/ja/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
+    <nav class="header-menu" id="primary-menu" aria-label="メインナビゲーション">
+      <ul class="navlinks">
+        <li class="nav-group">
+          <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="product-panel">製品</button>
+          <span class="mobile-group-label">製品</span>
+          <ul class="nav-panel" id="product-panel">
+            <li><a href="/ja/"><span class="nav-item-title">概要</span><span class="nav-description">Jin AI が会社にもたらすこと。</span></a></li>
+            <li><a href="/ja/how-it-works/" aria-current="page"><span class="nav-item-title">仕組み</span><span class="nav-description">つなぐ、整理する、役割ごとに見る、持ち出せるものを決める。</span></a></li>
+            <li><a href="/ja/how-it-works/#employee"><span class="nav-item-title">社員向け</span><span class="nav-description">個人のコンテクストを安全に預け、取り出せる。</span></a></li>
+            <li><a href="/ja/how-it-works/#admin"><span class="nav-item-title">管理者向け</span><span class="nav-description">役割ごとの AI の使い方が見える。</span></a></li>
+          </ul>
+        </li>
+        <li><a href="/ja/security/">セキュリティ</a></li>
+        <li class="nav-group">
+          <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="resources-panel">リソース</button>
+          <span class="mobile-group-label">リソース</span>
+          <ul class="nav-panel" id="resources-panel">
+            <li><a href="/ja/resources/ai-harness/"><span class="nav-item-title">AI ハーネスとは</span><span class="nav-description">AI エージェントを役割に合わせて働かせる部品。</span></a></li>
+            <li><a href="/ja/privacy/"><span class="nav-item-title">プライバシーポリシー</span><span class="nav-description">お預かりする情報と、その使い方。</span></a></li>
+            <li><a href="/ja/accessibility/"><span class="nav-item-title">アクセシビリティ</span><span class="nav-description">目標と、問題のご報告先。</span></a></li>
+          </ul>
+        </li>
+        <li><a href="/ja/company/">会社情報</a></li>
+        <li><a href="/ja/#demo">お問い合わせ</a></li>
+      </ul>
     </nav>
-    <div class="navright"><a class="btn btn-p" href="../#demo">デモを申し込む</a></div>
+    <a class="btn btn-p" href="/ja/#demo">デモを申し込む</a>
+    <button class="menu-toggle" type="button" aria-label="メニュー" aria-controls="primary-menu" aria-expanded="false" hidden><span></span><span></span><span></span></button>
   </div>
 </header>
 
 <main>
-<section class="hero">
+<section class="hero how-hero">
   <div class="wrap">
+    <p class="mono-label">仕組み</p>
     <h1>仕組み</h1>
     <p class="harness-definition">AI ハーネスとは、AI エージェントを役割に合わせて働かせるための、指示・スキル・記憶・接続ツールの一式です。</p>
   </div>
 </section>
 
-<section id="steps">
+<div id="steps">
+<section class="section workflow" id="employee" aria-labelledby="employee-heading">
   <div class="wrap">
-    <div class="home-columns">
-      <div>
-        <h2 class="how-audience">社員</h2>
-        <div class="screen" role="img" aria-label="Jin AI の社員向けの画面。MCP の接続画面に並ぶ AI ツールの一覧を映し、次に、種類ごとに整理されたハーネスの部品と、それぞれの Can move と Confidential の表示を映します。">
-          <img class="screen-connect" src="../../assets/demo/demo-1-connect.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
-          <img class="screen-categories" src="../../assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
-        </div>
-        <ol class="harness-steps">
-          <li><h3>一度つなぐだけ。</h3><p>Jin AI は MCP を通じて、お使いの AI ツールにつながります。</p></li>
-          <li><h3>すべてのハーネスを種類ごとに。</h3><p>スキル、指示、記憶、MCP の設定を、人ごとに整理して表示します。</p><p>例: <code>CLAUDE.md</code>、スキル、記憶のファイル、MCP の設定。</p></li>
-        </ol>
-      </div>
-      <div>
-        <h2 class="how-audience">管理者</h2>
-        <div class="screen" role="img" aria-label="Jin AI の管理者向けの画面。役割ごとのチームとよく使われているハーネスを映し、次に、ハーネスの方針と、承認された AI ツールと承認されていない AI ツールを映します。">
-          <img class="screen-by-role" src="../../assets/demo/demo-3-by-role.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
-          <img class="screen-what-can-move" src="../../assets/demo/demo-4-what-can-move.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
-        </div>
-        <ol class="harness-steps" start="3">
-          <li><h3>役割ごとに見る。</h3><p>どの役割が、どのハーネスを、どれくらい使っているか。</p></li>
-          <li><h3>持ち出せるものを決める。</h3><p>機密とした部品は、承認した AI ツールにだけつながります。</p><p>パイロットでは、今は会社が手作業で承認します。</p></li>
-        </ol>
-      </div>
+    <div class="section-head split">
+      <h2 class="how-audience" id="employee-heading">社員</h2>
+      <ol class="harness-steps">
+        <li><span class="mono-label">01</span><div><h3>一度つなぐだけ。</h3><p>Jin AI は MCP を通じて、お使いの AI ツールにつながります。</p></div></li>
+        <li><span class="mono-label">02</span><div><h3>すべてのハーネスを種類ごとに。</h3><p>スキル、指示、記憶、MCP の設定を、人ごとに整理して表示します。</p><p class="step-note">例: <code>CLAUDE.md</code>、スキル、記憶のファイル、MCP の設定。</p></div></li>
+      </ol>
     </div>
+  </div>
+  <div class="product-viewport">
+    <figure class="demo-stage">
+      <div class="demo-window moving-frame">
+        <div class="screen" role="img" aria-label="Jin AI の社員向けの画面。MCP の接続画面に並ぶ AI ツールの一覧を映し、次に、種類ごとに整理されたハーネスの部品と、それぞれの Can move と Confidential の表示を映します。">
+          <img class="screen-connect" src="/assets/demo/demo-1-connect.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+          <img class="screen-categories" src="/assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+        </div>
+      </div>
+    </figure>
   </div>
 </section>
 
-<section id="data">
+<section class="section workflow" id="admin" aria-labelledby="admin-heading">
+  <div class="wrap">
+    <div class="section-head split">
+      <h2 class="how-audience" id="admin-heading">管理者</h2>
+      <ol class="harness-steps" start="3">
+        <li><span class="mono-label">03</span><div><h3>役割ごとに見る。</h3><p>どの役割が、どのハーネスを、どれくらい使っているか。</p></div></li>
+        <li><span class="mono-label">04</span><div><h3>持ち出せるものを決める。</h3><p>機密とした部品は、承認した AI ツールにだけつながります。</p><p class="step-note">パイロットでは、今は会社が手作業で承認します。</p></div></li>
+      </ol>
+    </div>
+  </div>
+  <div class="product-viewport">
+    <figure class="demo-stage">
+      <div class="demo-window moving-frame">
+        <div class="screen" role="img" aria-label="Jin AI の管理者向けの画面。役割ごとのチームとよく使われているハーネスを映し、次に、ハーネスの方針と、承認された AI ツールと承認されていない AI ツールを映します。">
+          <img class="screen-by-role" src="/assets/demo/demo-3-by-role.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+          <img class="screen-what-can-move" src="/assets/demo/demo-4-what-can-move.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+        </div>
+      </div>
+    </figure>
+  </div>
+</section>
+</div>
+
+<section class="section" id="data">
   <div class="wrap">
     <h2 class="h2">会社のコンテクストは、会社のもの。</h2>
     <ul class="data-promises">
@@ -87,23 +132,35 @@
       <li>Jin AI は画面を録画しません。</li>
       <li>Jin AI 自体が、お客様のデータで学習することはありません。</li>
     </ul>
-    <div class="wait"><a class="btn btn-p" href="../#demo">デモを申し込む</a></div>
+    <a class="text-link read-more" href="/ja/security/">データとセキュリティ &rarr;</a>
+  </div>
+</section>
+
+<section class="closing-cta" aria-labelledby="closing-heading">
+  <div class="wrap" data-draft>
+    <span class="mono-label draft-tag">文案（承認待ち）</span>
+    <h2 id="closing-heading">チームの AI ハーネスで、確かめてみませんか。</h2>
+    <a class="btn btn-p" href="/ja/#demo">デモを申し込む</a>
   </div>
 </section>
 </main>
 
 <footer>
-  <div class="wrap footer-bar">
-    <a class="brand" href="../"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
-    <a class="footer-link" href="mailto:hello@jinai.md">hello@jinai.md</a>
-    <a class="footer-link" href="./" aria-current="page">仕組み</a>
-    <a class="footer-link" href="../privacy/">プライバシーポリシー</a>
-    <a class="footer-link" href="../accessibility/">アクセシビリティ</a>
-    <span>アクセスは Cloudflare Web Analytics で数えています。Cookie は使っていません。</span>
-    <nav class="language-switch" aria-label="Language"><a href="/how-it-works/" lang="en" hreflang="en" data-jin-lang="en">English</a> / <a href="/ja/how-it-works/" lang="ja" hreflang="ja" aria-current="page" data-jin-lang="ja">日本語</a></nav>
-    <span>&copy; 2026 Jin AI</span>
+  <div class="wrap">
+    <div class="footer-main">
+      <a class="brand" href="/ja/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
+      <div class="footer-column"><h2>製品</h2><a href="/ja/">概要</a><a href="/ja/how-it-works/" aria-current="page">仕組み</a><a href="/ja/how-it-works/#employee">社員向け</a><a href="/ja/how-it-works/#admin">管理者向け</a></div>
+      <div class="footer-column"><h2>リソース</h2><a href="/ja/resources/ai-harness/">AI ハーネスとは</a><a href="/ja/privacy/">プライバシーポリシー</a><a href="/ja/accessibility/">アクセシビリティ</a></div>
+      <div class="footer-column"><h2>会社</h2><a href="/ja/company/">会社情報</a><a href="/ja/#demo">お問い合わせ</a><a href="mailto:hello@jinai.md">hello@jinai.md</a></div>
+    </div>
+    <div class="footer-bottom">
+      <p>アクセスは Cloudflare Web Analytics で数えています。Cookie は使っていません。</p>
+      <span>&copy; 2026 Jin AI</span>
+      <nav class="language-switch" aria-label="言語"><a href="/how-it-works/" lang="en" hreflang="en" data-jin-lang="en">English</a> / <a href="/ja/how-it-works/" lang="ja" hreflang="ja" aria-current="page" data-jin-lang="ja">日本語</a></nav>
+    </div>
   </div>
 </footer>
+<script type="module" src="/nav.js"></script>
 <script>
 (()=>{
   const screens=document.querySelectorAll('.screen');

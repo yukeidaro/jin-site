@@ -58,6 +58,9 @@ const expectedFiles = [
   "ja/how-it-works/index.html",
   "ja/privacy/index.html",
   "ja/accessibility/index.html",
+  "ja/security/index.html",
+  "ja/company/index.html",
+  "ja/resources/ai-harness/index.html",
   "language.js",
   "how-it-works/index.html",
   "llms.txt",
@@ -70,6 +73,7 @@ const expectedFiles = [
   "shots/og-b2b.png",
   "site.css",
   "theme-en.css",
+  "theme-ja.css",
   "sitemap.xml",
   "waitlist.mjs"
 ].sort();
@@ -77,7 +81,7 @@ const expectedFiles = [
 const deployedFiles = await listFiles(site);
 check(JSON.stringify(deployedFiles) === JSON.stringify(expectedFiles), `Unexpected Pages artifact: ${deployedFiles.join(", ")}`);
 
-const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson, privacy, accessibility, japanesePrivacy, japaneseAccessibility, security, company, harness] = await Promise.all([
+const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson, privacy, accessibility, japanesePrivacy, japaneseAccessibility, security, company, harness, japaneseSecurity, japaneseCompany, japaneseHarness] = await Promise.all([
   text("index.html"),
   text("ja/index.html"),
   text("how-it-works/index.html"),
@@ -95,7 +99,10 @@ const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, ro
   text("ja/accessibility/index.html"),
   text("security/index.html"),
   text("company/index.html"),
-  text("resources/ai-harness/index.html")
+  text("resources/ai-harness/index.html"),
+  text("ja/security/index.html"),
+  text("ja/company/index.html"),
+  text("ja/resources/ai-harness/index.html")
 ]);
 
 const englishPages = [
@@ -109,6 +116,12 @@ const pagePairs = [
     "Jin AI は、優れた社員がつくった AI ハーネスを、すべての社員にとって安全に、会社にとって再利用できる形にします。"],
   ["how-it-works/", howPage, japaneseHow, "仕組み", "仕組み | Jin AI",
     "Jin AI が AI ツールにつながり、AI ハーネスを種類ごとに整理し、持ち出せるものを会社が決める仕組みです。"],
+  ["security/", security, japaneseSecurity, "会社のコンテクストは、会社のもの。", "セキュリティ | Jin AI",
+    "会社ごとにコンテクストを分けて保管します。個人のコンテクストと会社のコンテクストも、分けて扱います。"],
+  ["company/", company, japaneseCompany, "会社情報", "会社情報 | Jin AI",
+    "私たちの使命は、機密のコンテクストを社外に出さずに、すべての社員が、社内で一番 AI を使いこなす人と同じように AI を使えるようにすることです。"],
+  ["resources/ai-harness/", harness, japaneseHarness, "AI ハーネスとは", "AI ハーネスとは | Jin AI",
+    "AI ハーネスとは、AI エージェントを役割に合わせて働かせるための、指示・スキル・記憶・接続ツールの一式です。"],
   ["privacy/", privacy, japanesePrivacy, "プライバシーポリシー", "プライバシーポリシー | Jin AI",
     "jinai.md でお預かりする情報と、その使い方について。"],
   ["accessibility/", accessibility, japaneseAccessibility, "アクセシビリティ", "アクセシビリティ | Jin AI",
@@ -116,7 +129,8 @@ const pagePairs = [
 ];
 for (const [route, english, japanesePage, heading, title, description] of pagePairs) {
   check(japanesePage.includes("<html lang=\"ja\">") &&
-    count(japanesePage, /<h1\b/g) === 1 && japanesePage.includes(`<h1>${heading}</h1>`) &&
+    count(japanesePage, /<h1\b/g) === 1 &&
+    japanesePage.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === heading &&
     /<main\b[^>]*>[\s\S]*<\/main>/.test(japanesePage),
   `/ja/${route} must have Japanese language, the approved H1 and a main landmark.`);
   check(japanesePage.includes(`<title>${title}</title>`), `/ja/${route} must have its approved title.`);
@@ -150,7 +164,7 @@ for (const [route, english, japanesePage, heading, title, description] of pagePa
         continue;
       }
       if (language === "en") continue;
-      const navigation = area.match(/<nav class="language-switch" aria-label="Language">([\s\S]*?)<\/nav>/)?.[1] || "";
+      const navigation = area.match(/<nav class="language-switch" aria-label="言語">([\s\S]*?)<\/nav>/)?.[1] || "";
       check(count(navigation, /<a\b/g) === 2 && count(navigation, /aria-current="page"/g) === 1,
         `${url} needs two language links and one current language in the ${landmark}.`);
       for (const target of ["en", "ja"]) {
@@ -227,7 +241,8 @@ for (const [page, source] of pagePairs.flatMap(([route, english, japanesePage]) 
       `${page} must declare the share image ${dimension}.`);
   }
   for (const [attribute, name] of [["property", "og:image:alt"], ["name", "twitter:image:alt"]]) {
-    check(source.includes(`<meta ${attribute}="${name}" content="Jin AI: Make every employee your best AI user">`),
+    const imageAlt = page.startsWith("/ja/") ? "Jin AI: 全社員の AI の使い方を、底上げする" : "Jin AI: Make every employee your best AI user";
+    check(source.includes(`<meta ${attribute}="${name}" content="${imageAlt}">`),
       `${page} must use the approved ${name}.`);
   }
 }
@@ -430,10 +445,9 @@ Sitemap: https://jinai.md/sitemap.xml
 `, "robots.txt policy has drifted.");
 
 const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).sort();
-check(JSON.stringify(sitemapUrls) === JSON.stringify([
-  ...pagePairs.flatMap(([route]) => [`https://jinai.md/${route}`, `https://jinai.md/ja/${route}`]),
-  "https://jinai.md/security/", "https://jinai.md/company/", "https://jinai.md/resources/ai-harness/"
-].sort()), "Sitemap must contain exactly the seven English pages and the four existing Japanese twins.");
+check(JSON.stringify(sitemapUrls) === JSON.stringify(
+  pagePairs.flatMap(([route]) => [`https://jinai.md/${route}`, `https://jinai.md/ja/${route}`]).sort()),
+  "Sitemap must contain exactly the fourteen English and Japanese page URLs.");
 check(!llms.includes(".md)"), "llms.txt must not link to Markdown mirrors.");
 check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blockquote summary.");
 
@@ -591,7 +605,7 @@ const securityHead = security.match(/<head>([\s\S]*?)<\/head>/)?.[1] || "";
 check(count(securityHead, /\bhreflang=/g) === 3, "Security needs exactly three hreflang alternates.");
 for (const alternate of ["en", "ja", "x-default"]) {
   check(securityHead.includes(`<link rel="alternate" hreflang="${alternate}" href="https://jinai.md/${alternate === "ja" ? "ja/" : ""}security/">`),
-    `Security must have the ${alternate} alternate, with its Japanese twin supplied by J1.`);
+    `Security must have the ${alternate} alternate.`);
 }
 const securitySections = [...security.matchAll(/<section class="section security-section" aria-labelledby="([^"]+)">([\s\S]*?)<\/section>/g)];
 const securityCopy = [
@@ -621,7 +635,7 @@ check(securityContact.includes('<p>Questions about security? Email <a href="mail
 
 function normalizedLandmark(source, landmark, baseUrl) {
   return (source.match(new RegExp(`<${landmark}>([\\s\\S]*?)<\\/${landmark}>`))?.[1] || "")
-    .replace(/<nav class="language-switch" aria-label="Language">[\s\S]*?<\/nav>/g, "LANGUAGE_SWITCH")
+    .replace(/<nav class="language-switch" aria-label="(?:Language|言語)">[\s\S]*?<\/nav>/g, "LANGUAGE_SWITCH")
     .replace(/ aria-current="page"| data-pending-page="D2"/g, "")
     .replace(/\b(href|src)="([^"]+)"/g, (_, attribute, url) => `${attribute}="${new URL(url, baseUrl).href}"`)
     .replace(/\s+/g, " ").trim();
@@ -773,7 +787,7 @@ for (const [route, source, title, heading, label, description, expectedCopy] of 
   const head = source.match(/<head>([\s\S]*?)<\/head>/)?.[1] || "";
   check(count(head, /\bhreflang=/g) === 3 && ["en", "ja", "x-default"].every(language =>
     head.includes(`<link rel="alternate" hreflang="${language}" href="https://jinai.md/${language === "ja" ? "ja/" : ""}${route}">`)),
-    `/${route} needs en, ja and x-default alternates, with its Japanese twin supplied by J1.`);
+    `/${route} needs en, ja and x-default alternates.`);
   for (const [attribute, name, value] of [
     ["property", "og:type", "website"], ["property", "og:site_name", "Jin AI"],
     ["property", "og:title", `${title} | Jin AI`], ["name", "twitter:title", `${title} | Jin AI`],
@@ -1026,37 +1040,154 @@ if (access.community?.url) {
 }
 
 const japaneseSections = [...japanese.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
-check(japaneseSections.length === 6 && japaneseSections[0]?.[1].includes('class="hero"') &&
+check(japaneseSections.length === 7 && japaneseSections[0]?.[1].includes('class="hero"') &&
   japaneseSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() ===
-  "problem,solution,how,data,demo", "Japanese home must retain the six English home sections in order.");
+  "problem,solution,how,data,pilot,demo", "Japanese home must retain the seven English home sections in order.");
 const japaneseProblem = japaneseSections.find((match) => match[1].includes('id="problem"'))?.[2] || "";
-const japaneseProblemPending = JSON.stringify([...japaneseProblem.matchAll(/<svg\b[\s\S]*?<\/svg>/g)].map(([svg]) => svg)) !==
-  JSON.stringify([...problemSection.matchAll(/<svg\b[\s\S]*?<\/svg>/g)].map(([svg]) => svg));
-check(count(japaneseProblem, /class="art" role="img" aria-label="[^"]+"/g) === 3,
-  "Japanese problem illustrations need three accessible descriptions.");
-// J1 still has the legacy Problem controller. Keep comparing the shared screen controller.
-const inlineScripts = (source) => [...source.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((match) => match[1])
-  .filter(script => !script.includes("const shadow=document.getElementById('sa-svg')"));
-for (const [page, english, translated] of [["home", home, japanese], ["How it works", howPage, japaneseHow]]) {
-  check(JSON.stringify(inlineScripts(english)) === JSON.stringify(inlineScripts(translated)),
-    `Japanese ${page} must retain the English animation scripts.`);
-  check(count(translated, /class="screen" role="img" aria-label="[^"]+"/g) === 2 &&
-    count(translated, /<img\b/g) === 4,
-  `Japanese ${page} must contain two accessible moving screens with four images.`);
-  for (const [, , scenes] of demoScreens) {
-    for (const [className, filename] of scenes) {
-      const prefix = page === "home" ? "../" : "../../";
-      check(translated.includes(`<img class="${className}" src="${prefix}assets/demo/${filename}" width="2880" height="1664" alt="" decoding="async" loading="eager">`),
-        `Japanese ${page} must retain its ${className} image and intrinsic dimensions.`);
+const svgGeometry = source => [...source.matchAll(/<svg\b[\s\S]*?<\/svg>/g)].map(([svg]) =>
+  svg.replace(/\s(?:aria-label|data-label-idle|data-label-changed)="[^"]*"/g, "")
+    .replace(/(<text\b[^>]*>)[^<]*(<\/text>)/g, "$1LAYER$2"));
+check(count(japaneseProblem, /<svg\b[^>]*role="img"[^>]*aria-label="[^"]+"/g) === 3 &&
+  JSON.stringify(svgGeometry(japaneseProblem)) === JSON.stringify(svgGeometry(problemSection)),
+  "Japanese Problem SVGs must match English geometry, with three translated accessible descriptions.");
+const japaneseProblemCopy = [
+  ["owner", "エージェントが止まる", "作った人が辞めると、エージェントは動くための文脈を失います。", "担当者を外す"],
+  ["handover", "後任者が一から組み直す", "引き継がれるのは成果物だけ。その裏の文脈・ルール・判断は残りません。", "引き継いでみる"],
+  ["teams", "いいやり方が埋もれる", "あるチームがうまくいく方法を見つけても、ほかのチームには届きません。", "チームを見る"]
+];
+const japaneseFigures = [...japaneseProblem.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle">([\s\S]*?)<\/figure>/g)];
+check(japaneseProblem.includes('<span class="mono-label">課題</span>') &&
+  japaneseProblem.includes('<h2 class="h2">AI を使いこなす人が辞めると、一からやり直しになる。</h2>') &&
+  !/data-draft|draft-tag|sa-svg|ho-svg|ed-svg/.test(japaneseProblem) &&
+  japanese.includes('<script type="module" src="/problem.js"></script>'),
+  "Japanese Problem must use the approved E6 heading and shared controller, without draft or legacy content.");
+for (const [index, [id, heading, description, action]] of japaneseProblemCopy.entries()) {
+  const figure = japaneseFigures[index]?.[2] || "";
+  check(japaneseFigures[index]?.[1] === id &&
+    figure.includes(`<span class="mono-label">図 0${index + 1}</span>`) &&
+    figure.includes(`<figcaption><h3>${heading}</h3><p>${description}</p></figcaption>`) &&
+    figure.match(/<button class="btn problem-action"[^>]*>([\s\S]*?)<\/button>/)?.[1].replace(/<[^>]*>/g, "") ===
+      action + (id === "teams" ? "" : "元に戻す") &&
+    /<p class="problem-status"[^>]*aria-live="polite"[^>]*>[^<]*[\p{Script=Han}\p{Script=Hiragana}][^<]*<\/p>/u.test(figure),
+    `Japanese Fig. 0${index + 1} must have the approved copy, action, reset and translated live status.`);
+  for (const [, value] of figure.matchAll(/\b(?:aria-label|data-label(?:-idle|-changed)?|data-status(?:-idle|-changed)?)="([^"]*)"/g)) {
+    check(/[\p{Script=Han}\p{Script=Hiragana}]/u.test(value), `Japanese ${id} has an untranslated state description.`);
+  }
+}
+check(["文脈", "ルール", "ツール", "例外"].every(label => japaneseProblem.includes(`>${label}</text>`)) &&
+  ["A", "B", "C"].every(team => japaneseProblem.includes(`>チーム ${team} を開く</span>`)),
+  "Japanese handover layers and independently accessible team controls must be translated.");
+
+const bodyStructure = source => {
+  const body = source.match(/<body\b[^>]*>([\s\S]*?)<\/body>/)?.[1] || "";
+  return [...body.replace(/<!-- GENERATED:CTA_FINAL:START -->[\s\S]*?<!-- GENERATED:CTA_FINAL:END -->/g, "")
+    .replace(/<h1 class="hero-reveal"[^>]*>[\s\S]*?<\/h1>/g, '<h1 class="hero-reveal"></h1>')
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>|<!--[\s\S]*?-->/g, "")
+    .matchAll(/<(?!\/)([a-z][\w-]*)\b([^>]*)>/g)].map(([, tag, attributes]) =>
+    [tag, attributes.match(/\bclass="([^"]*)"/)?.[1] || "", attributes.match(/\bid="([^"]*)"/)?.[1] || ""]);
+};
+const japaneseNavigation = [
+  ["製品", "Product"], ["概要", "Overview"], ["仕組み", "How it works"],
+  ["社員向け", "For employees"], ["管理者向け", "For admins"],
+  ["セキュリティ", "Security"], ["リソース", "Resources"], ["会社情報", "Company"],
+  ["会社", "Company"], ["お問い合わせ", "Contact"], ["デモを申し込む", "Request a demo"],
+  ["AI ハーネスとは", "What is an AI harness"], ["プライバシーポリシー", "Privacy"],
+  ["アクセシビリティ", "Accessibility"],
+  ["Jin AI が会社にもたらすこと。", "What Jin AI does for your company."],
+  ["つなぐ、整理する、役割ごとに見る、持ち出せるものを決める。", "Connect, sort, see by role, decide what can move."],
+  ["個人のコンテクストを安全に預け、取り出せる。", "Bring your context in and out safely."],
+  ["役割ごとの AI の使い方が見える。", "See how each role uses AI."],
+  ["AI エージェントを役割に合わせて働かせる部品。", "The parts that make an AI agent work for a role."],
+  ["お預かりする情報と、その使い方。", "What we collect and why."],
+  ["目標と、問題のご報告先。", "Our goal and how to report a problem."],
+  ["アクセスは Cloudflare Web Analytics で数えています。Cookie は使っていません。", "Visits are counted with Cloudflare Web Analytics. No cookies."]
+];
+const scripts = (source, route) => [...source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)]
+  .filter(([, attributes]) => !/id="jin-language-choice"|type="application\/ld\+json"/.test(attributes))
+  .map(([, attributes, script]) => [
+    attributes.replace(/\bsrc="([^"]+)"/g, (_, url) => `src="${new URL(url, `https://jinai.md/${route}`).href}"`), script
+  ]);
+for (const [route, english, translated] of pagePairs) {
+  let expectedNavigation = english.replace('aria-label="Main navigation"', 'aria-label="メインナビゲーション"')
+    .replace('aria-label="Menu"', 'aria-label="メニュー"');
+  for (const [japaneseText, englishText] of japaneseNavigation) {
+    if (japaneseText !== "会社") {
+      expectedNavigation = expectedNavigation.replaceAll(`>${englishText}<`, `>${japaneseText}<`);
     }
   }
+  expectedNavigation = expectedNavigation.replace('<div class="footer-column"><h2>会社情報</h2>',
+    '<div class="footer-column"><h2>会社</h2>');
+  for (const landmark of ["header", "footer"]) {
+    check(normalizedLandmark(translated, landmark, `https://jinai.md/ja/${route}`)
+      .replaceAll("https://jinai.md/ja/", "https://jinai.md/") ===
+      normalizedLandmark(expectedNavigation, landmark, `https://jinai.md/${route}`),
+      `/ja/${route} ${landmark} must have the complete translated navigation, descriptions, footer columns and matching links.`);
+  }
+  check(JSON.stringify(bodyStructure(english)) === JSON.stringify(bodyStructure(translated)),
+    `/ja/${route} must match its English twin's complete element, section ID and component-class structure, except form order and H1 typesetting.`);
+  check(JSON.stringify(scripts(english, route)) === JSON.stringify(scripts(translated, `ja/${route}`)),
+    `/ja/${route} must retain all English scripts, except the English-only language choice and fact graph.`);
+  const englishDrafts = [...english.matchAll(/<[^>]+\bdata-draft\b[^>]*>|<[^>]+class="[^"]*\bdraft-tag\b[^"]*"[^>]*>/g)].map(([tag]) => tag);
+  const japaneseDrafts = [...translated.matchAll(/<[^>]+\bdata-draft\b[^>]*>|<[^>]+class="[^"]*\bdraft-tag\b[^"]*"[^>]*>/g)].map(([tag]) => tag);
+  check(JSON.stringify(englishDrafts) === JSON.stringify(japaneseDrafts) &&
+    count(translated, />文案（承認待ち）<\/span>/g) === count(english, />Draft copy<\/span>/g) &&
+    !translated.includes("Draft copy"),
+    `/ja/${route} must keep every English draft scope and translated draft tag.`);
+  const stylesheets = [...translated.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)]
+    .map(([, url]) => new URL(url, `https://jinai.md/ja/${route}`).pathname);
+  check(JSON.stringify(stylesheets) === '["/base.css","/theme-en.css","/theme-ja.css"]' &&
+    translated.includes("family=Inter:wght@400..700") && translated.includes("family=Noto+Sans+JP:wght@400..700") &&
+    !/Source\+Serif|Noto\+Serif|site\.css/.test(translated),
+    `/ja/${route} must load the English dark theme followed only by Japanese sans-serif typesetting.`);
+  check(translated.match(/<head>([\s\S]*?)<\/head>/)?.[1].includes('document.documentElement.classList.add("js-nav")'),
+    `/ja/${route} must establish the same pre-paint navigation geometry.`);
+  const markup = translated.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "");
+  for (const [, href, attributes] of markup.matchAll(/<a\b[^>]*href="([^"]+)"([^>]*)>/g)) {
+    if (/^(?:https?:|mailto:|#)/.test(href) || attributes.includes('data-jin-lang="en"')) continue;
+    check(new URL(href, `https://jinai.md/ja/${route}`).pathname.startsWith("/ja/"),
+      `/ja/${route} must keep internal links in Japanese, except its explicit English language link.`);
+  }
+}
+const japaneseReveal = japanese.match(/<h1 class="hero-reveal"[^>]*>([\s\S]*?)<\/h1>/)?.[1] || "";
+check(count(japaneseReveal, /<span style="--word:[0-6]">[^<]+<\/span>/g) === 7 &&
+  [...japaneseReveal.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "0123456" &&
+  japaneseReveal.includes("使い方を、</span><br>") &&
+  japanese.includes('aria-label="全社員の AI の使い方を、底上げする。"') &&
+  japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
+  "Japanese hero must preserve the seven-part reveal, approved comma break, exact accessible name and motion opt-in.");
+check(count(japanese, /class="demo-stage"/g) === 1 && count(japanese, /<img\b[^>]*src="\/assets\/demo\//g) === 1 &&
+  japanese.includes('src="/assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="Jin AI の社員向けの画面。ハーネスの部品が種類ごとに並び、それぞれに Can move か Confidential の表示がある。" decoding="async" loading="eager" fetchpriority="high" elementtiming="hero-still"') &&
+  japanese.includes('src="/assets/demo/app.html?embed=hero"') &&
+  japanese.match(/<script id="jin-hero-demo">([\s\S]*?)<\/script>/)?.[1] === heroDemoScript,
+  "Japanese home must retain the English live hero, exact Japanese alt, eager fallback and unchanged lifecycle.");
+const japaneseCss = await text("theme-ja.css");
+const typesettingProperties = new Set([
+  "--font-sans", "font-family", "font-size", "font-weight", "line-height", "line-break",
+  "word-break", "overflow-wrap", "letter-spacing", "text-wrap", "text-autospace"
+]);
+for (const [, , declarations] of japaneseCss.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+  for (const [, property] of declarations.matchAll(/([\w-]+)\s*:[^;]+;/g)) {
+    check(typesettingProperties.has(property), `theme-ja.css must change only typesetting, not ${property}.`);
+  }
+}
+check(japaneseCss.includes('--font-sans: "Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif') &&
+  japaneseCss.includes("line-break: strict") && japaneseCss.includes("word-break: normal") &&
+  japaneseCss.includes("overflow-wrap: anywhere") && japaneseCss.includes("text-wrap: balance") &&
+  japaneseCss.includes("@supports (text-autospace: normal)"),
+  "Japanese typesetting must use the approved sans stack, strict breaks, normal words, balanced headings and progressive autospace.");
+for (const [page, translated] of [["home", japanese], ["How it works", japaneseHow]]) {
   check(!/\bclass="[^"]*\b(?:st|harness-status)\b/.test(translated) &&
     !/\b(?:Building|Next)\b/.test(translated.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "")),
   `Japanese ${page} must not show delivery status labels.`);
 }
-check(japaneseHow.includes("<p>例: <code>CLAUDE.md</code>、スキル、記憶のファイル、MCP の設定。</p>") &&
-  japaneseHow.includes("<p>パイロットでは、今は会社が手作業で承認します。</p>") &&
-  japaneseHow.includes('href="../#demo">デモを申し込む</a>'),
+check(count(japaneseHow, /class="screen" role="img" aria-label="[^"]+"/g) === 2 &&
+  count(japaneseHow, /<img\b[^>]*class="screen-/g) === 4 &&
+  demoScreens.every(([, , scenes]) => scenes.every(([className, filename]) =>
+    japaneseHow.includes(`<img class="${className}" src="/assets/demo/${filename}" width="2880" height="1664" alt="" decoding="async" loading="eager">`))) &&
+  japaneseHow.includes('<p class="step-note">例: <code>CLAUDE.md</code>、スキル、記憶のファイル、MCP の設定。</p>') &&
+  japaneseHow.includes('<p class="step-note">パイロットでは、今は会社が手作業で承認します。</p>') &&
+  japaneseHow.includes('href="/ja/#demo">デモを申し込む</a>') &&
+  japaneseHow.includes('href="/ja/security/">データとセキュリティ &rarr;</a>'),
 "Japanese How it works must retain its example, manual pilot caveat and demo CTA.");
 
 const japaneseForm = japanese.match(/<form\b[^>]*\bid="waitlistForm"[^>]*>[\s\S]*?<\/form>/)?.[0] || "";
@@ -1102,7 +1233,7 @@ check(japaneseForm.includes(`data-endpoint="${access.form.endpoint || ""}"`) &&
   japaneseForm.includes('type="submit" disabled>デモを申し込む</button>') &&
   japaneseForm.includes('<p class="waitnote">デモの日程を、メールでご相談します。</p>') &&
   japaneseForm.includes('いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="privacy/">プライバシーポリシー</a>をご覧ください。') &&
-  japanese.includes('src="../waitlist.mjs"') && !/waitlistSurvey|signup-survey|type="radio"/.test(japanese),
+  japanese.includes('src="/waitlist.mjs"') && !/waitlistSurvey|signup-survey|type="radio"/.test(japanese),
 "Japanese form must retain the endpoint, submission attributes, consent flow, translated notices and shared client, without a survey.");
 
 const customerFacingTextFiles = deployedFiles.filter((file) => /\.(html|css|json|txt|xml|svg|m?js)$/.test(file));
@@ -1136,7 +1267,7 @@ for (const [relativePath, source] of htmlCache) {
   const markup = source.replace(/(<script\b[^>]*>)[\s\S]*?<\/script>/g, "$1</script>");
   const references = [...markup.matchAll(/\b(?:href|src)="([^"]+)"/g)];
 
-  if (!relativePath.startsWith("ja/") && !relativePath.startsWith("assets/")) {
+  if (!relativePath.startsWith("assets/")) {
     check(!/\bproduct-frame\b/.test(markup), `${relativePath} must use demo-stage, not product-frame.`);
     const duplicateLabels = [...markup.matchAll(/<(?:span|p)\b[^>]*class="mono-label"[^>]*>([^<]+)<\/(?:span|p)>\s*<h2\b[^>]*>([^<]+)<\/h2>/g)];
     check(!duplicateLabels.some(match => match[1] === match[2]),
@@ -1187,14 +1318,6 @@ for (const [relativePath, source] of htmlCache) {
 
     let targetPath = decodeURIComponent(resolved.pathname).replace(/^\/+/, "");
     if (!targetPath || targetPath.endsWith("/")) targetPath += "index.html";
-    // J1 supplies these Japanese twins. Only their exact hreflang references may be pending.
-    const tag = markup.slice(markup.lastIndexOf("<", match.index), markup.indexOf(">", match.index) + 1);
-    const pendingRoute = ["security/", "company/", "resources/ai-harness/"].find(route =>
-      relativePath === `${route}index.html` && targetPath === `ja/${route}index.html`);
-    if (pendingRoute && !deployedFileSet.has(targetPath) &&
-      tag === `<link rel="alternate" hreflang="ja" href="https://jinai.md/ja/${pendingRoute}">`) {
-      continue;
-    }
     check(deployedFileSet.has(targetPath), `${relativePath} references missing artifact ${targetPath}.`);
 
     if (resolved.hash && deployedFileSet.has(targetPath) && targetPath.endsWith(".html")) {
@@ -1213,12 +1336,4 @@ if (errors.length) {
   process.exitCode = 1;
 } else {
   console.log("Pages artifact passed canonical, AEO, crawler and content checks.");
-  if (japaneseProblemPending) {
-    console.warn("Draft dependency: /ja/ Problem figures and their legacy controller await the E6 translation in J1.");
-  }
-  for (const route of ["security/", "company/", "resources/ai-harness/"]) {
-    if (!deployedFileSet.has(`ja/${route}index.html`)) {
-      console.warn(`Draft dependency: /ja/${route} hreflang reference awaits the Japanese page in J1.`);
-    }
-  }
 }

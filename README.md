@@ -13,8 +13,11 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/resources/ai-harness/` | Draft AI harness definition and parts article |
 | `/privacy/` | Approved website privacy policy |
 | `/accessibility/` | Accessibility goal, known limits and contact details |
-| `/ja/` | Japanese landing page with moving screens and the same demo form; interactive Problem figures await J1 |
+| `/ja/` | Japanese translation of the English home, with the live demo, interactive Problem figures and the same demo form |
 | `/ja/how-it-works/` | Japanese companion page with four steps |
+| `/ja/security/` | Draft Japanese security and data page |
+| `/ja/company/` | Draft Japanese company mission and contact page |
+| `/ja/resources/ai-harness/` | Draft Japanese AI harness definition and parts article |
 | `/ja/privacy/` | Approved Japanese website privacy policy |
 | `/ja/accessibility/` | Approved Japanese accessibility statement |
 | `/human/` | `noindex` compatibility alias that opens `/` |
@@ -23,19 +26,24 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/agent/content.json` | Public fact source for Human and Agent derivatives |
 | `/llms.txt` | Concise LLM index generated from the fact source |
 | `/robots.txt` | Search policy; model-training crawlers are blocked by default |
-| `/sitemap.xml` | Contains seven English pages and the four existing Japanese twins |
+| `/sitemap.xml` | Contains all fourteen English and Japanese page URLs |
 
 The public content pages are self-canonical, with `en`, `ja` and `x-default`
-hreflang alternates. The Japanese Security, Company and AI harness pages are
-pending J1; only their exact hreflang references are allowed to be unresolved.
-English headers have Product and Resources dropdowns, Security, Company,
+hreflang alternates. Every Japanese page has the same body structure, section
+IDs, component classes, images and controllers as its English twin. The
+Japanese home heading adds only its approved comma break and translated reveal
+phrases; the generated form preserves surname-first order and Japanese country
+labels without changing payload values. The English-only language-choice
+redirect and root fact graph are not duplicated on Japanese pages.
+Headers have Product and Resources dropdowns, Security, Company,
 Contact and Request a demo. Below 960px, a scroll-locking mobile panel groups
 the same links. `nav.js` handles keyboard, focus, click and Escape behavior.
 English footer columns are Product, Resources and Company; the small
 English / Japanese footer links remember the visitor's choice in `language.js`; the English home chooses Japanese for first-time Japanese browsers, never bots, with session or query fallback when storage is blocked.
 Japanese pages use the approved
 Japanese copy (Yu, 2026-10-20); English pages remain English except for the
-Japanese footer language link. Each language links to its own Privacy and
+Japanese footer language link. Japanese footer language links open the matching
+English twin and remember the choice using the shared handler. Each language links to its own Privacy and
 Accessibility pages from the footer.
 The approved legal text describes the demo request form and how its details
 are used to reply about the request.
@@ -87,7 +95,8 @@ The demo copy uses system fonts and embedded or local images only. Its CSP
 blocks external resources, connections and form submissions. Three large
 inline raster assets were extracted into `assets/demo/app/`; the logo is
 stored at three times its rendered resolution. The supplied original is
-read-only and was not changed. Japanese frames are unchanged pending J1.
+read-only and was not changed. Japanese pages use the same English demo and
+screens, with translated accessible descriptions.
 Performance measurements, screenshots and the recommendation are recorded in
 `.copilot-runs/notes/e3.md`. No new runtime or build dependencies are required.
 
@@ -103,14 +112,15 @@ hover/active and disabled states and the offset `--accent-light` focus ring.
 On a pilot surface, primary buttons invert to white with accent text.
 Site labels use sentence-case Inter, including the Agent reference and shared
 paper-theme labels. Monospace is reserved for code and file names. Japanese
-reveal and button adoption remains with J1. E4 measurements and screenshots
+pages use the same reveal and primary buttons. E4 measurements and screenshots
 are in `.copilot-runs/notes/e4.md`.
 
 The closing home intro has a draft-marked Getting started heading and two
 waitlist/private-beta notes supplied by Yu for E5. They are draft copy, not
 new product facts. The generated form note, privacy link, payload and consent
 remain unchanged. E5 component values and browser evidence are recorded in
-`.copilot-runs/notes/e5.md`; J1 owns Japanese adoption.
+`.copilot-runs/notes/e5.md`. Japanese pages share these components and show
+the supplied Japanese draft notes with `文案（承認待ち）` tags.
 
 ## Interactive Problem figures
 
@@ -132,10 +142,21 @@ Light flow pauses when offscreen or when the tab is hidden. Reduced motion
 removes animation and changes state immediately; Explore teams opens the
 accent team directly. With JavaScript unavailable, the stills and explanatory
 copy remain, and inactive controls stay hidden with their space reserved.
-Japanese Problem SVGs and their legacy controller are unchanged pending J1;
-the validator reports that dependency without failing. Other shared screen
-controller, Japanese accessibility and content checks remain enforced.
+Japanese Problem figures preserve the English SVG geometry and shared
+controller, translating captions, layer labels, controls and live states.
+The validator enforces SVG, component and controller parity on all seven
+page pairs; missing Japanese routes and broken alternates are failures.
 Browser evidence and screenshots are in `.copilot-runs/notes/e6.md`.
+
+## Japanese typesetting
+
+Japanese pages load `base.css`, `theme-en.css`, then the thin `theme-ja.css`.
+They keep the dark theme, layout, spacing and components. The Japanese sheet
+only adjusts fonts and typesetting: Inter 400..700, Noto Sans JP, Hiragino Sans
+and Yu Gothic fallbacks, Japanese line heights, strict line breaking, balanced
+headings and progressive text autospace. English fonts are unchanged. J1
+source checks, browser evidence and fourteen desktop/phone screenshots are
+recorded in `.copilot-runs/notes/j1.md`.
 
 ## Content rules
 
@@ -182,8 +203,8 @@ Browser evidence and screenshots are in `.copilot-runs/notes/e6.md`.
   cards, numbered circles, positioning grids or letter-spaced all-caps labels.
   Prefer prose, lists, tables and real product screenshots. Use one dominant
   visual per section. At 375px wide, there must be no horizontal scroll.
-  Japanese headings add Noto Serif JP and Japanese body text uses Japanese
-  font fallbacks after Inter. Keep English fonts unchanged.
+  Japanese pages use Inter and Noto Sans JP with Japanese system fallbacks;
+  `theme-ja.css` changes only typesetting. Keep English fonts unchanged.
 - E1 draft exception (Yu, 2026-10-20): preserve the D1/D2 dark English theme
   and pill buttons. The pilot's vermilion surface uses a subtle top-left to
   bottom-right gradient, `--accent-surface-from` to `--accent-surface-to` in
