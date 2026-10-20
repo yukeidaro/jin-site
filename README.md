@@ -32,8 +32,8 @@ English headers have Product and Resources dropdowns, Security, Company,
 Contact and Request a demo. Below 960px, a scroll-locking mobile panel groups
 the same links. `nav.js` handles keyboard, focus, click and Escape behavior.
 English footer columns are Product, Resources and Company; the small
-English / Japanese language links point to `/` and `/ja/` for E2 to enhance.
-Japanese navigation remains unchanged until J1. Japanese pages use the approved
+English / Japanese footer links remember the visitor's choice in `language.js`; the English home chooses Japanese for first-time Japanese browsers, never bots, with session or query fallback when storage is blocked.
+Japanese pages use the approved
 Japanese copy (Yu, 2026-10-20); English pages remain English except for the
 Japanese footer language link. Each language links to its own Privacy and
 Accessibility pages from the footer.
@@ -123,7 +123,7 @@ in check mode and fails when a derivative has drifted.
 The English hero CTA is generated from `early_access.hero_label` and
 `early_access.hero_note` in `agent/content.json`. The demo form uses
 `early_access.label`, `early_access.note` and `early_access.form.fields`.
-It asks for work email, first and last name, job title, optional phone,
+All nine fields are required: work email, first and last name, job title, phone (at least six digits),
 company, industry, company size and country. It sends `type: "demo"` with
 consent version `demo-request-v1` to the unchanged Apps Script endpoint.
 Details are used only to reply about the demo; the form links to `privacy/`.
@@ -186,7 +186,7 @@ source into the same project, run `setupWaitlist` once, and redeploy the existin
 web app with Deploy > Manage deployments > Edit > New version > Deploy.**
 Keep the current deployment and `/exec` URL; do not create a replacement endpoint.
 Run `inspectWaitlistSender` and ensure `installWaitlistRetry` has been run.
-The source version is `2026-10-19.1`. Do this before publishing the new form:
+The source version is `2026-10-20.1`. Do this before publishing the new form:
 the old deployed backend cannot accept demo requests. Source changes alone do
 not deploy anything or send any real request.
 

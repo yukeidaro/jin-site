@@ -66,7 +66,7 @@ function validate(source) {
   "The demo form fields must follow the approved order.");
   for (const field of fields) {
     assert(typeof field.label === "string" && field.label.trim(), "Each form field needs a label.");
-    assert(field.required === (field.name !== "phone"), "Only the phone field may be optional.");
+    assert(field.required === true, "Every demo field must be required.");
     if (field.type === "select") {
       assert(field.placeholder?.trim() && Array.isArray(field.options) && field.options.length > 0 &&
         field.options.every((option) => typeof option === "string" && option.trim()) &&
@@ -130,7 +130,7 @@ const japaneseForm = {
   note: "デモの日程を、メールでご相談します。",
   labels: {
     email: "会社のメールアドレス", lastName: "姓", firstName: "名", jobTitle: "役職",
-    phone: "電話番号（任意）", company: "会社名", industry: "業種", companySize: "従業員数", country: "国"
+    phone: "電話番号", company: "会社名", industry: "業種", companySize: "従業員数", country: "国"
   },
   placeholders: { industry: "業種を選んでください", companySize: "範囲を選んでください", country: "国を選んでください" },
   industries: ["テクノロジー", "金融", "専門サービス", "教育", "エネルギー", "官公庁", "医療", "製造", "メディア", "非営利", "不動産", "小売", "通信", "運輸", "その他"],
@@ -187,7 +187,7 @@ function renderCta(source, { centred, language = "en" }) {
     const id = `demo-${field.name}`;
     const attributes = `id="${id}" name="${field.name}"` +
       (field.autocomplete ? ` autocomplete="${escapeHtml(field.autocomplete)}"` : "") +
-      ` aria-describedby="${id}-error"` + (field.required ? " required" : "");
+      ` aria-describedby="${id}-error"` + (field.required ? ' required aria-required="true"' : "");
     const options = field.type === "select" ? [...field.options] : [];
     if (ja && field.name === "country") [options[0], options[1]] = [options[1], options[0]];
     const optionLabel = (option) => {

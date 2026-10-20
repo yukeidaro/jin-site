@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
+<script src="/language.js" defer></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jin AI | 全社員の AI の使い方を、底上げする</title>
 <meta name="description" content="Jin AI は、優れた社員がつくった AI ハーネスを、すべての社員にとって安全に、会社にとって再利用できる形にします。">
@@ -41,7 +42,7 @@
     <nav class="navlinks" aria-label="ページ内の案内">
       <a href="#how">仕組み</a>
     </nav>
-    <div class="navright"><nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en">EN</a> / <a href="/ja/" lang="ja" hreflang="ja" aria-current="page">JA</a></nav>
+    <div class="navright">
       <a class="btn btn-p" href="#demo">デモを申し込む</a>
     </div>
   </div>
@@ -204,43 +205,43 @@
       <div class="signup-row">
         <div class="signup-field">
           <label for="demo-email">会社のメールアドレス</label>
-          <input id="demo-email" name="email" autocomplete="email" aria-describedby="demo-email-error" required type="email" maxlength="254">
+          <input id="demo-email" name="email" autocomplete="email" aria-describedby="demo-email-error" required aria-required="true" type="email" maxlength="254">
           <p class="signup-error" id="demo-email-error" hidden></p>
         </div>
       </div>
       <div class="signup-row">
         <div class="signup-field">
           <label for="demo-lastName">姓</label>
-          <input id="demo-lastName" name="lastName" autocomplete="family-name" aria-describedby="demo-lastName-error" required type="text" maxlength="80">
+          <input id="demo-lastName" name="lastName" autocomplete="family-name" aria-describedby="demo-lastName-error" required aria-required="true" type="text" maxlength="80">
           <p class="signup-error" id="demo-lastName-error" hidden></p>
         </div>
         <div class="signup-field">
           <label for="demo-firstName">名</label>
-          <input id="demo-firstName" name="firstName" autocomplete="given-name" aria-describedby="demo-firstName-error" required type="text" maxlength="80">
+          <input id="demo-firstName" name="firstName" autocomplete="given-name" aria-describedby="demo-firstName-error" required aria-required="true" type="text" maxlength="80">
           <p class="signup-error" id="demo-firstName-error" hidden></p>
         </div>
       </div>
       <div class="signup-row">
         <div class="signup-field">
           <label for="demo-jobTitle">役職</label>
-          <input id="demo-jobTitle" name="jobTitle" autocomplete="organization-title" aria-describedby="demo-jobTitle-error" required type="text" maxlength="120">
+          <input id="demo-jobTitle" name="jobTitle" autocomplete="organization-title" aria-describedby="demo-jobTitle-error" required aria-required="true" type="text" maxlength="120">
           <p class="signup-error" id="demo-jobTitle-error" hidden></p>
         </div>
         <div class="signup-field">
-          <label for="demo-phone">電話番号（任意）</label>
-          <input id="demo-phone" name="phone" autocomplete="tel" aria-describedby="demo-phone-error" type="tel" maxlength="40">
+          <label for="demo-phone">電話番号</label>
+          <input id="demo-phone" name="phone" autocomplete="tel" aria-describedby="demo-phone-error" required aria-required="true" type="tel" maxlength="40">
           <p class="signup-error" id="demo-phone-error" hidden></p>
         </div>
       </div>
       <div class="signup-row">
         <div class="signup-field">
           <label for="demo-company">会社名</label>
-          <input id="demo-company" name="company" autocomplete="organization" aria-describedby="demo-company-error" required type="text" maxlength="160">
+          <input id="demo-company" name="company" autocomplete="organization" aria-describedby="demo-company-error" required aria-required="true" type="text" maxlength="160">
           <p class="signup-error" id="demo-company-error" hidden></p>
         </div>
         <div class="signup-field">
           <label for="demo-industry">業種</label>
-          <select id="demo-industry" name="industry" aria-describedby="demo-industry-error" required>
+          <select id="demo-industry" name="industry" aria-describedby="demo-industry-error" required aria-required="true">
             <option value="">業種を選んでください</option>
             <option value="Technology">テクノロジー</option>
             <option value="Financial services">金融</option>
@@ -264,7 +265,7 @@
       <div class="signup-row">
         <div class="signup-field">
           <label for="demo-companySize">従業員数</label>
-          <select id="demo-companySize" name="companySize" aria-describedby="demo-companySize-error" required>
+          <select id="demo-companySize" name="companySize" aria-describedby="demo-companySize-error" required aria-required="true">
             <option value="">範囲を選んでください</option>
             <option value="1-49">1〜49 人</option>
             <option value="50-199">50〜199 人</option>
@@ -275,7 +276,7 @@
         </div>
         <div class="signup-field">
           <label for="demo-country">国</label>
-          <select id="demo-country" name="country" autocomplete="country-name" aria-describedby="demo-country-error" required>
+          <select id="demo-country" name="country" autocomplete="country-name" aria-describedby="demo-country-error" required aria-required="true">
             <option value="">国を選んでください</option>
             <option value="Japan">日本</option>
             <option value="United States">アメリカ合衆国</option>
@@ -562,7 +563,7 @@
     <a class="footer-link" href="privacy/">プライバシーポリシー</a>
     <a class="footer-link" href="accessibility/">アクセシビリティ</a>
     <span>アクセスは Cloudflare Web Analytics で数えています。Cookie は使っていません。</span>
-    <nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en">English</a> / <a href="/ja/" lang="ja" hreflang="ja" aria-current="page">日本語</a></nav>
+    <nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en" data-jin-lang="en">English</a> / <a href="/ja/" lang="ja" hreflang="ja" aria-current="page" data-jin-lang="ja">日本語</a></nav>
     <span>&copy; 2026 Jin AI</span>
   </div>
 </footer>

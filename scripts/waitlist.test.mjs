@@ -763,7 +763,7 @@ for (const [field, code, invalid] of [
   ["firstName", "invalid_first_name", ["", " ", undefined, "x".repeat(81), "Alex\nSample"]],
   ["lastName", "invalid_last_name", ["", " ", 12, "x".repeat(81), "Sample\u007f"]],
   ["jobTitle", "invalid_job_title", ["", null, "x".repeat(121), "Head\tIT"]],
-  ["phone", "invalid_phone", [undefined, 123, "x".repeat(41), "+1/202", "+1\n202", "Call me", "+1\u0000202"]],
+  ["phone", "invalid_phone", ["", "   ", undefined, 123, "x".repeat(41), "+1/202", "+1\n202", "Call me", "+1\u0000202", "12345", "+ ( ) . -"]],
   ["company", "invalid_company", ["", false, "x".repeat(161), "Example\rCompany"]],
   ["industry", "invalid_industry", ["", null, "technology", "Unknown", "Technology\n"]],
   ["companySize", "invalid_company_size", ["", 50, "50-200", "1000+", "50-199\t"]],
@@ -783,13 +783,15 @@ for (const [field, code, invalid] of [
   });
 }
 
-test("demo accepts boundary lengths, trims names, and allows an empty optional phone", () => {
+test("demo accepts boundary lengths, trims names, and rejects an empty phone", () => {
+  assert.throws(() => backend.validateDemo_(demoInput({ phone: "" })), { code: "invalid_phone" });
   const payload = backend.validateDemo_(demoInput({
     firstName: "  " + "a".repeat(80) + " ", lastName: "b".repeat(80),
-    jobTitle: "c".repeat(120), company: "d".repeat(160), country: "e".repeat(80), phone: ""
+    jobTitle: "c".repeat(120), company: "d".repeat(160), country: "e".repeat(80), phone: "1".repeat(40)
   }));
   assert.equal(payload.firstName.length, 80);
-  assert.equal(payload.phone, "");
+  assert.equal(payload.phone.length, 40);
+  assert.equal(backend.validateDemo_(demoInput({ phone: "  123456  " })).phone, "123456");
   assert.equal(backend.validateDemo_(demoInput({ phone: "+1 (202) 555-0142 . 0" })).phone,
     "+1 (202) 555-0142 . 0");
   for (const industry of backend.DEMO_INDUSTRIES) {
@@ -979,7 +981,7 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
     assert.equal(locks, 4);
     assert.equal(releases, 4);
     assert.equal(messages[1], Buffer.from(backend.demoMime_(japanesePayload), "base64url").toString("utf8"));
-    assert.equal(backend.WAITLIST_VERSION, "2026-10-19.1");
+    assert.equal(backend.WAITLIST_VERSION, "2026-10-20.1");
   } finally {
     for (const key of ["PropertiesService", "LockService", "SpreadsheetApp", "Gmail", "ContentService"]) {
       delete backend[key];
@@ -1053,14 +1055,16 @@ async function clientFixture(t, fetchImpl, configured = true, language) {
   };
 }
 
-test("client validation rejects every invalid field and accepts optional phone with listed choices", async () => {
+test("client validation rejects every invalid field and accepts a valid phone with listed choices", async () => {
   const content = JSON.parse(await readFile(new URL("../agent/content.json", import.meta.url), "utf8"));
   const choices = Object.fromEntries(content.early_access.form.fields
     .filter((field) => field.type === "select").map((field) => [field.name, field.options]));
-  assert.deepEqual(validateDemoFields(demoInput({ phone: "" }), choices), {});
+  assert.deepEqual(validateDemoFields(demoInput(), choices), {});
+  assert.deepEqual(validateDemoFields(demoInput({ phone: "  123456  " }), choices), {});
   for (const [field, value] of [
     ["email", "a..b@example.com"], ["firstName", "a".repeat(81)], ["lastName", "Sample\n"],
-    ["jobTitle", ""], ["phone", "call me"], ["company", "a".repeat(161)],
+    ["jobTitle", ""], ["phone", ""], ["phone", "call me"], ["phone", "12345"],
+    ["phone", "+ ( ) . -"], ["company", "a".repeat(161)],
     ["industry", "Unknown"], ["companySize", "1000+"], ["country", "Unknown"]
   ]) {
     assert.deepEqual(Object.keys(validateDemoFields(demoInput({ [field]: value }), choices)), [field]);
@@ -1074,13 +1078,13 @@ test("empty client submission connects inline errors and focuses the first inval
   assert.equal(requests, 0);
   assert.equal(f.document.activeElement.id, "demo-email");
   for (const [name, control] of f.controls) {
-    if (name === "phone" || name === "website") continue;
+    if (name === "website") continue;
     assert.equal(control.getAttribute("aria-invalid"), "true");
     const error = f.document.getElementById(control.getAttribute("aria-describedby"));
     assert.equal(error.hidden, false);
-    assert.ok(error.textContent.startsWith("Please"));
+    assert.ok(error.textContent.startsWith(name === "phone" ? "Enter" : "Please"));
   }
-  assert.equal(f.document.getElementById("demo-phone-error").hidden, true);
+  assert.equal(f.document.getElementById("demo-phone-error").textContent, "Enter your phone number.");
   f.controls.get("email").value = "buyer@example.com";
   f.input("email");
   assert.equal(f.controls.get("email").getAttribute("aria-invalid"), null);
@@ -1097,12 +1101,12 @@ for (const welcome of ["sent", "pending", "failed", "unknown"]) {
       payload = JSON.parse(options.body);
       return { ok: true, json: async () => ({ ...response("saved", welcome), requestId: payload.requestId }) };
     });
-    f.fill({ phone: "", firstName: "  Alex  " });
+    f.fill({ phone: "  +1 (202) 555-0142  ", firstName: "  Alex  " });
     await f.submit();
     assert.equal(payload.type, "demo");
     assert.equal(payload.lang, "en");
     assert.equal(payload.firstName, "Alex");
-    assert.equal(payload.phone, "");
+    assert.equal(payload.phone, "+1 (202) 555-0142");
     assert.equal(payload.consentVersion, "demo-request-v1");
     assert.deepEqual(Object.keys(payload), [
       "type", "lang", "email", "firstName", "lastName", "jobTitle", "phone", "company",
@@ -1211,4 +1215,192 @@ test("an unconfigured demo client disables submission and gives a contact fallba
   assert.equal(f.button.disabled, true);
   assert.equal(f.elements.get("waitlistStatus").hidden, false);
   assert.match(f.elements.get("waitlistStatus").textContent, /unavailable.*hello@jinai.md/);
+});
+
+test("all nine demo fields are required in facts and both generated forms", async () => {
+  const content = JSON.parse(await readFile(new URL("../agent/content.json", import.meta.url), "utf8"));
+  assert.equal(content.early_access.form.fields.length, 9);
+  assert.ok(content.early_access.form.fields.every((field) => field.required === true));
+  for (const page of ["../index.html", "../ja/index.html"]) {
+    const html = await readFile(new URL(page, import.meta.url), "utf8");
+    for (const field of content.early_access.form.fields) {
+      const control = html.match(new RegExp(`<(?:input|select)\\b[^>]*\\bname="${field.name}"[^>]*>`))?.[0];
+      assert.ok(control, `${page}: ${field.name}`);
+      assert.match(control, /\srequired(?:\s|>)/);
+      assert.match(control, /\saria-required="true"/);
+    }
+    assert.doesNotMatch(html, /Phone \(optional\)|\u96fb\u8a71\u756a\u53f7\uff08\u4efb\u610f\uff09/);
+  }
+});
+
+for (const language of ["en", "ja"]) {
+  test(`client marks every field required and rejects an empty phone inline in ${language}`, async (t) => {
+    let requests = 0;
+    const f = await clientFixture(t, async () => { requests++; }, true, language);
+    for (const [name, control] of f.controls) {
+      if (name === "website") continue;
+      assert.equal(control.required, true, name);
+      assert.equal(control.getAttribute("aria-required"), "true", name);
+    }
+    for (const phone of ["", "   "]) {
+      f.fill({ phone });
+      await f.submit();
+      assert.equal(requests, 0);
+      assert.equal(f.form.hidden, false);
+      assert.equal(f.document.activeElement.id, "demo-phone");
+      assert.equal(f.controls.get("phone").getAttribute("aria-invalid"), "true");
+      assert.equal(f.elements.get("demo-phone-error").hidden, false);
+      assert.equal(f.elements.get("demo-phone-error").textContent, language === "ja" ?
+        "\u96fb\u8a71\u756a\u53f7\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002" : "Enter your phone number.");
+    }
+  });
+}
+
+test("an empty demo phone is rejected before locks, sheet writes or email sends", () => {
+  for (const phone of ["", "   "]) {
+    const f = fixture();
+    f.deps.store.withLock = () => assert.fail("Validation must finish before locking or writing.");
+    f.deps.sender.assertReady = () => assert.fail("No sender access is allowed.");
+    const result = backend.registerDemo_(demoInput({ phone }), f.deps);
+    assert.equal(result.code, "invalid_phone");
+    assert.equal(result.registration, "not_saved");
+    assert.equal(result.welcome, "not_attempted");
+    assert.equal(f.records.length, 0);
+    assert.equal(f.surveyRecords.length, 0);
+    assert.equal(f.sends(), 0);
+    assert.deepEqual(f.log, [["validation", requestId, "invalid_phone"]]);
+  }
+});
+
+const homeSource = await readFile(new URL("../index.html", import.meta.url), "utf8");
+const languageChoiceSource = homeSource.match(/<script id="jin-language-choice">([\s\S]*?)<\/script>/)?.[1];
+const footerLanguageSource = await readFile(new URL("../language.js", import.meta.url), "utf8");
+function languageFixture({ languages = ["ja-JP", "en-US"], language = "en-US",
+  userAgent = "Mozilla/5.0 Chrome/130.0.0.0 Safari/537.36", pathname = "/",
+  search = "?campaign=demo", hash = "#demo", localFailure = false,
+  sessionFailure = false, saved = null, sessionChoice = null } = {}) {
+  const local = new Map(saved ? [["jin-lang", saved]] : []);
+  const session = new Map(sessionChoice ? [["jin-lang", sessionChoice]] : []);
+  const redirects = [];
+  const warnings = [];
+  let click;
+  const storage = (values, fails) => ({
+    getItem(key) { if (fails) throw new Error("Storage blocked"); return values.get(key) || null; },
+    setItem(key, value) { if (fails) throw new Error("Storage blocked"); values.set(key, value); }
+  });
+  const context = vm.createContext({
+    navigator: { languages, language, userAgent },
+    location: { pathname, search, hash, replace: (target) => redirects.push(target) },
+    localStorage: storage(local, localFailure), sessionStorage: storage(session, sessionFailure),
+    console: { warn: (...args) => warnings.push(args) }, URL, URLSearchParams,
+    document: { addEventListener: (name, handler) => { assert.equal(name, "click"); click = handler; } }
+  });
+  return { local, session, redirects, warnings, context,
+    run: () => vm.runInContext(languageChoiceSource, context),
+    choose(language) {
+      vm.runInContext(footerLanguageSource, context);
+      const link = { dataset: { jinLang: language }, href: "https://jinai.md/" };
+      click({ target: { closest: (selector) => {
+        assert.equal(selector, "footer .language-switch a[data-jin-lang]");
+        return link;
+      } } });
+      return link;
+    }
+  };
+}
+
+test("first Japanese browser redirects once, preserving query and fragment", () => {
+  assert.ok(languageChoiceSource, "The home language script must exist.");
+  const f = languageFixture();
+  f.run();
+  assert.deepEqual(f.redirects, ["/ja/?campaign=demo#demo"]);
+  assert.equal(f.local.get("jin-lang"), "ja");
+  f.run();
+  assert.equal(f.redirects.length, 1);
+});
+
+test("only the first preferred language selects Japanese, with navigator.language fallback", () => {
+  for (const options of [
+    { languages: ["en-US", "ja-JP"] }, { languages: [], language: "en-US" }
+  ]) {
+    const f = languageFixture(options);
+    f.run();
+    assert.deepEqual(f.redirects, []);
+    assert.equal(f.local.get("jin-lang"), "en");
+  }
+  for (const languages of [[], undefined]) {
+    const f = languageFixture({ languages, language: "ja-JP" });
+    if (languages === undefined) f.context.navigator.languages = undefined;
+    f.run();
+    assert.equal(f.redirects.length, 1);
+  }
+});
+
+test("every specified bot and headless user agent keeps English without storing a preference", () => {
+  for (const userAgent of ["Googlebot", "crawler", "spider", "slurp", "bingpreview",
+    "facebookexternalhit", "embedly", "quora link preview", "showyoupage", "outbrain",
+    "pinterest", "vkshare", "w3c_validator", "whatsapp", "linkedinbot", "twitterbot",
+    "discordbot", "google-inspectiontool", "HeadlessChrome"]) {
+    const f = languageFixture({ userAgent });
+    f.run();
+    assert.deepEqual(f.redirects, [], userAgent);
+    assert.equal(f.local.size, 0, userAgent);
+  }
+});
+
+test("any stored language is respected, and only the English root auto-selects", () => {
+  for (const saved of ["en", "ja", "other"]) {
+    const f = languageFixture({ saved });
+    f.run();
+    assert.deepEqual(f.redirects, []);
+    assert.equal(f.local.get("jin-lang"), saved);
+  }
+  for (const pathname of ["/ja/", "/how-it-works/", "/index.html"]) {
+    const f = languageFixture({ pathname });
+    f.run();
+    assert.deepEqual(f.redirects, []);
+    assert.equal(f.local.size, 0);
+  }
+});
+
+test("footer choices are saved before navigation and prevent a Japanese browser bouncing back", () => {
+  const f = languageFixture();
+  f.run();
+  f.choose("en");
+  assert.equal(f.local.get("jin-lang"), "en");
+  f.run();
+  assert.equal(f.redirects.length, 1);
+  f.choose("ja");
+  assert.equal(f.local.get("jin-lang"), "ja");
+  f.run();
+  assert.equal(f.redirects.length, 1);
+});
+
+test("blocked local storage uses the session for one redirect and a remembered footer choice", () => {
+  const f = languageFixture({ localFailure: true });
+  f.run();
+  assert.equal(f.session.get("jin-lang"), "ja");
+  assert.equal(f.redirects.length, 1);
+  f.run();
+  assert.equal(f.redirects.length, 1);
+  f.choose("en");
+  assert.equal(f.session.get("jin-lang"), "en");
+  f.run();
+  assert.equal(f.redirects.length, 1);
+  assert.ok(f.warnings.length > 0);
+});
+
+test("blocked local and session storage use a query flag without looping or losing other URL data", () => {
+  const f = languageFixture({ localFailure: true, sessionFailure: true });
+  f.run();
+  assert.deepEqual(f.redirects, ["/ja/?campaign=demo&jin-lang=ja#demo"]);
+  f.context.location.search = "?campaign=demo&jin-lang=ja";
+  f.run();
+  assert.equal(f.redirects.length, 1);
+  const link = f.choose("en");
+  assert.equal(link.href, "https://jinai.md/?jin-lang=en");
+  f.context.location.search = new URL(link.href).search;
+  f.run();
+  assert.equal(f.redirects.length, 1);
+  assert.ok(f.warnings.length > 0);
 });

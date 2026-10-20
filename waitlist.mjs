@@ -30,6 +30,7 @@ const japaneseMessages = {
   "Please enter your first name (up to 80 characters).": "\u540d\u3092 80 \u6587\u5b57\u4ee5\u5185\u3067\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
   "Please enter your last name (up to 80 characters).": "\u59d3\u3092 80 \u6587\u5b57\u4ee5\u5185\u3067\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
   "Please enter your job title (up to 120 characters).": "\u5f79\u8077\u3092 120 \u6587\u5b57\u4ee5\u5185\u3067\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+  "Enter your phone number.": "\u96fb\u8a71\u756a\u53f7\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
   "Use up to 40 characters: digits, spaces, +, -, (, ), or .": "\u96fb\u8a71\u756a\u53f7\u306f\u6570\u5b57\u3001\u7a7a\u767d\u3001+\u3001-\u3001(\u3001)\u3001. \u3092\u4f7f\u3044\u300140 \u6587\u5b57\u4ee5\u5185\u3067\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
   "Please enter your company (up to 160 characters).": "\u4f1a\u793e\u540d\u3092 160 \u6587\u5b57\u4ee5\u5185\u3067\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
   "Please select an industry from the list.": "\u4e00\u89a7\u304b\u3089\u696d\u7a2e\u3092\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002",
@@ -88,15 +89,17 @@ export function validateDemoFields(payload, choices, language = "en") {
     const raw = payload[field];
     const value = typeof raw === "string" ? raw.trim() : "";
     let invalid = typeof raw !== "string" || /[\u0000-\u001f\u007f]/.test(raw) ||
-      (!value && field !== "phone") || value.length > limit;
+      !value || value.length > limit;
     if (field === "email" && !invalid) {
       invalid = !/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/i.test(value) ||
         value.split("@")[0].length > 64 || /^\.|\.\.|\.@/.test(value);
     }
-    if (field === "phone" && !/^[0-9 +().-]*$/.test(value)) invalid = true;
+    if (field === "phone" &&
+        (!/^[0-9 +().-]+$/.test(value) || value.replace(/\D/g, "").length < 6)) invalid = true;
     if (["industry", "companySize", "country"].includes(field) &&
         !choices[field].includes(value)) invalid = true;
-    if (invalid) errors[field] = translate(validationMessages[fieldCodes[field]], language);
+    if (invalid) errors[field] = translate(field === "phone" && !value ?
+      "Enter your phone number." : validationMessages[fieldCodes[field]], language);
   }
   return errors;
 }
@@ -215,6 +218,8 @@ export function initializeWaitlist(document, dependencies = {}) {
     if (!control || !error || control.getAttribute("aria-describedby") !== error.id) {
       throw new Error(`The demo form is missing the ${name} field or its error description.`);
     }
+    control.required = true;
+    control.setAttribute("aria-required", "true");
     return [name, { control, error }];
   }));
   const choices = Object.fromEntries(["industry", "companySize", "country"].map((name) =>

@@ -54,6 +54,7 @@ const expectedFiles = [
   "ja/how-it-works/index.html",
   "ja/privacy/index.html",
   "ja/accessibility/index.html",
+  "language.js",
   "how-it-works/index.html",
   "llms.txt",
   "nav.js",
@@ -128,8 +129,8 @@ for (const [route, english, japanesePage, heading, title, description] of pagePa
       source.includes(`<link rel="canonical" href="${url}">`) &&
       source.includes(`<meta property="og:url" content="${url}">`) &&
       !/<meta\b[^>]*(?:http-equiv="refresh"|\bcontent="[^"]*\bnoindex\b)/i.test(source) &&
-      !source.includes("location.replace("),
-    `${url} must be indexable and self-canonical, not a redirect.`);
+      !source.replace(/<script id="jin-language-choice">[\s\S]*?<\/script>/, "").includes("location.replace("),
+    `${url} must be indexable and self-canonical, with only the home language-choice redirect allowed.`);
     const head = source.match(/<head>([\s\S]*?)<\/head>/)?.[1] || "";
     check(count(head, /\bhreflang=/g) === 3, `${url} needs exactly three hreflang alternates.`);
     for (const alternate of ["en", "ja", "x-default"]) {
@@ -137,15 +138,19 @@ for (const [route, english, japanesePage, heading, title, description] of pagePa
         `${url} must have a reciprocal ${alternate} alternate.`);
     }
     for (const landmark of ["header", "footer"]) {
-      // E1 removes English header switches; Japanese navigation stays unchanged until J1.
-      if (language === "en") continue;
       const area = source.match(new RegExp(`<${landmark}\\b[^>]*>([\\s\\S]*?)<\\/${landmark}>`))?.[1] || "";
+      if (landmark === "header") {
+        check(!/language-switch|\bhreflang=|>EN<|>JA</.test(area),
+          `${url} must not have a header language switch.`);
+        continue;
+      }
+      if (language === "en") continue;
       const navigation = area.match(/<nav class="language-switch" aria-label="Language">([\s\S]*?)<\/nav>/)?.[1] || "";
       check(count(navigation, /<a\b/g) === 2 && count(navigation, /aria-current="page"/g) === 1,
         `${url} needs two language links and one current language in the ${landmark}.`);
       for (const target of ["en", "ja"]) {
-        const label = landmark === "header" ? target.toUpperCase() : target === "en" ? "English" : "日本語";
-        check(navigation.includes(`<a href="/${target === "ja" ? "ja/" : ""}${route}" lang="${target}" hreflang="${target}"${target === language ? ' aria-current="page"' : ""}>${label}</a>`),
+        const label = target === "en" ? "English" : "日本語";
+        check(navigation.includes(`<a href="/${target === "ja" ? "ja/" : ""}${route}" lang="${target}" hreflang="${target}"${target === language ? ' aria-current="page"' : ""} data-jin-lang="${target}">${label}</a>`),
           `${url} must link to its ${target} twin in the ${landmark}.`);
       }
     }
@@ -613,10 +618,46 @@ for (const [route, source] of englishPages) {
     `/${route} needs the complete Product, Resources and Company footer columns.`);
   check(footer.includes("Visits are counted with Cloudflare Web Analytics. No cookies.") &&
     footer.includes("&copy; 2026 Jin AI") &&
-    footer.includes('<nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en" aria-current="page">English</a> / <a href="/ja/" lang="ja" hreflang="ja">日本語</a></nav>'),
+    footer.includes('<nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en" aria-current="page" data-jin-lang="en">English</a> / <a href="/ja/" lang="ja" hreflang="ja" data-jin-lang="ja">日本語</a></nav>'),
     `/${route} needs the analytics, copyright and root English/Japanese footer links.`);
   check(source.includes('<script type="module" src="/nav.js"></script>'),
     `/${route} must load the shared navigation script.`);
+}
+
+const homeHead = home.match(/<head>([\s\S]*?)<\/head>/)?.[1] || "";
+const languageScriptTag = '<script id="jin-language-choice">';
+check(count(home, /<script id="jin-language-choice">/g) === 1 &&
+  homeHead.includes(languageScriptTag) &&
+  homeHead.indexOf(languageScriptTag) < homeHead.search(/<link\b[^>]*rel="stylesheet"/) &&
+  homeHead.includes('if (location.pathname !== "/") return;') &&
+  homeHead.includes('localStorage.getItem("jin-lang")') &&
+  homeHead.includes('navigator.languages?.[0] || navigator.language') &&
+  homeHead.includes('location.replace("/ja/" + location.search + location.hash)') &&
+  homeHead.includes("google-inspectiontool|headless") &&
+  homeHead.includes('sessionStorage.getItem("jin-lang")') &&
+  homeHead.includes('query.has("jin-lang")'),
+  "Only the English home must choose a first-visit language before styles, with bot and storage-failure guards.");
+const languageClient = await text("language.js");
+check(languageClient.includes('footer .language-switch a[data-jin-lang]') &&
+  languageClient.includes('localStorage.setItem("jin-lang", language)') &&
+  languageClient.includes('sessionStorage.setItem("jin-lang", language)') &&
+  languageClient.includes('target.searchParams.set("jin-lang", language)'),
+  "The shared footer handler must remember choices with local, session and query fallback.");
+for (const [relativePath, source] of [
+  ...englishPages.map(([route, source]) => [`${route}index.html`, source]),
+  ...pagePairs.map(([route, , source]) => [`ja/${route}index.html`, source]),
+  ["agent/index.html", agent], ["en/index.html", englishAlias], ["human/index.html", humanAlias]
+]) {
+  check(count(source, /<script src="\/language\.js" defer><\/script>/g) === 1,
+    `${relativePath} must include the shared footer-language handler once.`);
+  if (relativePath !== "index.html") {
+    check(!source.includes(languageScriptTag),
+      `${relativePath} must not auto-select or redirect the visitor's language.`);
+  }
+  const footer = source.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] || "";
+  const links = [...footer.matchAll(/<a\b[^>]*\bhreflang="(en|ja)"[^>]*>/g)];
+  check(links.every(([tag, language]) => tag.includes(`data-jin-lang="${language}"`)),
+    `${relativePath} footer language links must carry the shared choice handler.`);
 }
 
 const draftPages = [
@@ -724,7 +765,7 @@ const fieldSpecs = [
   ["firstName", "First name", "text", "given-name", 80],
   ["lastName", "Last name", "text", "family-name", 80],
   ["jobTitle", "Job title", "text", "organization-title", 120],
-  ["phone", "Phone (optional)", "tel", "tel", 40],
+  ["phone", "Phone", "tel", "tel", 40],
   ["company", "Company", "text", "organization", 160],
   ["industry", "Industry", "select"],
   ["companySize", "Company size", "select"],
@@ -742,12 +783,16 @@ for (const [name, label, type, autocomplete, maxLength] of fieldSpecs) {
   check(!autocomplete || control.includes(`autocomplete="${autocomplete}"`),
     `${name} must use the approved autocomplete.`);
   check(!maxLength || control.includes(`maxlength="${maxLength}"`), `${name} has an incorrect length limit.`);
-  check(/\srequired(?:\s|>)/.test(control) === (name !== "phone"), `${name} has an incorrect required state.`);
+  check(/\srequired(?:\s|>)/.test(control) && control.includes('aria-required="true"') &&
+    access.form.fields.find((field) => field.name === name)?.required === true,
+    `${name} must be required in the facts, markup and accessibility attributes.`);
   check(control.includes(`aria-describedby="${id}-error"`) &&
     form.includes(`<p class="signup-error" id="${id}-error" hidden></p>`),
     `${name} needs a connected inline error message.`);
   check(!/\btabindex=/.test(control), `${name} must retain native tab order.`);
 }
+check(!/optional/i.test(form.match(/<label for="demo-phone">([^<]*)<\/label>/)?.[1] || ""),
+  "The phone label must not say optional.");
 const expectedOptions = {
   industry: ["Select an industry", "Technology", "Financial services", "Professional services",
     "Education", "Energy", "Government", "Healthcare", "Manufacturing", "Media", "Nonprofit",
@@ -828,7 +873,7 @@ const japaneseForm = japanese.match(/<form\b[^>]*\bid="waitlistForm"[^>]*>[\s\S]
 const japaneseControls = [...japaneseForm.matchAll(/<(input|select)\b[^>]*>/g)].map(([tag]) => tag);
 const japaneseLabels = {
   email: "会社のメールアドレス", lastName: "姓", firstName: "名", jobTitle: "役職",
-  phone: "電話番号（任意）", company: "会社名", industry: "業種", companySize: "従業員数", country: "国"
+  phone: "電話番号", company: "会社名", industry: "業種", companySize: "従業員数", country: "国"
 };
 check(count(japanese, /<form\b/g) === 1 && japaneseControls.map((control) =>
   control.match(/\bname="([^"]+)"/)?.[1]).join() ===
@@ -880,7 +925,7 @@ for (const relativePath of customerFacingTextFiles) {
   } else {
     const englishRoute = englishPages.find(([route]) => relativePath === `${route}index.html`)?.[0];
     const allowedLink = englishRoute === undefined ? "" :
-      '<a href="/ja/" lang="ja" hreflang="ja">日本語</a>';
+      '<a href="/ja/" lang="ja" hreflang="ja" data-jin-lang="ja">日本語</a>';
     const englishOnly = allowedLink ? source.replace(allowedLink, "") : source;
     check(!cjk.test(englishOnly), `${relativePath} contains CJK outside its Japanese footer language link.`);
   }

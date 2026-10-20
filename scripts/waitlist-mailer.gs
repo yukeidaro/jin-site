@@ -3,7 +3,7 @@
  * Deploy with scripts/appsscript.json, execute as the deploying account, and
  * allow Anyone. Run setupWaitlist first; see README.md for the remaining steps.
  */
-var WAITLIST_VERSION = '2026-10-19.1';
+var WAITLIST_VERSION = '2026-10-20.1';
 var WAITLIST_FROM = 'hello@jinai.md';
 var WAITLIST_DISCORD = 'https://discord.gg/hn8eG4d9f';
 var WAITLIST_CONSENT = 'waitlist-product-updates-v1';
@@ -194,12 +194,14 @@ function validateDemo_(input) {
       throw waitlistError_('invalid_' + field[1]);
     }
     value = value.trim();
-    if ((!value && field[0] !== 'phone') || value.length > field[2]) {
+    if (!value || value.length > field[2]) {
       throw waitlistError_('invalid_' + field[1]);
     }
     cleaned[field[0]] = value;
   });
-  if (!/^[0-9 +().-]*$/.test(cleaned.phone)) throw waitlistError_('invalid_phone');
+  if (!/^[0-9 +().-]+$/.test(cleaned.phone) || cleaned.phone.replace(/\D/g, '').length < 6) {
+    throw waitlistError_('invalid_phone');
+  }
   if (DEMO_INDUSTRIES.indexOf(cleaned.industry) === -1) throw waitlistError_('invalid_industry');
   if (DEMO_COMPANY_SIZES.indexOf(cleaned.companySize) === -1) throw waitlistError_('invalid_company_size');
   if (input.website !== '' && input.website !== undefined) throw waitlistError_('invalid_input');

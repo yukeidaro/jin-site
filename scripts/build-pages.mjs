@@ -23,6 +23,7 @@ const files = [
   "privacy/index.html",
   "accessibility/index.html",
   "waitlist.mjs",
+  "language.js",
   "nav.js",
   "robots.txt",
   "sitemap.xml",

@@ -158,7 +158,7 @@
         { "name": "firstName", "label": "First name", "type": "text", "required": true, "autocomplete": "given-name", "max_length": 80 },
         { "name": "lastName", "label": "Last name", "type": "text", "required": true, "autocomplete": "family-name", "max_length": 80 },
         { "name": "jobTitle", "label": "Job title", "type": "text", "required": true, "autocomplete": "organization-title", "max_length": 120 },
-        { "name": "phone", "label": "Phone (optional)", "type": "tel", "required": false, "autocomplete": "tel", "max_length": 40 },
+        { "name": "phone", "label": "Phone", "type": "tel", "required": true, "autocomplete": "tel", "max_length": 40 },
         { "name": "company", "label": "Company", "type": "text", "required": true, "autocomplete": "organization", "max_length": 160 },
         {
           "name": "industry", "label": "Industry", "type": "select", "required": true,
