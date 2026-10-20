@@ -7,17 +7,17 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | Route | Purpose |
 | --- | --- |
 | `/` | Complete English Human landing page |
-| `/how-it-works/` | English companion page with four steps |
+| `/how-it-works/` | Five feature rows: Employees, then Admins; AI harness definition |
 | `/security/` | Draft English security and data page |
 | `/company/` | Draft company mission and contact page |
-| `/resources/ai-harness/` | Draft AI harness definition and parts article |
+| `/resources/ai-harness/` | `noindex` compatibility redirect to `/how-it-works/#harness` |
 | `/privacy/` | Approved website privacy policy |
 | `/accessibility/` | Accessibility goal, known limits and contact details |
 | `/ja/` | Japanese translation of the English home, with the live demo, interactive Problem figures and the same demo form |
-| `/ja/how-it-works/` | Japanese companion page with four steps |
+| `/ja/how-it-works/` | Japanese twin of the five feature rows and harness definition |
 | `/ja/security/` | Draft Japanese security and data page |
 | `/ja/company/` | Draft Japanese company mission and contact page |
-| `/ja/resources/ai-harness/` | Draft Japanese AI harness definition and parts article |
+| `/ja/resources/ai-harness/` | `noindex` compatibility redirect to `/ja/how-it-works/#harness` |
 | `/ja/privacy/` | Approved Japanese website privacy policy |
 | `/ja/accessibility/` | Approved Japanese accessibility statement |
 | `/human/` | `noindex` compatibility alias that opens `/` |
@@ -26,7 +26,7 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/agent/content.json` | Public fact source for Human and Agent derivatives |
 | `/llms.txt` | Concise LLM index generated from the fact source |
 | `/robots.txt` | Search policy; model-training crawlers are blocked by default |
-| `/sitemap.xml` | Contains all fourteen English and Japanese page URLs |
+| `/sitemap.xml` | Contains twelve English and Japanese content page URLs, excluding redirects |
 
 The public content pages are self-canonical, with `en`, `ja` and `x-default`
 hreflang alternates. Every Japanese page has the same body structure, section
@@ -35,10 +35,13 @@ Japanese home heading uses the approved text `全社員のAI力を最大限引�
 in four reveal phrases; the generated form preserves surname-first order and Japanese country
 labels without changing payload values. The English-only language-choice
 redirect and root fact graph are not duplicated on Japanese pages.
-Headers have Product and Resources dropdowns, Security, Company,
+Headers have the Product dropdown, Security, Company,
 Contact and Request a demo. Below 960px, a scroll-locking mobile panel groups
 the same links. `nav.js` handles keyboard, focus, click and Escape behavior.
-English footer columns are Product, Resources, Company and Connect; the small
+English footer columns are Product, Legal, Company and Connect; Japanese uses
+規約・方針 for Legal. Privacy and Accessibility are footer-only navigation links.
+The retired AI harness articles have no navigation, sitemap or hreflang entries;
+tiny static redirects keep old links working. The small
 English / Japanese footer links remember the visitor's choice in `language.js`; the English home chooses Japanese for first-time Japanese browsers, never bots, with session or query fallback when storage is blocked.
 Japanese pages use the approved
 Japanese copy (Yu, 2026-10-20); English pages remain English except for the
@@ -55,7 +58,8 @@ and selects the address with a Ctrl+C instruction if copying fails.
 Japanese labels and announcements follow the document language. Button space
 is reserved before enhancement and during feedback; without JavaScript the
 button is hidden and the address remains selectable. Controls have a 24px
-minimum height, or 44px on phone/coarse-pointer layouts.
+minimum height, or 44px on phone/coarse-pointer layouts. Footer email/button
+pairs stay on one line when space permits, otherwise wrap left-aligned.
 
 E7 approves `https://discord.gg/C5m4jGgKXD` (Yu, 2026-10-20) in footer Connect
 columns, Company Contact community lines and machine-readable facts only.
@@ -87,7 +91,7 @@ in check mode and fails when a derivative has drifted.
 
 ## English hero product demo
 
-Every English product screen uses a `figure.demo-stage` outline and lighter
+Every product screen uses a `figure.demo-stage` outline and lighter
 inner surface around a floating `.demo-window`. Desktop padding is 48px;
 phones use 16px. The window retains the demo's own title bar, with no extra
 chrome, glow or bottom fade. The hero still and the moving workflow screens
@@ -115,13 +119,55 @@ screens, with translated accessible descriptions.
 Performance measurements, screenshots and the recommendation are recorded in
 `.copilot-runs/notes/e3.md`. No new runtime or build dependencies are required.
 
-Employee and Admin audience headings are 24px, weight 550, line-height 1.3,
+Employees and Admins audience headings are 24px, weight 550, line-height 1.3,
 with `--text-1` and the existing sans-serif stack on both home excerpts and
 both How it works pages. Japanese keeps its approved Yu Gothic stack.
 Moving workflow screens reset to their full first frame when offscreen, the
 tab is hidden or reduced motion is enabled. Reentry begins a new camera cycle,
 not a frozen mid-zoom crop. The stills and intended camera keyframes are unchanged.
 E7 browser evidence and screenshots are in `.copilot-runs/notes/e7.md`.
+
+### How it works feature screens (R3)
+
+Both companion pages stack Employees (two rows) above Admins (three rows).
+Each row has its exact title and explanation, plus one E5 demo stage with a
+translated caption chip. Desktop keeps text left and screen right; at 1023px
+and below text precedes the screen. The home excerpts contain only the two
+audience labels, five feature titles and companion-page link, without screens.
+The approved AI harness definition is the bottom note at `#harness`.
+
+The first four rows reuse the Connect, Categories, By role and What can move
+WebP stills, with independent nine-second camera cycles. The fifth is an
+intentionally blank framed placeholder, not an invented product interface.
+`workflow.js` runs a camera only in view and resets it offscreen or while the
+tab is hidden. Reduced motion and no JavaScript show full stills.
+
+To replace a row with Yu's v2 demo, change that row's one `data-demo-src`
+attribute from `""` to the matching URL:
+
+```html
+data-demo-src="/assets/demo/app-v2.html?scene=connect&amp;embed=1&amp;loop=1"
+```
+
+Scene values are `connect`, `categories`, `departments`, `classify`, `tools`;
+keep the matching `data-demo-scene` and the still/placeholder beneath the frame.
+The v2 file is not supplied or deployed in R3. When it is supplied, allowlist
+it and its required local assets in `scripts/build-pages.mjs` and mirror them
+in the validator artifact list. The validator already accepts each exact
+per-scene URL above; no controller or per-row validation change is needed.
+The embed must use the existing 1440x832 native viewport and same-origin
+`{type: "jin-demo", action: "ready"}` readiness message to the parent, accept
+`play`/`pause` from its parent only, and begin paused. Frames are created within
+240px of the viewport, inert, untabbable and hidden from assistive technology.
+They pause offscreen and in hidden tabs, scale with the screen slot, and are
+removed under reduced motion. A 500ms post-load fallback matches the hero;
+load errors retain the underlying still and are reported to the console.
+
+The five exact English/Japanese feature texts are recorded in
+`.copilot-runs/notes/r3-new-copy.md`. Solution steps in the fact source use the
+same five English features, retaining Building status; the capability delivery
+facts and form/endpoint/consent are unchanged. R3 evidence, measurements and
+decisions are in `.copilot-runs/notes/r3.md`.
 
 The home heading reveals once, word by word (phrases in Japanese), followed
 by the R1 body line and then its action row. The body uses the existing
@@ -216,7 +262,7 @@ With JavaScript unavailable, the idle stills and explanatory copy remain,
 and team controls stay hidden.
 Japanese Problem figures preserve the English SVG geometry and shared
 controller, translating captions, layer labels, controls and live states.
-The validator enforces SVG, component and controller parity on all seven
+The validator enforces SVG, component and controller parity on all six
 page pairs; missing Japanese routes and broken alternates are failures.
 E6b behavior, performance evidence and bilingual screenshots are recorded in
 `.copilot-runs/notes/e6b.md`. R2's fourth-figure evidence and screenshots are in
@@ -298,7 +344,8 @@ recorded in `.copilot-runs/notes/j1.md`.
   and pill buttons. The pilot's vermilion surface uses a subtle top-left to
   bottom-right gradient, `--accent-surface-from` to `--accent-surface-to` in
   `base.css`, centered on `#a84a1c`. White text must meet 4.5:1 at both stops.
-  Company and AI harness article copy remains unapproved in the E6c register.
+  Company copy remains unapproved in the E6c register; the AI harness article
+  is retired in R3.
   Menu descriptions are short draft labels without tags.
 - E4 exception (Yu, 2026-10-20): the English home hero may use a small,
   reduced-motion-aware reveal blur. Labels use 500-weight Inter at 13px,

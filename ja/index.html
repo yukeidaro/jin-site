@@ -59,15 +59,6 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
           </ul>
         </li>
         <li><a href="/ja/security/">セキュリティ</a></li>
-        <li class="nav-group">
-          <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="resources-panel">リソース</button>
-          <span class="mobile-group-label">リソース</span>
-          <ul class="nav-panel" id="resources-panel">
-            <li><a href="/ja/resources/ai-harness/"><span class="nav-item-title">AI ハーネスとは</span><span class="nav-description">AI エージェントを役割に合わせて働かせる部品。</span></a></li>
-            <li><a href="/ja/privacy/"><span class="nav-item-title">プライバシーポリシー</span><span class="nav-description">お預かりする情報と、その使い方。</span></a></li>
-            <li><a href="/ja/accessibility/"><span class="nav-item-title">アクセシビリティ</span><span class="nav-description">目標と、問題のご報告先。</span></a></li>
-          </ul>
-        </li>
         <li><a href="/ja/company/">会社情報</a></li>
         <li><a href="/ja/#demo">お問い合わせ</a></li>
       </ul>
@@ -411,26 +402,22 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 
 <section class="section" id="how">
   <div class="wrap">
-    <div class="section-head split">
-      <div>
-        <h2 class="h2">仕組み</h2>
-      </div>
-      <p class="harness-definition">AI ハーネスとは、AI エージェントを役割に合わせて働かせるための、指示・スキル・記憶・接続ツールの一式です。</p>
-    </div>
-    <div class="home-columns">
+    <div class="section-head"><h2 class="h2">仕組み</h2></div>
+    <div class="how-excerpt">
       <div>
         <h3 class="how-audience">社員</h3>
-        <ol class="harness-steps">
-          <li><span class="mono-label">01</span><div><h4>一度つなぐだけ。</h4><p>Jin AI は MCP を通じて、お使いの AI ツールにつながります。</p></div></li>
-          <li><span class="mono-label">02</span><div><h4><span class="ja-phrase">すべての</span><span class="ja-phrase">ハーネスを</span><span class="ja-phrase">種類ごとに。</span></h4><p>スキル、指示、記憶、MCP の設定を、人ごとに整理して表示します。</p></div></li>
-        </ol>
+        <ul class="feature-titles">
+          <li>一度つなぐだけ</li>
+          <li>種類ごとに見る</li>
+        </ul>
       </div>
       <div>
         <h3 class="how-audience">管理者</h3>
-        <ol class="harness-steps" start="3">
-          <li><span class="mono-label">03</span><div><h4>役割ごとに見る。</h4><p>どの役割が、どのハーネスを、どれくらい使っているか。</p></div></li>
-          <li><span class="mono-label">04</span><div><h4><span class="ja-phrase">持ち出せるものを</span><span class="ja-phrase">決める。</span></h4><p>機密とした部品は、承認した AI ツールにだけつながります。</p></div></li>
-        </ol>
+        <ul class="feature-titles">
+          <li>部署ごとの使われ方を見る</li>
+          <li>個人と会社を分ける</li>
+          <li>承認したツールだけに</li>
+        </ul>
       </div>
     </div>
     <a class="text-link read-more" href="/ja/how-it-works/">仕組みを見る &rarr;</a>
@@ -837,7 +824,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
     <div class="footer-main">
       <a class="brand" href="/ja/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
       <div class="footer-column"><h2>製品</h2><a href="/ja/" aria-current="page">概要</a><a href="/ja/how-it-works/">仕組み</a><a href="/ja/how-it-works/#employee">社員向け</a><a href="/ja/how-it-works/#admin">管理者向け</a></div>
-      <div class="footer-column"><h2>リソース</h2><a href="/ja/resources/ai-harness/">AI ハーネスとは</a><a href="/ja/privacy/">プライバシーポリシー</a><a href="/ja/accessibility/">アクセシビリティ</a></div>
+      <div class="footer-column"><h2>規約・方針</h2><a href="/ja/privacy/">プライバシーポリシー</a><a href="/ja/accessibility/">アクセシビリティ</a></div>
       <div class="footer-column"><h2>会社</h2><a href="/ja/company/">会社情報</a><a href="/ja/#demo">お問い合わせ</a><span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span></div>
       <div class="footer-column"><h2>つながる</h2><a href="https://discord.gg/C5m4jGgKXD" target="_blank" rel="noopener">Discord</a></div>
     </div>
@@ -851,24 +838,6 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 
 <script type="module" src="/waitlist.mjs"></script>
 <script type="module" src="/nav.js"></script>
-<script>
-(()=>{
-  const screens=document.querySelectorAll('.screen');
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  const visible=new Set();
-  const update=()=>screens.forEach(screen=>{
-    screen.classList.toggle('screen-running',visible.has(screen)&&!reduced.matches);
-  });
-  const observer=new IntersectionObserver(entries=>{
-    entries.forEach(({target,isIntersecting})=>{
-      if(isIntersecting){visible.add(target)}else{visible.delete(target)}
-    });
-    update();
-  });
-  screens.forEach(screen=>observer.observe(screen));
-  reduced.addEventListener('change',update);
-})();
-</script>
 <script type="module" src="/problem.js"></script>
 <!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1b6168cc50c644e4bd8071508286852d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>

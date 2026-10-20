@@ -91,7 +91,8 @@ const expectedFiles = [
   "theme-en.css",
   "theme-ja.css",
   "sitemap.xml",
-  "waitlist.mjs"
+  "waitlist.mjs",
+  "workflow.js"
 ].sort();
 
 const deployedFiles = await listFiles(site);
@@ -124,7 +125,7 @@ const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, ro
 const englishPages = [
   ["", home], ["how-it-works/", howPage], ["security/", security],
   ["privacy/", privacy], ["accessibility/", accessibility],
-  ["company/", company], ["resources/ai-harness/", harness]
+  ["company/", company]
 ];
 
 for (const [route, source] of [...englishPages, ["agent/", agent]]) {
@@ -157,8 +158,6 @@ const pagePairs = [
     "会社ごとにコンテクストを分けて保管します。個人のコンテクストと会社のコンテクストも、分けて扱います。"],
   ["company/", company, japaneseCompany, "会社情報", "会社情報 | Jin AI",
     "私たちの使命は、機密のコンテクストを社外に出さずに、すべての社員が、社内で一番 AI を使いこなす人と同じように AI を使えるようにすることです。"],
-  ["resources/ai-harness/", harness, japaneseHarness, "AI ハーネスとは", "AI ハーネスとは | Jin AI",
-    "AI ハーネスとは、AI エージェントを役割に合わせて働かせるための、指示・スキル・記憶・接続ツールの一式です。"],
   ["privacy/", privacy, japanesePrivacy, "プライバシーポリシー", "プライバシーポリシー | Jin AI",
     "jinai.md でお預かりする情報と、その使い方について。"],
   ["accessibility/", accessibility, japaneseAccessibility, "アクセシビリティ", "アクセシビリティ | Jin AI",
@@ -249,7 +248,7 @@ for (const [route, source, heading, description] of legalPages) {
 for (const [relativePath, source] of [
   ["index.html", home], ["how-it-works/index.html", howPage], ["agent/index.html", agent],
   ["privacy/index.html", privacy], ["accessibility/index.html", accessibility], ["security/index.html", security],
-  ["company/index.html", company], ["resources/ai-harness/index.html", harness]
+  ["company/index.html", company]
 ]) {
   const footer = source.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] || "";
   const baseUrl = new URL(relativePath, "https://jinai.md/");
@@ -530,7 +529,7 @@ Sitemap: https://jinai.md/sitemap.xml
 const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).sort();
 check(JSON.stringify(sitemapUrls) === JSON.stringify(
   pagePairs.flatMap(([route]) => [`https://jinai.md/${route}`, `https://jinai.md/ja/${route}`]).sort()),
-  "Sitemap must contain exactly the fourteen English and Japanese page URLs.");
+  "Sitemap must contain exactly the twelve English and Japanese content page URLs, without retired articles.");
 check(!llms.includes(".md)"), "llms.txt must not link to Markdown mirrors.");
 check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blockquote summary.");
 
@@ -545,61 +544,79 @@ for (const point of content.problem.points) {
     `Root must use the approved ${point.name} copy.`);
 }
 const solutionSection = homeSections.find((match) => match[1].includes('id="solution"'))?.[2] || "";
-check(content.solution.steps.length === 2 &&
-  content.solution.steps[0].name === "Employees keep their context safe" &&
-  content.solution.steps[1].name === "The company reuses it safely" &&
-  solutionSection.includes(`<h2 class="h2 solution-heading">${content.solution.steps[0].name}<br><span>${content.solution.steps[1].name}</span></h2>`) &&
-  JSON.stringify(content.solution.steps.map(step => step.description)) === JSON.stringify([
-    "Put your personal context in securely, and take it out safely. Also usable in your personal AI.",
-    "Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
-  ]) &&
-  content.solution.steps.every((step) => solutionSection.includes(`<p>${step.description}</p>`)) &&
+check(solutionSection.includes('<h2 class="h2 solution-heading">Employees keep their context safe<br><span>The company reuses it safely</span></h2>') &&
+  solutionSection.includes("<p>Put your personal context in securely, and take it out safely. Also usable in your personal AI.</p>") &&
+  solutionSection.includes("<p>Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.</p>") &&
   !/<(?:img|svg)\b|class="(?:ph|eyebrow)"/.test(solutionSection),
   "Root must use the two-line solution heading and approved copy without labels or placeholder images.");
 const howSection = homeSections.find((match) => match[1].includes('id="how"'))?.[2] || "";
-check(howSection.includes('<h2 class="h2">How it works</h2>') &&
-  howSection.includes(`<p class="harness-definition">${content.product.harness_definition}</p>`) &&
-  howSection.indexOf('class="harness-definition"') < howSection.indexOf('class="home-columns"'),
-  "How it works must define an AI harness directly above its columns.");
-check(!howSection.includes('<span class="mono-label">How it works</span>') &&
-  howSection.includes('class="how-audience">Employee</h3>') &&
-  howSection.includes('class="how-audience">Admin</h3>') &&
-  howSection.includes('href="how-it-works/">How it works &rarr;</a>') &&
-  !/<(?:img|figure)\b|class="screen"/.test(howSection),
-  "How it works must include Employee, Admin and its text link without screens or a duplicate heading label.");
-const demoScreens = [
-  ["Employee", "Jin AI employee workspace. The camera moves across the list of AI tools in the MCP connection panel, then across harness parts sorted by category, each marked Can move or Confidential.", [
-    ["screen-connect", "demo-1-connect.webp"], ["screen-categories", "demo-2-categories.webp"]
-  ]],
-  ["Admin", "Jin AI admin console. The camera moves across teams by role and their most-used harnesses, then across the harness policies and the approved and not approved AI tools.", [
-    ["screen-by-role", "demo-3-by-role.webp"], ["screen-what-can-move", "demo-4-what-can-move.webp"]
-  ]]
+const featureCopy = [
+  ["connect", "Connect once", "一度つなぐだけ", "Connect your usual AI tools once, through MCP.", "MCPで、いつものAIツールに一度つなぐだけ。", "Connect in one click", "ワンクリックでつなぐ", "demo-1-connect.webp", "connect"],
+  ["categories", "See every part by type", "種類ごとに見る", "Skills, prompts, memory and MCP settings, sorted by type.", "スキル・プロンプト・記憶・MCPの設定を、種類ごとに整理して見られる。", "See every part by type", "種類ごとに見る", "demo-2-categories.webp", "categories"],
+  ["departments", "See what each team uses most", "部署ごとの使われ方を見る", "See which harnesses each department uses most.", "部署ごとに、何がいちばん使われているかが分かる。", "See what each team uses most", "部署ごとの使われ方", "demo-3-by-role.webp", "by-role"],
+  ["classify", "Separate personal from company", "個人と会社を分ける", "Keep what came from personal AI apart from parts that hold confidential company context.", "個人のAIから持ってきたものと、会社の機密を含むものを分けて管理できる。", "Separate personal from company", "個人と会社を分ける", "demo-4-what-can-move.webp", "what-can-move"],
+  ["tools", "Control approved AI tools", "承認したツールだけに", "Let people use only the tools you approve. For example: Claude Code for developers only, your company policy in Copilot, and only non-confidential parts in ChatGPT.", "承認したツールだけを使わせる。たとえば、Claude Codeは開発者だけ、Copilotには会社のポリシー、ChatGPTには機密を含まないものだけ。", "Control approved AI tools", "承認したツールだけに"]
 ];
-const workflowSections = [...howPage.matchAll(/<section class="section workflow" id="(employee|admin)" aria-labelledby="([^"]+)">([\s\S]*?)<\/section>/g)];
-check(workflowSections.length === 2 && workflowSections.map((match) => match[1]).join() === "employee,admin",
-  "How it works must contain separate Employee then Admin sections.");
-check(count(howPage, /<div class="screen"/g) === 2,
-  "How it works must contain exactly two moving screens overall.");
-for (const [page, source, prefix] of [["How it works", workflowSections.map((match) => match[3]).join(""), "../"]]) {
-  check(count(source, /<div\b[^>]*\bclass="screen"/g) === 2 && count(source, /<img\b/g) === 4,
-    `${page} must contain exactly two screen frames with two scenes each.`);
-  for (const [audience, label, scenes] of demoScreens) {
-    const section = workflowSections.find((match) => match[1] === audience.toLowerCase());
-    const body = section?.[3] || "";
-    const frame = body.match(/(<div class="screen"[^>]*>)([\s\S]*?)<\/div>/);
-    check(body.includes(`<h2 class="how-audience" id="${section?.[2]}">${audience}</h2>`) &&
-      body.includes('<div class="section-head split">') &&
-      body.includes('<figure class="demo-stage">') &&
+check(content.solution.status === "building" &&
+  JSON.stringify(content.solution.steps) === JSON.stringify(featureCopy.map(f => ({ name: f[1], description: f[3] }))),
+  "Solution facts must contain exactly the five R3 features and retain Building status.");
+for (const [ja, source, homeSource] of [[false, howPage, home], [true, japaneseHow, japanese]]) {
+  const label = ja ? "Japanese" : "English";
+  const blocks = [...source.matchAll(/<section class="section workflow" id="(employee|admin)" aria-labelledby="([^"]+)">([\s\S]*?)<\/section>/g)];
+  const excerpt = homeSource.match(/<section class="section" id="how">([\s\S]*?)<\/section>/)?.[1] || "";
+  check(blocks.length === 2 && blocks.map(b => b[1]).join() === "employee,admin" &&
+    blocks.every((b, index) => b[3].includes(`<h2 class="how-audience" id="${b[1]}-heading">${ja ? ["社員", "管理者"][index] : ["Employees", "Admins"][index]}</h2>`) &&
+      count(b[3], /class="feature-row"/g) === [2, 3][index]) &&
+    !/harness-steps|section-head split|<ol\b|>0[1-4]</.test(source),
+    `${label} How it works needs five unnumbered feature rows in Employees then Admins blocks, without split columns.`);
+  const rows = [...source.matchAll(/<li class="feature-row" data-demo-scene="([^"]+)" data-demo-src="([^"]*)">([\s\S]*?)<\/li>/g)];
+  check(rows.length === 5 && count(source, /<figure class="demo-stage">/g) === 5,
+    `${label} How it works needs exactly five individual demo stages.`);
+  featureCopy.forEach((f, index) => {
+    const row = rows[index];
+    const body = withoutJapanesePhrases(row?.[3] || "");
+    const title = f[ja ? 2 : 1], description = f[ja ? 4 : 3], caption = f[ja ? 6 : 5];
+    const embedUrl = `/assets/demo/app-v2.html?scene=${f[0]}&amp;embed=1&amp;loop=1`;
+    check(row?.[1] === f[0] && (row?.[2] === "" || row?.[2] === embedUrl) &&
+      body.includes(`<div class="feature-copy"><h3>${title}</h3><p>${description}</p></div>`) &&
+      body.includes(`<figcaption class="screen-caption">${caption}</figcaption>`) &&
+      body.includes(`<div class="screen${index === 4 ? " screen-placeholder" : ""}" role="img" aria-label="${caption}">`) &&
       body.includes('<div class="demo-window moving-frame">') &&
-      body.indexOf('class="harness-steps"') < body.indexOf('class="screen"') &&
-      frame?.[1] === `<div class="screen" role="img" aria-label="${label}">`,
-      `${page} must show the ${audience} label and steps before its dark product frame with its exact accessible label.`);
-    const images = [...(frame?.[2] || "").matchAll(/<img\b[^>]*>/g)].map((match) => match[0]);
-    check(images.length === 2 && scenes.every(([className, filename], index) =>
-      images[index] === `<img class="${className}" src="${prefix}assets/demo/${filename}" width="2880" height="1664" alt="" decoding="async" loading="eager">`) &&
-      (frame?.[2] || "").replace(/<img\b[^>]*>/g, "").trim() === "",
-      `${page} must contain only the two ordered ${audience} scenes, eagerly loaded with intrinsic dimensions, async decoding and decorative alt text.`);
-  }
+      count(body, /<figure\b/g) === 1 &&
+      (index < 4
+        ? body.includes(`<img class="screen-${f[8]}" src="/assets/demo/${f[7]}" width="2880" height="1664" alt="" decoding="async" loading="lazy">`) &&
+          count(body, /<img\b/g) === 1 && !/<iframe\b/.test(body)
+        : body.includes('<span class="placeholder-mark" aria-hidden="true"></span>') && !/<(?:img|iframe|svg)\b/.test(body)),
+      `${label} ${f[0]} needs its exact title, description, caption, named screen and single still or empty tools placeholder.`);
+  });
+  check(excerpt.includes('<div class="how-excerpt">') && count(excerpt, /class="how-audience"/g) === 2 &&
+    count(excerpt, /class="feature-titles"/g) === 2 &&
+    excerpt.includes(`class="how-audience">${ja ? "社員" : "Employees"}</h3>`) &&
+    excerpt.includes(`class="how-audience">${ja ? "管理者" : "Admins"}</h3>`) &&
+    JSON.stringify([...excerpt.matchAll(/<li>([^<]+)<\/li>/g)].map(m => m[1])) === JSON.stringify(featureCopy.map(f => f[ja ? 2 : 1])) &&
+    !/<(?:img|figure|ol|h4)\b|harness-definition|mono-label/.test(excerpt) &&
+    excerpt.includes(`>${ja ? "仕組みを見る" : "How it works"} &rarr;</a>`),
+    `${label} home excerpt must contain only the heading, two stacked audience labels, five feature titles and link.`);
+  const definition = ja
+    ? "AI ハーネスとは、AI エージェントを役割に合わせて働かせるための、指示・スキル・記憶・接続ツールの一式です。"
+    : content.product.harness_definition;
+  check(source.includes(`<aside class="harness-note wrap" id="harness">\n  <p>${definition}</p>\n</aside>`) &&
+    source.indexOf('id="harness"') > source.indexOf('class="closing-cta"') &&
+    count(source, new RegExp(definition.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) === 1 &&
+    count(source, /<script type="module" src="\/workflow.js"><\/script>/g) === 1,
+    `${label} How it works must end with the single approved harness definition and shared screen controller.`);
+}
+for (const [source, target] of [[harness, "/how-it-works/#harness"], [japaneseHarness, "/ja/how-it-works/#harness"]]) {
+  check(source.includes(`<meta http-equiv="refresh" content="0; url=${target}">`) &&
+    source.includes(`<link rel="canonical" href="https://jinai.md${target}">`) &&
+    source.includes('<meta name="robots" content="noindex,follow">') &&
+    source.includes(`<a href="${target}">`) && !/<(?:main|header|footer|script)\b|\bhreflang=/.test(source) &&
+    source.length < 700,
+    "Retired harness routes must be tiny noindex compatibility redirects to the matching #harness note.");
+}
+for (const [file, source] of [...englishPages, ...pagePairs.map(([route, , source]) => ["ja/" + route, source]), ["agent/", agent]]) {
+  check(!source.includes("resources/ai-harness/"),
+    `${file} must not link or advertise hreflang to a retired harness article.`);
 }
 for (const [page, source] of [["Root", home], ["How it works", howPage], ["Security", security]]) {
   const visibleCopy = source.replace(/<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, "")
@@ -610,11 +627,6 @@ for (const [page, source] of [["Root", home], ["How it works", howPage], ["Secur
   check(!/demo-employee-categories\.webp|demo-admin-by-role\.webp/.test(source),
     `${page} must not reference the retired demo screens.`);
 }
-const companyCapabilities = content.capabilities.filter((capability) => capability.id !== "workspace-beta");
-check(companyCapabilities.length === 4 && companyCapabilities.every((capability, index) =>
-  howSection.includes(`<span class="mono-label">0${index + 1}</span><div><h4>${capability.name}</h4>`) &&
-  howSection.includes(`<p>${capability.description}</p>`)),
-  "How it works must use all four approved steps.");
 const howTitle = "How it works | Jin AI";
 const howDescription = "How Jin AI connects to your AI tools, sorts each AI harness by category, and lets the company decide what can move.";
 check(howPage.includes(`<title>${howTitle}</title>`) &&
@@ -628,23 +640,6 @@ for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:tit
 for (const [attribute, name] of [["name", "description"], ["property", "og:description"], ["name", "twitter:description"]]) {
   check(howPage.includes(`<meta ${attribute}="${name}" content="${howDescription}">`),
     `The companion page must use the approved ${name}.`);
-}
-check(howPage.includes(`<p class="harness-definition">${content.product.harness_definition}</p>`) &&
-  howPage.includes('<p class="mono-label">How it works</p>') &&
-  howPage.includes('<h2 class="how-audience" id="employee-heading">Employee</h2>') &&
-  howPage.includes('<h2 class="how-audience" id="admin-heading">Admin</h2>') &&
-  count(howPage, /<ol class="harness-steps"/g) === 2 && howPage.includes('start="3"'),
-  "The companion page must define an AI harness and separate Employee and Admin steps.");
-const companionSteps = [...howPage.matchAll(/<li><span class="mono-label">(0[1-4])<\/span><div><h3>([^<]+)<\/h3>([\s\S]*?)<\/div><\/li>/g)];
-check(companionSteps.length === 4 && companyCapabilities.every((capability, index) =>
-  companionSteps[index]?.[1] === `0${index + 1}` &&
-  companionSteps[index]?.[2] === capability.name &&
-  companionSteps[index]?.[3].includes(`<p>${capability.description}</p>`)),
-  "The companion page must use all four approved steps.");
-for (const sentence of [
-  '<p class="step-note">For example: <code>CLAUDE.md</code>, skills, memory files and MCP settings.</p>',
-  '<p class="step-note">In pilots, the company approves by hand today.</p>']) {
-  check(howPage.includes(sentence), "The companion page must retain the approved examples and manual pilot caveat.");
 }
 check(howPage.includes(`<h2 class="h2">${content.data_principles.headline}</h2>`) &&
   content.data_principles.items.every((item) => howPage.includes(`<li>${item}</li>`)) &&
@@ -732,7 +727,7 @@ function normalizedLandmark(source, landmark, baseUrl) {
 }
 for (const [route, source] of [
   ["how-it-works", howPage], ["security", security], ["privacy", privacy], ["accessibility", accessibility],
-  ["company", company], ["resources/ai-harness", harness]
+  ["company", company]
 ]) {
   const baseUrl = `https://jinai.md/${route}/`;
   const stylesheets = [...source.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)]
@@ -761,7 +756,6 @@ const productLinks = [
   ["For admins", "/how-it-works/#admin", "See how each role uses AI."]
 ];
 const resourceLinks = [
-  ["What is an AI harness", "/resources/ai-harness/", "The parts that make an AI agent work for a role."],
   ["Privacy", "/privacy/", "What we collect and why."],
   ["Accessibility", "/accessibility/", "Our goal and how to report a problem."]
 ];
@@ -778,7 +772,7 @@ for (const [route, source] of englishPages) {
     `/${route} needs the main navigation, accessible mobile button and primary demo link.`);
   let topLevel = cleanHeader;
   for (const [label, id, items] of [
-    ["Product", "product-panel", productLinks], ["Resources", "resources-panel", resourceLinks]
+    ["Product", "product-panel", productLinks]
   ]) {
     const panel = cleanHeader.match(new RegExp(`<ul class="nav-panel" id="${id}">([\\s\\S]*?)<\\/ul>`))?.[1] || "";
     check(cleanHeader.includes(`<button class="nav-trigger" type="button" aria-expanded="false" aria-controls="${id}">${label}</button>`) &&
@@ -791,15 +785,15 @@ for (const [route, source] of englishPages) {
   }
   const nav = topLevel.match(/<ul class="navlinks">([\s\S]*?)<\/ul>/)?.[1] || "";
   check(JSON.stringify([...nav.matchAll(/<(?:button|a)\b[^>]*>([^<]+)<\/(?:button|a)>/g)].map(match => match[1])) ===
-    JSON.stringify(["Product", "Security", "Resources", "Company", "Contact"]) &&
+    JSON.stringify(["Product", "Security", "Company", "Contact"]) &&
     [["Security", "/security/"], ["Company", "/company/"], ["Contact", "/#demo"]].every(([label, href]) =>
       nav.includes(`<a href="${href}">${label}</a>`)),
-    `/${route} needs Product, Security, Resources, Company and Contact in that order.`);
+    `/${route} needs Product, Security, Company and Contact in that order, with no Resources menu.`);
   check(!/\brole="(?:menu|menuitem)"/.test(header) && !header.includes("Draft copy"),
     `/${route} panels must be plain link lists without draft tags or ARIA menu roles.`);
   const columns = [...footer.matchAll(/<div class="footer-column"><h2>([^<]+)<\/h2>([\s\S]*?)<\/div>/g)];
   const expectedColumns = [
-    ["Product", productLinks], ["Resources", resourceLinks],
+    ["Product", productLinks], ["Legal", resourceLinks],
     ["Company", [["Company", "/company/"], ["Contact", "/#demo"]]],
     ["Connect", [["Discord", communityUrl]]]
   ];
@@ -807,7 +801,7 @@ for (const [route, source] of englishPages) {
     columns[index]?.[1] === label &&
     JSON.stringify([...columns[index][2].matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(match => [match[2], match[1]])) ===
       JSON.stringify(links.map(([title, href]) => [title, href]))),
-    `/${route} needs the complete Product, Resources, Company and Connect footer columns.`);
+    `/${route} needs the complete Product, Legal, Company and Connect footer columns.`);
   check(footer.includes("Visits are counted with Cloudflare Web Analytics. No cookies.") &&
     footer.includes("&copy; 2026 Jin AI") &&
     footer.includes('<nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en" aria-current="page" data-jin-lang="en">English</a> / <a href="/ja/" lang="ja" hreflang="ja" data-jin-lang="ja">日本語</a></nav>'),
@@ -857,10 +851,7 @@ for (const [relativePath, source] of [
 const draftPages = [
   ["company/", company, "Company", "Company", "Company",
     "Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company.",
-    "Company Company Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Community: Discord Request a demo"],
-  ["resources/ai-harness/", harness, "What is an AI harness", "What is an AI harness?", "Resources",
-    content.product.harness_definition,
-    `Resources What is an AI harness? ${content.product.harness_definition} Instructions: how the agent should work for this role. Skills: procedures it can repeat. Memory: what it keeps across sessions. Connected tools: the MCP servers and apps it can use. For example: CLAUDE.md, skills, memory files and MCP settings. Why it matters The harnesses that work are built by a few people, and they hold both how a team got faster and the company's confidential context. Jin AI keeps them visible, safe and reusable. How it works &rarr;`]
+    "Company Company Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Community: Discord Request a demo"]
 ];
 for (const [route, source, title, heading, label, description, expectedCopy] of draftPages) {
   const main = source.match(/<main\b([^>]*)>([\s\S]*?)<\/main>/);
@@ -902,9 +893,6 @@ for (const [route, source, title, heading, label, description, expectedCopy] of 
 check(company.includes(emailComponent()) &&
   company.includes('<a class="btn btn-p" href="/#demo">Request a demo</a>'),
   "Company must show its copyable email and link to the home demo.");
-check(harness.includes('<a class="text-link" href="/how-it-works/">How it works &rarr;</a>') &&
-  count(harness.match(/<ul class="harness-parts">([\s\S]*?)<\/ul>/)?.[1] || "", /<li>/g) === 4,
-  "AI harness must have four parts and the How it works text link.");
 
 const baseCss = await text("base.css");
 const englishCss = await text("theme-en.css");
@@ -926,12 +914,24 @@ check(englishCss.includes(".copy-email { visibility: hidden;") &&
   englishCss.includes(".copy-status { position: absolute;") &&
   englishCss.includes(".how-audience { font: 550 24px/1.3 var(--font-sans); letter-spacing: 0; color: var(--text-1);"),
   "Copy controls must be hidden without JS, selectable, focusable, touch-sized and layout-stable; audience labels must be 24px/550.");
-for (const [route, source] of [["how-it-works/", howPage], ["ja/how-it-works/", japaneseHow]]) {
-  check(source.includes("!document.hidden") &&
-    source.includes("if(!running) screen.getAnimations({subtree:true}).forEach(animation=>{animation.currentTime=0})") &&
-    source.includes("document.addEventListener('visibilitychange',update)"),
-    `${route} must reset the camera to its first frame when stopped, including offscreen, hidden tabs and reduced motion.`);
-}
+const workflowClient = await text("workflow.js");
+check(workflowClient.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
+  workflowClient.includes("slot.visible && !document.hidden && !reduced.matches") &&
+  workflowClient.includes("animation.currentTime = 0") &&
+  workflowClient.includes('document.addEventListener("visibilitychange"') &&
+  workflowClient.includes('rootMargin: "240px"') &&
+  workflowClient.includes("slot.near && !document.hidden && !reduced.matches && !slot.frame") &&
+  workflowClient.includes("frame.inert = true") && workflowClient.includes("frame.tabIndex = -1") &&
+  workflowClient.includes('frame.setAttribute("aria-hidden", "true")') &&
+  workflowClient.includes("event.origin !== location.origin") &&
+  workflowClient.includes("slot.frame?.contentWindow === event.source") &&
+  workflowClient.includes('url.pathname !== "/assets/demo/app-v2.html"') &&
+  workflowClient.includes('url.searchParams.get("scene") !== slot.row.dataset.demoScene') &&
+  workflowClient.includes('action: running ? "play" : "pause"') &&
+  workflowClient.includes("slot.frame.remove()") && workflowClient.includes("new ResizeObserver") &&
+  workflowClient.includes("slot.screen.getBoundingClientRect().width / 1440") &&
+  workflowClient.includes('console.error("The workflow demo could not be loaded. Keeping the still image."'),
+  "Workflow slots must lazy-create inert same-origin scene embeds, authenticate playback, pause/reset offscreen, retain stills under reduced motion and report load errors.");
 function cssBlock(source, header) {
   const start = source.indexOf(header);
   if (start < 0) return "";
@@ -947,6 +947,15 @@ function cssBlock(source, header) {
 }
 const stageCss = cssBlock(englishCss, ".demo-stage");
 const windowCss = cssBlock(englishCss, ".demo-window");
+check(cssBlock(englishCss, ".feature-row {").includes("grid-template-columns: minmax(0, 1fr) minmax(0, 2fr)") &&
+  cssBlock(englishCss, "@media (max-width: 1023px)").includes(".feature-row { grid-template-columns: 1fr;") &&
+  cssBlock(englishCss, ".feature-row .demo-stage").includes("width: 100%") &&
+  cssBlock(englishCss, ".screen-caption").includes("font: var(--t-label)") &&
+  cssBlock(englishCss, ".email-contact").includes("justify-content: flex-start") &&
+  cssBlock(englishCss, ".footer-column .copy-email").includes("justify-content: flex-start") &&
+  !englishCss.includes("screen-crossfade") &&
+  cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(".moving-frame .screen img { animation: none; transform: none;"),
+  "R3 rows need responsive text-first layout, label captions, left-aligned email wrapping and independent reduced-motion stills.");
 check(cssBlock(englishCss, ".shadow-route {").includes("stroke-dasharray: 4 6") &&
   cssBlock(englishCss, '[data-state="changed"] .shadow-document').includes("animation: problem-shadow-document 3s linear both") &&
   cssBlock(englishCss, "@keyframes problem-shadow-document").includes("transform: translate(164px, 82px)") &&
@@ -982,7 +991,7 @@ check(stageCss.includes("padding: var(--s-12)") && stageCss.includes("border: va
     ".demo-stage { width: calc(100% - 48px); padding: var(--s-4); }") &&
   !/product-frame|mask-image|--glow|\.demo-(?:stage|window)::(?:before|after)/.test(englishCss) &&
   cssBlock(englishCss, ".hero-screen").includes("aspect-ratio: 2880 / 1664") &&
-  cssBlock(englishCss, ".screen").includes("aspect-ratio: 2880 / 1664") &&
+  cssBlock(englishCss, ".screen {").includes("aspect-ratio: 2880 / 1664") &&
   heroDemoScript.includes("screen.clientWidth / 1440") &&
   heroDemoScript.includes("}).observe(screen)"),
   "Demo stages must share responsive padding, outline, surface and floating windows without a fade, glow or extra chrome; screen ratios and inner-screen scaling must remain.");
@@ -1254,7 +1263,7 @@ const japaneseNavigation = [
   ["つながる", "Connect"], ["コピー", "Copy"],
   ["製品", "Product"], ["概要", "Overview"], ["仕組み", "How it works"],
   ["社員向け", "For employees"], ["管理者向け", "For admins"],
-  ["セキュリティ", "Security"], ["リソース", "Resources"], ["会社情報", "Company"],
+  ["セキュリティ", "Security"], ["規約・方針", "Legal"], ["会社情報", "Company"],
   ["会社", "Company"], ["お問い合わせ", "Contact"], ["デモを申し込む", "Request a demo"],
   ["AI ハーネスとは", "What is an AI harness"], ["プライバシーポリシー", "Privacy"],
   ["アクセシビリティ", "Accessibility"],
@@ -1354,15 +1363,10 @@ for (const [page, translated] of [["home", japanese], ["How it works", japaneseH
     !/\b(?:Building|Next)\b/.test(translated.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "")),
   `Japanese ${page} must not show delivery status labels.`);
 }
-check(count(japaneseHow, /class="screen" role="img" aria-label="[^"]+"/g) === 2 &&
-  count(japaneseHow, /<img\b[^>]*class="screen-/g) === 4 &&
-  demoScreens.every(([, , scenes]) => scenes.every(([className, filename]) =>
-    japaneseHow.includes(`<img class="${className}" src="/assets/demo/${filename}" width="2880" height="1664" alt="" decoding="async" loading="eager">`))) &&
-  japaneseHow.includes('<p class="step-note">例: <code>CLAUDE.md</code>、スキル、記憶のファイル、MCP の設定。</p>') &&
-  japaneseHow.includes('<p class="step-note">パイロットでは、今は会社が手作業で承認します。</p>') &&
+check(count(japaneseHow, /<img\b[^>]*class="screen-/g) === 4 &&
   japaneseHow.includes('href="/ja/#demo">デモを申し込む</a>') &&
   japaneseHow.includes('href="/ja/security/">データとセキュリティ &rarr;</a>'),
-"Japanese How it works must retain its example, manual pilot caveat and demo CTA.");
+"Japanese How it works must retain its four original stills, security link and demo CTA.");
 
 const japaneseForm = japanese.match(/<form\b[^>]*\bid="waitlistForm"[^>]*>[\s\S]*?<\/form>/)?.[0] || "";
 const japaneseControls = [...japaneseForm.matchAll(/<(input|select)\b[^>]*>/g)].map(([tag]) => tag);
@@ -1439,6 +1443,10 @@ const htmlCache = new Map();
 for (const relativePath of htmlFiles) htmlCache.set(relativePath, await text(relativePath));
 
 for (const [relativePath, source] of htmlCache) {
+  if (!["resources/ai-harness/index.html", "ja/resources/ai-harness/index.html"].includes(relativePath)) {
+    check(!/resources\/ai-harness\//.test(source),
+      `${relativePath} must not reference a retired AI harness article.`);
+  }
   const japanesePage = relativePath.startsWith("ja/");
   const component = emailComponent(japanesePage);
   const markup = source.replace(/<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, "");
@@ -1500,15 +1508,18 @@ for (const [relativePath, source] of htmlCache) {
       if (!voidTags.has(tagName)) stack.push(node);
     }
     for (const stage of stages) {
-      const window = stage.children[0];
+      const caption = stage.children[0]?.name === "figcaption" ? stage.children[0] : null;
+      const window = stage.children[caption ? 1 : 0];
       const screen = window?.children[0];
-      check(stage.name === "figure" && stage.children.length === 1 &&
+      check(stage.name === "figure" && stage.children.length === (caption ? 2 : 1) &&
+        (!caption || hasClass(caption, "screen-caption")) &&
         window?.name === "div" && hasClass(window, "demo-window") && window.children.length === 1 &&
         screen?.name === "div" && (hasClass(screen, "hero-screen") || hasClass(screen, "screen")) &&
         screen.children.length > 0 && screen.children.every(child =>
           child.name === "img" || child.name === "iframe" ||
+          (hasClass(screen, "screen-placeholder") && child.name === "span" && hasClass(child, "placeholder-mark")) ||
           (child.name === "template" && child.children.length === 1 && child.children[0].name === "iframe")),
-        `${relativePath}: demo-stage must contain only one demo-window and the existing screen, with no added title bar.`);
+        `${relativePath}: demo-stage must contain only an optional caption and one demo-window/screen, with no added title bar.`);
     }
   }
 

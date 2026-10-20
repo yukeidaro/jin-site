@@ -176,15 +176,6 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
           </ul>
         </li>
         <li><a href="/security/">Security</a></li>
-        <li class="nav-group">
-          <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="resources-panel">Resources</button>
-          <span class="mobile-group-label">Resources</span>
-          <ul class="nav-panel" id="resources-panel">
-            <li><a href="/resources/ai-harness/"><span class="nav-item-title">What is an AI harness</span><span class="nav-description">The parts that make an AI agent work for a role.</span></a></li>
-            <li><a href="/privacy/"><span class="nav-item-title">Privacy</span><span class="nav-description">What we collect and why.</span></a></li>
-            <li><a href="/accessibility/"><span class="nav-item-title">Accessibility</span><span class="nav-description">Our goal and how to report a problem.</span></a></li>
-          </ul>
-        </li>
         <li><a href="/company/">Company</a></li>
         <li><a href="/#demo">Contact</a></li>
       </ul>
@@ -528,26 +519,22 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 
 <section class="section" id="how">
   <div class="wrap">
-    <div class="section-head split">
+    <div class="section-head"><h2 class="h2">How it works</h2></div>
+    <div class="how-excerpt">
       <div>
-        <h2 class="h2">How it works</h2>
-      </div>
-      <p class="harness-definition">An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.</p>
-    </div>
-    <div class="home-columns">
-      <div>
-        <h3 class="how-audience">Employee</h3>
-        <ol class="harness-steps">
-          <li><span class="mono-label">01</span><div><h4>Connect once</h4><p>Jin AI connects to your AI tools through MCP.</p></div></li>
-          <li><span class="mono-label">02</span><div><h4>See every harness by category</h4><p>Skills, instructions, memory and MCP settings, sorted for each person.</p></div></li>
-        </ol>
+        <h3 class="how-audience">Employees</h3>
+        <ul class="feature-titles">
+          <li>Connect once</li>
+          <li>See every part by type</li>
+        </ul>
       </div>
       <div>
-        <h3 class="how-audience">Admin</h3>
-        <ol class="harness-steps" start="3">
-          <li><span class="mono-label">03</span><div><h4>See it by role</h4><p>Which harnesses each role uses, and how often.</p></div></li>
-          <li><span class="mono-label">04</span><div><h4>Decide what can move</h4><p>Parts marked confidential connect only to the AI tools you approve.</p></div></li>
-        </ol>
+        <h3 class="how-audience">Admins</h3>
+        <ul class="feature-titles">
+          <li>See what each team uses most</li>
+          <li>Separate personal from company</li>
+          <li>Control approved AI tools</li>
+        </ul>
       </div>
     </div>
     <a class="text-link read-more" href="how-it-works/">How it works &rarr;</a>
@@ -954,7 +941,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
     <div class="footer-main">
       <a class="brand" href="/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
       <div class="footer-column"><h2>Product</h2><a href="/" aria-current="page">Overview</a><a href="/how-it-works/">How it works</a><a href="/how-it-works/#employee">For employees</a><a href="/how-it-works/#admin">For admins</a></div>
-      <div class="footer-column"><h2>Resources</h2><a href="/resources/ai-harness/">What is an AI harness</a><a href="/privacy/">Privacy</a><a href="/accessibility/">Accessibility</a></div>
+      <div class="footer-column"><h2>Legal</h2><a href="/privacy/">Privacy</a><a href="/accessibility/">Accessibility</a></div>
       <div class="footer-column"><h2>Company</h2><a href="/company/">Company</a><a href="/#demo">Contact</a><span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">Copy</button></span></div>
       <div class="footer-column"><h2>Connect</h2><a href="https://discord.gg/C5m4jGgKXD" target="_blank" rel="noopener">Discord</a></div>
     </div>
@@ -968,24 +955,6 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 
 <script type="module" src="waitlist.mjs"></script>
 <script type="module" src="/nav.js"></script>
-<script>
-(()=>{
-  const screens=document.querySelectorAll('.screen');
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  const visible=new Set();
-  const update=()=>screens.forEach(screen=>{
-    screen.classList.toggle('screen-running',visible.has(screen)&&!reduced.matches);
-  });
-  const observer=new IntersectionObserver(entries=>{
-    entries.forEach(({target,isIntersecting})=>{
-      if(isIntersecting){visible.add(target)}else{visible.delete(target)}
-    });
-    update();
-  });
-  screens.forEach(screen=>observer.observe(screen));
-  reduced.addEventListener('change',update);
-})();
-</script>
 <script type="module" src="problem.js"></script>
 <!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1b6168cc50c644e4bd8071508286852d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>

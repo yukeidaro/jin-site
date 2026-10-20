@@ -40,8 +40,11 @@ AI spread fast. Has everything else kept up?
 
 ## Solution (Building)
 
-- Employees keep their context safe: Put your personal context in securely, and take it out safely. Also usable in your personal AI.
-- The company reuses it safely: Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
+- Connect once: Connect your usual AI tools once, through MCP.
+- See every part by type: Skills, prompts, memory and MCP settings, sorted by type.
+- See what each team uses most: See which harnesses each department uses most.
+- Separate personal from company: Keep what came from personal AI apart from parts that hold confidential company context.
+- Control approved AI tools: Let people use only the tools you approve. For example: Claude Code for developers only, your company policy in Copilot, and only non-confidential parts in ChatGPT.
 
 ## How it works and status
 

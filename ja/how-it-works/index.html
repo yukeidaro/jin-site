@@ -52,15 +52,6 @@
           </ul>
         </li>
         <li><a href="/ja/security/">セキュリティ</a></li>
-        <li class="nav-group">
-          <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="resources-panel">リソース</button>
-          <span class="mobile-group-label">リソース</span>
-          <ul class="nav-panel" id="resources-panel">
-            <li><a href="/ja/resources/ai-harness/"><span class="nav-item-title">AI ハーネスとは</span><span class="nav-description">AI エージェントを役割に合わせて働かせる部品。</span></a></li>
-            <li><a href="/ja/privacy/"><span class="nav-item-title">プライバシーポリシー</span><span class="nav-description">お預かりする情報と、その使い方。</span></a></li>
-            <li><a href="/ja/accessibility/"><span class="nav-item-title">アクセシビリティ</span><span class="nav-description">目標と、問題のご報告先。</span></a></li>
-          </ul>
-        </li>
         <li><a href="/ja/company/">会社情報</a></li>
         <li><a href="/ja/#demo">お問い合わせ</a></li>
       </ul>
@@ -75,52 +66,78 @@
   <div class="wrap">
     <p class="mono-label">仕組み</p>
     <h1>仕組み</h1>
-    <p class="harness-definition">AI ハーネスとは、AI エージェントを役割に合わせて働かせるための、指示・スキル・記憶・接続ツールの一式です。</p>
   </div>
 </section>
 
 <div id="steps">
 <section class="section workflow" id="employee" aria-labelledby="employee-heading">
   <div class="wrap">
-    <div class="section-head split">
-      <h2 class="how-audience" id="employee-heading">社員</h2>
-      <ol class="harness-steps">
-        <li><span class="mono-label">01</span><div><h3>一度つなぐだけ。</h3><p>Jin AI は MCP を通じて、お使いの AI ツールにつながります。</p></div></li>
-        <li><span class="mono-label">02</span><div><h3><span class="ja-phrase">すべての</span><span class="ja-phrase">ハーネスを</span><span class="ja-phrase">種類ごとに。</span></h3><p>スキル、指示、記憶、MCP の設定を、人ごとに整理して表示します。</p><p class="step-note">例: <code>CLAUDE.md</code>、スキル、記憶のファイル、MCP の設定。</p></div></li>
-      </ol>
-    </div>
-  </div>
-  <div class="product-viewport">
-    <figure class="demo-stage">
-      <div class="demo-window moving-frame">
-        <div class="screen" role="img" aria-label="Jin AI の社員向けの画面。MCP の接続画面に並ぶ AI ツールの一覧を映し、次に、種類ごとに整理されたハーネスの部品と、それぞれの Can move と Confidential の表示を映します。">
-          <img class="screen-connect" src="/assets/demo/demo-1-connect.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
-          <img class="screen-categories" src="/assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
-        </div>
-      </div>
-    </figure>
+    <h2 class="how-audience" id="employee-heading">社員</h2>
+    <ul class="feature-rows">
+      <li class="feature-row" data-demo-scene="connect" data-demo-src="">
+        <div class="feature-copy"><h3><span class="ja-phrase">一度つなぐだけ</span></h3><p>MCPで、いつものAIツールに一度つなぐだけ。</p></div>
+        <figure class="demo-stage">
+          <figcaption class="screen-caption">ワンクリックでつなぐ</figcaption>
+          <div class="demo-window moving-frame">
+            <div class="screen" role="img" aria-label="ワンクリックでつなぐ">
+              <img class="screen-connect" src="/assets/demo/demo-1-connect.webp" width="2880" height="1664" alt="" decoding="async" loading="lazy">
+            </div>
+          </div>
+        </figure>
+      </li>
+      <li class="feature-row" data-demo-scene="categories" data-demo-src="">
+        <div class="feature-copy"><h3><span class="ja-phrase">種類ごとに見る</span></h3><p>スキル・プロンプト・記憶・MCPの設定を、種類ごとに整理して見られる。</p></div>
+        <figure class="demo-stage">
+          <figcaption class="screen-caption">種類ごとに見る</figcaption>
+          <div class="demo-window moving-frame">
+            <div class="screen" role="img" aria-label="種類ごとに見る">
+              <img class="screen-categories" src="/assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="" decoding="async" loading="lazy">
+            </div>
+          </div>
+        </figure>
+      </li>
+    </ul>
   </div>
 </section>
 
 <section class="section workflow" id="admin" aria-labelledby="admin-heading">
   <div class="wrap">
-    <div class="section-head split">
-      <h2 class="how-audience" id="admin-heading">管理者</h2>
-      <ol class="harness-steps" start="3">
-        <li><span class="mono-label">03</span><div><h3>役割ごとに見る。</h3><p>どの役割が、どのハーネスを、どれくらい使っているか。</p></div></li>
-        <li><span class="mono-label">04</span><div><h3><span class="ja-phrase">持ち出せるものを</span><span class="ja-phrase">決める。</span></h3><p>機密とした部品は、承認した AI ツールにだけつながります。</p><p class="step-note">パイロットでは、今は会社が手作業で承認します。</p></div></li>
-      </ol>
-    </div>
-  </div>
-  <div class="product-viewport">
-    <figure class="demo-stage">
-      <div class="demo-window moving-frame">
-        <div class="screen" role="img" aria-label="Jin AI の管理者向けの画面。役割ごとのチームとよく使われているハーネスを映し、次に、ハーネスの方針と、承認された AI ツールと承認されていない AI ツールを映します。">
-          <img class="screen-by-role" src="/assets/demo/demo-3-by-role.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
-          <img class="screen-what-can-move" src="/assets/demo/demo-4-what-can-move.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
-        </div>
-      </div>
-    </figure>
+    <h2 class="how-audience" id="admin-heading">管理者</h2>
+    <ul class="feature-rows">
+      <li class="feature-row" data-demo-scene="departments" data-demo-src="">
+        <div class="feature-copy"><h3><span class="ja-phrase">部署ごとの</span><span class="ja-phrase">使われ方を見る</span></h3><p>部署ごとに、何がいちばん使われているかが分かる。</p></div>
+        <figure class="demo-stage">
+          <figcaption class="screen-caption">部署ごとの使われ方</figcaption>
+          <div class="demo-window moving-frame">
+            <div class="screen" role="img" aria-label="部署ごとの使われ方">
+              <img class="screen-by-role" src="/assets/demo/demo-3-by-role.webp" width="2880" height="1664" alt="" decoding="async" loading="lazy">
+            </div>
+          </div>
+        </figure>
+      </li>
+      <li class="feature-row" data-demo-scene="classify" data-demo-src="">
+        <div class="feature-copy"><h3><span class="ja-phrase">個人と会社を</span><span class="ja-phrase">分ける</span></h3><p>個人のAIから持ってきたものと、会社の機密を含むものを分けて管理できる。</p></div>
+        <figure class="demo-stage">
+          <figcaption class="screen-caption">個人と会社を分ける</figcaption>
+          <div class="demo-window moving-frame">
+            <div class="screen" role="img" aria-label="個人と会社を分ける">
+              <img class="screen-what-can-move" src="/assets/demo/demo-4-what-can-move.webp" width="2880" height="1664" alt="" decoding="async" loading="lazy">
+            </div>
+          </div>
+        </figure>
+      </li>
+      <li class="feature-row" data-demo-scene="tools" data-demo-src="">
+        <div class="feature-copy"><h3><span class="ja-phrase">承認した</span><span class="ja-phrase">ツールだけに</span></h3><p>承認したツールだけを使わせる。たとえば、Claude Codeは開発者だけ、Copilotには会社のポリシー、ChatGPTには機密を含まないものだけ。</p></div>
+        <figure class="demo-stage">
+          <figcaption class="screen-caption">承認したツールだけに</figcaption>
+          <div class="demo-window moving-frame">
+            <div class="screen screen-placeholder" role="img" aria-label="承認したツールだけに">
+              <span class="placeholder-mark" aria-hidden="true"></span>
+            </div>
+          </div>
+        </figure>
+      </li>
+    </ul>
   </div>
 </section>
 </div>
@@ -143,6 +160,9 @@
     <a class="btn btn-p" href="/ja/#demo">デモを申し込む</a>
   </div>
 </section>
+<aside class="harness-note wrap" id="harness">
+  <p>AI ハーネスとは、AI エージェントを役割に合わせて働かせるための、指示・スキル・記憶・接続ツールの一式です。</p>
+</aside>
 </main>
 
 <footer>
@@ -150,7 +170,7 @@
     <div class="footer-main">
       <a class="brand" href="/ja/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
       <div class="footer-column"><h2>製品</h2><a href="/ja/">概要</a><a href="/ja/how-it-works/" aria-current="page">仕組み</a><a href="/ja/how-it-works/#employee">社員向け</a><a href="/ja/how-it-works/#admin">管理者向け</a></div>
-      <div class="footer-column"><h2>リソース</h2><a href="/ja/resources/ai-harness/">AI ハーネスとは</a><a href="/ja/privacy/">プライバシーポリシー</a><a href="/ja/accessibility/">アクセシビリティ</a></div>
+      <div class="footer-column"><h2>規約・方針</h2><a href="/ja/privacy/">プライバシーポリシー</a><a href="/ja/accessibility/">アクセシビリティ</a></div>
       <div class="footer-column"><h2>会社</h2><a href="/ja/company/">会社情報</a><a href="/ja/#demo">お問い合わせ</a><span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span></div>
       <div class="footer-column"><h2>つながる</h2><a href="https://discord.gg/C5m4jGgKXD" target="_blank" rel="noopener">Discord</a></div>
     </div>
@@ -162,27 +182,7 @@
   </div>
 </footer>
 <script type="module" src="/nav.js"></script>
-<script>
-(()=>{
-  const screens=document.querySelectorAll('.screen');
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  const visible=new Set();
-  const update=()=>screens.forEach(screen=>{
-    const running=visible.has(screen)&&!reduced.matches&&!document.hidden;
-    screen.classList.toggle('screen-running',running);
-    if(!running) screen.getAnimations({subtree:true}).forEach(animation=>{animation.currentTime=0});
-  });
-  const observer=new IntersectionObserver(entries=>{
-    entries.forEach(({target,isIntersecting})=>{
-      if(isIntersecting){visible.add(target)}else{visible.delete(target)}
-    });
-    update();
-  });
-  screens.forEach(screen=>observer.observe(screen));
-  reduced.addEventListener('change',update);
-  document.addEventListener('visibilitychange',update);
-})();
-</script>
+<script type="module" src="/workflow.js"></script>
 <!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1b6168cc50c644e4bd8071508286852d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
