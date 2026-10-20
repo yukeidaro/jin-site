@@ -267,13 +267,13 @@ for (const match of home.matchAll(/<(?:script|link)\b[^>]*(?:src|href)="(https?:
   check(["fonts.googleapis.com", "fonts.gstatic.com", "static.cloudflareinsights.com"].includes(new URL(match[1]).hostname),
     `Root loads an unapproved external resource: ${match[1]}.`);
 }
-const productFrame = home.match(/<figure class="product-frame">([\s\S]*?)<\/figure>/)?.[1] || "";
+const productFrame = home.match(/<figure class="demo-stage">([\s\S]*?)<\/figure>/)?.[1] || "";
 const productAlt = "Jin AI employee workspace. Harness parts are sorted by category, and each part is marked Can move or Confidential.";
 const stillTag = productFrame.match(/<img\b[^>]*>/)?.[0] || "";
 check(stillTag === `<img src="assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="${productAlt}" decoding="async" loading="eager" fetchpriority="high" elementtiming="hero-still">` &&
   productFrame.includes('class="hero-screen"') &&
-  home.indexOf('class="product-frame"') > home.indexOf("</section>") &&
-  home.indexOf('class="product-frame"') < home.indexOf('id="problem"'),
+  home.indexOf('class="demo-stage"') > home.indexOf("</section>") &&
+  home.indexOf('class="demo-stage"') < home.indexOf('id="problem"'),
   "Root must retain the eager Categories fallback, exact alt and dimensions directly below the hero.");
 const demoTemplate = productFrame.match(/<template id="hero-demo-template">([\s\S]*?)<\/template>/)?.[1] || "";
 const demoIframe = demoTemplate.match(/<iframe\b[^>]*>/)?.[0] || "";
@@ -414,12 +414,12 @@ check(howSection.includes('<h2 class="h2">How it works</h2>') &&
   howSection.includes(`<p class="harness-definition">${content.product.harness_definition}</p>`) &&
   howSection.indexOf('class="harness-definition"') < howSection.indexOf('class="home-columns"'),
   "How it works must define an AI harness directly above its columns.");
-check(howSection.includes('<span class="mono-label">How it works</span>') &&
+check(!howSection.includes('<span class="mono-label">How it works</span>') &&
   howSection.includes('class="how-audience">Employee</h3>') &&
   howSection.includes('class="how-audience">Admin</h3>') &&
   howSection.includes('href="how-it-works/">How it works &rarr;</a>') &&
   !/<(?:img|figure)\b|class="screen"/.test(howSection),
-  "How it works must include its label, Employee, Admin and text link, without screens.");
+  "How it works must include Employee, Admin and its text link without screens or a duplicate heading label.");
 const demoScreens = [
   ["Employee", "Jin AI employee workspace. The camera moves across the list of AI tools in the MCP connection panel, then across harness parts sorted by category, each marked Can move or Confidential.", [
     ["screen-connect", "demo-1-connect.webp"], ["screen-categories", "demo-2-categories.webp"]
@@ -442,7 +442,8 @@ for (const [page, source, prefix] of [["How it works", workflowSections.map((mat
     const frame = body.match(/(<div class="screen"[^>]*>)([\s\S]*?)<\/div>/);
     check(body.includes(`<h2 class="how-audience" id="${section?.[2]}">${audience}</h2>`) &&
       body.includes('<div class="section-head split">') &&
-      body.includes('<div class="product-frame moving-frame">') &&
+      body.includes('<figure class="demo-stage">') &&
+      body.includes('<div class="demo-window moving-frame">') &&
       body.indexOf('class="harness-steps"') < body.indexOf('class="screen"') &&
       frame?.[1] === `<div class="screen" role="img" aria-label="${label}">`,
       `${page} must show the ${audience} label and steps before its dark product frame with its exact accessible label.`);
@@ -773,6 +774,20 @@ function cssBlock(source, header) {
   }
   return depth === 0 ? source.slice(opening + 1, end - 1) : "";
 }
+const stageCss = cssBlock(englishCss, ".demo-stage");
+const windowCss = cssBlock(englishCss, ".demo-window");
+check(stageCss.includes("padding: var(--s-12)") && stageCss.includes("border: var(--border)") &&
+  stageCss.includes("border-radius: 24px") && stageCss.includes("background: var(--surface-1)") &&
+  windowCss.includes("overflow: hidden") && windowCss.includes("border-radius: var(--r-xl)") &&
+  windowCss.includes("box-shadow: var(--shadow-float)") &&
+  cssBlock(englishCss, "@media (max-width: 767px)").includes(
+    ".demo-stage { width: calc(100% - 48px); padding: var(--s-4); }") &&
+  !/product-frame|mask-image|--glow|\.demo-(?:stage|window)::(?:before|after)/.test(englishCss) &&
+  cssBlock(englishCss, ".hero-screen").includes("aspect-ratio: 2880 / 1664") &&
+  cssBlock(englishCss, ".screen").includes("aspect-ratio: 2880 / 1664") &&
+  heroDemoScript.includes("screen.clientWidth / 1440") &&
+  heroDemoScript.includes("}).observe(screen)"),
+  "Demo stages must share responsive padding, outline, surface and floating windows without a fade, glow or extra chrome; screen ratios and inner-screen scaling must remain.");
 const paintScript = home.match(/<head>[\s\S]*?<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] || "";
 check(paintScript.includes('document.documentElement.classList.add("js-nav")') &&
   /if\s*\(!matchMedia\("\(prefers-reduced-motion: reduce\)"\)\.matches\)\s*document\.documentElement\.classList\.add\("js-reveal"\)/.test(paintScript),
@@ -849,6 +864,16 @@ check(dataSection.includes(`<h2 class="h2">${content.data_principles.headline}</
 const demoSection = homeSections.find((match) => match[1].includes('id="demo"'))?.[2] || "";
 check(demoSection.includes("<h2>See what is inside your company's AI harnesses.</h2>") &&
   demoSection.includes('id="waitlistForm"'), "The demo section must contain the approved heading and form.");
+const demoIntro = demoSection.match(/<div class="demo-intro">([\s\S]*?)<\/div>\s*<\/div>/)?.[1] || "";
+const gettingStarted = demoIntro.match(/<div class="getting-started" data-draft>([\s\S]*)/)?.[1] || "";
+check(gettingStarted.includes("<h3>Getting started</h3>") &&
+  count(gettingStarted, /<span class="mono-label draft-tag">Draft copy<\/span>/g) === 1 &&
+  count(gettingStarted, /<ul>/g) === 1 &&
+  JSON.stringify([...gettingStarted.matchAll(/<li>([\s\S]*?)<\/li>/g)].map(match => match[1])) === JSON.stringify([
+    "We're working through our waitlist, so thank you for your patience. If your company wants to try Jin AI, request a demo below.",
+    "The fastest way in is an introduction from someone already in the Jin AI private beta. :)"
+  ]) && !demoIntro.includes("<p>We will email you to set up a demo.</p>"),
+  "The closing demo intro must contain the exact two-item Getting started list, H3 and one Draft copy tag inside its data-draft block.");
 const pilotSection = homeSections.find((match) => match[1].includes('id="pilot"'))?.[2] || "";
 check(pilotSection.includes('<div class="pilot-card" data-draft>') &&
   pilotSection.includes('<h2 id="pilot-heading">How a pilot works</h2>') &&
@@ -1060,6 +1085,49 @@ for (const [relativePath, source] of htmlCache) {
   const baseUrl = new URL(publicPath, "https://jinai.md/");
   const markup = source.replace(/(<script\b[^>]*>)[\s\S]*?<\/script>/g, "$1</script>");
   const references = [...markup.matchAll(/\b(?:href|src)="([^"]+)"/g)];
+
+  if (!relativePath.startsWith("ja/") && !relativePath.startsWith("assets/")) {
+    check(!/\bproduct-frame\b/.test(markup), `${relativePath} must use demo-stage, not product-frame.`);
+    const duplicateLabels = [...markup.matchAll(/<(?:span|p)\b[^>]*class="mono-label"[^>]*>([^<]+)<\/(?:span|p)>\s*<h2\b[^>]*>([^<]+)<\/h2>/g)];
+    check(!duplicateLabels.some(match => match[1] === match[2]),
+      `${relativePath} must not repeat an H2 verbatim in its section label.`);
+    // Track nesting, including inert template contents, without adding a parser dependency.
+    const stack = [];
+    const stages = [];
+    const voidTags = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"]);
+    const hasClass = (node, name) => node?.classes.includes(name);
+    const clean = markup.replace(/<!--[\s\S]*?-->|<style\b[^>]*>[\s\S]*?<\/style>/g, "");
+    for (const [tag, name] of clean.matchAll(/<\/?([a-z][\w:-]*)\b[^>]*>/gi)) {
+      const tagName = name.toLowerCase();
+      if (tag.startsWith("</")) {
+        const index = stack.findLastIndex(node => node.name === tagName);
+        if (index >= 0) stack.length = index;
+        continue;
+      }
+      const parent = stack.at(-1);
+      const node = { name: tagName, classes: tag.match(/\bclass="([^"]*)"/)?.[1].split(/\s+/) || [], children: [] };
+      parent?.children.push(node);
+      if (hasClass(node, "demo-stage")) stages.push(node);
+      if (["img", "iframe"].includes(tagName) && /\bsrc="[^"]*\bassets\/demo\//.test(tag)) {
+        const screen = stack.findLastIndex(ancestor => hasClass(ancestor, "hero-screen") || hasClass(ancestor, "screen"));
+        check(screen >= 2 && hasClass(stack[screen - 1], "demo-window") &&
+          hasClass(stack[screen - 2], "demo-stage"),
+          `${relativePath}: every demo image and iframe must be inside demo-stage > demo-window > screen.`);
+      }
+      if (!voidTags.has(tagName)) stack.push(node);
+    }
+    for (const stage of stages) {
+      const window = stage.children[0];
+      const screen = window?.children[0];
+      check(stage.name === "figure" && stage.children.length === 1 &&
+        window?.name === "div" && hasClass(window, "demo-window") && window.children.length === 1 &&
+        screen?.name === "div" && (hasClass(screen, "hero-screen") || hasClass(screen, "screen")) &&
+        screen.children.length > 0 && screen.children.every(child =>
+          child.name === "img" || child.name === "iframe" ||
+          (child.name === "template" && child.children.length === 1 && child.children[0].name === "iframe")),
+        `${relativePath}: demo-stage must contain only one demo-window and the existing screen, with no added title bar.`);
+    }
+  }
 
   for (const match of references) {
     const reference = match[1];

@@ -64,7 +64,13 @@ in check mode and fails when a derivative has drifted.
 
 ## English hero product demo
 
-The home product frame keeps the eager Categories WebP as its accessible
+Every English product screen uses a `figure.demo-stage` outline and lighter
+inner surface around a floating `.demo-window`. Desktop padding is 48px;
+phones use 16px. The window retains the demo's own title bar, with no extra
+chrome, glow or bottom fade. The hero still and the moving workflow screens
+keep their 2880:1664 screen ratio and existing accessible names.
+
+The home product window keeps the eager Categories WebP as its accessible
 fallback. Once the still has painted, visitors without reduced motion get
 `assets/demo/app.html?embed=hero` in an inert, untabbable iframe. A template
 prevents any iframe request under reduced motion. The frame keeps the still's
@@ -99,6 +105,12 @@ Site labels use sentence-case Inter, including the Agent reference and shared
 paper-theme labels. Monospace is reserved for code and file names. Japanese
 reveal and button adoption remains with J1. E4 measurements and screenshots
 are in `.copilot-runs/notes/e4.md`.
+
+The closing home intro has a draft-marked Getting started heading and two
+waitlist/private-beta notes supplied by Yu for E5. They are draft copy, not
+new product facts. The generated form note, privacy link, payload and consent
+remain unchanged. E5 component values and browser evidence are recorded in
+`.copilot-runs/notes/e5.md`; J1 owns Japanese adoption.
 
 ## Content rules
 
@@ -156,6 +168,8 @@ are in `.copilot-runs/notes/e4.md`.
 - E4 exception (Yu, 2026-10-20): the English home hero may use a small,
   reduced-motion-aware reveal blur. Labels use 500-weight Inter at 13px,
   sentence case and no added tracking. English primary buttons are vermilion.
+- E5 exception (Yu, 2026-10-20): English product screens use the shared rounded
+  demo stage and soft window shadow described above, with no glow or fade.
 - Do not add `FAQPage` schema, active offers, ratings or reviews unless they
   become truthful and applicable.
 

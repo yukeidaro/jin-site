@@ -210,10 +210,12 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 </section>
 
 <div class="product-viewport">
-  <figure class="product-frame">
-    <div class="hero-screen">
-      <img src="assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="Jin AI employee workspace. Harness parts are sorted by category, and each part is marked Can move or Confidential." decoding="async" loading="eager" fetchpriority="high" elementtiming="hero-still">
-      <template id="hero-demo-template"><iframe src="assets/demo/app.html?embed=hero" title="Jin AI employee workspace demo" width="1440" height="832" tabindex="-1" inert aria-hidden="true" scrolling="no" referrerpolicy="no-referrer"></iframe></template>
+  <figure class="demo-stage">
+    <div class="demo-window">
+      <div class="hero-screen">
+        <img src="assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="Jin AI employee workspace. Harness parts are sorted by category, and each part is marked Can move or Confidential." decoding="async" loading="eager" fetchpriority="high" elementtiming="hero-still">
+        <template id="hero-demo-template"><iframe src="assets/demo/app.html?embed=hero" title="Jin AI employee workspace demo" width="1440" height="832" tabindex="-1" inert aria-hidden="true" scrolling="no" referrerpolicy="no-referrer"></iframe></template>
+      </div>
     </div>
   </figure>
 </div>
@@ -387,7 +389,6 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
   <div class="wrap">
     <div class="section-head split">
       <div>
-        <span class="mono-label">How it works</span>
         <h2 class="h2">How it works</h2>
       </div>
       <p class="harness-definition">An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.</p>
@@ -443,7 +444,14 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
   <div class="wrap home-columns" id="waitlist">
     <div class="demo-intro">
       <h2>See what is inside your company's AI harnesses.</h2>
-      <p>We will email you to set up a demo.</p>
+      <div class="getting-started" data-draft>
+        <h3>Getting started</h3>
+        <span class="mono-label draft-tag">Draft copy</span>
+        <ul>
+          <li>We're working through our waitlist, so thank you for your patience. If your company wants to try Jin AI, request a demo below.</li>
+          <li>The fastest way in is an introduction from someone already in the Jin AI private beta. :)</li>
+        </ul>
+      </div>
     </div>
     <div class="demo-form">
     <!-- GENERATED:CTA_FINAL:START -->

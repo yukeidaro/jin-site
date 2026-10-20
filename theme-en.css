@@ -30,8 +30,7 @@
   --t-ui: 13px;
   --t-note: 12px;
   --border: 1px solid var(--line);
-  --shadow-float: 0 24px 48px rgba(0, 0, 0, .5);
-  --glow: radial-gradient(60% 50% at 50% 0%, rgba(255, 255, 255, .08), transparent 70%);
+  --shadow-float: 0 24px 64px rgba(0, 0, 0, .24);
 }
 
 html { scroll-behavior: smooth; scroll-padding-top: var(--s-6); }
@@ -75,10 +74,8 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .hero h1 { max-width: 900px; margin-inline: auto; font-size: var(--t-display); line-height: 1; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--s-6); margin-top: var(--s-6); }
 .product-viewport { overflow: clip; padding-bottom: var(--s-12); }
-.product-frame { position: relative; isolation: isolate; width: min(calc(100% - 64px), 1320px); margin-inline: auto; padding: var(--s-2); border: var(--border); border-radius: var(--r-xl); background: var(--surface-1); box-shadow: var(--shadow-float); mask-image: linear-gradient(to bottom, #000 70%, transparent); }
-.product-frame::before { content: ""; position: absolute; z-index: -1; inset: -48px -32px; background: var(--glow); pointer-events: none; }
-.product-frame img { width: 100%; height: auto; border-radius: var(--r-s); }
-.product-viewport .product-frame { width: min(calc(100% - 64px), 1320px); margin-inline: auto; }
+.demo-stage { width: min(calc(100% - 64px), 1320px); margin-inline: auto; padding: var(--s-12); border: var(--border); border-radius: 24px; background: var(--surface-1); }
+.demo-window { overflow: hidden; border-radius: var(--r-xl); box-shadow: var(--shadow-float); }
 .hero-screen { position: relative; aspect-ratio: 2880 / 1664; overflow: hidden; border-radius: var(--r-s); }
 .hero-screen > img { display: block; width: 100%; height: 100%; }
 .hero-screen iframe { position: absolute; top: 0; left: 0; width: 1440px; height: 832px; max-width: none; border: 0; transform-origin: top left; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
@@ -135,6 +132,11 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .demo { padding-block: var(--s-32); border-top: var(--border); }
 .demo-intro h2 { max-width: 542px; }
 .demo-intro p { margin-top: var(--s-6); }
+.getting-started { margin-top: var(--s-8); }
+.getting-started h3 { display: inline; font: var(--t-label); letter-spacing: 0; color: var(--text-2); }
+.getting-started .draft-tag { display: inline-block; margin-left: var(--s-3); }
+.getting-started ul { margin-top: var(--s-4); padding-left: var(--s-6); color: var(--text-3); }
+.getting-started li + li { margin-top: var(--s-4); }
 .demo-form { min-width: 0; }
 
 .how-hero h1 { font-size: var(--t-display-xl); }
@@ -145,7 +147,6 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .workflow .harness-steps h3 { font-size: var(--t-title); line-height: 1.33; letter-spacing: -.012em; margin-bottom: var(--s-3); }
 .workflow .step-note { margin-top: var(--s-3); color: var(--text-3); }
 .workflow code { font-family: var(--font-mono); font-size: .9em; }
-.product-frame.moving-frame { mask-image: none; }
 .screen { position: relative; aspect-ratio: 2880 / 1664; border-radius: var(--r-s); overflow: hidden; background: var(--surface-1); }
 .screen img { position: absolute; inset: 0; width: 100%; height: 100%; transform-origin: 0 0; animation-duration: 18s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; animation-play-state: paused; }
 .screen .screen-connect { animation-name: screen-connect; }
@@ -266,8 +267,7 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
   .hero h1 { line-height: 1.1; }
   .hero-actions { gap: var(--s-4); }
   .hero-actions .text-link { font-size: 13px; }
-  .product-frame { width: 960px; margin-left: var(--s-6); margin-right: 0; }
-  .product-viewport .product-frame { width: calc(100% - 48px); }
+  .demo-stage { width: calc(100% - 48px); padding: var(--s-4); }
   .product-viewport { padding-bottom: 0; }
   .section { padding-block: 80px; }
   .section + .section { padding-top: 0; }
@@ -293,7 +293,6 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
   .pilot-steps { grid-template-columns: 1fr; gap: var(--s-8); }
   .pilot-steps h3 { margin-top: var(--s-3); }
   .demo { padding-block: 80px; }
-  .workflow .product-frame { width: calc(100% - 48px); margin-inline: auto; }
   .workflow .how-audience { margin-bottom: 0; }
   .closing-cta { padding-block: 80px; }
   .closing-cta h2 { line-height: 1.1; }
