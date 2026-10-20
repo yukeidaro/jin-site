@@ -31,19 +31,23 @@
     "primary": "AI-forward companies"
   },
   "problem": {
-    "headline": "When your best AI users leave, you start over",
+    "headline": "AI spread fast. Has everything else kept up?",
     "points": [
       {
-        "name": "Agents stop working",
+        "name": "When someone leaves, do their agents keep working?",
         "description": "When the person who built them leaves, their agents lose the context they ran on."
       },
       {
-        "name": "Successor rebuilds from scratch",
+        "name": "Can a successor pick up where they left off?",
         "description": "The output gets handed over. The context, rules and judgment behind it do not."
       },
       {
-        "name": "Best practice stays hidden",
+        "name": "Does your best AI practice reach every team?",
         "description": "One team finds a workflow that works. The other teams never see it."
+      },
+      {
+        "name": "Is company work flowing into personal AI?",
+        "description": "Your heaviest AI users already run personal AI, and work context ends up there."
       }
     ]
   },
@@ -52,11 +56,11 @@
     "status": "building",
     "steps": [
       {
-        "name": "Safe for every employee",
+        "name": "Employees keep their context safe",
         "description": "Put your personal context in securely, and take it out safely. Also usable in your personal AI."
       },
       {
-        "name": "Reusable for the company",
+        "name": "The company reuses it safely",
         "description": "Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
       }
     ]

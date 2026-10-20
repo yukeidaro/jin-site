@@ -31,16 +31,17 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 
 ## Problem
 
-When your best AI users leave, you start over
+AI spread fast. Has everything else kept up?
 
-- Agents stop working: When the person who built them leaves, their agents lose the context they ran on.
-- Successor rebuilds from scratch: The output gets handed over. The context, rules and judgment behind it do not.
-- Best practice stays hidden: One team finds a workflow that works. The other teams never see it.
+- When someone leaves, do their agents keep working?: When the person who built them leaves, their agents lose the context they ran on.
+- Can a successor pick up where they left off?: The output gets handed over. The context, rules and judgment behind it do not.
+- Does your best AI practice reach every team?: One team finds a workflow that works. The other teams never see it.
+- Is company work flowing into personal AI?: Your heaviest AI users already run personal AI, and work context ends up there.
 
 ## Solution (Building)
 
-- Safe for every employee: Put your personal context in securely, and take it out safely. Also usable in your personal AI.
-- Reusable for the company: Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
+- Employees keep their context safe: Put your personal context in securely, and take it out safely. Also usable in your personal AI.
+- The company reuses it safely: Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
 
 ## How it works and status
 

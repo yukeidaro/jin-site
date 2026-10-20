@@ -307,8 +307,9 @@ for (const [attribute, name] of [["name", "description"], ["property", "og:descr
   check(home.includes(`<meta ${attribute}="${name}" content="${homeDescription}">`), `Root must use the approved ${name}.`);
 }
 const hero = homeSections[0]?.[2] || "";
-check(!/<(?:img|p)\b|class="(?:eyebrow|lede|waitnote)"/.test(hero),
-  "The hero must not contain a subtitle, status tag, note or product image.");
+check(count(hero, /<p\b/g) === 1 && hero.includes('<p class="hero-intro">') &&
+  !/<img\b|class="(?:eyebrow|lede|waitnote)"/.test(hero),
+  "The hero must contain only the R1 body paragraph, without a status tag, note or product image.");
 check(hero.includes('href="how-it-works/">How it works &rarr;</a>'), "The hero must link to the How it works page.");
 check(home.includes('<link rel="stylesheet" href="base.css">') &&
   home.includes('<link rel="stylesheet" href="theme-en.css">') &&
@@ -373,17 +374,18 @@ check(count(home, /<img\b[^>]*src="assets\/demo\//g) === 1 &&
 const problemMatch = homeSections.find((match) => match[1].includes('id="problem"'));
 const problemSection = problemMatch?.[2] || "";
 const problemCopy = [
-  ["owner", "Agents stop working", "When the person who built them leaves, their agents lose the context they ran on."],
-  ["handover", "Successor rebuilds from scratch", "The output gets handed over. The context, rules and judgment behind it do not."],
-  ["teams", "Best practice stays hidden", "One team finds a workflow that works. The other teams never see it."]
+  ["owner", "When someone leaves, do their agents keep working?", "When the person who built them leaves, their agents lose the context they ran on."],
+  ["handover", "Can a successor pick up where they left off?", "The output gets handed over. The context, rules and judgment behind it do not."],
+  ["teams", "Does your best AI practice reach every team?", "One team finds a workflow that works. The other teams never see it."],
+  ["shadow", "Is company work flowing into personal AI?", "Your heaviest AI users already run personal AI, and work context ends up there."]
 ];
 const problemFigures = [...problemSection.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
 check(problemSection.includes('<span class="mono-label">Problem</span>') &&
-  problemSection.includes('<h2 class="h2">When your best AI users leave, you start over</h2>') &&
+  problemSection.includes('<h2 class="h2">AI spread fast. Has everything else kept up?</h2>') &&
   !/Draft copy|\bdata-draft\b/.test((problemMatch?.[1] || "") + problemSection),
   "Problem must use the exact approved label and H2 without a Draft copy tag or data-draft.");
-check(problemFigures.length === 3 && count(problemSection, /<svg\b/g) === 3,
-  "Problem needs exactly three inline interactive figures.");
+check(problemFigures.length === 4 && count(problemSection, /<svg\b/g) === 4,
+  "Problem needs three existing interactive figures and the fourth Shadow AI slot.");
 for (const [index, [id, title, description]] of problemCopy.entries()) {
   const attributes = problemFigures[index]?.[2] || "";
   const body = problemFigures[index]?.[3] || "";
@@ -397,12 +399,19 @@ for (const [index, [id, title, description]] of problemCopy.entries()) {
     svg.includes('viewBox="0 0 420 320"') && svg.includes('role="img"') &&
     svg.match(/\baria-label="([^"]*)"/)?.[1].trim() &&
     svg.match(/\bdata-label-idle="([^"]*)"/)?.[1].trim() &&
-    (id === "teams" || (svg.match(/\bdata-label-playing="([^"]*)"/)?.[1].trim() &&
+    (["teams", "shadow"].includes(id) || (svg.match(/\bdata-label-playing="([^"]*)"/)?.[1].trim() &&
       svg.match(/\bdata-label-changed="([^"]*)"/)?.[1].trim())) &&
     status?.[1].trim() &&
-    (id === "teams" || /\bdata-status-idle="[^"]+" data-status-playing="[^"]+" data-status-changed="[^"]+"/.test(status[0])),
+    /\bdata-status-idle="[^"]+"/.test(status?.[0] || "") &&
+    (["teams", "shadow"].includes(id) || /\bdata-status-idle="[^"]+" data-status-playing="[^"]+" data-status-changed="[^"]+"/.test(status?.[0] || "")),
     `Problem figure ${index + 1} needs exact copy, a focusable named figure, no number/action/reset, shared SVG size, state descriptions and polite status.`);
 }
+const shadowFigure = problemFigures[3]?.[3] || "";
+check(shadowFigure.includes("<!-- R2 draws this -->") &&
+  shadowFigure.includes('<use href="#problem-stack-base" x="210" y="200"/>') &&
+  count(shadowFigure, /<(?:path|circle|rect|use|text)\b/g) === 1 &&
+  !/<button\b/.test(shadowFigure),
+  "The Shadow AI slot must reuse only the existing isometric base plate until R2, without fake interaction.");
 check(!/\b(?:sa-|ho-|ed-)|class="art"|animateMotion/.test(problemSection) &&
   !/sa-svg|ho-svg|ed-svg|ed-tiles|ed-arrows|pauseAnimations/.test(home),
   "English home must not retain the old shadow AI, handover or education illustrations or controller.");
@@ -441,6 +450,7 @@ check(teamFigure.indexOf('class="team-controls"') > teamFigure.indexOf("</svg>")
   "Team controls must sit outside role=img; only the eight stack labels may be SVG text; home must load problem.js once.");
 const problemClient = await text("problem.js");
 check(problemClient.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
+  problemClient.includes('querySelectorAll(\'[data-problem]:not([data-problem="shadow"])\')') &&
   problemClient.includes("new IntersectionObserver") && problemClient.includes('"visibilitychange"') &&
   problemClient.includes("!document.hidden") && problemClient.includes("visible.has(figure)") &&
   problemClient.includes('figure.dataset.busy === "true"') &&
@@ -520,12 +530,21 @@ const content = JSON.parse(contentJson);
 check(content.product.name === "Jin AI", "Structured data product name is invalid.");
 check(content.product.status === "building", "Structured data must state the Building status.");
 check(home.includes(`<h2 class="h2">${content.problem.headline}</h2>`), "Root must use the approved problem heading.");
+check(JSON.stringify(content.problem.points) === JSON.stringify(problemCopy.map(([, name, description]) => ({ name, description }))),
+  "Problem facts must contain exactly the four R1 questions and body sentences.");
 for (const point of content.problem.points) {
   check(problemSection.includes(`<h3>${point.name}</h3>`) && problemSection.includes(`<p>${point.description}</p>`),
     `Root must use the approved ${point.name} copy.`);
 }
 const solutionSection = homeSections.find((match) => match[1].includes('id="solution"'))?.[2] || "";
-check(solutionSection.includes(`<h2 class="h2 solution-heading">${content.solution.steps[0].name}<br><span>${content.solution.steps[1].name}</span></h2>`) &&
+check(content.solution.steps.length === 2 &&
+  content.solution.steps[0].name === "Employees keep their context safe" &&
+  content.solution.steps[1].name === "The company reuses it safely" &&
+  solutionSection.includes(`<h2 class="h2 solution-heading">${content.solution.steps[0].name}<br><span>${content.solution.steps[1].name}</span></h2>`) &&
+  JSON.stringify(content.solution.steps.map(step => step.description)) === JSON.stringify([
+    "Put your personal context in securely, and take it out safely. Also usable in your personal AI.",
+    "Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
+  ]) &&
   content.solution.steps.every((step) => solutionSection.includes(`<p>${step.description}</p>`)) &&
   !/<(?:img|svg)\b|class="(?:ph|eyebrow)"/.test(solutionSection),
   "Root must use the two-line solution heading and approved copy without labels or placeholder images.");
@@ -956,14 +975,18 @@ check(count(revealHeading, /<span style="--word:[0-6]">[^<]+<\/span>/g) === 7 &&
   [...revealHeading.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "0123456",
   "Home H1 must contain seven ordered, readable word spans.");
 const revealCss = cssBlock(englishCss, "@media (prefers-reduced-motion: no-preference)");
+check(cssBlock(englishCss, ".hero-intro {").includes("max-width: 720px"),
+  "The hero body must use a font-independent line measure so font swapping cannot change its line count on tablets.");
 check(revealCss.includes(".js-reveal .hero-reveal > span") &&
-  revealCss.includes(".js-reveal .hero-reveal + .hero-actions") &&
+  revealCss.includes(".js-reveal .hero-intro + .hero-actions") &&
+  cssBlock(revealCss, ".js-reveal .hero-intro {").includes("hero-actions-in .2s var(--ease) .63s both") &&
+  cssBlock(revealCss, ".js-reveal .hero-intro + .hero-actions").includes("hero-actions-in .25s var(--ease) .83s both") &&
   /animation:\s*hero-word-in[^;]*var\(--ease\)/.test(revealCss) &&
   /animation:\s*hero-actions-in[^;]*var\(--ease\)/.test(revealCss) &&
   /opacity:\s*\.001/.test(revealCss) && /filter:\s*blur\(8px\)/.test(revealCss) &&
   /transform:\s*translateY\(\.3em\)/.test(revealCss) &&
   cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(
-    ".hero-reveal > span, .hero-reveal + .hero-actions { animation: none; opacity: 1; filter: none; transform: none; }"),
+    ".hero-reveal > span, .hero-intro, .hero-intro + .hero-actions { animation: none; opacity: 1; filter: none; transform: none; }"),
   "Hero reveal must be JS-class and motion-media guarded, with immediate reduced-motion final states.");
 for (const animation of ["hero-word-in", "hero-actions-in"]) {
   const keyframes = cssBlock(revealCss, `@keyframes ${animation}`);
@@ -1141,20 +1164,22 @@ const japaneseProblem = japaneseSections.find((match) => match[1].includes('id="
 const svgGeometry = source => [...source.matchAll(/<svg\b[\s\S]*?<\/svg>/g)].map(([svg]) =>
   svg.replace(/\s(?:aria-label|data-label-idle|data-label-playing|data-label-changed)="[^"]*"/g, "")
     .replace(/(<text\b[^>]*>)[^<]*(<\/text>)/g, "$1LAYER$2"));
-check(count(japaneseProblem, /<svg\b[^>]*role="img"[^>]*aria-label="[^"]+"/g) === 3 &&
+check(count(japaneseProblem, /<svg\b[^>]*role="img"[^>]*aria-label="[^"]+"/g) === 4 &&
   JSON.stringify(svgGeometry(japaneseProblem)) === JSON.stringify(svgGeometry(problemSection)),
-  "Japanese Problem SVGs must match English geometry, with three translated accessible descriptions.");
+  "Japanese Problem SVGs must match English geometry, with four translated accessible descriptions.");
 const japaneseProblemCopy = [
-  ["owner", "エージェントが止まる", "作った人が辞めると、エージェントは動くための文脈を失います。"],
-  ["handover", "後任者が一から組み直す", "引き継がれるのは成果物だけ。その裏の文脈・ルール・判断は残りません。"],
-  ["teams", "いいやり方が埋もれる", "あるチームがうまくいく方法を見つけても、ほかのチームには届きません。"]
+  ["owner", "担当者が辞めても、エージェントは動き続けますか？", "作った人が辞めると、エージェントは動くための文脈を失います。"],
+  ["handover", "後任者は、前任者の続きから始められますか？", "引き継がれるのは成果物だけ。その裏の文脈・ルール・判断は残りません。"],
+  ["teams", "いいAIの使い方は、社内に広がっていますか？", "あるチームがうまくいく方法を見つけても、ほかのチームには届きません。"],
+  ["shadow", "会社の仕事が、個人のAIに流れていませんか？", "AIを使いこなす人ほど個人のAIを使っていて、仕事の文脈もそこに流れています。"]
 ];
 const japaneseFigures = [...japaneseProblem.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
 check(japaneseProblem.includes('<span class="mono-label">課題</span>') &&
-  withoutJapanesePhrases(japaneseProblem).includes('<h2 class="h2">AI を使いこなす人が辞めると、一からやり直しになる。</h2>') &&
+  withoutJapanesePhrases(japaneseProblem).includes('<h2 class="h2">AIの広がりに、守りと引き継ぎは追いついていますか？</h2>') &&
+  japaneseFigures.length === 4 &&
   !/data-draft|draft-tag|sa-svg|ho-svg|ed-svg/.test(japaneseProblem) &&
   japanese.includes('<script type="module" src="/problem.js"></script>'),
-  "Japanese Problem must use the approved E6 heading and shared controller, without draft or legacy content.");
+  "Japanese Problem must use the exact R1 heading, four questions and shared controller, without draft or legacy content.");
 for (const [index, [id, heading, description]] of japaneseProblemCopy.entries()) {
   const attributes = japaneseFigures[index]?.[2] || "";
   const figure = japaneseFigures[index]?.[3] || "";
@@ -1163,6 +1188,7 @@ for (const [index, [id, heading, description]] of japaneseProblemCopy.entries())
     !/図\s*0[123]|problem-action|data-action-|元に戻す/.test(figure) &&
     [...figure.matchAll(/<button\b[^>]*>/g)].every(([button]) => id === "teams" && button.includes('class="team-control"')) &&
     withoutJapanesePhrases(figure).includes(`<figcaption><h3>${heading}</h3><p>${description}</p></figcaption>`) &&
+    new RegExp(`<p class="problem-status" id="problem-${id}-status" aria-live="polite" aria-atomic="true" data-status-idle="[^"]+"`).test(figure) &&
     /<p class="problem-status"[^>]*aria-live="polite"[^>]*>[^<]*[\p{Script=Han}\p{Script=Hiragana}][^<]*<\/p>/u.test(figure),
     `Japanese figure ${index + 1} needs approved copy, a focusable name, no number/action/reset and translated live status.`);
   for (const [, value] of figure.matchAll(/\b(?:aria-label|data-label(?:-idle|-playing|-changed)?|data-status(?:-idle|-playing|-changed)?)="([^"]*)"/g)) {
@@ -1177,6 +1203,20 @@ for (const [index, [id, heading, description]] of japaneseProblemCopy.entries())
 check(["文脈", "ルール", "ツール", "例外"].every(label => japaneseProblem.includes(`>${label}</text>`)) &&
   ["A", "B", "C"].every(team => japaneseProblem.includes(`>チーム ${team} を開く</span>`)),
   "Japanese handover layers and independently accessible team controls must be translated.");
+
+const japaneseSolution = japaneseSections.find((match) => match[1].includes('id="solution"'))?.[2] || "";
+check(withoutJapanesePhrases(japaneseSolution).includes('<h2 class="h2 solution-heading">個人のコンテクストは安全に預け、<br><span>会社は安全に取り出して再利用する。</span></h2>') &&
+  japaneseSolution.includes("<p>個人のコンテクストを安全に預け、安全に取り出せる。個人の AI でも使える。</p>") &&
+  japaneseSolution.includes("<p>機密は社内にとどめ、役割ごとの AI の使い方を見える化し、優れたハーネスを同僚や後任に引き継ぐ。</p>"),
+  "Japanese Solution must use the exact R1 heading and retain both employee/company paragraphs.");
+for (const [language, source, introduction] of [
+  ["English", home, "AI has spread across every team. Safety, handover and sharing have not kept up."],
+  ["Japanese", japanese, "AIの活用は一気に広がりました。でも、安全性、引き継ぎ、使い方の共有は、置いてけぼりのままです。"]
+]) {
+  check(count(source, /class="hero-intro"/g) === 1 &&
+    source.match(/<h1 class="hero-reveal"[^>]*>[\s\S]*?<\/h1>\s*<p class="hero-intro">([^<]*)<\/p>\s*<div class="hero-actions">/)?.[1] === introduction,
+    `${language} hero must keep the exact R1 body after the H1 and before the buttons.`);
+}
 
 const bodyStructure = source => {
   const body = source.match(/<body\b[^>]*>([\s\S]*?)<\/body>/)?.[1] || "";
@@ -1251,7 +1291,7 @@ check(count(japaneseReveal, /<span style="--word:[0-3]">[^<]+<\/span>/g) === 4 &
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
   "Japanese hero must preserve its four-phrase reveal, exact approved text, accessible name and motion opt-in.");
 for (const [page, source, phrases] of [
-  ["/ja/", japanese, ["使いこなす人が", "辞めると、", "やり直しになる。", "AI ハーネスの", "中身を、", "見てみませんか。"]],
+  ["/ja/", japanese, ["AIの広がりに、", "追いついていますか？", "担当者が辞めても、", "前任者の続きから", "いいAIの使い方は、", "会社の仕事が、", "個人のコンテクストは", "再利用する。", "AI ハーネスの", "中身を、", "見てみませんか。"]],
   ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "AI ハーネスで、", "確かめて", "みませんか。"]],
   ["/ja/security/", japaneseSecurity, ["コンテクストは、", "会社のもの。"]],
   ["/ja/privacy/", japanesePrivacy, ["プライバシー", "ポリシー", "取り扱いを", "委託している", "事業者"]]

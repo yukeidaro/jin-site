@@ -123,8 +123,12 @@ tab is hidden or reduced motion is enabled. Reentry begins a new camera cycle,
 not a frozen mid-zoom crop. The stills and intended camera keyframes are unchanged.
 E7 browser evidence and screenshots are in `.copilot-runs/notes/e7.md`.
 
-The English home heading reveals once, word by word, followed by its action
-row. Default HTML/CSS is fully visible; an inline head script opts into the
+The home heading reveals once, word by word (phrases in Japanese), followed
+by the R1 body line and then its action row. The body uses the existing
+opacity/transform reveal at 630ms; the buttons keep their 830ms start.
+Its 720px maximum line measure does not change when Inter replaces the
+system font, avoiding a tablet line-count shift before the demo still.
+Default HTML/CSS is fully visible; an inline head script opts into the
 reveal only without reduced motion. Only opacity, blur and transform animate.
 The heading retains its exact text and accessible name. English headers opt
 into their enhanced layout before first paint to avoid a late menu collapse;
@@ -138,6 +142,24 @@ paper-theme labels. Monospace is reserved for code and file names. Japanese
 pages use the same reveal and primary buttons. E4 measurements and screenshots
 are in `.copilot-runs/notes/e4.md`.
 
+### Swapping the home headline
+
+Each language has one visible headline, the `h1.hero-reveal` immediately
+after the `Hero headline` comment in `index.html` or `ja/index.html`.
+Edit the text inside its reveal spans in place, keeping sequential `--word`
+values starting at zero and English spaces between words. Keep Japanese
+phrases unbroken and update that H1's matching accessible name. Do not copy
+the headline into a second visible component or a runtime text constant.
+The R1 body is the separate `p.hero-intro` directly below the H1.
+
+When Yu chooses a new tagline, also update `product.headline` in
+`agent/content.json`, the corresponding page/social titles and image alt
+text, the share-image source/render, and the exact-headline/reveal assertions
+in the generator and validator. Regenerate with `node scripts\generate-aeo.mjs`;
+never edit generated blocks. If the span count changes, keep the body reveal
+after the last word finishes and the buttons after the body. R1 retains the
+current headlines and metadata unchanged.
+
 The closing home intro has a Getting started heading and two
 waitlist/private-beta notes supplied by Yu for E5. They are draft copy, not
 new product facts. The generated form note, privacy link, payload and consent
@@ -149,14 +171,17 @@ removing a tag does not approve its copy.
 
 ## Interactive Problem figures
 
-The English home Problem section uses the approved E6 copy (Yu, 2026-10-20)
-and three original inline isometric SVGs, each with the same 420:320 viewBox.
+Both home pages use the R1 four-question Problem structure (Yu, 2026-10-21).
+Its exact new wording still needs word-by-word approval and is registered,
+English beside Japanese, in `.copilot-runs/notes/r1-new-copy.md`.
+Three original inline isometric SVGs retain their drawings, motion and
+420:320 viewBox.
 Owner removal stops four agents; handover moves only the output and leaves
 the successor rebuilding; opening separate teams reveals one unshared accent
 workflow. `problem.js` manages independent states without dependencies.
 
-There are no figure numbers or action/reset buttons. Each named figure is
-focusable and plays once when half visible, resets after leaving view, and
+There are no figure numbers or action/reset buttons. Each of the three
+animated figures is focusable and plays once when half visible, resets after leaving view, and
 replays on mouse hover, tap or keyboard focus. Replay input during a running
 sequence is ignored, so transitions cannot stack.
 The owner and flowing lights are accent-colored from the start. After the
@@ -165,6 +190,14 @@ owner lifts away, four accent x marks appear on the grey connections at
 draws four dashed successor layers in Context, Rules, Tools and Exceptions
 order. Both stacks have horizontal leader labels; the originals remain dimmed.
 These sequences finish in 1.75 and 3.6 seconds respectively.
+The fourth figure is a static Shadow AI slot for R2. It has its own question,
+body, named SVG and polite status, and reuses the existing isometric base
+plate. `problem.js` excludes only this unfinished slot from animation.
+The desktop grid uses two columns with drawings capped at their native 420px
+width; phones use one column. R1 compares both two-column and four-column
+options at 1280px and 1440px, with evidence in `.copilot-runs/notes/r1.md`.
+The Solution heading follows the employee/company split; its two existing
+paragraphs remain unchanged, employee first and company second.
 Team platforms are native HTML buttons outside the SVG image role, reachable
 by keyboard, mouse and touch. View entry opens them at 1.2-second intervals,
 ending with the accent team. Direct selection cancels that sequence.
@@ -214,10 +247,12 @@ recorded in `.copilot-runs/notes/j1.md`.
 - The home page contains only the hero, problem, solution, how it works, data
   and demo request. Do not show pricing or founders on the home page.
   Founders and direct answers belong in the Agent reference.
-- Problem: **When your best AI users leave, you start over**
+- Problem: **AI spread fast. Has everything else kept up?**
   Shadow AI is a problem label, not a claim that Jin AI blocks it.
-- Solution: **Safe for every employee** **Reusable for the company**
+- Solution: **Employees keep their context safe** **The company reuses it safely**
   Keep both employee and company value in the story.
+  R1's restructure is approved, but its new wording remains in the R1 copy
+  register pending word-by-word approval; no draft tag appears on the site.
 - Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19).
   `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`.
   Never claim a Building or Next item is available today in any copy.

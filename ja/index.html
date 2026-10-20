@@ -80,8 +80,9 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 <main>
 <section class="hero">
   <div class="wrap">
+    <!-- Hero headline: edit the reveal spans here; see README. -->
     <h1 class="hero-reveal" aria-label="全社員のAI力を最大限引き出す。"><span style="--word:0">全社員の</span><span style="--word:1">AI力を</span><span style="--word:2">最大限</span><span style="--word:3">引き出す。</span></h1>
-
+    <p class="hero-intro">AIの活用は一気に広がりました。でも、安全性、引き継ぎ、使い方の共有は、置いてけぼりのままです。</p>
     <div class="hero-actions">
     <!-- GENERATED:CTA_HERO:START -->
 <div class="wait">
@@ -181,7 +182,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
   <div class="wrap" id="benefits">
     <div class="section-head">
       <span class="mono-label">課題</span>
-      <h2 class="h2"><span class="ja-phrase">AI を</span><span class="ja-phrase">使いこなす人が</span><span class="ja-phrase">辞めると、</span><span class="ja-phrase">一から</span><span class="ja-phrase">やり直しになる。</span></h2>
+      <h2 class="h2"><span class="ja-phrase">AIの広がりに、</span><span class="ja-phrase">守りと</span><span class="ja-phrase">引き継ぎは</span><span class="ja-phrase">追いついていますか？</span></h2>
     </div>
     <div class="problem-grid">
       <figure class="problem-column" data-problem="owner" data-state="idle" tabindex="0" aria-label="図: 担当者が抜けるとエージェントが止まります。">
@@ -233,7 +234,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
             </g>
           </svg>
         </div>
-        <figcaption><h3><span class="ja-phrase">エージェントが</span><span class="ja-phrase">止まる</span></h3><p>作った人が辞めると、エージェントは動くための文脈を失います。</p></figcaption>
+        <figcaption><h3><span class="ja-phrase">担当者が辞めても、</span><span class="ja-phrase">エージェントは</span><span class="ja-phrase">動き続けますか？</span></h3><p>作った人が辞めると、エージェントは動くための文脈を失います。</p></figcaption>
         <p class="problem-status" id="problem-owner-status" aria-live="polite" aria-atomic="true" data-status-idle="担当者がつながっています。4 つのエージェントが動いています。" data-status-playing="担当者が抜けます。接続が 1 本ずつ切れています。" data-status-changed="担当者が抜けました。4 本の接続が切れ、エージェントが止まりました。">担当者がつながっています。4 つのエージェントが動いています。</p>
       </figure>
       <figure class="problem-column" data-problem="handover" data-state="idle" tabindex="0" aria-label="図: 後任者が文脈、ルール、ツール、例外を一から組み直します。">
@@ -293,7 +294,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
             </g>
           </svg>
         </div>
-        <figcaption><h3><span class="ja-phrase">後任者が</span><span class="ja-phrase">一から</span><span class="ja-phrase">組み直す</span></h3><p>引き継がれるのは成果物だけ。その裏の文脈・ルール・判断は残りません。</p></figcaption>
+        <figcaption><h3><span class="ja-phrase">後任者は、</span><span class="ja-phrase">前任者の続きから</span><span class="ja-phrase">始められますか？</span></h3><p>引き継がれるのは成果物だけ。その裏の文脈・ルール・判断は残りません。</p></figcaption>
         <p class="problem-status" id="problem-handover-status" aria-live="polite" aria-atomic="true" data-status-idle="4 層は前任者の側にあります。後任者には空の土台があります。" data-status-playing="成果物だけが渡りました。後任者が文脈、ルール、ツール、例外を一から組み直しています。" data-status-changed="引き継がれたのは成果物だけです。後任者は 4 層を一から組み直しました。元の 4 層は前任者の側に残りました。">4 層は前任者の側にあります。後任者には空の土台があります。</p>
       </figure>
       <figure class="problem-column" data-problem="teams" data-state="idle" tabindex="0" aria-label="図: 離れたチームの手順は隠れたままです。">
@@ -343,8 +344,18 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
             <button type="button" class="team-control" data-team="c" aria-pressed="false" aria-controls="problem-teams-status" data-label="チーム C を開いています。朱色の手順には、ほかのチームにはない接続が 1 つあります。" data-status="チーム C を開きました。よい手順ですが、ほかのチームには共有されていません。"><span class="problem-status">チーム C を開く</span></button>
           </div>
         </div>
-        <figcaption><h3><span class="ja-phrase">いいやり方が</span><span class="ja-phrase">埋もれる</span></h3><p>あるチームがうまくいく方法を見つけても、ほかのチームには届きません。</p></figcaption>
+        <figcaption><h3><span class="ja-phrase">いいAIの使い方は、</span><span class="ja-phrase">社内に</span><span class="ja-phrase">広がっていますか？</span></h3><p>あるチームがうまくいく方法を見つけても、ほかのチームには届きません。</p></figcaption>
         <p class="problem-status" id="problem-teams-status" aria-live="polite" aria-atomic="true" data-status-idle="3 つのチームがあります。それぞれの手順は一部が隠れています。">3 つのチームがあります。それぞれの手順は一部が隠れています。</p>
+      </figure>
+      <figure class="problem-column" data-problem="shadow" data-state="idle" tabindex="0" aria-label="図：会社の仕事が個人のAIに流れる。">
+        <div class="problem-art">
+          <svg viewBox="0 0 420 320" role="img" aria-label="会社の仕事が個人のAIに流れることを表す、等角投影の土台。" data-label-idle="会社の仕事が個人のAIに流れることを表す、等角投影の土台。">
+            <!-- R2 draws this -->
+            <use href="#problem-stack-base" x="210" y="200"/>
+          </svg>
+        </div>
+        <figcaption><h3><span class="ja-phrase">会社の仕事が、</span><span class="ja-phrase">個人のAIに</span><span class="ja-phrase">流れていませんか？</span></h3><p>AIを使いこなす人ほど個人のAIを使っていて、仕事の文脈もそこに流れています。</p></figcaption>
+        <p class="problem-status" id="problem-shadow-status" aria-live="polite" aria-atomic="true" data-status-idle="会社の仕事が個人のAIに流れることがあります。">会社の仕事が個人のAIに流れることがあります。</p>
       </figure>
     </div>
   </div>
@@ -352,7 +363,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 
 <section class="section" id="solution">
   <div class="wrap">
-    <h2 class="h2 solution-heading">社員には、安全に。<br><span><span class="ja-phrase">会社には、</span><span class="ja-phrase">再利用できる</span><span class="ja-phrase">形で。</span></span></h2>
+    <h2 class="h2 solution-heading"><span class="ja-phrase">個人のコンテクストは</span><span class="ja-phrase">安全に預け、</span><br><span><span class="ja-phrase">会社は安全に</span><span class="ja-phrase">取り出して</span><span class="ja-phrase">再利用する。</span></span></h2>
     <div class="home-columns solution-copy">
       <p>個人のコンテクストを安全に預け、安全に取り出せる。個人の AI でも使える。</p>
       <p>機密は社内にとどめ、役割ごとの AI の使い方を見える化し、優れたハーネスを同僚や後任に引き継ぐ。</p>

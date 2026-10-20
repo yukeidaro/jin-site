@@ -1,5 +1,5 @@
 const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-const figures = [...document.querySelectorAll("[data-problem]")];
+const figures = [...document.querySelectorAll('[data-problem]:not([data-problem="shadow"])')];
 const visible = new Set();
 const controllers = new Map();
 
