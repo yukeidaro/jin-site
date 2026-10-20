@@ -632,6 +632,115 @@ test("a demo saves every field before sending exactly one confirmation, includin
   assert.equal(f.surveyRecords.length, 0);
 });
 
+test("a Japanese demo stores ja and sends one UTF-8 email with an encoded subject and surname greeting", () => {
+  const f = fixture();
+  const payload = demoInput({ lang: "ja", firstName: "Aoi", lastName: "見本" });
+  const send = f.deps.sender.send;
+  let mime;
+  f.deps.sender.send = (record) => {
+    mime = Buffer.from(backend.demoMime_(record), "base64url").toString("utf8");
+    return send(record);
+  };
+  assert.equal(backend.registerDemo_(payload, f.deps).welcome, "sent");
+  assert.equal(f.records[0].lang, "ja");
+  assert.equal(backend.registerDemo_(payload, f.deps).welcome, "sent");
+  assert.equal(f.records.length, 1);
+  assert.equal(f.sends(), 1);
+  assert.equal(f.surveyRecords.length, 0);
+  assert.match(mime, /^From: Jin AI <hello@jinai\.md>\r\nReply-To: hello@jinai\.md/);
+  const subject = mime.match(/\r\nSubject: ([\s\S]*?)\r\nMessage-ID:/)?.[1];
+  assert.ok(subject);
+  assert.match(subject, /^=\?UTF-8\?B\?/);
+  const words = [...subject.matchAll(/=\?UTF-8\?B\?([A-Za-z0-9+/=]+)\?=/g)];
+  assert.ok(words.length >= 2, "The Japanese subject needs folded RFC 2047 words.");
+  assert.ok(words.every((word) => word[0].length <= 75));
+  assert.equal(subject, words.map((word) => word[0]).join("\r\n "));
+  assert.equal(words.map((word) => Buffer.from(word[1], "base64").toString("utf8")).join(""),
+    "Jin AI のデモのお申し込みを受け付けました");
+  assert.equal((mime.match(/Content-Type: text\/(?:plain|html); charset=UTF-8/g) || []).length, 2);
+  const parts = [...mime.matchAll(/Content-Transfer-Encoding: base64\r\n\r\n([\s\S]*?)\r\n--jin-demo-/g)];
+  assert.equal(parts.length, 2);
+  const [text, html] = parts.map((part) =>
+    Buffer.from(part[1].replace(/\s/g, ""), "base64").toString("utf8"));
+  assert.equal(text, [
+    "見本 様", "",
+    "Jin AI のデモにお申し込みいただき、ありがとうございます。",
+    "日程の調整のため、こちらからメールでご連絡します。ご質問があれば、このメールにそのまま返信してください。",
+    "",
+    "このメールは、jinai.md でデモにお申し込みいただいたためにお送りしています。",
+    "https://jinai.md/ja/",
+    "プライバシーポリシー: https://jinai.md/ja/privacy/"
+  ].join("\r\n"));
+  assert.match(html, /<html lang="ja">/);
+  for (const line of text.split("\r\n").filter(Boolean)) {
+    assert.ok(html.replace(/<[^>]+>/g, "").includes(line), line);
+  }
+  for (const url of ["https://jinai.md/ja/", "https://jinai.md/ja/privacy/"]) {
+    assert.ok(html.includes(`<a href="${url}">${url}</a>`));
+  }
+  for (const body of [text, html]) assert.doesNotMatch(body, /Aoi|Hi |Discord|marketing|waitlist/i);
+  const escaped = backend.demoHtml_('<img src=x> & "\'Sample', "ja");
+  assert.ok(escaped.includes("&lt;img src=x&gt; &amp; &quot;&#39;Sample 様"));
+  assert.doesNotMatch(escaped, /<img/);
+});
+
+for (const lang of ["en", undefined]) {
+  test(`a demo with ${lang === undefined ? "missing" : "en"} lang stores en and sends the unchanged English email`, () => {
+    const f = fixture();
+    const payload = demoInput(lang === undefined ? {} : { lang });
+    const send = f.deps.sender.send;
+    let mime;
+    f.deps.sender.send = (record) => {
+      mime = backend.demoMime_(record);
+      return send(record);
+    };
+    assert.equal(backend.registerDemo_(payload, f.deps).welcome, "sent");
+    assert.equal(f.records[0].lang, "en");
+    assert.equal(f.sends(), 1);
+    assert.equal(mime, backend.demoMime_(demoInput()));
+    assert.match(Buffer.from(mime, "base64url").toString("utf8"),
+      /\r\nSubject: We received your Jin AI demo request\r\n/);
+  });
+}
+
+test("invalid demo languages are rejected before storage or sending", () => {
+  for (const lang of ["fr", "ja-JP", "JA", " en", "ja ", "", null, 0, true, [], {}]) {
+    const f = fixture();
+    f.deps.store.withLock = () => assert.fail("Invalid language must not reach storage.");
+    const result = backend.registerDemo_(demoInput({ lang }), f.deps);
+    assert.equal(result.code, "invalid_input", JSON.stringify(lang));
+    assert.equal(result.registration, "not_saved");
+    assert.equal(result.welcome, "not_attempted");
+    assert.equal(f.records.length, 0);
+    assert.equal(f.surveyRecords.length, 0);
+    assert.equal(f.sends(), 0);
+    assert.deepEqual(f.log, [["validation", requestId, "invalid_input"]]);
+  }
+});
+
+test("scheduled demo retries use the stored Japanese language", () => {
+  const f = fixture();
+  f.deps.reserveEmail = () => false;
+  assert.equal(backend.registerDemo_(demoInput({ lang: "ja" }), f.deps).welcome, "pending");
+  assert.equal(f.records[0].lang, "ja");
+  assert.equal(f.sends(), 0);
+  const send = f.deps.sender.send;
+  let mime;
+  f.deps.sender.send = (record) => {
+    mime = Buffer.from(backend.demoMime_(record), "base64url").toString("utf8");
+    return send(record);
+  };
+  f.advance(15 * 60 * 1000);
+  f.deps.reserveEmail = () => true;
+  backend.retryPendingEmails_(f.deps);
+  assert.equal(f.records[0].welcome, "sent");
+  assert.equal(f.records[0].lang, "ja");
+  assert.match(mime, /\r\nSubject: =\?UTF-8\?B\?/);
+  assert.equal(f.sends(), 1);
+  backend.retryPendingEmails_(f.deps);
+  assert.equal(f.sends(), 1);
+});
+
 test("a new demo request ID preserves a later intentional request from the same buyer", () => {
   const f = fixture();
   backend.registerDemo_(demoInput(), f.deps);
@@ -800,6 +909,7 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
   let locks = 0;
   let releases = 0;
   let sends = 0;
+  const messages = [];
   const properties = {};
   backend.PropertiesService = { getScriptProperties: () => ({
     getProperty: (key) => key === "SPREADSHEET_ID" ? "sheet-id" : properties[key],
@@ -822,8 +932,7 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
     ] }) } },
     Messages: { send: ({ raw }) => {
       sends++;
-      assert.match(Buffer.from(raw, "base64url").toString("utf8"),
-        /Subject: We received your Jin AI demo request/);
+      messages.push(Buffer.from(raw, "base64url").toString("utf8"));
       return { id: "demo-message-id" };
     } }
   } };
@@ -843,11 +952,33 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
     assert.equal(sends, 1);
     assert.equal(locks, 2);
     assert.equal(releases, 2);
+    assert.match(messages[0], /Subject: We received your Jin AI demo request/);
     for (const field of ["firstName", "lastName", "jobTitle", "phone", "company", "country"]) {
       const index = columns.findIndex(([key]) => key === field);
       assert.equal(rows[1][index], "'" + payload[field], field);
     }
     assert.equal(rows[1][columns.findIndex(([key]) => key === "welcome")], "sent");
+    const languageIndex = columns.findIndex(([key]) => key === "lang");
+    assert.equal(languageIndex, columns.findIndex(([key]) => key === "country") + 1);
+    assert.equal(columns[languageIndex][1], "Language");
+    assert.equal(rows[1][languageIndex], "en");
+    const japanesePayload = demoInput({
+      requestId: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      lang: "ja", firstName: "Aoi", lastName: "見本", country: "Japan"
+    });
+    const japanesePost = () => JSON.parse(backend.doPost({
+      postData: { contents: JSON.stringify(japanesePayload) }
+    }).body);
+    assert.equal(japanesePost().welcome, "sent");
+    assert.equal(japanesePost().welcome, "sent");
+    assert.equal(rows.length, 3);
+    assert.equal(rows[2][languageIndex], "ja");
+    assert.equal(rows[2][columns.findIndex(([key]) => key === "lastName")], "見本");
+    assert.equal(rows[2][columns.findIndex(([key]) => key === "welcome")], "sent");
+    assert.equal(sends, 2);
+    assert.equal(locks, 4);
+    assert.equal(releases, 4);
+    assert.equal(messages[1], Buffer.from(backend.demoMime_(japanesePayload), "base64url").toString("utf8"));
     assert.equal(backend.WAITLIST_VERSION, "2026-10-19.1");
   } finally {
     for (const key of ["PropertiesService", "LockService", "SpreadsheetApp", "Gmail", "ContentService"]) {
@@ -856,14 +987,18 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
   }
 });
 
-async function clientFixture(t, fetchImpl, configured = true) {
-  const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
+async function clientFixture(t, fetchImpl, configured = true, language) {
+  const html = await readFile(new URL(
+    language?.startsWith("ja") ? "../ja/index.html" : "../index.html", import.meta.url), "utf8");
   const formHtml = html.match(/<form\b[^>]*\bid="waitlistForm"[^>]*>[\s\S]*?<\/form>/)[0];
   const elements = new Map();
   const controls = new Map();
   const listeners = new Map();
   const errorLogs = [];
-  const document = { getElementById: (id) => elements.get(id), activeElement: null };
+  const document = {
+    documentElement: { lang: language },
+    getElementById: (id) => elements.get(id), activeElement: null
+  };
   function element(id, attributes = {}) {
     const node = {
       id, hidden: false, textContent: "", dataset: {}, value: "", ...attributes,
@@ -965,11 +1100,12 @@ for (const welcome of ["sent", "pending", "failed", "unknown"]) {
     f.fill({ phone: "", firstName: "  Alex  " });
     await f.submit();
     assert.equal(payload.type, "demo");
+    assert.equal(payload.lang, "en");
     assert.equal(payload.firstName, "Alex");
     assert.equal(payload.phone, "");
     assert.equal(payload.consentVersion, "demo-request-v1");
     assert.deepEqual(Object.keys(payload), [
-      "type", "email", "firstName", "lastName", "jobTitle", "phone", "company",
+      "type", "lang", "email", "firstName", "lastName", "jobTitle", "phone", "company",
       "industry", "companySize", "country", "website", "source", "consentVersion", "requestId"
     ]);
     assert.equal(f.form.hidden, true);
@@ -981,6 +1117,25 @@ for (const welcome of ["sent", "pending", "failed", "unknown"]) {
     assert.equal(f.button.disabled, false);
     assert.equal(f.form.getAttribute("aria-busy"), null);
     assert.doesNotMatch(f.elements.get("waitlistDetail").textContent, /Discord|waitlist/);
+  });
+}
+
+for (const language of ["ja", "ja-JP", "en", "en-US", "fr", "", undefined]) {
+  test(`client sends the demo language from document lang ${JSON.stringify(language)}`, async (t) => {
+    let payload;
+    const f = await clientFixture(t, async (_url, options) => {
+      payload = JSON.parse(options.body);
+      return { ok: true, json: async () => ({ ...response(), requestId: payload.requestId }) };
+    }, true, language);
+    f.fill();
+    await f.submit();
+    assert.equal(payload.lang, language?.startsWith("ja") ? "ja" : "en");
+    assert.equal(payload.consentVersion, "demo-request-v1");
+    assert.equal(payload.source, "https://jinai.md");
+    assert.equal(payload.lastName, "Sample");
+    assert.equal(payload.country, "United States");
+    assert.equal(f.errorLogs.length, 0);
+    assert.equal(f.form.hidden, true);
   });
 }
 

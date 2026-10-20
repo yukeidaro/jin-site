@@ -265,6 +265,7 @@ export function initializeWaitlist(document, dependencies = {}) {
     const values = new FormData(form);
     const payload = {
       type: "demo",
+      lang: language.startsWith("ja") ? "ja" : "en",
       ...Object.fromEntries(Object.keys(fields).map((name) => [name, String(values.get(name) || "")])),
       website: String(values.get("website") || ""),
       source: "https://jinai.md",

@@ -32,7 +32,7 @@ const answer = (email, answeredAt, code, overrides = {}) => ({
 const demoRequest = (createdAt, overrides = {}) => ({
   createdAt, email: "buyer@example.com", phone: "+1 (202) 555-0142",
   company: "Example Company", companySize: "50-199", industry: "Technology",
-  country: "United States", jobTitle: "Head of IT", ...overrides
+  country: "United States", lang: "en", jobTitle: "Head of IT", ...overrides
 });
 const plain = (value) => JSON.parse(JSON.stringify(value));
 
@@ -55,7 +55,8 @@ function cloudflareResponse() {
   return { data: { viewer: { accounts: [account] } } };
 }
 
-function sampleReport(analytics = null, analyticsError = null) {
+function sampleReport(analytics = null, analyticsError = null,
+  demoRows = [demoRequest("2026-10-05T03:00:00Z")]) {
   const waitlist = backend.summarizeWaitlist_([
     signup("alice@example.com", "2026-10-05T01:12:00Z", {
       name: "<b>x</b> alice@example.com", role: "Designer"
@@ -67,7 +68,7 @@ function sampleReport(analytics = null, analyticsError = null) {
   ], window);
   return backend.buildDailyReport_({
     window, waitlist, survey, analytics, analyticsError,
-    demo: backend.summarizeDemoRequests_([demoRequest("2026-10-05T03:00:00Z")], window),
+    demo: backend.summarizeDemoRequests_(demoRows, window),
     sheetUrl: "https://docs.google.com/spreadsheets/d/sample-id"
   });
 }
@@ -425,7 +426,7 @@ test("demo summary counts the previous half-open JST day and includes company de
   assert.deepEqual(plain(summary.newRows[0]), {
     createdAtMs: Date.parse("2026-10-04T15:00:00Z"), time: "00:00",
     company: "First", companySize: "50-199", industry: "Technology",
-    country: "United States", jobTitle: "Head of IT"
+    country: "United States", lang: "en", jobTitle: "Head of IT"
   });
   assert.doesNotMatch(JSON.stringify(summary), /buyer@example.com|\+1 \(202\) 555-0142/);
   assert.throws(() => backend.summarizeDemoRequests_([demoRequest("not-a-time")], window),
@@ -441,6 +442,39 @@ test("demo requests appear in both report bodies without emails or phone numbers
   }
   assert.match(report.text, /Yesterday's requests \(external\): 1/);
   assert.match(report.html, /Yesterday&#39;s requests \(external\): 1/);
+});
+
+test("each demo line includes its stored en or ja language in both report bodies", () => {
+  const report = sampleReport(null, null, [
+    demoRequest("2026-10-05T03:00:00Z"),
+    demoRequest("2026-10-05T04:00:00Z", {
+      company: "Example Japan", country: "Japan", lang: "ja"
+    })
+  ]);
+  assert.match(report.text, /Country  Language  Job title/);
+  assert.match(report.html, /<th scope="col"[^>]*>Language<\/th>/);
+  for (const [time, company, country, lang] of [
+    ["12:00", "Example Company", "United States", "en"],
+    ["13:00", "Example Japan", "Japan", "ja"]
+  ]) {
+    const line = `${time}  ${company}  50-199  Technology  ${country}  ${lang}  Head of IT`;
+    assert.ok(report.text.split("\n").includes(line), line);
+    const row = report.html.match(new RegExp(`<tr><td[^>]*>${time}<[\\s\\S]*?<\\/tr>`))?.[0];
+    assert.ok(row);
+    const cells = [...row.matchAll(/<td[^>]*>([^<]*)<\/td>/g)].map((match) => match[1]);
+    assert.deepEqual(cells, [time, company, "50-199", "Technology", country, lang, "Head of IT"]);
+  }
+  for (const body of [report.text, report.html]) {
+    assert.doesNotMatch(body, /buyer@example.com|\+1 \(202\) 555-0142/);
+  }
+});
+
+test("demo report rejects missing or invalid stored languages instead of publishing arbitrary content", () => {
+  for (const lang of [undefined, "", null, "fr", "ja-JP", "buyer@example.com", "+1 (202) 555-0142"]) {
+    assert.throws(() => backend.summarizeDemoRequests_([
+      demoRequest("2026-10-05T03:00:00Z", { lang })
+    ], window), /invalid_demo_language/);
+  }
 });
 
 test("demo details redact contact information pasted into other fields and escape HTML", () => {

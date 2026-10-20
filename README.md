@@ -117,8 +117,14 @@ The Japanese form uses the same facts, endpoint, field names, select values and
 consent. It displays surname before given name, Japanese labels, and Japan
 before the United States. Other country labels are generated from ISO region
 codes with Node's `Intl.DisplayNames`. Client messages follow the document
-language. This localization does not change the payload or backend; Japanese
-confirmation emails and Apps Script changes are the separate J2 task.
+language. Demo payloads include `lang` (`ja` for document languages starting with
+`ja`, otherwise `en`); the backend stores it and sends Japanese confirmations
+with a surname greeting for `ja`, or the unchanged English email for `en` or
+missing `lang`.
+
+The `Demo requests` sheet has not been deployed yet, so its new `Language` column
+after `Country` is safe to include from the first deploy; run `setupWaitlist`
+once after merging, as documented below.
 
 The custom website form submits JSON directly to an Apps Script web app.
 **Google Forms, response receipts, hidden iframes, and form-submit triggers are
@@ -174,8 +180,9 @@ not deploy anything or send any real request.
 The daily report emails the previous JST calendar day's external demo requests,
 legacy waitlist signups, survey answers and Cloudflare Web Analytics traffic to
 Yu. For each demo it includes company, company size, industry, country and job
-title, without email addresses or phone numbers. Contact information pasted
-into those details is redacted. It also includes a seven-day JST traffic trend.
+title, plus language (`en` / `ja`), without email addresses or phone numbers.
+Contact information pasted into those details is redacted. It also includes a
+seven-day JST traffic trend.
 Legacy signup entries retain names and roles but not email addresses. The report
 sends from the executing Workspace account's default Gmail address, not the
 confirmation email's `hello@jinai.md` alias.
@@ -203,15 +210,15 @@ scope change does require re-authorization.
 ### Storage and delivery states
 
 The private `Demo requests` tab records created time, request ID, source,
-`demo-request-v1` consent, all nine form fields, confirmation status, attempts,
-last and next attempt time, sent time, Gmail message ID and last error code.
+`demo-request-v1` consent, all nine form fields, language, confirmation status,
+attempts, last and next attempt time, sent time, Gmail message ID and last error code.
 Text cells are protected against formulas. A script lock prevents simultaneous
 retries from duplicating a row or confirmation. A new request ID is a separate
 intentional demo request, even if the email is the same, so later company
 details are not silently discarded.
 
-The confirmation subject is **We received your Jin AI demo request**. The short
-plain-text and HTML alternatives thank the buyer by first name, say we will
+The English confirmation subject is **We received your Jin AI demo request**.
+The short plain-text and HTML alternatives thank the buyer by first name, say we will
 email to arrange a time, and invite questions by reply to `hello@jinai.md`.
 They explain why the message was sent and link only to the website and Privacy
 Policy. No marketing consent is requested or recorded for demos.

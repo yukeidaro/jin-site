@@ -47,6 +47,7 @@ var DEMO_COLUMNS = [
   ['industry', 'Industry'],
   ['companySize', 'Company size'],
   ['country', 'Country'],
+  ['lang', 'Language'],
   ['welcome', 'Confirmation status'],
   ['attempts', 'Attempts'],
   ['lastAttemptAt', 'Last attempt at'],
@@ -204,6 +205,10 @@ function validateDemo_(input) {
   if (input.website !== '' && input.website !== undefined) throw waitlistError_('invalid_input');
   if (!validSource_(input.source)) throw waitlistError_('invalid_source');
   if (input.consentVersion !== DEMO_CONSENT) throw waitlistError_('invalid_consent');
+  if (input.lang !== undefined && input.lang !== 'en' && input.lang !== 'ja') {
+    throw waitlistError_('invalid_input');
+  }
+  cleaned.lang = input.lang === undefined ? 'en' : input.lang;
   cleaned.requestId = input.requestId;
   cleaned.source = input.source;
   cleaned.consentVersion = input.consentVersion;
@@ -646,9 +651,21 @@ function welcomeMime_(record) {
     welcomeText_(record.name), welcomeHtml_(record.name));
 }
 
-function demoText_(firstName) {
+function demoText_(name, lang) {
+  if (lang === 'ja') {
+    return [
+      name + ' 様',
+      '',
+      'Jin AI のデモにお申し込みいただき、ありがとうございます。',
+      '日程の調整のため、こちらからメールでご連絡します。ご質問があれば、このメールにそのまま返信してください。',
+      '',
+      'このメールは、jinai.md でデモにお申し込みいただいたためにお送りしています。',
+      'https://jinai.md/ja/',
+      'プライバシーポリシー: https://jinai.md/ja/privacy/'
+    ].join('\r\n');
+  }
   return [
-    'Hi ' + firstName + ',',
+    'Hi ' + name + ',',
     '',
     'Thanks for requesting a Jin AI demo.',
     'We will email you to set up a time. You can reply to this email with questions.',
@@ -659,11 +676,24 @@ function demoText_(firstName) {
   ].join('\r\n');
 }
 
-function demoHtml_(firstName) {
+function demoHtml_(name, lang) {
+  if (lang === 'ja') {
+    return [
+      '<!doctype html><html lang="ja"><head><meta charset="utf-8"></head>',
+      '<body style="font-family:Arial,sans-serif;line-height:1.7;color:#252525;">',
+      '<p>' + escapeEmailHtml_(name) + ' 様</p>',
+      '<p>Jin AI のデモにお申し込みいただき、ありがとうございます。</p>',
+      '<p>日程の調整のため、こちらからメールでご連絡します。ご質問があれば、このメールにそのまま返信してください。</p>',
+      '<p>このメールは、jinai.md でデモにお申し込みいただいたためにお送りしています。</p>',
+      '<p><a href="https://jinai.md/ja/">https://jinai.md/ja/</a><br>',
+      'プライバシーポリシー: <a href="https://jinai.md/ja/privacy/">https://jinai.md/ja/privacy/</a></p>',
+      '</body></html>'
+    ].join('');
+  }
   return [
     '<!doctype html><html lang="en"><head><meta charset="utf-8"></head>',
     '<body style="font-family:Arial,sans-serif;line-height:1.7;color:#252525;">',
-    '<p>Hi ' + escapeEmailHtml_(firstName) + ',</p>',
+    '<p>Hi ' + escapeEmailHtml_(name) + ',</p>',
     '<p>Thanks for requesting a Jin AI demo.</p>',
     '<p>We will email you to set up a time. You can reply to this email with questions.</p>',
     '<p>You received this email because you requested a demo on ',
@@ -674,8 +704,30 @@ function demoHtml_(firstName) {
 }
 
 function demoMime_(record) {
-  return requestMime_(record, 'demo', 'We received your Jin AI demo request',
-    demoText_(record.firstName), demoHtml_(record.firstName));
+  var name = record.lang === 'ja' ? record.lastName : record.firstName;
+  var subject = record.lang === 'ja' ? 'Jin AI のデモのお申し込みを受け付けました' :
+    'We received your Jin AI demo request';
+  return requestMime_(record, 'demo', subject,
+    demoText_(name, record.lang), demoHtml_(name, record.lang));
+}
+
+function emailMimeSubject_(subject) {
+  var words = [];
+  var chunk = '';
+  for (var i = 0; i < subject.length; i++) {
+    var character = subject.charAt(i);
+    if (/[\uD800-\uDBFF]/.test(character) && i + 1 < subject.length) {
+      character += subject.charAt(++i);
+    }
+    if (chunk && Utilities.base64Encode(chunk + character, Utilities.Charset.UTF_8).length + 12 > 75) {
+      words.push('=?UTF-8?B?' + Utilities.base64Encode(chunk, Utilities.Charset.UTF_8) + '?=');
+      chunk = character;
+    } else {
+      chunk += character;
+    }
+  }
+  if (chunk) words.push('=?UTF-8?B?' + Utilities.base64Encode(chunk, Utilities.Charset.UTF_8) + '?=');
+  return words.join('\r\n ');
 }
 
 function requestMime_(record, type, subject, text, html) {
@@ -687,7 +739,7 @@ function requestMime_(record, type, subject, text, html) {
     'From: Jin AI <' + WAITLIST_FROM + '>',
     'Reply-To: ' + WAITLIST_FROM,
     'To: <' + record.email + '>',
-    'Subject: ' + subject,
+    'Subject: ' + (/[^\x20-\x7e]/.test(subject) ? emailMimeSubject_(subject) : subject),
     'Message-ID: <' + type + '-' + record.requestId + '@jinai.md>',
     'MIME-Version: 1.0',
     'Content-Type: multipart/alternative; boundary="' + boundary + '"',
