@@ -31,8 +31,8 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 The public content pages are self-canonical, with `en`, `ja` and `x-default`
 hreflang alternates. Every Japanese page has the same body structure, section
 IDs, component classes, images and controllers as its English twin. The
-Japanese home heading adds only its approved comma break and translated reveal
-phrases; the generated form preserves surname-first order and Japanese country
+Japanese home heading uses the approved text `全社員のAI力を最大限引き出す。`
+in four reveal phrases; the generated form preserves surname-first order and Japanese country
 labels without changing payload values. The English-only language-choice
 redirect and root fact graph are not duplicated on Japanese pages.
 Headers have Product and Resources dropdowns, Security, Company,
@@ -115,12 +115,14 @@ paper-theme labels. Monospace is reserved for code and file names. Japanese
 pages use the same reveal and primary buttons. E4 measurements and screenshots
 are in `.copilot-runs/notes/e4.md`.
 
-The closing home intro has a draft-marked Getting started heading and two
+The closing home intro has a Getting started heading and two
 waitlist/private-beta notes supplied by Yu for E5. They are draft copy, not
 new product facts. The generated form note, privacy link, payload and consent
 remain unchanged. E5 component values and browser evidence are recorded in
-`.copilot-runs/notes/e5.md`. Japanese pages share these components and show
-the supplied Japanese draft notes with `文案（承認待ち）` tags.
+`.copilot-runs/notes/e5.md`. Japanese pages share these components and
+the supplied Japanese notes. No page displays approval tags. The complete
+unapproved-copy register is `.copilot-runs/notes/e6c-unapproved-copy.md`;
+removing a tag does not approve its copy.
 
 ## Interactive Problem figures
 
@@ -162,9 +164,12 @@ E6b behavior, performance evidence and bilingual screenshots are recorded in
 
 Japanese pages load `base.css`, `theme-en.css`, then the thin `theme-ja.css`.
 They keep the dark theme, layout, spacing and components. The Japanese sheet
-only adjusts fonts and typesetting: Inter 400..700, Noto Sans JP, Hiragino Sans
-and Yu Gothic fallbacks, Japanese line heights, strict line breaking, balanced
-headings and progressive text autospace. English fonts are unchanged. J1
+only adjusts fonts and typesetting: Yu Gothic for both Japanese and Latin text,
+with YuGothic, Yu Gothic UI, Hiragino Sans and Noto Sans JP fallbacks. Body text
+uses weight 500; heading weights are unchanged. Noto Sans JP remains a web-font
+fallback for systems without the preferred Japanese fonts. Japanese headings
+use protected phrase spans, keep-all fallback breaks and progressive auto-phrase
+breaking, balanced headings and text autospace. English fonts are unchanged. J1
 source checks, browser evidence and fourteen desktop/phone screenshots are
 recorded in `.copilot-runs/notes/j1.md`.
 
@@ -172,21 +177,28 @@ recorded in `.copilot-runs/notes/j1.md`.
 
 - Product name: **Jin AI**. It is a B2B product for AI-forward companies.
   Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
-- Headline: **Make every employee your best AI user.**
+- Headline: **Make every employee your best AI user**
+- Japanese home headline: **全社員のAI力を最大限引き出す。**
+  Its page and social titles omit the final Japanese full stop.
+- English headings and heading-like titles have no final period, including each
+  line separated by a `br`. Keep sentence punctuation in running descriptions,
+  question and exclamation marks, and Japanese heading punctuation.
+- Do not display draft tags or `data-draft` attributes. Track unapproved copy
+  in the E6c register instead.
 - Use **AI harness** or **harnesses**, never "setup" for this concept.
   An AI harness is the instructions, skills, memory and connected tools around
   an AI agent that make it work for a role.
 - The home page contains only the hero, problem, solution, how it works, data
   and demo request. Do not show pricing or founders on the home page.
   Founders and direct answers belong in the Agent reference.
-- Problem: **When your best AI users leave, you start over.**
+- Problem: **When your best AI users leave, you start over**
   Shadow AI is a problem label, not a claim that Jin AI blocks it.
-- Solution: **Safe for every employee.** **Reusable for the company.**
+- Solution: **Safe for every employee** **Reusable for the company**
   Keep both employee and company value in the story.
 - Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19).
   `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`.
   Never claim a Building or Next item is available today in any copy.
-- Data: **Your company's context stays yours.** Each company's context is kept
+- Data: **Your company's context stays yours** Each company's context is kept
   separate. Jin AI never records your screen. Jin AI itself never trains on
   your data. Do not claim that Jin AI does not read conversation histories.
 - CTA: **Request a demo**. Note: **We will email you to set up a demo.**
@@ -213,14 +225,14 @@ recorded in `.copilot-runs/notes/j1.md`.
   cards, numbered circles, positioning grids or letter-spaced all-caps labels.
   Prefer prose, lists, tables and real product screenshots. Use one dominant
   visual per section. At 375px wide, there must be no horizontal scroll.
-  Japanese pages use Inter and Noto Sans JP with Japanese system fallbacks;
+  Japanese pages use Yu Gothic with Japanese system and Noto Sans JP fallbacks;
   `theme-ja.css` changes only typesetting. Keep English fonts unchanged.
 - E1 draft exception (Yu, 2026-10-20): preserve the D1/D2 dark English theme
   and pill buttons. The pilot's vermilion surface uses a subtle top-left to
   bottom-right gradient, `--accent-surface-from` to `--accent-surface-to` in
   `base.css`, centered on `#a84a1c`. White text must meet 4.5:1 at both stops.
-  Company and AI harness article copy has one visible Draft copy tag covering
-  its `data-draft` main. Menu descriptions are short draft labels without tags.
+  Company and AI harness article copy remains unapproved in the E6c register.
+  Menu descriptions are short draft labels without tags.
 - E4 exception (Yu, 2026-10-20): the English home hero may use a small,
   reduced-motion-aware reveal blur. Labels use 500-weight Inter at 13px,
   sentence case and no added tracking. English primary buttons are vermilion.

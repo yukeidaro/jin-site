@@ -179,7 +179,6 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .pilot-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-6); margin-bottom: var(--s-12); }
 .pilot-card h2 { font-size: var(--t-h3); }
 .pilot-card .mono-label, .pilot-card p { color: var(--on-accent); }
-.draft-tag { border: 1px solid currentColor; border-radius: var(--r-s); padding: var(--s-1) var(--s-2); }
 .pilot-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-12); padding: 0; list-style: none; }
 .pilot-steps h3 { margin-top: var(--s-6); margin-bottom: var(--s-3); font-size: var(--t-title); line-height: 1.33; letter-spacing: -.012em; }
 .demo { padding-block: var(--s-32); border-top: var(--border); }
@@ -187,7 +186,6 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .demo-intro p { margin-top: var(--s-6); }
 .getting-started { margin-top: var(--s-8); }
 .getting-started h3 { display: inline; font: var(--t-label); letter-spacing: 0; color: var(--text-2); }
-.getting-started .draft-tag { display: inline-block; margin-left: var(--s-3); }
 .getting-started ul { margin-top: var(--s-4); padding-left: var(--s-6); color: var(--text-3); }
 .getting-started li + li { margin-top: var(--s-4); }
 .demo-form { min-width: 0; }
@@ -237,11 +235,9 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
   50%, 96.667% { opacity: 1; }
 }
 .closing-cta { padding-block: var(--s-32); border-top: var(--border); text-align: center; }
-.closing-cta .draft-tag { display: inline-block; margin-bottom: var(--s-6); }
 .closing-cta h2 { max-width: 900px; margin-inline: auto; font-size: var(--t-display-xl); line-height: 1; }
 .closing-cta .btn { margin-top: var(--s-8); }
-.security-hero .draft-tag { display: inline-block; margin-bottom: var(--s-8); }
-.security-hero .mono-label:not(.draft-tag) { margin-bottom: var(--s-6); }
+.security-hero .mono-label { margin-bottom: var(--s-6); }
 .security-hero h1 { max-width: 800px; font-size: var(--t-h2); }
 .security-split { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-16); }
 .security-split h2 { max-width: 440px; font-size: var(--t-h3); line-height: 1.125; }
@@ -258,8 +254,7 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .legal-copy p { margin-top: var(--s-6); color: var(--text-2); }
 .legal-copy h2 + p { margin-top: 0; }
 .legal-copy h1 + p { color: var(--text-3); font-size: var(--t-note); line-height: 1.4; }
-.draft-article > .draft-tag { display: inline-block; margin-bottom: var(--s-8); color: var(--text-3); }
-.draft-article > .mono-label:not(.draft-tag) { margin-bottom: var(--s-4); }
+.draft-article > .mono-label { margin-bottom: var(--s-4); }
 .draft-article .article-lead { font-size: var(--t-lead); line-height: 1.33; letter-spacing: -.012em; }
 .draft-article .btn, .draft-article .text-link { margin-top: var(--s-6); }
 .harness-parts { padding-left: var(--s-6); margin-top: var(--s-8); }

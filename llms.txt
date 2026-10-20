@@ -31,7 +31,7 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 
 ## Problem
 
-When your best AI users leave, you start over.
+When your best AI users leave, you start over
 
 - Agents stop working: When the person who built them leaves, their agents lose the context they ran on.
 - Successor rebuilds from scratch: The output gets handed over. The context, rules and judgment behind it do not.
@@ -39,18 +39,18 @@ When your best AI users leave, you start over.
 
 ## Solution (Building)
 
-- Safe for every employee. Put your personal context in securely, and take it out safely. Also usable in your personal AI.
-- Reusable for the company. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
+- Safe for every employee: Put your personal context in securely, and take it out safely. Also usable in your personal AI.
+- Reusable for the company: Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
 
 ## How it works and status
 
 - Workspace beta (Live)
-- Connect once. (Building): Jin AI connects to your AI tools through MCP. Claude Code first.
-- See every harness by category. (Building): Skills, instructions, memory and MCP settings, sorted for each person.
-- See it by role. (Next): Which harnesses each role uses, and how often.
-- Decide what can move. (Next): Parts marked confidential connect only to the AI tools you approve.
+- Connect once (Building): Jin AI connects to your AI tools through MCP. Claude Code first.
+- See every harness by category (Building): Skills, instructions, memory and MCP settings, sorted for each person.
+- See it by role (Next): Which harnesses each role uses, and how often.
+- Decide what can move (Next): Parts marked confidential connect only to the AI tools you approve.
 
-## Your company's context stays yours.
+## Your company's context stays yours
 
 - Each company's context is kept separate.
 - Jin AI never records your screen.

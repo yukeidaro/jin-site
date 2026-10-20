@@ -42,8 +42,8 @@ const japaneseMessages = {
   "Please refresh the page and try again.": "\u30da\u30fc\u30b8\u3092\u518d\u8aad\u307f\u8fbc\u307f\u3057\u3066\u3001\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002",
   "This request ID belongs to a different request. Please refresh the page and try again.": "\u3053\u306e\u53d7\u4ed8\u756a\u53f7\u306f\u5225\u306e\u304a\u7533\u3057\u8fbc\u307f\u306b\u4f7f\u308f\u308c\u3066\u3044\u307e\u3059\u3002\u30da\u30fc\u30b8\u3092\u518d\u8aad\u307f\u8fbc\u307f\u3057\u3066\u3001\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002",
   "Demo requests are busy right now. Please try again in a moment.": "\u305f\u3060\u3044\u307e\u304a\u7533\u3057\u8fbc\u307f\u304c\u6df7\u307f\u5408\u3063\u3066\u3044\u307e\u3059\u3002\u5c11\u3057\u5f85\u3063\u3066\u304b\u3089\u3001\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002",
-  "Your request was not saved.": "\u304a\u7533\u3057\u8fbc\u307f\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002",
-  "Your request is not confirmed.": "\u304a\u7533\u3057\u8fbc\u307f\u306e\u4fdd\u5b58\u3092\u78ba\u8a8d\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002",
+  "Your request was not saved": "\u304a\u7533\u3057\u8fbc\u307f\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002",
+  "Your request is not confirmed": "\u304a\u7533\u3057\u8fbc\u307f\u306e\u4fdd\u5b58\u3092\u78ba\u8a8d\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002",
   "Not saved": "\u672a\u4fdd\u5b58",
   "Not confirmed": "\u672a\u78ba\u8a8d",
   "Not sent": "\u672a\u9001\u4fe1",
@@ -54,7 +54,7 @@ const japaneseMessages = {
   "Your request is saved. Your confirmation email is pending, but we will still reply about your demo. You do not need to submit again.": "\u304a\u7533\u3057\u8fbc\u307f\u3092\u4fdd\u5b58\u3057\u307e\u3057\u305f\u3002\u78ba\u8a8d\u30e1\u30fc\u30eb\u306f\u9001\u4fe1\u5f85\u3061\u3067\u3059\u304c\u3001\u30c7\u30e2\u306b\u3064\u3044\u3066\u306f\u5225\u9014\u3054\u9023\u7d61\u3057\u307e\u3059\u3002\u518d\u5ea6\u306e\u304a\u7533\u3057\u8fbc\u307f\u306f\u4e0d\u8981\u3067\u3059\u3002",
   "Your request is saved, but we could not send your confirmation email. We will still reply about your demo. You do not need to submit again.": "\u304a\u7533\u3057\u8fbc\u307f\u3092\u4fdd\u5b58\u3057\u307e\u3057\u305f\u304c\u3001\u78ba\u8a8d\u30e1\u30fc\u30eb\u3092\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u30c7\u30e2\u306b\u3064\u3044\u3066\u306f\u5225\u9014\u3054\u9023\u7d61\u3057\u307e\u3059\u3002\u518d\u5ea6\u306e\u304a\u7533\u3057\u8fbc\u307f\u306f\u4e0d\u8981\u3067\u3059\u3002",
   "Your request is saved, but we could not confirm the email send. We will still reply about your demo. You do not need to submit again.": "\u304a\u7533\u3057\u8fbc\u307f\u3092\u4fdd\u5b58\u3057\u307e\u3057\u305f\u304c\u3001\u78ba\u8a8d\u30e1\u30fc\u30eb\u306e\u9001\u4fe1\u3092\u78ba\u8a8d\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u30c7\u30e2\u306b\u3064\u3044\u3066\u306f\u5225\u9014\u3054\u9023\u7d61\u3057\u307e\u3059\u3002\u518d\u5ea6\u306e\u304a\u7533\u3057\u8fbc\u307f\u306f\u4e0d\u8981\u3067\u3059\u3002",
-  "Your demo request is saved.": "\u30c7\u30e2\u306e\u304a\u7533\u3057\u8fbc\u307f\u3092\u4fdd\u5b58\u3057\u307e\u3057\u305f\u3002",
+  "Your demo request is saved": "\u30c7\u30e2\u306e\u304a\u7533\u3057\u8fbc\u307f\u3092\u4fdd\u5b58\u3057\u307e\u3057\u305f\u3002",
   "Saved": "\u4fdd\u5b58\u6e08\u307f",
   "Demo requests are temporarily unavailable. Please email hello@jinai.md.": "\u305f\u3060\u3044\u307e\u30d5\u30a9\u30fc\u30e0\u304b\u3089\u306e\u304a\u7533\u3057\u8fbc\u307f\u3092\u53d7\u3051\u4ed8\u3051\u3066\u3044\u307e\u305b\u3093\u3002hello@jinai.md \u307e\u3067\u3054\u9023\u7d61\u304f\u3060\u3055\u3044\u3002",
   "Please check the marked fields.": "\u8868\u793a\u3055\u308c\u305f\u5165\u529b\u6b04\u3092\u3054\u78ba\u8a8d\u304f\u3060\u3055\u3044\u3002",
@@ -134,7 +134,7 @@ export function describeResult(result, language = "en") {
   if (result.registration !== "saved") {
     return localizeResult({
       saved: false,
-      heading: result.registration === "not_saved" ? "Your request was not saved." : "Your request is not confirmed.",
+      heading: result.registration === "not_saved" ? "Your request was not saved" : "Your request is not confirmed",
       registration: result.registration === "not_saved" ? "Not saved" : "Not confirmed",
       welcome: "Not sent",
       detail: validationMessages[result.code] ||
@@ -164,7 +164,7 @@ export function describeResult(result, language = "en") {
       kind: "pending"
     }
   };
-  return localizeResult({ saved: true, heading: "Your demo request is saved.", registration: "Saved", ...messages[result.welcome] }, language);
+  return localizeResult({ saved: true, heading: "Your demo request is saved", registration: "Saved", ...messages[result.welcome] }, language);
 }
 
 async function postJson(endpoint, payload, {

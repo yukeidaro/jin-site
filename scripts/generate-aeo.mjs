@@ -47,6 +47,8 @@ function validate(source) {
   assert(Array.isArray(source.data_principles.items) && source.data_principles.items.length > 0 &&
     source.data_principles.items.every((item) => typeof item === "string" && item.trim()),
   "Data principles need non-empty facts.");
+  assert(source.product.headline === "Make every employee your best AI user",
+    "The product headline must match the approved English H1 without a final period.");
 
   const access = source.early_access;
   assert(access?.label && access?.note && access?.hero_label && access?.hero_note,
@@ -102,6 +104,13 @@ function validate(source) {
     assert(capability.status === "live" ||
       (typeof capability.description === "string" && capability.description.trim()),
     `A capability in development needs a description: ${capability.id}`);
+  }
+
+  for (const heading of [source.problem.headline, source.data_principles.headline,
+    ...source.problem.points.map(item => item.name), ...source.solution.steps.map(item => item.name),
+    ...source.capabilities.map(item => item.name)]) {
+    assert(typeof heading === "string" && !heading.trim().endsWith("."),
+      `English fact headings must not end with a period: ${heading}`);
   }
 
   const serialized = JSON.stringify(source);
@@ -403,7 +412,7 @@ function renderLlms(source) {
   ).join("\n");
 
   const solutionSteps = source.solution.steps.map((step) =>
-    `- ${step.name} ${step.description}`
+    `- ${step.name}: ${step.description}`
   ).join("\n");
 
   const capabilities = source.capabilities.map((capability) =>

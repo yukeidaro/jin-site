@@ -31,6 +31,15 @@ function count(source, expression) {
   return source.match(expression)?.length ?? 0;
 }
 
+function withoutJapanesePhrases(source) {
+  return source.replace(/<span class="ja-phrase">([^<]*)<\/span>/g, "$1");
+}
+
+function headingLines(source) {
+  return source.split(/<br\s*\/?>/i).map(line => line.replace(/<[^>]*>/g, "")
+    .replace(/&#(?:46|x2e);|&period;/gi, ".").replace(/&nbsp;|&#160;/gi, " ").trim());
+}
+
 const expectedFiles = [
   ".nojekyll",
   "6252d6a938298e86f40672b512227d4b.txt",
@@ -111,8 +120,29 @@ const englishPages = [
   ["company/", company], ["resources/ai-harness/", harness]
 ];
 
+for (const [route, source] of [...englishPages, ["agent/", agent]]) {
+  for (const [, tag, , inner] of source.matchAll(/<([a-z][\w-]*)\b([^>]*\bclass="[^"]*\b(?:nav-item-title|mobile-group-label|figure-title|card-title|step-title|article-title|form-title)\b[^"]*"[^>]*)>([\s\S]*?)<\/\1>/g)) {
+    check(headingLines(inner).every(line => !line.endsWith(".")),
+      `/${route} ${tag} title must not end a line with a period: ${headingLines(inner).join(" / ")}`);
+  }
+  for (const [, tag, inner] of source.matchAll(/<(h[1-4])\b[^>]*>([\s\S]*?)<\/\1>/g)) {
+    check(headingLines(inner).every(line => !line.endsWith(".")),
+      `/${route} ${tag} must not end a line with a period: ${headingLines(inner).join(" / ")}`);
+  }
+}
+for (const filename of deployedFiles.filter(file => file.endsWith(".html"))) {
+  const source = await text(filename);
+  check(!/\b(?:data-draft|draft-tag)\b|Draft copy|文案（承認待ち）/.test(source),
+    `${filename} must not contain draft attributes, classes or approval tags.`);
+}
+const demoClient = await text("waitlist.mjs");
+check([...demoClient.matchAll(/\bheading:\s*(?:[^?\n]+\?\s*)?"([^"]+)"/g)]
+  .every(([, heading]) => !heading.endsWith(".")) &&
+  !demoClient.includes('"Your request is not confirmed."'),
+  "Demo success and error headings must not end with periods.");
+
 const pagePairs = [
-  ["", home, japanese, "全社員の AI の使い方を、底上げする。", "Jin AI | 全社員の AI の使い方を、底上げする",
+  ["", home, japanese, "全社員のAI力を最大限引き出す。", "Jin AI | 全社員のAI力を最大限引き出す",
     "Jin AI は、優れた社員がつくった AI ハーネスを、すべての社員にとって安全に、会社にとって再利用できる形にします。"],
   ["how-it-works/", howPage, japaneseHow, "仕組み", "仕組み | Jin AI",
     "Jin AI が AI ツールにつながり、AI ハーネスを種類ごとに整理し、持ち出せるものを会社が決める仕組みです。"],
@@ -241,24 +271,24 @@ for (const [page, source] of pagePairs.flatMap(([route, english, japanesePage]) 
       `${page} must declare the share image ${dimension}.`);
   }
   for (const [attribute, name] of [["property", "og:image:alt"], ["name", "twitter:image:alt"]]) {
-    const imageAlt = page.startsWith("/ja/") ? "Jin AI: 全社員の AI の使い方を、底上げする" : "Jin AI: Make every employee your best AI user";
+    const imageAlt = page.startsWith("/ja/") ? "Jin AI: 全社員のAI力を最大限引き出す" : "Jin AI: Make every employee your best AI user";
     check(source.includes(`<meta ${attribute}="${name}" content="${imageAlt}">`),
       `${page} must use the approved ${name}.`);
   }
 }
 const shareImage = await readFile(path.join(site, "shots", "og-b2b.png"));
-check(shareImage.length >= 24 &&
+check(shareImage.length >= 24 && shareImage.length < 300000 &&
   shareImage.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])) &&
   shareImage.toString("ascii", 12, 16) === "IHDR" &&
   shareImage.readUInt32BE(16) === 1200 && shareImage.readUInt32BE(20) === 630,
-  "The B2B share image must be a 1200 x 630 PNG.");
+  "The B2B share image must be a 1200 x 630 PNG below 300 KB.");
 check(home.includes("<main>") && home.includes("</main>"), "Root must have a main landmark.");
 const homeSections = [...home.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
 check(homeSections.length === 7 && homeSections[0]?.[1].includes('class="hero"') &&
   homeSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() ===
   "problem,solution,how,data,pilot,demo", "Root must contain only hero, problem, solution, how, data, draft pilot and demo sections, in order.");
 check(count(home, /<h1\b/g) === 1 &&
-  home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "Make every employee your best AI user.",
+  home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "Make every employee your best AI user",
   "Root must use the approved H1 once.");
 const homeTitle = "Jin AI | Make every employee your best AI user";
 check(home.includes(`<title>${homeTitle}</title>`), "Root must use the approved title.");
@@ -342,7 +372,7 @@ const problemCopy = [
 ];
 const problemFigures = [...problemSection.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
 check(problemSection.includes('<span class="mono-label">Problem</span>') &&
-  problemSection.includes('<h2 class="h2">When your best AI users leave, you start over.</h2>') &&
+  problemSection.includes('<h2 class="h2">When your best AI users leave, you start over</h2>') &&
   !/Draft copy|\bdata-draft\b/.test((problemMatch?.[1] || "") + problemSection),
   "Problem must use the exact approved label and H2 without a Draft copy tag or data-draft.");
 check(problemFigures.length === 3 && count(problemSection, /<svg\b/g) === 3,
@@ -589,14 +619,13 @@ check(howPage.includes(`<h2 class="h2">${content.data_principles.headline}</h2>`
 check(!/plugin-screen\.png|personal MCP|your own memory|#waitlist|Join &rarr;/.test(howPage),
   "The companion page must not publish the retired consumer copy or CTA.");
 const closingBand = howPage.match(/<section class="closing-cta" aria-labelledby="closing-heading">([\s\S]*?)<\/section>/)?.[1] || "";
-check(closingBand.includes('<div class="wrap" data-draft>') &&
-  closingBand.includes('<span class="mono-label draft-tag">Draft copy</span>') &&
-  closingBand.includes('<h2 id="closing-heading">See it on your team\'s AI harnesses.</h2>') &&
+check(closingBand.includes('<div class="wrap">') &&
+  closingBand.includes('<h2 id="closing-heading">See it on your team\'s AI harnesses</h2>') &&
   count(closingBand, /<(?:a|button)\b/g) === 1 &&
   closingBand.includes('<a class="btn btn-p" href="../#demo">Request a demo</a>') &&
   count(howPage, /class="closing-cta"/g) === 1 &&
   howPage.indexOf('class="closing-cta"') > howPage.indexOf('id="data"'),
-  "How it works must end with the draft-marked closing band and exactly one primary demo button.");
+  "How it works must end with the closing band and exactly one primary demo button.");
 check(howPage.includes('<a class="text-link read-more" href="../security/">Security &amp; data &rarr;</a>'),
   "The companion promise band must link to Security & data.");
 
@@ -607,9 +636,8 @@ check(security.includes('<html lang="en">') &&
   count(security, /<h1\b/g) === 1 &&
   security.includes(`<h1>${content.data_principles.headline}</h1>`) &&
   security.includes('<p class="mono-label">Security</p>') &&
-  security.includes('<main data-draft>') &&
-  count(security, /<span class="mono-label draft-tag">Draft copy<\/span>/g) === 1,
-  "Security must have its approved title, English language, H1, label and one visible draft tag covering its body.");
+  security.includes('<main>'),
+  "Security must have its approved title, English language, H1, label and main.");
 check(count(security, /<link\b[^>]*\brel="canonical"/g) === 1 &&
   security.includes('<link rel="canonical" href="https://jinai.md/security/">') &&
   security.includes('<meta property="og:url" content="https://jinai.md/security/">') &&
@@ -792,20 +820,19 @@ for (const [relativePath, source] of [
 const draftPages = [
   ["company/", company, "Company", "Company", "Company",
     "Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company.",
-    "Draft copy Company Company Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Request a demo"],
+    "Company Company Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Request a demo"],
   ["resources/ai-harness/", harness, "What is an AI harness", "What is an AI harness?", "Resources",
     content.product.harness_definition,
-    `Draft copy Resources What is an AI harness? ${content.product.harness_definition} Instructions: how the agent should work for this role. Skills: procedures it can repeat. Memory: what it keeps across sessions. Connected tools: the MCP servers and apps it can use. For example: CLAUDE.md, skills, memory files and MCP settings. Why it matters The harnesses that work are built by a few people, and they hold both how a team got faster and the company's confidential context. Jin AI keeps them visible, safe and reusable. How it works &rarr;`]
+    `Resources What is an AI harness? ${content.product.harness_definition} Instructions: how the agent should work for this role. Skills: procedures it can repeat. Memory: what it keeps across sessions. Connected tools: the MCP servers and apps it can use. For example: CLAUDE.md, skills, memory files and MCP settings. Why it matters The harnesses that work are built by a few people, and they hold both how a team got faster and the company's confidential context. Jin AI keeps them visible, safe and reusable. How it works &rarr;`]
 ];
 for (const [route, source, title, heading, label, description, expectedCopy] of draftPages) {
   const main = source.match(/<main\b([^>]*)>([\s\S]*?)<\/main>/);
   const visible = (main?.[2] || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
   check(source.includes('<html lang="en">') && source.includes(`<title>${title} | Jin AI</title>`) &&
     count(source, /<h1\b/g) === 1 && source.includes(`<h1>${heading}</h1>`) &&
-    main?.[1].includes("data-draft") && main?.[1].includes("draft-article") &&
-    count(source, /class="mono-label draft-tag">Draft copy<\/span>/g) === 1 &&
+    main?.[1].includes("draft-article") &&
     (main?.[2] || "").includes(`<p class="mono-label">${label}</p>`),
-    `/${route} needs its English title, exact H1, article layout and one draft tag covering the main.`);
+    `/${route} needs its English title, exact H1 and article layout.`);
   check(visible === expectedCopy && !/\d|\b(?:founder|investor|team photos)\b/i.test(visible) &&
     !/<img\b/.test(main?.[2] || ""),
     `/${route} must contain only the supplied draft copy, with no founders, numbers or photos.`);
@@ -959,27 +986,25 @@ check(dataSection.includes(`<h2 class="h2">${content.data_principles.headline}</
   content.data_principles.items.every((item) => dataSection.includes(`<li>${item}</li>`)),
   "Root must use all approved data promises.");
 const demoSection = homeSections.find((match) => match[1].includes('id="demo"'))?.[2] || "";
-check(demoSection.includes("<h2>See what is inside your company's AI harnesses.</h2>") &&
+check(demoSection.includes("<h2>See what is inside your company's AI harnesses</h2>") &&
   demoSection.includes('id="waitlistForm"'), "The demo section must contain the approved heading and form.");
 const demoIntro = demoSection.match(/<div class="demo-intro">([\s\S]*?)<\/div>\s*<\/div>/)?.[1] || "";
-const gettingStarted = demoIntro.match(/<div class="getting-started" data-draft>([\s\S]*)/)?.[1] || "";
+const gettingStarted = demoIntro.match(/<div class="getting-started">([\s\S]*)/)?.[1] || "";
 check(gettingStarted.includes("<h3>Getting started</h3>") &&
-  count(gettingStarted, /<span class="mono-label draft-tag">Draft copy<\/span>/g) === 1 &&
   count(gettingStarted, /<ul>/g) === 1 &&
   JSON.stringify([...gettingStarted.matchAll(/<li>([\s\S]*?)<\/li>/g)].map(match => match[1])) === JSON.stringify([
     "We're working through our waitlist, so thank you for your patience. If your company wants to try Jin AI, request a demo below.",
     "The fastest way in is an introduction from someone already in the Jin AI private beta. :)"
   ]) && !demoIntro.includes("<p>We will email you to set up a demo.</p>"),
-  "The closing demo intro must contain the exact two-item Getting started list, H3 and one Draft copy tag inside its data-draft block.");
+  "The closing demo intro must contain the exact two-item Getting started list and H3.");
 const pilotSection = homeSections.find((match) => match[1].includes('id="pilot"'))?.[2] || "";
-check(pilotSection.includes('<div class="pilot-card" data-draft>') &&
-  pilotSection.includes('<h2 id="pilot-heading">How a pilot works</h2>') &&
-  pilotSection.includes('<span class="mono-label draft-tag">Draft copy</span>'),
-  "The pilot card must visibly mark its unapproved copy as draft.");
+check(pilotSection.includes('<div class="pilot-card">') &&
+  pilotSection.includes('<h2 id="pilot-heading">How a pilot works</h2>'),
+  "The pilot card must retain its supplied heading and layout.");
 for (const [heading, description] of [
-  ["Request a demo.", "We walk through Jin AI with your team's AI harnesses."],
-  ["Run a paid pilot.", "One team uses Jin AI with Claude Code for a set period."],
-  ["Decide together.", "We review what the team reused and what stayed confidential, and agree on next steps."]
+  ["Request a demo", "We walk through Jin AI with your team's AI harnesses."],
+  ["Run a paid pilot", "One team uses Jin AI with Claude Code for a set period."],
+  ["Decide together", "We review what the team reused and what stayed confidential, and agree on next steps."]
 ]) {
   check(pilotSection.includes(`<h3>${heading}</h3><p>${description}</p>`),
     `The pilot must retain the supplied draft copy: ${heading}`);
@@ -1091,7 +1116,7 @@ const japaneseProblemCopy = [
 ];
 const japaneseFigures = [...japaneseProblem.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
 check(japaneseProblem.includes('<span class="mono-label">課題</span>') &&
-  japaneseProblem.includes('<h2 class="h2">AI を使いこなす人が辞めると、一からやり直しになる。</h2>') &&
+  withoutJapanesePhrases(japaneseProblem).includes('<h2 class="h2">AI を使いこなす人が辞めると、一からやり直しになる。</h2>') &&
   !/data-draft|draft-tag|sa-svg|ho-svg|ed-svg/.test(japaneseProblem) &&
   japanese.includes('<script type="module" src="/problem.js"></script>'),
   "Japanese Problem must use the approved E6 heading and shared controller, without draft or legacy content.");
@@ -1102,13 +1127,13 @@ for (const [index, [id, heading, description]] of japaneseProblemCopy.entries())
     attributes.includes('tabindex="0"') && /\baria-label="[^"]*[\p{Script=Han}\p{Script=Hiragana}][^"]*"/u.test(attributes) &&
     !/図\s*0[123]|problem-action|data-action-|元に戻す/.test(figure) &&
     [...figure.matchAll(/<button\b[^>]*>/g)].every(([button]) => id === "teams" && button.includes('class="team-control"')) &&
-    figure.includes(`<figcaption><h3>${heading}</h3><p>${description}</p></figcaption>`) &&
+    withoutJapanesePhrases(figure).includes(`<figcaption><h3>${heading}</h3><p>${description}</p></figcaption>`) &&
     /<p class="problem-status"[^>]*aria-live="polite"[^>]*>[^<]*[\p{Script=Han}\p{Script=Hiragana}][^<]*<\/p>/u.test(figure),
     `Japanese figure ${index + 1} needs approved copy, a focusable name, no number/action/reset and translated live status.`);
   for (const [, value] of figure.matchAll(/\b(?:aria-label|data-label(?:-idle|-playing|-changed)?|data-status(?:-idle|-playing|-changed)?)="([^"]*)"/g)) {
     check(/[\p{Script=Han}\p{Script=Hiragana}]/u.test(value), `Japanese ${id} has an untranslated state description.`);
   }
-  const problemMarkup = source => source
+  const problemMarkup = source => withoutJapanesePhrases(source)
     .replace(/\b(?:aria-label|data-label(?:-idle|-playing|-changed)?|data-status(?:-idle|-playing|-changed)?)="[^"]*"/g, 'data-translated="TEXT"')
     .replace(/>[^<]+</g, "><");
   check(problemMarkup(japaneseProblem) === problemMarkup(problemSection),
@@ -1120,7 +1145,7 @@ check(["文脈", "ルール", "ツール", "例外"].every(label => japaneseProb
 
 const bodyStructure = source => {
   const body = source.match(/<body\b[^>]*>([\s\S]*?)<\/body>/)?.[1] || "";
-  return [...body.replace(/<!-- GENERATED:CTA_FINAL:START -->[\s\S]*?<!-- GENERATED:CTA_FINAL:END -->/g, "")
+  return [...withoutJapanesePhrases(body).replace(/<!-- GENERATED:CTA_FINAL:START -->[\s\S]*?<!-- GENERATED:CTA_FINAL:END -->/g, "")
     .replace(/<h1 class="hero-reveal"[^>]*>[\s\S]*?<\/h1>/g, '<h1 class="hero-reveal"></h1>')
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>|<!--[\s\S]*?-->/g, "")
     .matchAll(/<(?!\/)([a-z][\w-]*)\b([^>]*)>/g)].map(([, tag, attributes]) =>
@@ -1167,12 +1192,6 @@ for (const [route, english, translated] of pagePairs) {
     `/ja/${route} must match its English twin's complete element, section ID and component-class structure, except form order and H1 typesetting.`);
   check(JSON.stringify(scripts(english, route)) === JSON.stringify(scripts(translated, `ja/${route}`)),
     `/ja/${route} must retain all English scripts, except the English-only language choice and fact graph.`);
-  const englishDrafts = [...english.matchAll(/<[^>]+\bdata-draft\b[^>]*>|<[^>]+class="[^"]*\bdraft-tag\b[^"]*"[^>]*>/g)].map(([tag]) => tag);
-  const japaneseDrafts = [...translated.matchAll(/<[^>]+\bdata-draft\b[^>]*>|<[^>]+class="[^"]*\bdraft-tag\b[^"]*"[^>]*>/g)].map(([tag]) => tag);
-  check(JSON.stringify(englishDrafts) === JSON.stringify(japaneseDrafts) &&
-    count(translated, />文案（承認待ち）<\/span>/g) === count(english, />Draft copy<\/span>/g) &&
-    !translated.includes("Draft copy"),
-    `/ja/${route} must keep every English draft scope and translated draft tag.`);
   const stylesheets = [...translated.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)]
     .map(([, url]) => new URL(url, `https://jinai.md/ja/${route}`).pathname);
   check(JSON.stringify(stylesheets) === '["/base.css","/theme-en.css","/theme-ja.css"]' &&
@@ -1189,12 +1208,21 @@ for (const [route, english, translated] of pagePairs) {
   }
 }
 const japaneseReveal = japanese.match(/<h1 class="hero-reveal"[^>]*>([\s\S]*?)<\/h1>/)?.[1] || "";
-check(count(japaneseReveal, /<span style="--word:[0-6]">[^<]+<\/span>/g) === 7 &&
-  [...japaneseReveal.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "0123456" &&
-  japaneseReveal.includes("使い方を、</span><br>") &&
-  japanese.includes('aria-label="全社員の AI の使い方を、底上げする。"') &&
+check(count(japaneseReveal, /<span style="--word:[0-3]">[^<]+<\/span>/g) === 4 &&
+  [...japaneseReveal.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "0123" &&
+  japaneseReveal.replace(/<[^>]+>/g, "") === "全社員のAI力を最大限引き出す。" &&
+  japanese.includes('aria-label="全社員のAI力を最大限引き出す。"') &&
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
-  "Japanese hero must preserve the seven-part reveal, approved comma break, exact accessible name and motion opt-in.");
+  "Japanese hero must preserve its four-phrase reveal, exact approved text, accessible name and motion opt-in.");
+for (const [page, source, phrases] of [
+  ["/ja/", japanese, ["使いこなす人が", "辞めると、", "やり直しになる。", "AI ハーネスの", "中身を、", "見てみませんか。"]],
+  ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "AI ハーネスで、", "確かめて", "みませんか。"]],
+  ["/ja/security/", japaneseSecurity, ["コンテクストは、", "会社のもの。"]],
+  ["/ja/privacy/", japanesePrivacy, ["プライバシー", "ポリシー", "取り扱いを", "委託している", "事業者"]]
+]) {
+  check(phrases.every(phrase => source.includes(`<span class="ja-phrase">${phrase}</span>`)),
+    `${page} must protect the approved heading phrase boundaries from internal breaks.`);
+}
 check(count(japanese, /class="demo-stage"/g) === 1 && count(japanese, /<img\b[^>]*src="\/assets\/demo\//g) === 1 &&
   japanese.includes('src="/assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="Jin AI の社員向けの画面。ハーネスの部品が種類ごとに並び、それぞれに Can move か Confidential の表示がある。" decoding="async" loading="eager" fetchpriority="high" elementtiming="hero-still"') &&
   japanese.includes('src="/assets/demo/app.html?embed=hero"') &&
@@ -1203,18 +1231,24 @@ check(count(japanese, /class="demo-stage"/g) === 1 && count(japanese, /<img\b[^>
 const japaneseCss = await text("theme-ja.css");
 const typesettingProperties = new Set([
   "--font-sans", "font-family", "font-size", "font-weight", "line-height", "line-break",
-  "word-break", "overflow-wrap", "letter-spacing", "text-wrap", "text-autospace"
+  "word-break", "overflow-wrap", "letter-spacing", "text-wrap", "text-autospace", "white-space"
 ]);
-for (const [, , declarations] of japaneseCss.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+for (const [, selector, declarations] of japaneseCss.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
   for (const [, property] of declarations.matchAll(/([\w-]+)\s*:[^;]+;/g)) {
-    check(typesettingProperties.has(property), `theme-ja.css must change only typesetting, not ${property}.`);
+    check(typesettingProperties.has(property) ||
+      (property === "display" && selector.trim() === ".ja-phrase, .hero-reveal > span" &&
+        declarations.includes("white-space: nowrap") && declarations.includes("display: inline-block")),
+      `theme-ja.css must change only typesetting, not ${property}.`);
   }
 }
-check(japaneseCss.includes('--font-sans: "Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif') &&
+check(japaneseCss.includes('--font-sans: "Yu Gothic", "YuGothic", "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif') &&
+  japaneseCss.includes("body { font-weight: 500;") &&
+  japaneseCss.includes("word-break: keep-all") && japaneseCss.includes("white-space: nowrap") &&
+  japaneseCss.includes("@supports (word-break: auto-phrase)") && japaneseCss.includes("word-break: auto-phrase") &&
   japaneseCss.includes("line-break: strict") && japaneseCss.includes("word-break: normal") &&
   japaneseCss.includes("overflow-wrap: anywhere") && japaneseCss.includes("text-wrap: balance") &&
   japaneseCss.includes("@supports (text-autospace: normal)"),
-  "Japanese typesetting must use the approved sans stack, strict breaks, normal words, balanced headings and progressive autospace.");
+  "Japanese typesetting must use Yu Gothic, medium body text, protected phrases, auto-phrase enhancement and progressive autospace.");
 for (const [page, translated] of [["home", japanese], ["How it works", japaneseHow]]) {
   check(!/\bclass="[^"]*\b(?:st|harness-status)\b/.test(translated) &&
     !/\b(?:Building|Next)\b/.test(translated.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "")),

@@ -19,7 +19,7 @@
   },
   "product": {
     "name": "Jin AI",
-    "headline": "Make every employee your best AI user.",
+    "headline": "Make every employee your best AI user",
     "category": "AI harnesses for companies",
     "description": "Make every employee your best AI user. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.",
     "harness_definition": "An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.",
@@ -31,7 +31,7 @@
     "primary": "AI-forward companies"
   },
   "problem": {
-    "headline": "When your best AI users leave, you start over.",
+    "headline": "When your best AI users leave, you start over",
     "points": [
       {
         "name": "Agents stop working",
@@ -52,17 +52,17 @@
     "status": "building",
     "steps": [
       {
-        "name": "Safe for every employee.",
+        "name": "Safe for every employee",
         "description": "Put your personal context in securely, and take it out safely. Also usable in your personal AI."
       },
       {
-        "name": "Reusable for the company.",
+        "name": "Reusable for the company",
         "description": "Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
       }
     ]
   },
   "data_principles": {
-    "headline": "Your company's context stays yours.",
+    "headline": "Your company's context stays yours",
     "items": [
       "Each company's context is kept separate.",
       "Jin AI never records your screen.",
@@ -77,26 +77,26 @@
     },
     {
       "id": "connect-once",
-      "name": "Connect once.",
+      "name": "Connect once",
       "description": "Jin AI connects to your AI tools through MCP.",
       "status": "building",
       "note": "Claude Code first"
     },
     {
       "id": "harnesses-by-category",
-      "name": "See every harness by category.",
+      "name": "See every harness by category",
       "description": "Skills, instructions, memory and MCP settings, sorted for each person.",
       "status": "building"
     },
     {
       "id": "harnesses-by-role",
-      "name": "See it by role.",
+      "name": "See it by role",
       "description": "Which harnesses each role uses, and how often.",
       "status": "next"
     },
     {
       "id": "approved-portability",
-      "name": "Decide what can move.",
+      "name": "Decide what can move",
       "description": "Parts marked confidential connect only to the AI tools you approve.",
       "status": "next"
     }

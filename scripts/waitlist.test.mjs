@@ -552,8 +552,11 @@ test("survey confirmation requires the same ID, version, status and code", () =>
 
 test("client copy never conflates saving with sending", () => {
   assert.equal(describeResult(response()).welcome, "Sent");
+  assert.equal(describeResult(response()).heading, "Your demo request is saved");
   for (const welcome of ["pending", "failed", "unknown"]) {
     const description = describeResult(response("saved", welcome));
+    assert.equal(description.heading, "Your demo request is saved");
+    assert.ok(describeResult(response("saved", welcome), "ja").heading.endsWith("\u3002"));
     assert.equal(description.saved, true);
     assert.equal(description.registration, "Saved");
     assert.notEqual(description.welcome, "Sent");
@@ -561,6 +564,11 @@ test("client copy never conflates saving with sending", () => {
     assert.ok(description.detail.includes("still reply"));
   }
   assert.equal(describeResult(response("not_saved", "not_attempted")).saved, false);
+  assert.equal(describeResult(response("not_saved", "not_attempted")).heading, "Your request was not saved");
+  assert.equal(describeResult(response("unknown", "not_attempted")).heading, "Your request is not confirmed");
+  for (const state of ["not_saved", "unknown"]) {
+    assert.ok(describeResult(response(state, "not_attempted"), "ja").heading.endsWith("\u3002"));
+  }
   assert.equal(describeResult(response("unknown", "not_attempted")).registration, "Not confirmed");
 });
 
