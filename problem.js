@@ -1,5 +1,5 @@
 const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-const figures = [...document.querySelectorAll('[data-problem]:not([data-problem="shadow"])')];
+const figures = [...document.querySelectorAll("[data-problem]")];
 const visible = new Set();
 const controllers = new Map();
 
@@ -7,7 +7,7 @@ function updateFlow() {
   for (const figure of figures) {
     figure.classList.toggle("problem-flow-running",
       visible.has(figure) && !document.hidden && !reduced.matches &&
-      (figure.dataset.state === "idle" || figure.dataset.disconnected === "false"));
+      (figure.dataset.problem === "shadow" || figure.dataset.state === "idle" || figure.dataset.disconnected === "false"));
   }
 }
 
@@ -93,12 +93,20 @@ for (const figure of figures) {
               updateFlow();
             }, 600);
           }
-          later(end, figure.dataset.problem === "owner" ? 1750 : 3600);
+          if (figure.dataset.problem !== "shadow") {
+            later(end, figure.dataset.problem === "owner" ? 1750 : 3600);
+          }
         }
         updateFlow();
       });
     });
   };
+  if (figure.dataset.problem === "shadow") {
+    // Animation completion keeps the status in sync when visibility pauses motion.
+    figure.querySelector(".shadow-document").addEventListener("animationend", event => {
+      if (event.animationName === "problem-shadow-document" && figure.dataset.busy === "true") end();
+    });
+  }
   for (const control of controls) {
     const select = () => {
       if (reduced.matches) return end();

@@ -159,6 +159,36 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .team-control[data-team="b"] { right: 6.5%; }
 .team-control[data-team="c"] { left: 35%; top: 50%; }
 .team-control:focus-visible { outline-offset: 0; }
+.shadow-boundary { stroke: var(--text-3); }
+.shadow-document, .shadow-route, .shadow-warning, .shadow-warning-pulse, .shadow-ai-outline { stroke: var(--accent-light); }
+.shadow-route { stroke-dasharray: 4 6; opacity: 0; }
+.shadow-warning, .shadow-warning-pulse, .shadow-ai-outline { opacity: 0; }
+[data-state="changed"] .shadow-document { transform: translate(164px, 82px); animation: problem-shadow-document 3s linear both; }
+[data-state="changed"] .shadow-route { animation: problem-shadow-route 3s linear both; }
+[data-state="changed"] .shadow-warning { animation: problem-shadow-warning 3s linear both; }
+[data-state="changed"] .shadow-warning-pulse { animation: problem-shadow-pulse 3s linear both; }
+[data-state="changed"] .shadow-ai-outline { animation: problem-shadow-outline 3s linear both; }
+[data-problem="shadow"] .shadow-document, [data-problem="shadow"] .shadow-route, [data-problem="shadow"] .shadow-warning,
+[data-problem="shadow"] .shadow-warning-pulse, [data-problem="shadow"] .shadow-ai-outline { animation-play-state: paused; }
+[data-problem="shadow"].problem-flow-running .shadow-document, [data-problem="shadow"].problem-flow-running .shadow-route,
+[data-problem="shadow"].problem-flow-running .shadow-warning, [data-problem="shadow"].problem-flow-running .shadow-warning-pulse,
+[data-problem="shadow"].problem-flow-running .shadow-ai-outline { animation-play-state: running; }
+@keyframes problem-shadow-document {
+  0%, 12% { transform: translate(0, 0); }
+  42% { transform: translate(60px, 22px); }
+  58% { transform: translate(91px, 44px); }
+  83% { transform: translate(164px, 80px); }
+  90% { transform: translate(164px, 84px); }
+  100% { transform: translate(164px, 82px); }
+}
+@keyframes problem-shadow-route { 0%, 12% { opacity: 0; } 24%, 100% { opacity: .65; } }
+@keyframes problem-shadow-warning { 0%, 44% { opacity: 0; } 50%, 100% { opacity: 1; } }
+@keyframes problem-shadow-pulse {
+  0%, 44% { opacity: 0; transform: scale(.65); }
+  50% { opacity: .65; transform: scale(.85); }
+  72%, 100% { opacity: 0; transform: scale(1.6); }
+}
+@keyframes problem-shadow-outline { 0%, 78% { opacity: 0; } 92%, 100% { opacity: .6; } }
 .solution-heading { margin-bottom: var(--s-12); }
 .solution-heading > span:not(.ja-phrase) { color: var(--text-3); }
 .home-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-16); }
@@ -379,6 +409,10 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
   [data-problem="teams"] .team-lid { transform: none; }
   [data-problem="teams"] [data-team-art="c"] .team-lid { opacity: .2; }
   [data-problem="teams"] [data-team-art="c"] .team-workflow { opacity: 1; }
+  [data-problem="shadow"] .shadow-document { transform: translate(164px, 82px); }
+  [data-problem="shadow"] .shadow-route { opacity: .65; }
+  [data-problem="shadow"] .shadow-warning { opacity: 1; }
+  [data-problem="shadow"] .shadow-ai-outline { opacity: .6; }
   .hero-reveal > span, .hero-intro, .hero-intro + .hero-actions { animation: none; opacity: 1; filter: none; transform: none; }
   .hero-screen iframe { display: none; transition: none; }
   .moving-frame .screen img { animation: none; transform: none; will-change: auto; }

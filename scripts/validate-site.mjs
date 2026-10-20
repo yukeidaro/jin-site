@@ -385,7 +385,7 @@ check(problemSection.includes('<span class="mono-label">Problem</span>') &&
   !/Draft copy|\bdata-draft\b/.test((problemMatch?.[1] || "") + problemSection),
   "Problem must use the exact approved label and H2 without a Draft copy tag or data-draft.");
 check(problemFigures.length === 4 && count(problemSection, /<svg\b/g) === 4,
-  "Problem needs three existing interactive figures and the fourth Shadow AI slot.");
+  "Problem needs four interactive isometric figures, including Shadow AI.");
 for (const [index, [id, title, description]] of problemCopy.entries()) {
   const attributes = problemFigures[index]?.[2] || "";
   const body = problemFigures[index]?.[3] || "";
@@ -399,19 +399,23 @@ for (const [index, [id, title, description]] of problemCopy.entries()) {
     svg.includes('viewBox="0 0 420 320"') && svg.includes('role="img"') &&
     svg.match(/\baria-label="([^"]*)"/)?.[1].trim() &&
     svg.match(/\bdata-label-idle="([^"]*)"/)?.[1].trim() &&
-    (["teams", "shadow"].includes(id) || (svg.match(/\bdata-label-playing="([^"]*)"/)?.[1].trim() &&
+    (id === "teams" || (svg.match(/\bdata-label-playing="([^"]*)"/)?.[1].trim() &&
       svg.match(/\bdata-label-changed="([^"]*)"/)?.[1].trim())) &&
     status?.[1].trim() &&
     /\bdata-status-idle="[^"]+"/.test(status?.[0] || "") &&
-    (["teams", "shadow"].includes(id) || /\bdata-status-idle="[^"]+" data-status-playing="[^"]+" data-status-changed="[^"]+"/.test(status?.[0] || "")),
+    (id === "teams" || /\bdata-status-idle="[^"]+" data-status-playing="[^"]+" data-status-changed="[^"]+"/.test(status?.[0] || "")),
     `Problem figure ${index + 1} needs exact copy, a focusable named figure, no number/action/reset, shared SVG size, state descriptions and polite status.`);
 }
 const shadowFigure = problemFigures[3]?.[3] || "";
-check(shadowFigure.includes("<!-- R2 draws this -->") &&
-  shadowFigure.includes('<use href="#problem-stack-base" x="210" y="200"/>') &&
-  count(shadowFigure, /<(?:path|circle|rect|use|text)\b/g) === 1 &&
+check(problemFigures[3]?.[2].includes('aria-label="Figure: company work flows into a personal AI"') &&
+  ["shadow-company", "shadow-boundary", "shadow-employee iso-highlight", "shadow-ai", "shadow-ai-outline",
+    "shadow-route", "shadow-warning-pulse", "shadow-warning", "shadow-document", "shadow-confidential"]
+    .every(name => shadowFigure.includes(`class="${name}"`)) &&
+  count(shadowFigure, /<path\b[^>]*\bd="[^"]+"/g) >= 20 &&
+  shadowFigure.includes('data-status-changed="A confidential document left the company for a personal AI."') &&
+  !shadowFigure.includes("R2 draws this") &&
   !/<button\b/.test(shadowFigure),
-  "The Shadow AI slot must reuse only the existing isometric base plate until R2, without fake interaction.");
+  "Shadow AI needs its exact accessible name, company boundary, employee and desk, separate AI, confidential document, dashed route, warning and completed live status.");
 check(!/\b(?:sa-|ho-|ed-)|class="art"|animateMotion/.test(problemSection) &&
   !/sa-svg|ho-svg|ed-svg|ed-tiles|ed-arrows|pauseAnimations/.test(home),
   "English home must not retain the old shadow AI, handover or education illustrations or controller.");
@@ -450,10 +454,14 @@ check(teamFigure.indexOf('class="team-controls"') > teamFigure.indexOf("</svg>")
   "Team controls must sit outside role=img; only the eight stack labels may be SVG text; home must load problem.js once.");
 const problemClient = await text("problem.js");
 check(problemClient.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
-  problemClient.includes('querySelectorAll(\'[data-problem]:not([data-problem="shadow"])\')') &&
+  problemClient.includes('querySelectorAll("[data-problem]")') &&
+  problemClient.includes('figure.dataset.problem === "shadow" || figure.dataset.state === "idle"') &&
+  problemClient.includes('figure.dataset.problem !== "shadow"') &&
+  problemClient.includes('querySelector(".shadow-document").addEventListener("animationend"') &&
+  problemClient.includes('event.animationName === "problem-shadow-document" && figure.dataset.busy === "true"') &&
   problemClient.includes("new IntersectionObserver") && problemClient.includes('"visibilitychange"') &&
   problemClient.includes("!document.hidden") && problemClient.includes("visible.has(figure)") &&
-  problemClient.includes('figure.dataset.busy === "true"') &&
+  problemClient.includes('if (figure.dataset.busy === "true") return;') &&
   problemClient.includes("clearTimeout(timer)") &&
   problemClient.includes("cancelAnimationFrame(frame)") &&
   problemClient.includes('threshold: [0, .5]') && problemClient.includes("controller.reset()") &&
@@ -939,6 +947,19 @@ function cssBlock(source, header) {
 }
 const stageCss = cssBlock(englishCss, ".demo-stage");
 const windowCss = cssBlock(englishCss, ".demo-window");
+check(cssBlock(englishCss, ".shadow-route {").includes("stroke-dasharray: 4 6") &&
+  cssBlock(englishCss, '[data-state="changed"] .shadow-document').includes("animation: problem-shadow-document 3s linear both") &&
+  cssBlock(englishCss, "@keyframes problem-shadow-document").includes("transform: translate(164px, 82px)") &&
+  ["route", "warning", "pulse", "outline"].every(name => englishCss.includes(`@keyframes problem-shadow-${name}`)) &&
+  /shadow-ai-outline \{ animation-play-state: paused; \}/.test(englishCss) &&
+  /shadow-ai-outline \{ animation-play-state: running; \}/.test(englishCss) &&
+  !/[^{}]*shadow[^{}]*\{[^}]*\binfinite\b/.test(englishCss) &&
+  ['[data-problem="shadow"] .shadow-document { transform: translate(164px, 82px);',
+    '[data-problem="shadow"] .shadow-route { opacity: .65;',
+    '[data-problem="shadow"] .shadow-warning { opacity: 1;',
+    '[data-problem="shadow"] .shadow-ai-outline { opacity: .6;']
+    .every(rule => cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(rule)),
+  "Shadow AI needs a single three-second sequence, dashed path, boundary warning/pulse, faint AI outline, visibility pause and CSS reduced-motion end state.");
 check(cssBlock(englishCss, ".problem-art svg").includes("aspect-ratio: 420 / 320") &&
   cssBlock(englishCss, ".owner-person").includes("stroke: var(--accent-light)") &&
   cssBlock(englishCss, ".owner-light").includes("fill: var(--accent-light)") &&
@@ -1174,6 +1195,9 @@ const japaneseProblemCopy = [
   ["shadow", "会社の仕事が、個人のAIに流れていませんか？", "AIを使いこなす人ほど個人のAIを使っていて、仕事の文脈もそこに流れています。"]
 ];
 const japaneseFigures = [...japaneseProblem.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
+check(japaneseFigures[3]?.[2].includes('aria-label="図: 会社の仕事が個人のAIに流れていく"') &&
+  japaneseFigures[3]?.[3].includes('data-status-changed="機密の書類が、会社の外の個人のAIに渡りました。"'),
+  "Japanese Shadow AI must use its exact accessible name and completed live status.");
 check(japaneseProblem.includes('<span class="mono-label">課題</span>') &&
   withoutJapanesePhrases(japaneseProblem).includes('<h2 class="h2">AIの広がりに、守りと引き継ぎは追いついていますか？</h2>') &&
   japaneseFigures.length === 4 &&

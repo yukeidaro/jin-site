@@ -174,13 +174,13 @@ removing a tag does not approve its copy.
 Both home pages use the R1 four-question Problem structure (Yu, 2026-10-21).
 Its exact new wording still needs word-by-word approval and is registered,
 English beside Japanese, in `.copilot-runs/notes/r1-new-copy.md`.
-Three original inline isometric SVGs retain their drawings, motion and
-420:320 viewBox.
+Four original inline isometric SVGs share a 420:320 viewBox. The first three
+retain their drawings and motion.
 Owner removal stops four agents; handover moves only the output and leaves
 the successor rebuilding; opening separate teams reveals one unshared accent
 workflow. `problem.js` manages independent states without dependencies.
 
-There are no figure numbers or action/reset buttons. Each of the three
+There are no figure numbers or action/reset buttons. Each of the four
 animated figures is focusable and plays once when half visible, resets after leaving view, and
 replays on mouse hover, tap or keyboard focus. Replay input during a running
 sequence is ignored, so transitions cannot stack.
@@ -190,9 +190,14 @@ owner lifts away, four accent x marks appear on the grey connections at
 draws four dashed successor layers in Context, Rules, Tools and Exceptions
 order. Both stacks have horizontal leader labels; the originals remain dimmed.
 These sequences finish in 1.75 and 3.6 seconds respectively.
-The fourth figure is a static Shadow AI slot for R2. It has its own question,
-body, named SVG and polite status, and reuses the existing isometric base
-plate. `problem.js` excludes only this unfinished slot from animation.
+The fourth figure shows an employee at a desk inside a company platform and
+a separate personal AI block identified by a chat icon. A lock-marked document
+travels out along a dashed accent path; a boundary warning pulses once and the
+personal AI gains a faint accent outline. Its three-second sequence uses the
+same replay/reset behavior. CSS pauses its animation clocks while hidden;
+animation completion, rather than an independent timer, updates its named SVG
+and polite status. Reduced motion shows the end state even before enhancement,
+and the idle drawing remains readable without JavaScript.
 The desktop grid uses two columns with drawings capped at their native 420px
 width; phones use one column. R1 compares both two-column and four-column
 options at 1280px and 1440px, with evidence in `.copilot-runs/notes/r1.md`.
@@ -214,7 +219,8 @@ controller, translating captions, layer labels, controls and live states.
 The validator enforces SVG, component and controller parity on all seven
 page pairs; missing Japanese routes and broken alternates are failures.
 E6b behavior, performance evidence and bilingual screenshots are recorded in
-`.copilot-runs/notes/e6b.md`.
+`.copilot-runs/notes/e6b.md`. R2's fourth-figure evidence and screenshots are in
+`.copilot-runs/notes/r2.md`.
 
 ## Japanese typesetting
 
