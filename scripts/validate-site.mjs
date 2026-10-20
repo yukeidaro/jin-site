@@ -45,6 +45,7 @@ const expectedFiles = [
   "base.css",
   "brand/jin-mark.svg",
   "brand/jin-mark-white.svg",
+  "company/index.html",
   "en/index.html",
   "googled8075da2e5b1406b.html",
   "human/index.html",
@@ -55,7 +56,9 @@ const expectedFiles = [
   "ja/accessibility/index.html",
   "how-it-works/index.html",
   "llms.txt",
+  "nav.js",
   "privacy/index.html",
+  "resources/ai-harness/index.html",
   "robots.txt",
   "security/index.html",
   "shots/og-b2b.png",
@@ -68,7 +71,7 @@ const expectedFiles = [
 const deployedFiles = await listFiles(site);
 check(JSON.stringify(deployedFiles) === JSON.stringify(expectedFiles), `Unexpected Pages artifact: ${deployedFiles.join(", ")}`);
 
-const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson, privacy, accessibility, japanesePrivacy, japaneseAccessibility, security] = await Promise.all([
+const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson, privacy, accessibility, japanesePrivacy, japaneseAccessibility, security, company, harness] = await Promise.all([
   text("index.html"),
   text("ja/index.html"),
   text("how-it-works/index.html"),
@@ -84,8 +87,16 @@ const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, ro
   text("accessibility/index.html"),
   text("ja/privacy/index.html"),
   text("ja/accessibility/index.html"),
-  text("security/index.html")
+  text("security/index.html"),
+  text("company/index.html"),
+  text("resources/ai-harness/index.html")
 ]);
+
+const englishPages = [
+  ["", home], ["how-it-works/", howPage], ["security/", security],
+  ["privacy/", privacy], ["accessibility/", accessibility],
+  ["company/", company], ["resources/ai-harness/", harness]
+];
 
 const pagePairs = [
   ["", home, japanese, "全社員の AI の使い方を、底上げする。", "Jin AI | 全社員の AI の使い方を、底上げする",
@@ -126,6 +137,8 @@ for (const [route, english, japanesePage, heading, title, description] of pagePa
         `${url} must have a reciprocal ${alternate} alternate.`);
     }
     for (const landmark of ["header", "footer"]) {
+      // E1 removes English header switches; Japanese navigation stays unchanged until J1.
+      if (language === "en") continue;
       const area = source.match(new RegExp(`<${landmark}\\b[^>]*>([\\s\\S]*?)<\\/${landmark}>`))?.[1] || "";
       const navigation = area.match(/<nav class="language-switch" aria-label="Language">([\s\S]*?)<\/nav>/)?.[1] || "";
       check(count(navigation, /<a\b/g) === 2 && count(navigation, /aria-current="page"/g) === 1,
@@ -174,7 +187,8 @@ for (const [route, source, heading, description] of legalPages) {
 }
 for (const [relativePath, source] of [
   ["index.html", home], ["how-it-works/index.html", howPage], ["agent/index.html", agent],
-  ["privacy/index.html", privacy], ["accessibility/index.html", accessibility], ["security/index.html", security]
+  ["privacy/index.html", privacy], ["accessibility/index.html", accessibility], ["security/index.html", security],
+  ["company/index.html", company], ["resources/ai-harness/index.html", harness]
 ]) {
   const footer = source.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] || "";
   const baseUrl = new URL(relativePath, "https://jinai.md/");
@@ -234,11 +248,6 @@ const hero = homeSections[0]?.[2] || "";
 check(!/<(?:img|p)\b|class="(?:eyebrow|lede|waitnote)"/.test(hero),
   "The hero must not contain a subtitle, status tag, note or product image.");
 check(hero.includes('href="how-it-works/">How it works &rarr;</a>'), "The hero must link to the How it works page.");
-check(home.includes('<a href="how-it-works/">How it works</a>') &&
-  count(home, /<a href="security\/"(?: data-pending-page="D2")?>Security<\/a>/g) === 2 &&
-  home.includes('aria-label="Menu" aria-controls="primary-menu" aria-expanded="false"') &&
-  home.includes('<a class="btn btn-p" href="#demo">Request a demo</a>'),
-  "The nav must link to How it works, Security and the demo, with an accessible mobile menu.");
 check(home.includes('<link rel="stylesheet" href="base.css">') &&
   home.includes('<link rel="stylesheet" href="theme-en.css">') &&
   !home.includes('href="site.css"'), "Root must use the shared base and English theme, not the legacy stylesheet.");
@@ -332,8 +341,8 @@ Sitemap: https://jinai.md/sitemap.xml
 const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).sort();
 check(JSON.stringify(sitemapUrls) === JSON.stringify([
   ...pagePairs.flatMap(([route]) => [`https://jinai.md/${route}`, `https://jinai.md/ja/${route}`]),
-  "https://jinai.md/security/"
-].sort()), "Sitemap must contain exactly the five English pages and the four existing Japanese twins.");
+  "https://jinai.md/security/", "https://jinai.md/company/", "https://jinai.md/resources/ai-harness/"
+].sort()), "Sitemap must contain exactly the seven English pages and the four existing Japanese twins.");
 check(!llms.includes(".md)"), "llms.txt must not link to Markdown mirrors.");
 check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blockquote summary.");
 
@@ -490,15 +499,7 @@ const securityHead = security.match(/<head>([\s\S]*?)<\/head>/)?.[1] || "";
 check(count(securityHead, /\bhreflang=/g) === 3, "Security needs exactly three hreflang alternates.");
 for (const alternate of ["en", "ja", "x-default"]) {
   check(securityHead.includes(`<link rel="alternate" hreflang="${alternate}" href="https://jinai.md/${alternate === "ja" ? "ja/" : ""}security/">`),
-    `Security must have the ${alternate} alternate, with its Japanese twin supplied by D4.`);
-}
-for (const landmark of ["header", "footer"]) {
-  const area = security.match(new RegExp(`<${landmark}>([\\s\\S]*?)<\\/${landmark}>`))?.[1] || "";
-  const navigation = area.match(/<nav class="language-switch" aria-label="Language">([\s\S]*?)<\/nav>/)?.[1] || "";
-  check(count(navigation, /<a\b/g) === 2 && count(navigation, /aria-current="page"/g) === 1 &&
-    navigation.includes(`<a href="/security/" lang="en" hreflang="en" aria-current="page">${landmark === "header" ? "EN" : "English"}</a>`) &&
-    navigation.includes(`<a href="/ja/security/" lang="ja" hreflang="ja">${landmark === "header" ? "JA" : "日本語"}</a>`),
-    `Security needs the matching language switches in its ${landmark}.`);
+    `Security must have the ${alternate} alternate, with its Japanese twin supplied by J1.`);
 }
 const securitySections = [...security.matchAll(/<section class="section security-section" aria-labelledby="([^"]+)">([\s\S]*?)<\/section>/g)];
 const securityCopy = [
@@ -518,7 +519,7 @@ check(securitySections.length === 2 && securityCopy.every(([id, heading, items],
   securitySections[index]?.[2].includes('class="security-items"') &&
   JSON.stringify([...securitySections[index][2].matchAll(/<li>([^<]+)<\/li>/g)].map((match) => match[1])) === JSON.stringify(items)),
   "Security must show the two summary/item sections with only the supplied draft copy.");
-check(!/Parts marked confidential|tools you approve|Decide what can move|\b04\b|\bSOC\b|\bISO\b|certif|enterprise.grade/i.test(security),
+check(!/Parts marked confidential|tools you approve|Decide what can move|\b04\b|\bSOC\b|\bISO\b|certif|enterprise.grade/i.test(security.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || ""),
   "Security must not claim step 04 approval behavior or certifications.");
 const securityContact = security.match(/<div class="security-contact">([\s\S]*?)<\/main>/)?.[1] || "";
 check(securityContact.includes('<p>Questions about security? Email <a href="mailto:hello@jinai.md">hello@jinai.md</a>, or request a demo.</p>') &&
@@ -534,10 +535,14 @@ function normalizedLandmark(source, landmark, baseUrl) {
     .replace(/\s+/g, " ").trim();
 }
 for (const [route, source] of [
-  ["how-it-works", howPage], ["security", security], ["privacy", privacy], ["accessibility", accessibility]
+  ["how-it-works", howPage], ["security", security], ["privacy", privacy], ["accessibility", accessibility],
+  ["company", company], ["resources/ai-harness", harness]
 ]) {
-  check(source.includes('<link rel="stylesheet" href="../base.css">') &&
-    source.includes('<link rel="stylesheet" href="../theme-en.css">') &&
+  const baseUrl = `https://jinai.md/${route}/`;
+  const stylesheets = [...source.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)]
+    .map((match) => new URL(match[1], baseUrl).href);
+  check(stylesheets.includes("https://jinai.md/base.css") &&
+    stylesheets.includes("https://jinai.md/theme-en.css") &&
     !source.includes('href="../site.css"') &&
     source.includes('family=Inter:wght@400..600&family=JetBrains+Mono:wght@400&display=swap') &&
     !/Source\+Serif|Caveat|Berkeley|Tiempos/.test(source),
@@ -547,12 +552,137 @@ for (const [route, source] of [
       normalizedLandmark(home, landmark, "https://jinai.md/"),
     `${route} ${landmark} must match the home component, with route-specific links and current-page states.`);
   }
-  check(source.includes('<a class="btn btn-p" href="../#demo">Request a demo</a>'),
+  check(source.includes('<a class="btn btn-p" href="/#demo">Request a demo</a>'),
     `${route} must link its header demo button to the home form.`);
-  const menuScript = source.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1];
-  check(menuScript === home.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1],
-    `${route} must retain the same accessible mobile menu behavior as the home page.`);
+  check(source.includes('<script type="module" src="/nav.js"></script>'),
+    `${route} must use the shared accessible navigation script.`);
 }
+
+const productLinks = [
+  ["Overview", "/", "What Jin AI does for your company."],
+  ["How it works", "/how-it-works/", "Connect, sort, see by role, decide what can move."],
+  ["For employees", "/how-it-works/#employee", "Bring your context in and out safely."],
+  ["For admins", "/how-it-works/#admin", "See how each role uses AI."]
+];
+const resourceLinks = [
+  ["What is an AI harness", "/resources/ai-harness/", "The parts that make an AI agent work for a role."],
+  ["Privacy", "/privacy/", "What we collect and why."],
+  ["Accessibility", "/accessibility/", "Our goal and how to report a problem."]
+];
+for (const [route, source] of englishPages) {
+  const header = source.match(/<header>([\s\S]*?)<\/header>/)?.[1] || "";
+  const footer = source.match(/<footer>([\s\S]*?)<\/footer>/)?.[1] || "";
+  const cleanHeader = header.replace(/ aria-current="page"/g, "");
+  check(!/language-switch|\bhreflang=|>EN<|>JA</.test(header),
+    `/${route} must not have a header language switch.`);
+  check(header.includes('aria-label="Main navigation"') &&
+    header.includes('aria-label="Menu" aria-controls="primary-menu" aria-expanded="false"') &&
+    header.includes('id="primary-menu"') &&
+    header.includes(`<a class="btn btn-p" href="${route ? "/#demo" : "#demo"}">Request a demo</a>`),
+    `/${route} needs the main navigation, accessible mobile button and primary demo link.`);
+  let topLevel = cleanHeader;
+  for (const [label, id, items] of [
+    ["Product", "product-panel", productLinks], ["Resources", "resources-panel", resourceLinks]
+  ]) {
+    const panel = cleanHeader.match(new RegExp(`<ul class="nav-panel" id="${id}">([\\s\\S]*?)<\\/ul>`))?.[1] || "";
+    check(cleanHeader.includes(`<button class="nav-trigger" type="button" aria-expanded="false" aria-controls="${id}">${label}</button>`) &&
+      cleanHeader.includes(`<span class="mobile-group-label">${label}</span>`) &&
+      count(panel, /<li>/g) === items.length &&
+      items.every(([title, href, description]) =>
+        panel.includes(`<li><a href="${href}"><span class="nav-item-title">${title}</span><span class="nav-description">${description}</span></a></li>`)),
+      `/${route} needs the complete ${label} panel with exact links and descriptions.`);
+    topLevel = topLevel.replace(new RegExp(`<ul class="nav-panel" id="${id}">[\\s\\S]*?<\\/ul>`), "");
+  }
+  const nav = topLevel.match(/<ul class="navlinks">([\s\S]*?)<\/ul>/)?.[1] || "";
+  check(JSON.stringify([...nav.matchAll(/<(?:button|a)\b[^>]*>([^<]+)<\/(?:button|a)>/g)].map(match => match[1])) ===
+    JSON.stringify(["Product", "Security", "Resources", "Company", "Contact"]) &&
+    [["Security", "/security/"], ["Company", "/company/"], ["Contact", "/#demo"]].every(([label, href]) =>
+      nav.includes(`<a href="${href}">${label}</a>`)),
+    `/${route} needs Product, Security, Resources, Company and Contact in that order.`);
+  check(!/\brole="(?:menu|menuitem)"/.test(header) && !header.includes("Draft copy"),
+    `/${route} panels must be plain link lists without draft tags or ARIA menu roles.`);
+  const columns = [...footer.matchAll(/<div class="footer-column"><h2>([^<]+)<\/h2>([\s\S]*?)<\/div>/g)];
+  const expectedColumns = [
+    ["Product", productLinks], ["Resources", resourceLinks],
+    ["Company", [["Company", "/company/"], ["Contact", "/#demo"], ["hello@jinai.md", "mailto:hello@jinai.md"]]]
+  ];
+  check(columns.length === 3 && expectedColumns.every(([label, links], index) =>
+    columns[index]?.[1] === label &&
+    JSON.stringify([...columns[index][2].matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(match => [match[2], match[1]])) ===
+      JSON.stringify(links.map(([title, href]) => [title, href]))),
+    `/${route} needs the complete Product, Resources and Company footer columns.`);
+  check(footer.includes("Visits are counted with Cloudflare Web Analytics. No cookies.") &&
+    footer.includes("&copy; 2026 Jin AI") &&
+    footer.includes('<nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en" aria-current="page">English</a> / <a href="/ja/" lang="ja" hreflang="ja">日本語</a></nav>'),
+    `/${route} needs the analytics, copyright and root English/Japanese footer links.`);
+  check(source.includes('<script type="module" src="/nav.js"></script>'),
+    `/${route} must load the shared navigation script.`);
+}
+
+const draftPages = [
+  ["company/", company, "Company", "Company", "COMPANY",
+    "Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company.",
+    "Draft copy COMPANY Company Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Request a demo"],
+  ["resources/ai-harness/", harness, "What is an AI harness", "What is an AI harness?", "RESOURCES",
+    content.product.harness_definition,
+    `Draft copy RESOURCES What is an AI harness? ${content.product.harness_definition} Instructions: how the agent should work for this role. Skills: procedures it can repeat. Memory: what it keeps across sessions. Connected tools: the MCP servers and apps it can use. For example: CLAUDE.md, skills, memory files and MCP settings. Why it matters The harnesses that work are built by a few people, and they hold both how a team got faster and the company's confidential context. Jin AI keeps them visible, safe and reusable. How it works &rarr;`]
+];
+for (const [route, source, title, heading, label, description, expectedCopy] of draftPages) {
+  const main = source.match(/<main\b([^>]*)>([\s\S]*?)<\/main>/);
+  const visible = (main?.[2] || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+  check(source.includes('<html lang="en">') && source.includes(`<title>${title} | Jin AI</title>`) &&
+    count(source, /<h1\b/g) === 1 && source.includes(`<h1>${heading}</h1>`) &&
+    main?.[1].includes("data-draft") && main?.[1].includes("draft-article") &&
+    count(source, /class="mono-label draft-tag">Draft copy<\/span>/g) === 1 &&
+    (main?.[2] || "").includes(`<p class="mono-label">${label}</p>`),
+    `/${route} needs its English title, exact H1, article layout and one draft tag covering the main.`);
+  check(visible === expectedCopy && !/\d|\b(?:founder|investor|team photos)\b/i.test(visible) &&
+    !/<img\b/.test(main?.[2] || ""),
+    `/${route} must contain only the supplied draft copy, with no founders, numbers or photos.`);
+  check(count(source, /<link\b[^>]*rel="canonical"/g) === 1 &&
+    source.includes(`<link rel="canonical" href="https://jinai.md/${route}">`),
+    `/${route} must have one self-canonical.`);
+  const head = source.match(/<head>([\s\S]*?)<\/head>/)?.[1] || "";
+  check(count(head, /\bhreflang=/g) === 3 && ["en", "ja", "x-default"].every(language =>
+    head.includes(`<link rel="alternate" hreflang="${language}" href="https://jinai.md/${language === "ja" ? "ja/" : ""}${route}">`)),
+    `/${route} needs en, ja and x-default alternates, with its Japanese twin supplied by J1.`);
+  for (const [attribute, name, value] of [
+    ["property", "og:type", "website"], ["property", "og:site_name", "Jin AI"],
+    ["property", "og:title", `${title} | Jin AI`], ["name", "twitter:title", `${title} | Jin AI`],
+    ["name", "description", description], ["property", "og:description", description],
+    ["name", "twitter:description", description], ["property", "og:url", `https://jinai.md/${route}`],
+    ["property", "og:image", "https://jinai.md/shots/og-b2b.png"],
+    ["name", "twitter:image", "https://jinai.md/shots/og-b2b.png"],
+    ["property", "og:image:width", "1200"], ["property", "og:image:height", "630"],
+    ["property", "og:image:alt", "Jin AI: Make every employee your best AI user"],
+    ["name", "twitter:image:alt", "Jin AI: Make every employee your best AI user"],
+    ["name", "twitter:card", "summary_large_image"]
+  ]) {
+    check(source.includes(`<meta ${attribute}="${name}" content="${value}">`),
+      `/${route} must have the approved ${name}.`);
+  }
+  check(source.includes('<meta name="robots" content="index,follow,max-image-preview:large">'),
+    `/${route} must remain indexable.`);
+}
+check(company.includes('<a href="mailto:hello@jinai.md">hello@jinai.md</a>') &&
+  company.includes('<a class="btn btn-p" href="/#demo">Request a demo</a>'),
+  "Company must link to email and the home demo.");
+check(harness.includes('<a class="text-link" href="/how-it-works/">How it works &rarr;</a>') &&
+  count(harness.match(/<ul class="harness-parts">([\s\S]*?)<\/ul>/)?.[1] || "", /<li>/g) === 4,
+  "AI harness must have four parts and the How it works text link.");
+
+const baseCss = await text("base.css");
+const englishCss = await text("theme-en.css");
+const gradientStops = ["accent-surface-from", "accent-surface-to"].map(name =>
+  baseCss.match(new RegExp(`--${name}:\\s*(#[\\da-f]{6})`, "i"))?.[1]);
+function whiteContrast(hex) {
+  const channels = hex.slice(1).match(/../g).map(value => parseInt(value, 16) / 255)
+    .map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4);
+  return 1.05 / (channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722 + .05);
+}
+check(gradientStops.every(stop => stop && whiteContrast(stop) >= 4.5) &&
+  englishCss.includes("background-image: linear-gradient(135deg, var(--accent-surface-from), var(--accent-surface-to))"),
+  "Vermilion surfaces must use the subtle tokenized gradient with at least 4.5:1 white-text contrast at both stops.");
 for (const [route, source] of [["privacy", privacy], ["accessibility", accessibility]]) {
   check(source.includes('<main class="legal-copy">'), `${route} must use the narrow article layout.`);
 }
@@ -740,7 +870,7 @@ check(japaneseForm.includes(`data-endpoint="${access.form.endpoint || ""}"`) &&
   japanese.includes('src="../waitlist.mjs"') && !/waitlistSurvey|signup-survey|type="radio"/.test(japanese),
 "Japanese form must retain the endpoint, submission attributes, consent flow, translated notices and shared client, without a survey.");
 
-const customerFacingTextFiles = deployedFiles.filter((file) => /\.(html|css|json|txt|xml|svg|mjs)$/.test(file));
+const customerFacingTextFiles = deployedFiles.filter((file) => /\.(html|css|json|txt|xml|svg|m?js)$/.test(file));
 const cjk = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\u3000-\u303f]/u;
 for (const relativePath of customerFacingTextFiles) {
   const source = await text(relativePath);
@@ -748,10 +878,9 @@ for (const relativePath of customerFacingTextFiles) {
   if (relativePath.startsWith("ja/")) {
     check(cjk.test(source), `${relativePath} must contain Japanese text.`);
   } else {
-    const englishRoute = relativePath === "security/index.html" ? "security/" :
-      pagePairs.find(([route]) => relativePath === `${route}index.html`)?.[0];
+    const englishRoute = englishPages.find(([route]) => relativePath === `${route}index.html`)?.[0];
     const allowedLink = englishRoute === undefined ? "" :
-      `<a href="/ja/${englishRoute}" lang="ja" hreflang="ja">日本語</a>`;
+      '<a href="/ja/" lang="ja" hreflang="ja">日本語</a>';
     const englishOnly = allowedLink ? source.replace(allowedLink, "") : source;
     check(!cjk.test(englishOnly), `${relativePath} contains CJK outside its Japanese footer language link.`);
   }
@@ -779,13 +908,12 @@ for (const [relativePath, source] of htmlCache) {
 
     let targetPath = decodeURIComponent(resolved.pathname).replace(/^\/+/, "");
     if (!targetPath || targetPath.endsWith("/")) targetPath += "index.html";
-    // D4 supplies the Japanese twin. Only these three explicit language references may be pending.
+    // J1 supplies these Japanese twins. Only their exact hreflang references may be pending.
     const tag = source.slice(source.lastIndexOf("<", match.index), source.indexOf(">", match.index) + 1);
-    if (relativePath === "security/index.html" && targetPath === "ja/security/index.html" &&
-      !deployedFileSet.has(targetPath) && [
-        '<link rel="alternate" hreflang="ja" href="https://jinai.md/ja/security/">',
-        '<a href="/ja/security/" lang="ja" hreflang="ja">'
-      ].includes(tag)) {
+    const pendingRoute = ["security/", "company/", "resources/ai-harness/"].find(route =>
+      relativePath === `${route}index.html` && targetPath === `ja/${route}index.html`);
+    if (pendingRoute && !deployedFileSet.has(targetPath) &&
+      tag === `<link rel="alternate" hreflang="ja" href="https://jinai.md/ja/${pendingRoute}">`) {
       continue;
     }
     check(deployedFileSet.has(targetPath), `${relativePath} references missing artifact ${targetPath}.`);
@@ -806,7 +934,9 @@ if (errors.length) {
   process.exitCode = 1;
 } else {
   console.log("Pages artifact passed canonical, AEO, crawler and content checks.");
-  if (!deployedFileSet.has("ja/security/index.html")) {
-    console.warn("Draft dependency: /ja/security/ language references await the Japanese page in D4.");
+  for (const route of ["security/", "company/", "resources/ai-harness/"]) {
+    if (!deployedFileSet.has(`ja/${route}index.html`)) {
+      console.warn(`Draft dependency: /ja/${route} hreflang reference awaits the Japanese page in J1.`);
+    }
   }
 }

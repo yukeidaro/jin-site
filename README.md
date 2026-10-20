@@ -8,6 +8,9 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | --- | --- |
 | `/` | Complete English Human landing page |
 | `/how-it-works/` | English companion page with four steps |
+| `/security/` | Draft English security and data page |
+| `/company/` | Draft company mission and contact page |
+| `/resources/ai-harness/` | Draft AI harness definition and parts article |
 | `/privacy/` | Approved website privacy policy |
 | `/accessibility/` | Accessibility goal, known limits and contact details |
 | `/ja/` | Japanese landing page with the same illustrations, moving screens and demo form |
@@ -20,11 +23,17 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/agent/content.json` | Public fact source for Human and Agent derivatives |
 | `/llms.txt` | Concise LLM index generated from the fact source |
 | `/robots.txt` | Search policy; model-training crawlers are blocked by default |
-| `/sitemap.xml` | Contains the four English pages and their four Japanese twins |
+| `/sitemap.xml` | Contains seven English pages and the four existing Japanese twins |
 
-The eight public content pages are self-canonical, with reciprocal `en`, `ja`
-and `x-default` hreflang alternates. Header and footer language switches link
-to the matching page in the other language. Japanese pages use the approved
+The public content pages are self-canonical, with `en`, `ja` and `x-default`
+hreflang alternates. The Japanese Security, Company and AI harness pages are
+pending J1; only their exact hreflang references are allowed to be unresolved.
+English headers have Product and Resources dropdowns, Security, Company,
+Contact and Request a demo. Below 960px, a scroll-locking mobile panel groups
+the same links. `nav.js` handles keyboard, focus, click and Escape behavior.
+English footer columns are Product, Resources and Company; the small
+English / Japanese language links point to `/` and `/ja/` for E2 to enhance.
+Japanese navigation remains unchanged until J1. Japanese pages use the approved
 Japanese copy (Yu, 2026-10-20); English pages remain English except for the
 Japanese footer language link. Each language links to its own Privacy and
 Accessibility pages from the footer.
@@ -100,6 +109,12 @@ in check mode and fails when a derivative has drifted.
   visual per section. At 375px wide, there must be no horizontal scroll.
   Japanese headings add Noto Serif JP and Japanese body text uses Japanese
   font fallbacks after Inter. Keep English fonts unchanged.
+- E1 draft exception (Yu, 2026-10-20): preserve the D1/D2 dark English theme
+  and pill buttons. The pilot's vermilion surface uses a subtle top-left to
+  bottom-right gradient, `--accent-surface-from` to `--accent-surface-to` in
+  `base.css`, centered on `#a84a1c`. White text must meet 4.5:1 at both stops.
+  Company and AI harness article copy has one visible Draft copy tag covering
+  its `data-draft` main. Menu descriptions are short draft labels without tags.
 - Do not add `FAQPage` schema, active offers, ratings or reviews unless they
   become truthful and applicable.
 
