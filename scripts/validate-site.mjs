@@ -42,7 +42,9 @@ const expectedFiles = [
   "assets/demo/demo-2-categories.webp",
   "assets/demo/demo-3-by-role.webp",
   "assets/demo/demo-4-what-can-move.webp",
+  "base.css",
   "brand/jin-mark.svg",
+  "brand/jin-mark-white.svg",
   "en/index.html",
   "googled8075da2e5b1406b.html",
   "human/index.html",
@@ -57,6 +59,7 @@ const expectedFiles = [
   "robots.txt",
   "shots/og-b2b.png",
   "site.css",
+  "theme-en.css",
   "sitemap.xml",
   "waitlist.mjs"
 ].sort();
@@ -210,9 +213,9 @@ check(shareImage.length >= 24 &&
   "The B2B share image must be a 1200 x 630 PNG.");
 check(home.includes("<main>") && home.includes("</main>"), "Root must have a main landmark.");
 const homeSections = [...home.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
-check(homeSections.length === 6 && homeSections[0]?.[1].includes('class="hero"') &&
+check(homeSections.length === 7 && homeSections[0]?.[1].includes('class="hero"') &&
   homeSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() ===
-  "problem,solution,how,data,demo", "Root must contain only hero, problem, solution, how, data and demo sections, in order.");
+  "problem,solution,how,data,pilot,demo", "Root must contain only hero, problem, solution, how, data, draft pilot and demo sections, in order.");
 check(count(home, /<h1>/g) === 1 &&
   home.includes("<h1>Make every employee your best AI user.</h1>"),
   "Root must use the approved H1 once.");
@@ -228,15 +231,45 @@ for (const [attribute, name] of [["name", "description"], ["property", "og:descr
 const hero = homeSections[0]?.[2] || "";
 check(!/<(?:img|p)\b|class="(?:eyebrow|lede|waitnote)"/.test(hero),
   "The hero must not contain a subtitle, status tag, note or product image.");
-check(hero.includes('href="#how">How it works</a>'), "The hero must link to How it works.");
-check(home.includes('<a href="#how">How it works</a>') &&
+check(hero.includes('href="how-it-works/">How it works &rarr;</a>'), "The hero must link to the How it works page.");
+check(home.includes('<a href="how-it-works/">How it works</a>') &&
+  count(home, /<a href="security\/" data-pending-page="D2">Security<\/a>/g) === 2 &&
+  count(home, /\bdata-pending-page=/g) === 2 &&
+  home.includes('aria-label="Menu" aria-controls="primary-menu" aria-expanded="false"') &&
   home.includes('<a class="btn btn-p" href="#demo">Request a demo</a>'),
-  "The nav must link to How it works and the demo.");
+  "The nav must link to How it works, Security and the demo, with an accessible mobile menu.");
+check(home.includes('<link rel="stylesheet" href="base.css">') &&
+  home.includes('<link rel="stylesheet" href="theme-en.css">') &&
+  !home.includes('href="site.css"'), "Root must use the shared base and English theme, not the legacy stylesheet.");
+check(home.includes('family=Inter:wght@400..600&family=JetBrains+Mono:wght@400&display=swap') &&
+  !/Source\+Serif|Caveat|Berkeley|Tiempos/.test(home), "Root must load only variable Inter 400..600 and JetBrains Mono.");
+for (const match of home.matchAll(/<(?:script|link)\b[^>]*(?:src|href)="(https?:\/\/[^"]+)"[^>]*>/g)) {
+  if (/^<link\b/.test(match[0]) && !/\brel="(?:stylesheet|preconnect)"/.test(match[0])) continue;
+  check(["fonts.googleapis.com", "fonts.gstatic.com", "static.cloudflareinsights.com"].includes(new URL(match[1]).hostname),
+    `Root loads an unapproved external resource: ${match[1]}.`);
+}
+const productFrame = home.match(/<figure class="product-frame">([\s\S]*?)<\/figure>/)?.[1] || "";
+const productAlt = "Jin AI employee workspace. Harness parts are sorted by category, and each part is marked Can move or Confidential.";
+check(productFrame.trim() === `<img src="assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="${productAlt}" decoding="async" loading="lazy">` &&
+  home.indexOf('class="product-frame"') > home.indexOf("</section>") &&
+  home.indexOf('class="product-frame"') < home.indexOf('id="problem"'),
+  "Root must show the one Categories screen with its exact alt and dimensions directly below the hero.");
+check(count(home, /<img\b[^>]*src="assets\/demo\//g) === 1 &&
+  !/demo-[134]-|admin console|screen-by-role|screen-what-can-move/.test(home),
+  "Root must not show admin screens or any product screen beyond Categories.");
 const problemSection = homeSections.find((match) => match[1].includes('id="problem"'))?.[2] || "";
 const illustrations = [...problemSection.matchAll(/<div\b[^>]*\bclass="art"[^>]*>/g)].map((match) => match[0]);
 check(illustrations.length === 3 && illustrations.every((art) =>
   art.includes('role="img"') && /\baria-label="[^"]*\S[^"]*"/.test(art)),
   "The problem must contain three role=img illustrations with non-empty aria-labels.");
+for (const label of [
+  "An employee in the company builds an AI harness at the laptop. The harness travels along a dashed line out of the company to the employee's personal AI.",
+  "An employee leaves through the company door and the role-specific AI harness goes with them. The desk is left empty.",
+  "A grid of people where only the top performer is lit. Arrows pass the harness to one person at a time, slowly, while a cost bar grows."
+]) {
+  check(illustrations.some((art) => art.includes(`aria-label="${label}"`)),
+    `The problem must retain the illustration label: ${label}`);
+}
 for (const id of ["sa-svg", "ho-svg", "ed-svg"]) {
   check(count(problemSection, new RegExp(`<svg\\b[^>]*\\bid="${id}"`, "g")) === 1,
     `The problem must include the inline ${id} illustration once.`);
@@ -311,7 +344,7 @@ for (const point of content.problem.points) {
     `Root must use the approved ${point.name} copy.`);
 }
 const solutionSection = homeSections.find((match) => match[1].includes('id="solution"'))?.[2] || "";
-check(solutionSection.includes(`<h2 class="h2">${content.solution.steps.map((step) => step.name).join("<br>")}</h2>`) &&
+check(solutionSection.includes(`<h2 class="h2 solution-heading">${content.solution.steps[0].name}<br><span>${content.solution.steps[1].name}</span></h2>`) &&
   content.solution.steps.every((step) => solutionSection.includes(`<p>${step.description}</p>`)) &&
   !/<(?:img|svg)\b|class="(?:ph|eyebrow)"/.test(solutionSection),
   "Root must use the two-line solution heading and approved copy without labels or placeholder images.");
@@ -320,10 +353,12 @@ check(howSection.includes('<h2 class="h2">How it works</h2>') &&
   howSection.includes(`<p class="harness-definition">${content.product.harness_definition}</p>`) &&
   howSection.indexOf('class="harness-definition"') < howSection.indexOf('class="home-columns"'),
   "How it works must define an AI harness directly above its columns.");
-check(howSection.includes('class="how-audience">Employee</h3>') &&
-  howSection.includes('class="how-audience">Admin</h3>') &&
-  howSection.includes('href="how-it-works/">Read more</a>'),
-  "How it works must include Employee, Admin and Read more.");
+check(howSection.includes('<span class="mono-label">HOW IT WORKS</span>') &&
+  howSection.includes('class="how-audience">EMPLOYEE</h3>') &&
+  howSection.includes('class="how-audience">ADMIN</h3>') &&
+  howSection.includes('href="how-it-works/">How it works &rarr;</a>') &&
+  !/<(?:img|figure)\b|class="screen"/.test(howSection),
+  "How it works must include its label, Employee, Admin and text link, without screens.");
 const demoScreens = [
   ["Employee", "Jin AI employee workspace. The camera moves across the list of AI tools in the MCP connection panel, then across harness parts sorted by category, each marked Can move or Confidential.", [
     ["screen-connect", "demo-1-connect.webp"], ["screen-categories", "demo-2-categories.webp"]
@@ -333,7 +368,6 @@ const demoScreens = [
   ]]
 ];
 for (const [page, source, prefix] of [
-  ["Root #how", howSection, ""],
   ["How it works #steps", howPage.match(/<section id="steps">([\s\S]*?)<\/section>/)?.[1] || "", "../"]
 ]) {
   check(count(source, /<div\b[^>]*\bclass="screen"/g) === 2 && count(source, /<img\b/g) === 4,
@@ -355,14 +389,14 @@ for (const [page, source] of [["Root", home], ["How it works", howPage]]) {
   const visibleCopy = source.replace(/<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, "")
     .replace(/<[^>]*>/g, " ");
   check(!/\bclass="[^"]*\b(?:st|harness-status)\b/.test(source) &&
-    !/\b(?:Building|Next)\b|Claude Code first/.test(visibleCopy),
+    !/\b(?:Live|Building|Next|Beta)\b|Claude Code first/.test(visibleCopy),
     `${page} must not show status labels or the retired Claude Code first sentence.`);
   check(!/demo-employee-categories\.webp|demo-admin-by-role\.webp/.test(source),
     `${page} must not reference the retired demo screens.`);
 }
 const companyCapabilities = content.capabilities.filter((capability) => capability.id !== "workspace-beta");
 check(companyCapabilities.length === 4 && companyCapabilities.every((capability, index) =>
-  howSection.includes(`<h4>${index + 1}. ${capability.name}</h4>`) &&
+  howSection.includes(`<span class="mono-label">0${index + 1}</span><div><h4>${capability.name}</h4>`) &&
   howSection.includes(`<p>${capability.description}</p>`)),
   "How it works must use all four approved steps.");
 const howTitle = "How it works | Jin AI";
@@ -407,6 +441,22 @@ check(dataSection.includes(`<h2 class="h2">${content.data_principles.headline}</
 const demoSection = homeSections.find((match) => match[1].includes('id="demo"'))?.[2] || "";
 check(demoSection.includes("<h2>See what is inside your company's AI harnesses.</h2>") &&
   demoSection.includes('id="waitlistForm"'), "The demo section must contain the approved heading and form.");
+const pilotSection = homeSections.find((match) => match[1].includes('id="pilot"'))?.[2] || "";
+check(pilotSection.includes('<div class="pilot-card" data-draft>') &&
+  pilotSection.includes('<h2 id="pilot-heading">How a pilot works</h2>') &&
+  pilotSection.includes('<span class="mono-label draft-tag">Draft copy</span>'),
+  "The pilot card must visibly mark its unapproved copy as draft.");
+for (const [heading, description] of [
+  ["Request a demo.", "We walk through Jin AI with your team's AI harnesses."],
+  ["Run a paid pilot.", "One team uses Jin AI with Claude Code for a set period."],
+  ["Decide together.", "We review what the team reused and what stayed confidential, and agree on next steps."]
+]) {
+  check(pilotSection.includes(`<h3>${heading}</h3><p>${description}</p>`),
+    `The pilot must retain the supplied draft copy: ${heading}`);
+}
+check(!/class="(?:final|closing-cta|cta-band)"/.test(home) &&
+  homeSections.at(-1)?.[1].includes('id="demo"'),
+  "The form must close the home page, with no additional closing CTA band.");
 
 const access = content.early_access;
 check(access.form.provider === "apps_script", "The demo form must use Apps Script directly.");
@@ -596,15 +646,22 @@ for (const relativePath of htmlFiles) htmlCache.set(relativePath, await text(rel
 for (const [relativePath, source] of htmlCache) {
   const publicPath = relativePath.replace(/index\.html$/, "");
   const baseUrl = new URL(publicPath, "https://jinai.md/");
-  const references = [...source.matchAll(/\b(?:href|src)="([^"]+)"/g)].map((match) => match[1]);
+  const references = [...source.matchAll(/\b(?:href|src)="([^"]+)"/g)];
 
-  for (const reference of references) {
+  for (const match of references) {
+    const reference = match[1];
     if (/^(?:data|mailto|javascript):/i.test(reference)) continue;
     const resolved = new URL(reference, baseUrl);
     if (resolved.origin !== "https://jinai.md") continue;
 
     let targetPath = decodeURIComponent(resolved.pathname).replace(/^\/+/, "");
     if (!targetPath || targetPath.endsWith("/")) targetPath += "index.html";
+    // D1 includes the approved Security navigation; D2 supplies that page.
+    const tag = source.slice(source.lastIndexOf("<", match.index), source.indexOf(">", match.index) + 1);
+    if (relativePath === "index.html" && targetPath === "security/index.html" &&
+      !deployedFileSet.has(targetPath) && tag.includes('data-pending-page="D2"')) {
+      continue;
+    }
     check(deployedFileSet.has(targetPath), `${relativePath} references missing artifact ${targetPath}.`);
 
     if (resolved.hash && deployedFileSet.has(targetPath) && targetPath.endsWith(".html")) {
@@ -623,4 +680,7 @@ if (errors.length) {
   process.exitCode = 1;
 } else {
   console.log("Pages artifact passed canonical, AEO, crawler and content checks.");
+  if (home.includes('data-pending-page="D2"') && !deployedFileSet.has("security/index.html")) {
+    console.warn("Draft dependency: /security/ is linked by D1 and will be implemented in D2.");
+  }
 }
