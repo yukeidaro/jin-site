@@ -38,7 +38,7 @@ redirect and root fact graph are not duplicated on Japanese pages.
 Headers have Product and Resources dropdowns, Security, Company,
 Contact and Request a demo. Below 960px, a scroll-locking mobile panel groups
 the same links. `nav.js` handles keyboard, focus, click and Escape behavior.
-English footer columns are Product, Resources and Company; the small
+English footer columns are Product, Resources, Company and Connect; the small
 English / Japanese footer links remember the visitor's choice in `language.js`; the English home chooses Japanese for first-time Japanese browsers, never bots, with session or query fallback when storage is blocked.
 Japanese pages use the approved
 Japanese copy (Yu, 2026-10-20); English pages remain English except for the
@@ -47,6 +47,21 @@ English twin and remember the choice using the shared handler. Each language lin
 Accessibility pages from the footer.
 The approved legal text describes the demo request form and how its details
 are used to reply about the request.
+
+Every visible contact email uses the same selectable plain-text address and
+small Copy button, including legal pages, form notes and noscript fallbacks.
+`copy.js` copies with the Clipboard API, announces Copied for 1.5 seconds,
+and selects the address with a Ctrl+C instruction if copying fails.
+Japanese labels and announcements follow the document language. Button space
+is reserved before enhancement and during feedback; without JavaScript the
+button is hidden and the address remains selectable. Controls have a 24px
+minimum height, or 44px on phone/coarse-pointer layouts.
+
+E7 approves `https://discord.gg/C5m4jGgKXD` (Yu, 2026-10-20) in footer Connect
+columns, Company Contact community lines and machine-readable facts only.
+`early_access.community` is the fact source; the LLM index is generated from it.
+All invite links open a new tab with `rel="noopener"`. No invite appears in
+headers, heroes or navigation menus.
 
 ## Content source and generation
 
@@ -99,6 +114,14 @@ read-only and was not changed. Japanese pages use the same English demo and
 screens, with translated accessible descriptions.
 Performance measurements, screenshots and the recommendation are recorded in
 `.copilot-runs/notes/e3.md`. No new runtime or build dependencies are required.
+
+Employee and Admin audience headings are 24px, weight 550, line-height 1.3,
+with `--text-1` and the existing sans-serif stack on both home excerpts and
+both How it works pages. Japanese keeps its approved Yu Gothic stack.
+Moving workflow screens reset to their full first frame when offscreen, the
+tab is hidden or reduced motion is enabled. Reentry begins a new camera cycle,
+not a frozen mid-zoom crop. The stills and intended camera keyframes are unchanged.
+E7 browser evidence and screenshots are in `.copilot-runs/notes/e7.md`.
 
 The English home heading reveals once, word by word, followed by its action
 row. Default HTML/CSS is fully visible; an inline head script opts into the
@@ -206,9 +229,12 @@ recorded in `.copilot-runs/notes/j1.md`.
   Keep the endpoint and the legacy backend routes working for cached pages.
 - No prices anywhere on the site, including machine-readable formats.
   Do not publish currency amounts, Pro, Team or free-version offers, Cloud Sync,
-  Google Drive or Notion connections, PC and phone sync, Discord, Baby Voice
+  Google Drive or Notion connections, PC and phone sync, Baby Voice
   Recorder, TikTok, market size, competitor names, pilot candidate counts,
   Nov 13, know-how or DelightX. These are exclusions, not product facts.
+- E7 permits the approved Discord invite only in footer Connect columns,
+  Company Contact community lines and machine-readable community facts.
+  Display the contact email as plain selectable text plus Copy, never mailto.
 - Write plain, specific English, or the approved Japanese copy on `/ja/*`,
   with short sentences. Japanese pages require CJK; every other deployed file
   forbids CJK except the Japanese footer language link on English pages.
@@ -391,7 +417,8 @@ The default `DAILY_EMAIL_LIMIT` is a conservative 90 attempts per UTC day;
 raise that script property only within the deploying account's Gmail limits.
 The limit is shared by both mail queues. Requests remain saved when it is
 reached. Existing response history is not automatically emailed during migration.
-Keep `early_access.community.url` `null`; the generator omits community links.
+Keep the approved community invite in `early_access.community`; the generator
+publishes it in the LLM index, not the demo form or confirmation flow.
 
 ## Deployment boundary
 

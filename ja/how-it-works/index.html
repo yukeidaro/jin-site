@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <script id="jin-nav-paint">document.documentElement.classList.add("js-nav");</script>
 <script src="/language.js" defer></script>
+<script src="/copy.js" defer></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>仕組み | Jin AI</title>
 <meta name="description" content="Jin AI が AI ツールにつながり、AI ハーネスを種類ごとに整理し、持ち出せるものを会社が決める仕組みです。">
@@ -150,7 +151,8 @@
       <a class="brand" href="/ja/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
       <div class="footer-column"><h2>製品</h2><a href="/ja/">概要</a><a href="/ja/how-it-works/" aria-current="page">仕組み</a><a href="/ja/how-it-works/#employee">社員向け</a><a href="/ja/how-it-works/#admin">管理者向け</a></div>
       <div class="footer-column"><h2>リソース</h2><a href="/ja/resources/ai-harness/">AI ハーネスとは</a><a href="/ja/privacy/">プライバシーポリシー</a><a href="/ja/accessibility/">アクセシビリティ</a></div>
-      <div class="footer-column"><h2>会社</h2><a href="/ja/company/">会社情報</a><a href="/ja/#demo">お問い合わせ</a><a href="mailto:hello@jinai.md">hello@jinai.md</a></div>
+      <div class="footer-column"><h2>会社</h2><a href="/ja/company/">会社情報</a><a href="/ja/#demo">お問い合わせ</a><span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span></div>
+      <div class="footer-column"><h2>つながる</h2><a href="https://discord.gg/C5m4jGgKXD" target="_blank" rel="noopener">Discord</a></div>
     </div>
     <div class="footer-bottom">
       <p>アクセスは Cloudflare Web Analytics で数えています。Cookie は使っていません。</p>
@@ -166,7 +168,9 @@
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   const visible=new Set();
   const update=()=>screens.forEach(screen=>{
-    screen.classList.toggle('screen-running',visible.has(screen)&&!reduced.matches);
+    const running=visible.has(screen)&&!reduced.matches&&!document.hidden;
+    screen.classList.toggle('screen-running',running);
+    if(!running) screen.getAnimations({subtree:true}).forEach(animation=>{animation.currentTime=0});
   });
   const observer=new IntersectionObserver(entries=>{
     entries.forEach(({target,isIntersecting})=>{
@@ -176,6 +180,7 @@
   });
   screens.forEach(screen=>observer.observe(screen));
   reduced.addEventListener('change',update);
+  document.addEventListener('visibilitychange',update);
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1b6168cc50c644e4bd8071508286852d"}'></script><!-- End Cloudflare Web Analytics -->

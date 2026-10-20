@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <script id="jin-nav-paint">document.documentElement.classList.add("js-nav");</script>
 <script src="/language.js" defer></script>
+<script src="/copy.js" defer></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>How it works | Jin AI</title>
 <meta name="description" content="How Jin AI connects to your AI tools, sorts each AI harness by category, and lets the company decide what can move.">
@@ -149,7 +150,8 @@
       <a class="brand" href="/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
       <div class="footer-column"><h2>Product</h2><a href="/">Overview</a><a href="/how-it-works/" aria-current="page">How it works</a><a href="/how-it-works/#employee">For employees</a><a href="/how-it-works/#admin">For admins</a></div>
       <div class="footer-column"><h2>Resources</h2><a href="/resources/ai-harness/">What is an AI harness</a><a href="/privacy/">Privacy</a><a href="/accessibility/">Accessibility</a></div>
-      <div class="footer-column"><h2>Company</h2><a href="/company/">Company</a><a href="/#demo">Contact</a><a href="mailto:hello@jinai.md">hello@jinai.md</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="/company/">Company</a><a href="/#demo">Contact</a><span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">Copy</button></span></div>
+      <div class="footer-column"><h2>Connect</h2><a href="https://discord.gg/C5m4jGgKXD" target="_blank" rel="noopener">Discord</a></div>
     </div>
     <div class="footer-bottom">
       <p>Visits are counted with Cloudflare Web Analytics. No cookies.</p>
@@ -165,7 +167,9 @@
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   const visible=new Set();
   const update=()=>screens.forEach(screen=>{
-    screen.classList.toggle('screen-running',visible.has(screen)&&!reduced.matches);
+    const running=visible.has(screen)&&!reduced.matches&&!document.hidden;
+    screen.classList.toggle('screen-running',running);
+    if(!running) screen.getAnimations({subtree:true}).forEach(animation=>{animation.currentTime=0});
   });
   const observer=new IntersectionObserver(entries=>{
     entries.forEach(({target,isIntersecting})=>{
@@ -175,6 +179,7 @@
   });
   screens.forEach(screen=>observer.observe(screen));
   reduced.addEventListener('change',update);
+  document.addEventListener('visibilitychange',update);
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1b6168cc50c644e4bd8071508286852d"}'></script><!-- End Cloudflare Web Analytics -->

@@ -233,7 +233,9 @@
       ]
     },
     "community": {
-      "url": null
+      "name": "Discord",
+      "label": "Discord",
+      "url": "https://discord.gg/C5m4jGgKXD"
     },
     "contact_email": "hello@jinai.md"
   }

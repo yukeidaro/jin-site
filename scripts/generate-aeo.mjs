@@ -85,7 +85,8 @@ function validate(source) {
     countries.length === 249 && countries.every((country) => country.length <= 80) &&
     JSON.stringify(countries.slice(2)) === JSON.stringify([...countries.slice(2)].sort()),
   "Country choices must cover ISO countries and territories, with United States and Japan first, then alphabetical English names.");
-  assert(access.community?.url === null, "Community links must remain unpublished.");
+  assert(access.community?.name === "Discord" && access.community.label === "Discord" &&
+    access.community.url === "https://discord.gg/C5m4jGgKXD", "Community must use the approved Discord invite.");
 
   const ids = new Set();
   for (const answer of source.direct_answers) {
@@ -123,6 +124,10 @@ function escapeHtml(value) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+function renderEmail(address, japanese) {
+  return `<span class="email-contact"><span class="email-address">${escapeHtml(address)}</span> <button type="button" class="copy-email" data-copy="${escapeHtml(address)}">${japanese ? "コピー" : "Copy"}</button></span>`;
 }
 
 function replaceBlock(document, blockName, generated) {
@@ -230,7 +235,7 @@ ${rows}
     `いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="${escapeHtml(access.form.privacy_url)}">プライバシーポリシー</a>をご覧ください。` :
     `${escapeHtml(access.form.privacy_note)} See our <a href="${escapeHtml(access.form.privacy_url)}">Privacy Policy</a>.`}</p>
     </form>
-    <noscript><p class="waitalt">${ja ? "デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: " : "Please enable JavaScript to request a demo here. You can also email "}<a href="mailto:${escapeHtml(access.contact_email)}">${escapeHtml(access.contact_email)}</a>${ja ? "。" : "."}</p></noscript>
+    <noscript><p class="waitalt">${ja ? "デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: " : "Please enable JavaScript to request a demo here. You can also email "}${renderEmail(access.contact_email, ja)}${ja ? "。" : "."}</p></noscript>
     <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
       <h3 id="waitlistHeading"></h3>
@@ -240,7 +245,7 @@ ${rows}
       </dl>
       <p id="waitlistDetail"></p>
     </div>
-    <p class="waitalt">${ja ? "ご質問・ご意見: " : "Questions or feedback? "}<a href="mailto:${escapeHtml(access.contact_email)}">${escapeHtml(access.contact_email)}</a>${ja ? "。" : "."}</p>`;
+    <p class="waitalt">${ja ? "ご質問・ご意見: " : "Questions or feedback? "}${renderEmail(access.contact_email, ja)}${ja ? "。" : "."}</p>`;
 }
 
 function renderJsonLd(source) {
@@ -474,6 +479,10 @@ ${source.founders.map((founder) => `- [${founder.name}](${founder.profile_url}):
 ## ${source.early_access.label}
 
 [${source.early_access.label}](${source.resources.human_page}#waitlist). ${source.early_access.note}
+
+## Community
+
+[${source.early_access.community.label}](${source.early_access.community.url})
 `;
 }
 

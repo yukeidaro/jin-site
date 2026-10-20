@@ -8,6 +8,7 @@ document.documentElement.classList.add("js-nav");
 if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("js-reveal");
 </script>
 <script src="/language.js" defer></script>
+<script src="/copy.js" defer></script>
 <title>Jin AI | 全社員のAI力を最大限引き出す</title>
 <meta name="description" content="Jin AI は、優れた社員がつくった AI ハーネスを、すべての社員にとって安全に、会社にとって再利用できる形にします。">
 <meta name="author" content="Jin AI">
@@ -765,7 +766,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       <p class="waitnote">デモの日程を、メールでご相談します。</p>
       <p class="signup-privacy">いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="privacy/">プライバシーポリシー</a>をご覧ください。</p>
     </form>
-    <noscript><p class="waitalt">デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: <a href="mailto:hello@jinai.md">hello@jinai.md</a>。</p></noscript>
+    <noscript><p class="waitalt">デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span>。</p></noscript>
     <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
       <h3 id="waitlistHeading"></h3>
@@ -775,7 +776,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       </dl>
       <p id="waitlistDetail"></p>
     </div>
-    <p class="waitalt">ご質問・ご意見: <a href="mailto:hello@jinai.md">hello@jinai.md</a>。</p>
+    <p class="waitalt">ご質問・ご意見: <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span>。</p>
 <!-- GENERATED:CTA_FINAL:END -->
     </div>
   </div>
@@ -788,7 +789,8 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       <a class="brand" href="/ja/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
       <div class="footer-column"><h2>製品</h2><a href="/ja/" aria-current="page">概要</a><a href="/ja/how-it-works/">仕組み</a><a href="/ja/how-it-works/#employee">社員向け</a><a href="/ja/how-it-works/#admin">管理者向け</a></div>
       <div class="footer-column"><h2>リソース</h2><a href="/ja/resources/ai-harness/">AI ハーネスとは</a><a href="/ja/privacy/">プライバシーポリシー</a><a href="/ja/accessibility/">アクセシビリティ</a></div>
-      <div class="footer-column"><h2>会社</h2><a href="/ja/company/">会社情報</a><a href="/ja/#demo">お問い合わせ</a><a href="mailto:hello@jinai.md">hello@jinai.md</a></div>
+      <div class="footer-column"><h2>会社</h2><a href="/ja/company/">会社情報</a><a href="/ja/#demo">お問い合わせ</a><span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span></div>
+      <div class="footer-column"><h2>つながる</h2><a href="https://discord.gg/C5m4jGgKXD" target="_blank" rel="noopener">Discord</a></div>
     </div>
     <div class="footer-bottom">
       <p>アクセスは Cloudflare Web Analytics で数えています。Cookie は使っていません。</p>

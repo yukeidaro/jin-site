@@ -28,6 +28,7 @@ const files = [
   "accessibility/index.html",
   "waitlist.mjs",
   "language.js",
+  "copy.js",
   "nav.js",
   "problem.js",
   "robots.txt",

@@ -31,6 +31,12 @@ function count(source, expression) {
   return source.match(expression)?.length ?? 0;
 }
 
+const communityUrl = "https://discord.gg/C5m4jGgKXD";
+const communityLink = `<a href="${communityUrl}" target="_blank" rel="noopener">Discord</a>`;
+function emailComponent(japanese = false) {
+  return `<span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">${japanese ? "コピー" : "Copy"}</button></span>`;
+}
+
 function withoutJapanesePhrases(source) {
   return source.replace(/<span class="ja-phrase">([^<]*)<\/span>/g, "$1");
 }
@@ -59,6 +65,7 @@ const expectedFiles = [
   "brand/jin-mark.svg",
   "brand/jin-mark-white.svg",
   "company/index.html",
+  "copy.js",
   "en/index.html",
   "googled8075da2e5b1406b.html",
   "human/index.html",
@@ -454,7 +461,7 @@ check(!home.includes("Turn the AI you already use into an assistant that actuall
   "Root must not publish the old headline, product image, privacy tabs or retired sections.");
 check(!/[\u2013\u2014\u2018\u2019\u201c\u201d]/u.test(home),
   "Root must not contain em dashes, en dashes or curly quotes.");
-check(!/(?:\$|\bPro\b|\bDiscord\b|Cloud Sync|Baby Voice|TikTok|\bsetup\b)/i.test(home),
+check(!/(?:\$|\bPro\b|Cloud Sync|Baby Voice|TikTok|\bsetup\b)/i.test(home),
   "Root contains retired offers, products or terminology.");
 check(agent.includes('id="what-is-jin-ai"'), "Agent page must carry the generated direct answers.");
 check(!/<img(?![^>]*\bsrc=)[^>]*>/i.test(home), "Every root image must have a static src.");
@@ -684,7 +691,7 @@ check(securitySections.length === 2 && securityCopy.every(([id, heading, items],
 check(!/Parts marked confidential|tools you approve|Decide what can move|\b04\b|\bSOC\b|\bISO\b|certif|enterprise.grade/i.test(security.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || ""),
   "Security must not claim step 04 approval behavior or certifications.");
 const securityContact = security.match(/<div class="security-contact">([\s\S]*?)<\/main>/)?.[1] || "";
-check(securityContact.includes('<p>Questions about security? Email <a href="mailto:hello@jinai.md">hello@jinai.md</a>, or request a demo.</p>') &&
+check(securityContact.includes(`<p>Questions about security? Email ${emailComponent()}, or request a demo.</p>`) &&
   securityContact.includes('<a class="btn btn-p" href="../#demo">Request a demo</a>') &&
   count(securityContact, /class="btn /g) === 1 && !/closing-cta/.test(security),
   "Security must use its separate wide contact band, not the How it works closing band.");
@@ -766,13 +773,14 @@ for (const [route, source] of englishPages) {
   const columns = [...footer.matchAll(/<div class="footer-column"><h2>([^<]+)<\/h2>([\s\S]*?)<\/div>/g)];
   const expectedColumns = [
     ["Product", productLinks], ["Resources", resourceLinks],
-    ["Company", [["Company", "/company/"], ["Contact", "/#demo"], ["hello@jinai.md", "mailto:hello@jinai.md"]]]
+    ["Company", [["Company", "/company/"], ["Contact", "/#demo"]]],
+    ["Connect", [["Discord", communityUrl]]]
   ];
-  check(columns.length === 3 && expectedColumns.every(([label, links], index) =>
+  check(columns.length === 4 && expectedColumns.every(([label, links], index) =>
     columns[index]?.[1] === label &&
     JSON.stringify([...columns[index][2].matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(match => [match[2], match[1]])) ===
       JSON.stringify(links.map(([title, href]) => [title, href]))),
-    `/${route} needs the complete Product, Resources and Company footer columns.`);
+    `/${route} needs the complete Product, Resources, Company and Connect footer columns.`);
   check(footer.includes("Visits are counted with Cloudflare Web Analytics. No cookies.") &&
     footer.includes("&copy; 2026 Jin AI") &&
     footer.includes('<nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en" aria-current="page" data-jin-lang="en">English</a> / <a href="/ja/" lang="ja" hreflang="ja" data-jin-lang="ja">日本語</a></nav>'),
@@ -807,6 +815,8 @@ for (const [relativePath, source] of [
 ]) {
   check(count(source, /<script src="\/language\.js" defer><\/script>/g) === 1,
     `${relativePath} must include the shared footer-language handler once.`);
+  check(count(source, /<script src="\/copy\.js" defer><\/script>/g) === 1,
+    `${relativePath} must include the shared copy-email handler once.`);
   if (relativePath !== "index.html") {
     check(!source.includes(languageScriptTag),
       `${relativePath} must not auto-select or redirect the visitor's language.`);
@@ -820,14 +830,15 @@ for (const [relativePath, source] of [
 const draftPages = [
   ["company/", company, "Company", "Company", "Company",
     "Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company.",
-    "Company Company Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Request a demo"],
+    "Company Company Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Community: Discord Request a demo"],
   ["resources/ai-harness/", harness, "What is an AI harness", "What is an AI harness?", "Resources",
     content.product.harness_definition,
     `Resources What is an AI harness? ${content.product.harness_definition} Instructions: how the agent should work for this role. Skills: procedures it can repeat. Memory: what it keeps across sessions. Connected tools: the MCP servers and apps it can use. For example: CLAUDE.md, skills, memory files and MCP settings. Why it matters The harnesses that work are built by a few people, and they hold both how a team got faster and the company's confidential context. Jin AI keeps them visible, safe and reusable. How it works &rarr;`]
 ];
 for (const [route, source, title, heading, label, description, expectedCopy] of draftPages) {
   const main = source.match(/<main\b([^>]*)>([\s\S]*?)<\/main>/);
-  const visible = (main?.[2] || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+  const visible = (main?.[2] || "").replace(/<button type="button" class="copy-email"[^>]*>[^<]*<\/button>/g, "")
+    .replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
   check(source.includes('<html lang="en">') && source.includes(`<title>${title} | Jin AI</title>`) &&
     count(source, /<h1\b/g) === 1 && source.includes(`<h1>${heading}</h1>`) &&
     main?.[1].includes("draft-article") &&
@@ -861,9 +872,9 @@ for (const [route, source, title, heading, label, description, expectedCopy] of 
   check(source.includes('<meta name="robots" content="index,follow,max-image-preview:large">'),
     `/${route} must remain indexable.`);
 }
-check(company.includes('<a href="mailto:hello@jinai.md">hello@jinai.md</a>') &&
+check(company.includes(emailComponent()) &&
   company.includes('<a class="btn btn-p" href="/#demo">Request a demo</a>'),
-  "Company must link to email and the home demo.");
+  "Company must show its copyable email and link to the home demo.");
 check(harness.includes('<a class="text-link" href="/how-it-works/">How it works &rarr;</a>') &&
   count(harness.match(/<ul class="harness-parts">([\s\S]*?)<\/ul>/)?.[1] || "", /<li>/g) === 4,
   "AI harness must have four parts and the How it works text link.");
@@ -871,6 +882,29 @@ check(harness.includes('<a class="text-link" href="/how-it-works/">How it works 
 const baseCss = await text("base.css");
 const englishCss = await text("theme-en.css");
 const paperCss = await text("site.css");
+const copyClient = await text("copy.js");
+check(copyClient.includes("navigator.clipboard.writeText(button.dataset.copy)") &&
+  copyClient.includes('status.setAttribute("aria-live", "polite")') &&
+  copyClient.includes('status.setAttribute("aria-atomic", "true")') &&
+  copyClient.includes("clearTimeout(timer)") && copyClient.includes("currentAttempt !== attempt") &&
+  copyClient.includes("1500") && copyClient.includes("range.selectNodeContents(address)") &&
+  copyClient.includes("selection.addRange(range)") && copyClient.includes("Press Ctrl+C to copy") &&
+  copyClient.includes('document.documentElement.classList.add("copy-ready")'),
+  "Email copying must announce results, safely reset repeated-click feedback and select the address on clipboard failure.");
+check(englishCss.includes(".copy-email { visibility: hidden;") &&
+  englishCss.includes(".copy-ready .copy-email { visibility: visible; }") &&
+  englishCss.includes(".email-address { white-space: nowrap; user-select: text; }") &&
+  englishCss.includes(".copy-email:focus-visible { outline: 2px solid var(--accent-light);") &&
+  englishCss.includes("min-height: 24px") && englishCss.includes(".copy-email { min-height: 44px; }") &&
+  englishCss.includes(".copy-status { position: absolute;") &&
+  englishCss.includes(".how-audience { font: 550 24px/1.3 var(--font-sans); letter-spacing: 0; color: var(--text-1);"),
+  "Copy controls must be hidden without JS, selectable, focusable, touch-sized and layout-stable; audience labels must be 24px/550.");
+for (const [route, source] of [["how-it-works/", howPage], ["ja/how-it-works/", japaneseHow]]) {
+  check(source.includes("!document.hidden") &&
+    source.includes("if(!running) screen.getAnimations({subtree:true}).forEach(animation=>{animation.currentTime=0})") &&
+    source.includes("document.addEventListener('visibilitychange',update)"),
+    `${route} must reset the camera to its first frame when stopped, including offscreen, hidden tabs and reduced motion.`);
+}
 function cssBlock(source, header) {
   const start = source.indexOf(header);
   if (start < 0) return "";
@@ -1094,9 +1128,10 @@ check(hero.includes(`<a class="btn btn-p" href="#demo">${access.hero_label}</a>`
   "The hero CTA must jump to the demo form.");
 check(demoSection.includes(`<p class="waitnote">${access.note}</p>`), "The demo form must retain its generated note.");
 check(!/<a[^>]*class="btn[^"]*"[^>]*href="#?"/.test(home), "No CTA may link to an empty or placeholder target.");
-if (access.community?.url) {
-  check(home.includes(`href="${access.community.url}"`), "Community CTA must be published once its URL is set.");
-}
+check(access.community?.url === communityUrl && access.community.name === "Discord" &&
+  access.community.label === "Discord", "The community fact must use only the approved Discord name and invite.");
+check(llms.includes(`[Discord](${communityUrl})`) && count(llms, /https:\/\/discord\.gg\//g) === 1,
+  "The LLM index must publish the single approved community invite.");
 
 const japaneseSections = [...japanese.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
 check(japaneseSections.length === 7 && japaneseSections[0]?.[1].includes('class="hero"') &&
@@ -1152,6 +1187,7 @@ const bodyStructure = source => {
     [tag, attributes.match(/\bclass="([^"]*)"/)?.[1] || "", attributes.match(/\bid="([^"]*)"/)?.[1] || ""]);
 };
 const japaneseNavigation = [
+  ["つながる", "Connect"], ["コピー", "Copy"],
   ["製品", "Product"], ["概要", "Overview"], ["仕組み", "How it works"],
   ["社員向け", "For employees"], ["管理者向け", "For admins"],
   ["セキュリティ", "Security"], ["リソース", "Resources"], ["会社情報", "Company"],
@@ -1327,13 +1363,41 @@ for (const relativePath of customerFacingTextFiles) {
   check(!/[\u2013\u2014\u2018\u2019\u201c\u201d]/u.test(source),
     `${relativePath} contains em dashes, en dashes or curly quotes.`);
   check(!/\bsetup\b/i.test(source), `${relativePath} contains the retired word setup.`);
-  check(!/\bDiscord\b/i.test(source), `${relativePath} contains a retired community mention.`);
+  if (!relativePath.endsWith(".html") && !["agent/content.json", "llms.txt"].includes(relativePath)) {
+    check(!/\bDiscord\b|discord\.gg/i.test(source), `${relativePath} contains an out-of-scope community mention.`);
+  }
+  check(!/mailto:hello@jinai\.md/i.test(source), `${relativePath} must not link the contact email with mailto.`);
 }
 
 const htmlFiles = deployedFiles.filter((file) => file.endsWith(".html"));
 const deployedFileSet = new Set(deployedFiles);
 const htmlCache = new Map();
 for (const relativePath of htmlFiles) htmlCache.set(relativePath, await text(relativePath));
+
+for (const [relativePath, source] of htmlCache) {
+  const japanesePage = relativePath.startsWith("ja/");
+  const component = emailComponent(japanesePage);
+  const markup = source.replace(/<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, "");
+  const components = [...markup.matchAll(/<span class="email-contact">[\s\S]*?<\/button><\/span>/g)];
+  check(components.every(([match]) => match === component) &&
+    !markup.replaceAll(component, "").replace(/<[^>]*>/g, "").includes("hello@jinai.md") &&
+    count(markup, /class="copy-email"/g) === components.length,
+    `${relativePath} must pair every visible contact email with the exact selectable copy component and its language label.`);
+  const footer = source.match(/<footer\b[^>]*>[\s\S]*?<\/footer>/)?.[0] || "";
+  const connect = `<div class="${relativePath === "agent/index.html" ? "shell " : ""}footer-column"><h2>${japanesePage ? "つながる" : "Connect"}</h2>${communityLink}</div>`;
+  if (footer && !relativePath.startsWith("assets/")) check(footer.includes(connect) && count(footer, /https:\/\/discord\.gg\//g) === 1,
+    `${relativePath} footer must contain one Connect column with only the approved Discord link.`);
+  let elsewhere = relativePath.startsWith("assets/") ? source : source.replace(footer, "");
+  if (["company/index.html", "ja/company/index.html"].includes(relativePath)) {
+    const contact = source.match(/<section aria-labelledby="contact-heading">[\s\S]*?<\/section>/)?.[0] || "";
+    check(contact.includes(`<p class="community-contact">${japanesePage ? "コミュニティ" : "Community"}: ${communityLink}</p>`) &&
+      contact.includes(component) && count(contact, /https:\/\/discord\.gg\//g) === 1,
+      `${relativePath} Contact must show the approved Community line under the copyable email.`);
+    elsewhere = elsewhere.replace(contact, "");
+  }
+  check(!/\bDiscord\b|discord\.gg/i.test(elsewhere),
+    `${relativePath} must not show Discord outside its footer or Company Contact (including header, hero and menus).`);
+}
 
 for (const [relativePath, source] of htmlCache) {
   const publicPath = relativePath.replace(/index\.html$/, "");

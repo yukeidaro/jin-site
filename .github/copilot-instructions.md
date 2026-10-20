@@ -32,7 +32,9 @@ CTA: **Request a demo**. Note: **We will email you to set up a demo.** Keep the 
 - `agent/content.json` is the single fact source. Change facts there, then run `node scripts/generate-aeo.mjs`. Never edit inside `GENERATED:*` markers by hand.
 - Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19). `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`. Never claim a Building or Next item is available today in any copy.
 - No prices anywhere on the site, including machine-readable formats.
-- Do not publish currency amounts, Pro, Team or free-version offers, Cloud Sync, Google Drive or Notion connections, PC and phone sync, Discord, Baby Voice Recorder, TikTok, market size, competitor names, pilot candidate counts, Nov 13, know-how or DelightX. These are exclusions, not product facts. Keep `early_access.community.url` null.
+- Do not publish currency amounts, Pro, Team or free-version offers, Cloud Sync, Google Drive or Notion connections, PC and phone sync, Baby Voice Recorder, TikTok, market size, competitor names, pilot candidate counts, Nov 13, know-how or DelightX. These are exclusions, not product facts.
+- E7 exception (Yu, 2026-10-20): the approved Discord invite is `https://discord.gg/C5m4jGgKXD`, recorded in `early_access.community`. Show it only in footer Connect columns (Japanese: つながる), Company Contact lines and machine-readable community facts. Never add it to headers, heroes or menus.
+- Display `hello@jinai.md` as selectable plain text with the shared Copy button (Japanese: コピー), never as a mailto link. Hide inactive buttons without JavaScript.
 - Every number needs a source line directly under it. Do not invent metrics, testimonials, logos, ratings or user counts.
 
 ## Writing
