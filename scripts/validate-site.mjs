@@ -57,6 +57,7 @@ const expectedFiles = [
   "llms.txt",
   "privacy/index.html",
   "robots.txt",
+  "security/index.html",
   "shots/og-b2b.png",
   "site.css",
   "theme-en.css",
@@ -67,7 +68,7 @@ const expectedFiles = [
 const deployedFiles = await listFiles(site);
 check(JSON.stringify(deployedFiles) === JSON.stringify(expectedFiles), `Unexpected Pages artifact: ${deployedFiles.join(", ")}`);
 
-const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson, privacy, accessibility, japanesePrivacy, japaneseAccessibility] = await Promise.all([
+const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson, privacy, accessibility, japanesePrivacy, japaneseAccessibility, security] = await Promise.all([
   text("index.html"),
   text("ja/index.html"),
   text("how-it-works/index.html"),
@@ -82,7 +83,8 @@ const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, ro
   text("privacy/index.html"),
   text("accessibility/index.html"),
   text("ja/privacy/index.html"),
-  text("ja/accessibility/index.html")
+  text("ja/accessibility/index.html"),
+  text("security/index.html")
 ]);
 
 const pagePairs = [
@@ -172,7 +174,7 @@ for (const [route, source, heading, description] of legalPages) {
 }
 for (const [relativePath, source] of [
   ["index.html", home], ["how-it-works/index.html", howPage], ["agent/index.html", agent],
-  ["privacy/index.html", privacy], ["accessibility/index.html", accessibility]
+  ["privacy/index.html", privacy], ["accessibility/index.html", accessibility], ["security/index.html", security]
 ]) {
   const footer = source.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] || "";
   const baseUrl = new URL(relativePath, "https://jinai.md/");
@@ -233,8 +235,7 @@ check(!/<(?:img|p)\b|class="(?:eyebrow|lede|waitnote)"/.test(hero),
   "The hero must not contain a subtitle, status tag, note or product image.");
 check(hero.includes('href="how-it-works/">How it works &rarr;</a>'), "The hero must link to the How it works page.");
 check(home.includes('<a href="how-it-works/">How it works</a>') &&
-  count(home, /<a href="security\/" data-pending-page="D2">Security<\/a>/g) === 2 &&
-  count(home, /\bdata-pending-page=/g) === 2 &&
+  count(home, /<a href="security\/"(?: data-pending-page="D2")?>Security<\/a>/g) === 2 &&
   home.includes('aria-label="Menu" aria-controls="primary-menu" aria-expanded="false"') &&
   home.includes('<a class="btn btn-p" href="#demo">Request a demo</a>'),
   "The nav must link to How it works, Security and the demo, with an accessible mobile menu.");
@@ -330,8 +331,9 @@ Sitemap: https://jinai.md/sitemap.xml
 
 const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).sort();
 check(JSON.stringify(sitemapUrls) === JSON.stringify([
-  ...pagePairs.flatMap(([route]) => [`https://jinai.md/${route}`, `https://jinai.md/ja/${route}`])
-].sort()), "Sitemap must contain exactly the four English pages and their four Japanese twins.");
+  ...pagePairs.flatMap(([route]) => [`https://jinai.md/${route}`, `https://jinai.md/ja/${route}`]),
+  "https://jinai.md/security/"
+].sort()), "Sitemap must contain exactly the five English pages and the four existing Japanese twins.");
 check(!llms.includes(".md)"), "llms.txt must not link to Markdown mirrors.");
 check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blockquote summary.");
 
@@ -367,25 +369,32 @@ const demoScreens = [
     ["screen-by-role", "demo-3-by-role.webp"], ["screen-what-can-move", "demo-4-what-can-move.webp"]
   ]]
 ];
-for (const [page, source, prefix] of [
-  ["How it works #steps", howPage.match(/<section id="steps">([\s\S]*?)<\/section>/)?.[1] || "", "../"]
-]) {
+const workflowSections = [...howPage.matchAll(/<section class="section workflow" id="(employee|admin)" aria-labelledby="([^"]+)">([\s\S]*?)<\/section>/g)];
+check(workflowSections.length === 2 && workflowSections.map((match) => match[1]).join() === "employee,admin",
+  "How it works must contain separate Employee then Admin sections.");
+check(count(howPage, /<div class="screen"/g) === 2,
+  "How it works must contain exactly two moving screens overall.");
+for (const [page, source, prefix] of [["How it works", workflowSections.map((match) => match[3]).join(""), "../"]]) {
   check(count(source, /<div\b[^>]*\bclass="screen"/g) === 2 && count(source, /<img\b/g) === 4,
     `${page} must contain exactly two screen frames with two scenes each.`);
   for (const [audience, label, scenes] of demoScreens) {
-    const frame = source.match(new RegExp(
-      `<h([23]) class="how-audience">${audience}<\\/h\\1>\\s*(<div class="screen"[^>]*>)([\\s\\S]*?)<\\/div>\\s*<ol class="harness-steps"`
-    ));
-    check(frame?.[2] === `<div class="screen" role="img" aria-label="${label}">`,
-      `${page} must show the ${audience} frame with its exact accessible label between its heading and steps.`);
-    const images = [...(frame?.[3] || "").matchAll(/<img\b[^>]*>/g)].map((match) => match[0]);
+    const section = workflowSections.find((match) => match[1] === audience.toLowerCase());
+    const body = section?.[3] || "";
+    const frame = body.match(/(<div class="screen"[^>]*>)([\s\S]*?)<\/div>/);
+    check(body.includes(`<h2 class="how-audience" id="${section?.[2]}">${audience.toUpperCase()}</h2>`) &&
+      body.includes('<div class="section-head split">') &&
+      body.includes('<div class="product-frame moving-frame">') &&
+      body.indexOf('class="harness-steps"') < body.indexOf('class="screen"') &&
+      frame?.[1] === `<div class="screen" role="img" aria-label="${label}">`,
+      `${page} must show the ${audience} label and steps before its dark product frame with its exact accessible label.`);
+    const images = [...(frame?.[2] || "").matchAll(/<img\b[^>]*>/g)].map((match) => match[0]);
     check(images.length === 2 && scenes.every(([className, filename], index) =>
       images[index] === `<img class="${className}" src="${prefix}assets/demo/${filename}" width="2880" height="1664" alt="" decoding="async" loading="eager">`) &&
-      (frame?.[3] || "").replace(/<img\b[^>]*>/g, "").trim() === "",
+      (frame?.[2] || "").replace(/<img\b[^>]*>/g, "").trim() === "",
       `${page} must contain only the two ordered ${audience} scenes, eagerly loaded with intrinsic dimensions, async decoding and decorative alt text.`);
   }
 }
-for (const [page, source] of [["Root", home], ["How it works", howPage]]) {
+for (const [page, source] of [["Root", home], ["How it works", howPage], ["Security", security]]) {
   const visibleCopy = source.replace(/<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, "")
     .replace(/<[^>]*>/g, " ");
   check(!/\bclass="[^"]*\b(?:st|harness-status)\b/.test(source) &&
@@ -414,18 +423,20 @@ for (const [attribute, name] of [["name", "description"], ["property", "og:descr
     `The companion page must use the approved ${name}.`);
 }
 check(howPage.includes(`<p class="harness-definition">${content.product.harness_definition}</p>`) &&
-  howPage.includes('<h2 class="how-audience">Employee</h2>') &&
-  howPage.includes('<h2 class="how-audience">Admin</h2>') &&
+  howPage.includes('<p class="mono-label">HOW IT WORKS</p>') &&
+  howPage.includes('<h2 class="how-audience" id="employee-heading">EMPLOYEE</h2>') &&
+  howPage.includes('<h2 class="how-audience" id="admin-heading">ADMIN</h2>') &&
   count(howPage, /<ol class="harness-steps"/g) === 2 && howPage.includes('start="3"'),
   "The companion page must define an AI harness and separate Employee and Admin steps.");
-const companionSteps = [...howPage.matchAll(/<li><h3>([^<]+)<\/h3>([\s\S]*?)<\/li>/g)];
+const companionSteps = [...howPage.matchAll(/<li><span class="mono-label">(0[1-4])<\/span><div><h3>([^<]+)<\/h3>([\s\S]*?)<\/div><\/li>/g)];
 check(companionSteps.length === 4 && companyCapabilities.every((capability, index) =>
-  companionSteps[index]?.[1] === capability.name &&
-  companionSteps[index]?.[2].includes(`<p>${capability.description}</p>`)),
+  companionSteps[index]?.[1] === `0${index + 1}` &&
+  companionSteps[index]?.[2] === capability.name &&
+  companionSteps[index]?.[3].includes(`<p>${capability.description}</p>`)),
   "The companion page must use all four approved steps.");
 for (const sentence of [
-  "<p>For example: <code>CLAUDE.md</code>, skills, memory files and MCP settings.</p>",
-  "<p>In pilots, the company approves by hand today.</p>"]) {
+  '<p class="step-note">For example: <code>CLAUDE.md</code>, skills, memory files and MCP settings.</p>',
+  '<p class="step-note">In pilots, the company approves by hand today.</p>']) {
   check(howPage.includes(sentence), "The companion page must retain the approved examples and manual pilot caveat.");
 }
 check(howPage.includes(`<h2 class="h2">${content.data_principles.headline}</h2>`) &&
@@ -434,6 +445,117 @@ check(howPage.includes(`<h2 class="h2">${content.data_principles.headline}</h2>`
   "The companion page must include all data promises and the demo CTA.");
 check(!/plugin-screen\.png|personal MCP|your own memory|#waitlist|Join &rarr;/.test(howPage),
   "The companion page must not publish the retired consumer copy or CTA.");
+const closingBand = howPage.match(/<section class="closing-cta" aria-labelledby="closing-heading">([\s\S]*?)<\/section>/)?.[1] || "";
+check(closingBand.includes('<div class="wrap" data-draft>') &&
+  closingBand.includes('<span class="mono-label draft-tag">Draft copy</span>') &&
+  closingBand.includes('<h2 id="closing-heading">See it on your team\'s AI harnesses.</h2>') &&
+  count(closingBand, /<(?:a|button)\b/g) === 1 &&
+  closingBand.includes('<a class="btn btn-p" href="../#demo">Request a demo</a>') &&
+  count(howPage, /class="closing-cta"/g) === 1 &&
+  howPage.indexOf('class="closing-cta"') > howPage.indexOf('id="data"'),
+  "How it works must end with the draft-marked closing band and exactly one primary demo button.");
+check(howPage.includes('<a class="text-link read-more" href="../security/">Security &amp; data &rarr;</a>'),
+  "The companion promise band must link to Security & data.");
+
+const securityTitle = "Security &amp; data | Jin AI";
+const securityDescription = "How Jin AI keeps each company's context separate, and what it does not do.";
+check(security.includes('<html lang="en">') &&
+  security.includes(`<title>${securityTitle}</title>`) &&
+  count(security, /<h1\b/g) === 1 &&
+  security.includes(`<h1>${content.data_principles.headline}</h1>`) &&
+  security.includes('<p class="mono-label">SECURITY</p>') &&
+  security.includes('<main data-draft>') &&
+  count(security, /<span class="mono-label draft-tag">Draft copy<\/span>/g) === 1,
+  "Security must have its approved title, English language, H1, label and one visible draft tag covering its body.");
+check(count(security, /<link\b[^>]*\brel="canonical"/g) === 1 &&
+  security.includes('<link rel="canonical" href="https://jinai.md/security/">') &&
+  security.includes('<meta property="og:url" content="https://jinai.md/security/">') &&
+  security.includes('<meta name="robots" content="index,follow,max-image-preview:large">'),
+  "Security must be indexable and self-canonical.");
+for (const [attribute, name, value] of [
+  ["property", "og:type", "website"], ["property", "og:site_name", "Jin AI"],
+  ["property", "og:title", securityTitle], ["name", "twitter:title", securityTitle],
+  ["name", "description", securityDescription], ["property", "og:description", securityDescription],
+  ["name", "twitter:description", securityDescription], ["name", "twitter:card", "summary_large_image"],
+  ["property", "og:image", "https://jinai.md/shots/og-b2b.png"],
+  ["name", "twitter:image", "https://jinai.md/shots/og-b2b.png"],
+  ["property", "og:image:width", "1200"], ["property", "og:image:height", "630"],
+  ["property", "og:image:alt", "Jin AI: Make every employee your best AI user"],
+  ["name", "twitter:image:alt", "Jin AI: Make every employee your best AI user"]
+]) {
+  check(security.includes(`<meta ${attribute}="${name}" content="${value}">`),
+    `Security must have the approved ${name}.`);
+}
+const securityHead = security.match(/<head>([\s\S]*?)<\/head>/)?.[1] || "";
+check(count(securityHead, /\bhreflang=/g) === 3, "Security needs exactly three hreflang alternates.");
+for (const alternate of ["en", "ja", "x-default"]) {
+  check(securityHead.includes(`<link rel="alternate" hreflang="${alternate}" href="https://jinai.md/${alternate === "ja" ? "ja/" : ""}security/">`),
+    `Security must have the ${alternate} alternate, with its Japanese twin supplied by D4.`);
+}
+for (const landmark of ["header", "footer"]) {
+  const area = security.match(new RegExp(`<${landmark}>([\\s\\S]*?)<\\/${landmark}>`))?.[1] || "";
+  const navigation = area.match(/<nav class="language-switch" aria-label="Language">([\s\S]*?)<\/nav>/)?.[1] || "";
+  check(count(navigation, /<a\b/g) === 2 && count(navigation, /aria-current="page"/g) === 1 &&
+    navigation.includes(`<a href="/security/" lang="en" hreflang="en" aria-current="page">${landmark === "header" ? "EN" : "English"}</a>`) &&
+    navigation.includes(`<a href="/ja/security/" lang="ja" hreflang="ja">${landmark === "header" ? "JA" : "日本語"}</a>`),
+    `Security needs the matching language switches in its ${landmark}.`);
+}
+const securitySections = [...security.matchAll(/<section class="section security-section" aria-labelledby="([^"]+)">([\s\S]*?)<\/section>/g)];
+const securityCopy = [
+  ["separation-heading", "Data separation", [
+    "Each company's context is kept separate.",
+    "A person's own context and the company's context are kept apart."
+  ]],
+  ["limits-heading", "What Jin AI does not do", [
+    "Jin AI never records your screen.",
+    "Jin AI itself never trains on your data."
+  ]]
+];
+check(securitySections.length === 2 && securityCopy.every(([id, heading, items], index) =>
+  securitySections[index]?.[1] === id &&
+  securitySections[index]?.[2].includes(`<h2 id="${id}">${heading}</h2>`) &&
+  securitySections[index]?.[2].includes('class="wrap security-split"') &&
+  securitySections[index]?.[2].includes('class="security-items"') &&
+  JSON.stringify([...securitySections[index][2].matchAll(/<li>([^<]+)<\/li>/g)].map((match) => match[1])) === JSON.stringify(items)),
+  "Security must show the two summary/item sections with only the supplied draft copy.");
+check(!/Parts marked confidential|tools you approve|Decide what can move|\b04\b|\bSOC\b|\bISO\b|certif|enterprise.grade/i.test(security),
+  "Security must not claim step 04 approval behavior or certifications.");
+const securityContact = security.match(/<div class="security-contact">([\s\S]*?)<\/main>/)?.[1] || "";
+check(securityContact.includes('<p>Questions about security? Email <a href="mailto:hello@jinai.md">hello@jinai.md</a>, or request a demo.</p>') &&
+  securityContact.includes('<a class="btn btn-p" href="../#demo">Request a demo</a>') &&
+  count(securityContact, /class="btn /g) === 1 && !/closing-cta/.test(security),
+  "Security must use its separate wide contact band, not the How it works closing band.");
+
+function normalizedLandmark(source, landmark, baseUrl) {
+  return (source.match(new RegExp(`<${landmark}>([\\s\\S]*?)<\\/${landmark}>`))?.[1] || "")
+    .replace(/<nav class="language-switch" aria-label="Language">[\s\S]*?<\/nav>/g, "LANGUAGE_SWITCH")
+    .replace(/ aria-current="page"| data-pending-page="D2"/g, "")
+    .replace(/\b(href|src)="([^"]+)"/g, (_, attribute, url) => `${attribute}="${new URL(url, baseUrl).href}"`)
+    .replace(/\s+/g, " ").trim();
+}
+for (const [route, source] of [
+  ["how-it-works", howPage], ["security", security], ["privacy", privacy], ["accessibility", accessibility]
+]) {
+  check(source.includes('<link rel="stylesheet" href="../base.css">') &&
+    source.includes('<link rel="stylesheet" href="../theme-en.css">') &&
+    !source.includes('href="../site.css"') &&
+    source.includes('family=Inter:wght@400..600&family=JetBrains+Mono:wght@400&display=swap') &&
+    !/Source\+Serif|Caveat|Berkeley|Tiempos/.test(source),
+    `${route} must use the shared base and English fonts/theme, not legacy styling.`);
+  for (const landmark of ["header", "footer"]) {
+    check(normalizedLandmark(source, landmark, `https://jinai.md/${route}/`) ===
+      normalizedLandmark(home, landmark, "https://jinai.md/"),
+    `${route} ${landmark} must match the home component, with route-specific links and current-page states.`);
+  }
+  check(source.includes('<a class="btn btn-p" href="../#demo">Request a demo</a>'),
+    `${route} must link its header demo button to the home form.`);
+  const menuScript = source.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1];
+  check(menuScript === home.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1],
+    `${route} must retain the same accessible mobile menu behavior as the home page.`);
+}
+for (const [route, source] of [["privacy", privacy], ["accessibility", accessibility]]) {
+  check(source.includes('<main class="legal-copy">'), `${route} must use the narrow article layout.`);
+}
 const dataSection = homeSections.find((match) => match[1].includes('id="data"'))?.[2] || "";
 check(dataSection.includes(`<h2 class="h2">${content.data_principles.headline}</h2>`) &&
   content.data_principles.items.every((item) => dataSection.includes(`<li>${item}</li>`)),
@@ -626,7 +748,8 @@ for (const relativePath of customerFacingTextFiles) {
   if (relativePath.startsWith("ja/")) {
     check(cjk.test(source), `${relativePath} must contain Japanese text.`);
   } else {
-    const englishRoute = pagePairs.find(([route]) => relativePath === `${route}index.html`)?.[0];
+    const englishRoute = relativePath === "security/index.html" ? "security/" :
+      pagePairs.find(([route]) => relativePath === `${route}index.html`)?.[0];
     const allowedLink = englishRoute === undefined ? "" :
       `<a href="/ja/${englishRoute}" lang="ja" hreflang="ja">日本語</a>`;
     const englishOnly = allowedLink ? source.replace(allowedLink, "") : source;
@@ -656,10 +779,13 @@ for (const [relativePath, source] of htmlCache) {
 
     let targetPath = decodeURIComponent(resolved.pathname).replace(/^\/+/, "");
     if (!targetPath || targetPath.endsWith("/")) targetPath += "index.html";
-    // D1 includes the approved Security navigation; D2 supplies that page.
+    // D4 supplies the Japanese twin. Only these three explicit language references may be pending.
     const tag = source.slice(source.lastIndexOf("<", match.index), source.indexOf(">", match.index) + 1);
-    if (relativePath === "index.html" && targetPath === "security/index.html" &&
-      !deployedFileSet.has(targetPath) && tag.includes('data-pending-page="D2"')) {
+    if (relativePath === "security/index.html" && targetPath === "ja/security/index.html" &&
+      !deployedFileSet.has(targetPath) && [
+        '<link rel="alternate" hreflang="ja" href="https://jinai.md/ja/security/">',
+        '<a href="/ja/security/" lang="ja" hreflang="ja">'
+      ].includes(tag)) {
       continue;
     }
     check(deployedFileSet.has(targetPath), `${relativePath} references missing artifact ${targetPath}.`);
@@ -680,7 +806,7 @@ if (errors.length) {
   process.exitCode = 1;
 } else {
   console.log("Pages artifact passed canonical, AEO, crawler and content checks.");
-  if (home.includes('data-pending-page="D2"') && !deployedFileSet.has("security/index.html")) {
-    console.warn("Draft dependency: /security/ is linked by D1 and will be implemented in D2.");
+  if (!deployedFileSet.has("ja/security/index.html")) {
+    console.warn("Draft dependency: /ja/security/ language references await the Japanese page in D4.");
   }
 }

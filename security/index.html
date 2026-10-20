@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Security &amp; data | Jin AI</title>
+<meta name="description" content="How Jin AI keeps each company's context separate, and what it does not do.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://jinai.md/security/">
+<link rel="alternate" hreflang="en" href="https://jinai.md/security/">
+<link rel="alternate" hreflang="ja" href="https://jinai.md/ja/security/">
+<link rel="alternate" hreflang="x-default" href="https://jinai.md/security/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jin AI">
+<meta property="og:title" content="Security &amp; data | Jin AI">
+<meta property="og:description" content="How Jin AI keeps each company's context separate, and what it does not do.">
+<meta property="og:url" content="https://jinai.md/security/">
+<meta property="og:image" content="https://jinai.md/shots/og-b2b.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Jin AI: Make every employee your best AI user">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Security &amp; data | Jin AI">
+<meta name="twitter:description" content="How Jin AI keeps each company's context separate, and what it does not do.">
+<meta name="twitter:image" content="https://jinai.md/shots/og-b2b.png">
+<meta name="twitter:image:alt" content="Jin AI: Make every employee your best AI user">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="../theme-en.css">
+</head>
+<body class="home-page">
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="../"><img src="../brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
+    <div class="header-menu" id="primary-menu">
+      <nav class="navlinks" aria-label="Main navigation">
+        <a href="../how-it-works/">How it works</a>
+        <a href="./" aria-current="page">Security</a>
+      </nav>
+      <nav class="language-switch" aria-label="Language"><a href="/security/" lang="en" hreflang="en" aria-current="page">EN</a> / <a href="/ja/security/" lang="ja" hreflang="ja">JA</a></nav>
+    </div>
+    <a class="btn btn-p" href="../#demo">Request a demo</a>
+    <button class="menu-toggle" type="button" aria-label="Menu" aria-controls="primary-menu" aria-expanded="false" hidden><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main data-draft>
+<section class="hero security-hero">
+  <div class="wrap">
+    <span class="mono-label draft-tag">Draft copy</span>
+    <p class="mono-label">SECURITY</p>
+    <h1>Your company's context stays yours.</h1>
+  </div>
+</section>
+
+<section class="section security-section" aria-labelledby="separation-heading">
+  <div class="wrap security-split">
+    <h2 id="separation-heading">Data separation</h2>
+    <ul class="security-items">
+      <li>Each company's context is kept separate.</li>
+      <li>A person's own context and the company's context are kept apart.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section security-section" aria-labelledby="limits-heading">
+  <div class="wrap security-split">
+    <h2 id="limits-heading">What Jin AI does not do</h2>
+    <ul class="security-items">
+      <li>Jin AI never records your screen.</li>
+      <li>Jin AI itself never trains on your data.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="security-contact">
+  <div class="wrap">
+    <p>Questions about security? Email <a href="mailto:hello@jinai.md">hello@jinai.md</a>, or request a demo.</p>
+    <a class="btn btn-p" href="../#demo">Request a demo</a>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-main">
+      <a class="brand" href="../"><img src="../brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
+      <div class="footer-column"><h2>Product</h2><a href="../how-it-works/">How it works</a><a href="./" aria-current="page">Security</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="mailto:hello@jinai.md">hello@jinai.md</a></div>
+      <div class="footer-column"><h2>Legal</h2><a href="../privacy/">Privacy</a><a href="../accessibility/">Accessibility</a></div>
+    </div>
+    <div class="footer-bottom">
+      <p>Visits are counted with Cloudflare Web Analytics. No cookies.</p>
+      <span>&copy; 2026 Jin AI</span>
+      <nav class="language-switch" aria-label="Language"><a href="/security/" lang="en" hreflang="en" aria-current="page">English</a> / <a href="/ja/security/" lang="ja" hreflang="ja">日本語</a></nav>
+    </div>
+  </div>
+</footer>
+<script type="module">
+const header = document.querySelector('header');
+const toggle = header.querySelector('.menu-toggle');
+const menu = document.getElementById('primary-menu');
+function closeMenu() {
+  toggle.setAttribute('aria-expanded', 'false');
+  menu.classList.remove('is-open');
+}
+header.classList.add('has-menu');
+toggle.hidden = false;
+toggle.addEventListener('click', () => {
+  const open = toggle.getAttribute('aria-expanded') !== 'true';
+  toggle.setAttribute('aria-expanded', String(open));
+  menu.classList.toggle('is-open', open);
+});
+menu.addEventListener('click', event => {
+  if (event.target.closest('a')) closeMenu();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+    closeMenu();
+    toggle.focus();
+  }
+});
+document.addEventListener('click', event => {
+  if (!header.contains(event.target)) closeMenu();
+});
+matchMedia('(min-width: 768px)').addEventListener('change', closeMenu);
+</script>
+<!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1b6168cc50c644e4bd8071508286852d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

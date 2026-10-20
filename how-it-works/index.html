@@ -26,59 +26,79 @@
 <meta name="twitter:image:alt" content="Jin AI: Make every employee your best AI user">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../site.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="../theme-en.css">
 </head>
 <body class="home-page">
 
 <header>
   <div class="wrap nav">
-    <a class="brand" href="../"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
-    <nav class="navlinks" aria-label="Pages">
-      <a href="./" aria-current="page">How it works</a>
-    </nav>
-    <div class="navright"><nav class="language-switch" aria-label="Language"><a href="/how-it-works/" lang="en" hreflang="en" aria-current="page">EN</a> / <a href="/ja/how-it-works/" lang="ja" hreflang="ja">JA</a></nav><a class="btn btn-p" href="../#demo">Request a demo</a></div>
+    <a class="brand" href="../"><img src="../brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
+    <div class="header-menu" id="primary-menu">
+      <nav class="navlinks" aria-label="Main navigation">
+        <a href="./" aria-current="page">How it works</a>
+        <a href="../security/">Security</a>
+      </nav>
+      <nav class="language-switch" aria-label="Language"><a href="/how-it-works/" lang="en" hreflang="en" aria-current="page">EN</a> / <a href="/ja/how-it-works/" lang="ja" hreflang="ja">JA</a></nav>
+    </div>
+    <a class="btn btn-p" href="../#demo">Request a demo</a>
+    <button class="menu-toggle" type="button" aria-label="Menu" aria-controls="primary-menu" aria-expanded="false" hidden><span></span><span></span><span></span></button>
   </div>
 </header>
 
 <main>
-<section class="hero">
+<section class="hero how-hero">
   <div class="wrap">
+    <p class="mono-label">HOW IT WORKS</p>
     <h1>How it works</h1>
     <p class="harness-definition">An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.</p>
   </div>
 </section>
 
-<section id="steps">
+<div id="steps">
+<section class="section workflow" id="employee" aria-labelledby="employee-heading">
   <div class="wrap">
-    <div class="home-columns">
-      <div>
-        <h2 class="how-audience">Employee</h2>
+    <div class="section-head split">
+      <h2 class="how-audience" id="employee-heading">EMPLOYEE</h2>
+      <ol class="harness-steps">
+        <li><span class="mono-label">01</span><div><h3>Connect once.</h3><p>Jin AI connects to your AI tools through MCP.</p></div></li>
+        <li><span class="mono-label">02</span><div><h3>See every harness by category.</h3><p>Skills, instructions, memory and MCP settings, sorted for each person.</p><p class="step-note">For example: <code>CLAUDE.md</code>, skills, memory files and MCP settings.</p></div></li>
+      </ol>
+    </div>
+  </div>
+  <div class="product-viewport">
+    <div class="product-frame moving-frame">
         <div class="screen" role="img" aria-label="Jin AI employee workspace. The camera moves across the list of AI tools in the MCP connection panel, then across harness parts sorted by category, each marked Can move or Confidential.">
           <img class="screen-connect" src="../assets/demo/demo-1-connect.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
           <img class="screen-categories" src="../assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
         </div>
-        <ol class="harness-steps">
-          <li><h3>Connect once.</h3><p>Jin AI connects to your AI tools through MCP.</p></li>
-          <li><h3>See every harness by category.</h3><p>Skills, instructions, memory and MCP settings, sorted for each person.</p><p>For example: <code>CLAUDE.md</code>, skills, memory files and MCP settings.</p></li>
-        </ol>
-      </div>
-      <div>
-        <h2 class="how-audience">Admin</h2>
-        <div class="screen" role="img" aria-label="Jin AI admin console. The camera moves across teams by role and their most-used harnesses, then across the harness policies and the approved and not approved AI tools.">
-          <img class="screen-by-role" src="../assets/demo/demo-3-by-role.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
-          <img class="screen-what-can-move" src="../assets/demo/demo-4-what-can-move.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
-        </div>
-        <ol class="harness-steps" start="3">
-          <li><h3>See it by role.</h3><p>Which harnesses each role uses, and how often.</p></li>
-          <li><h3>Decide what can move.</h3><p>Parts marked confidential connect only to the AI tools you approve.</p><p>In pilots, the company approves by hand today.</p></li>
-        </ol>
-      </div>
     </div>
   </div>
 </section>
 
-<section id="data">
+<section class="section workflow" id="admin" aria-labelledby="admin-heading">
+  <div class="wrap">
+    <div class="section-head split">
+      <h2 class="how-audience" id="admin-heading">ADMIN</h2>
+      <ol class="harness-steps" start="3">
+        <li><span class="mono-label">03</span><div><h3>See it by role.</h3><p>Which harnesses each role uses, and how often.</p></div></li>
+        <li><span class="mono-label">04</span><div><h3>Decide what can move.</h3><p>Parts marked confidential connect only to the AI tools you approve.</p><p class="step-note">In pilots, the company approves by hand today.</p></div></li>
+      </ol>
+    </div>
+  </div>
+  <div class="product-viewport">
+    <div class="product-frame moving-frame">
+        <div class="screen" role="img" aria-label="Jin AI admin console. The camera moves across teams by role and their most-used harnesses, then across the harness policies and the approved and not approved AI tools.">
+          <img class="screen-by-role" src="../assets/demo/demo-3-by-role.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+          <img class="screen-what-can-move" src="../assets/demo/demo-4-what-can-move.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+        </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<section class="section" id="data">
   <div class="wrap">
     <h2 class="h2">Your company's context stays yours.</h2>
     <ul class="data-promises">
@@ -86,23 +106,63 @@
       <li>Jin AI never records your screen.</li>
       <li>Jin AI itself never trains on your data.</li>
     </ul>
-    <div class="wait"><a class="btn btn-p" href="../#demo">Request a demo</a></div>
+    <a class="text-link read-more" href="../security/">Security &amp; data &rarr;</a>
+  </div>
+</section>
+
+<section class="closing-cta" aria-labelledby="closing-heading">
+  <div class="wrap" data-draft>
+    <span class="mono-label draft-tag">Draft copy</span>
+    <h2 id="closing-heading">See it on your team's AI harnesses.</h2>
+    <a class="btn btn-p" href="../#demo">Request a demo</a>
   </div>
 </section>
 </main>
 
 <footer>
-  <div class="wrap footer-bar">
-    <a class="brand" href="../"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
-    <a class="footer-link" href="mailto:hello@jinai.md">hello@jinai.md</a>
-    <a class="footer-link" href="./" aria-current="page">How it works</a>
-    <a class="footer-link" href="../privacy/">Privacy</a>
-    <a class="footer-link" href="../accessibility/">Accessibility</a>
-    <span>Visits are counted with Cloudflare Web Analytics. No cookies.</span>
-    <nav class="language-switch" aria-label="Language"><a href="/how-it-works/" lang="en" hreflang="en" aria-current="page">English</a> / <a href="/ja/how-it-works/" lang="ja" hreflang="ja">日本語</a></nav>
-    <span>&copy; 2026 Jin AI</span>
+  <div class="wrap">
+    <div class="footer-main">
+      <a class="brand" href="../"><img src="../brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
+      <div class="footer-column"><h2>Product</h2><a href="./" aria-current="page">How it works</a><a href="../security/">Security</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="mailto:hello@jinai.md">hello@jinai.md</a></div>
+      <div class="footer-column"><h2>Legal</h2><a href="../privacy/">Privacy</a><a href="../accessibility/">Accessibility</a></div>
+    </div>
+    <div class="footer-bottom">
+      <p>Visits are counted with Cloudflare Web Analytics. No cookies.</p>
+      <span>&copy; 2026 Jin AI</span>
+      <nav class="language-switch" aria-label="Language"><a href="/how-it-works/" lang="en" hreflang="en" aria-current="page">English</a> / <a href="/ja/how-it-works/" lang="ja" hreflang="ja">日本語</a></nav>
+    </div>
   </div>
 </footer>
+<script type="module">
+const header = document.querySelector('header');
+const toggle = header.querySelector('.menu-toggle');
+const menu = document.getElementById('primary-menu');
+function closeMenu() {
+  toggle.setAttribute('aria-expanded', 'false');
+  menu.classList.remove('is-open');
+}
+header.classList.add('has-menu');
+toggle.hidden = false;
+toggle.addEventListener('click', () => {
+  const open = toggle.getAttribute('aria-expanded') !== 'true';
+  toggle.setAttribute('aria-expanded', String(open));
+  menu.classList.toggle('is-open', open);
+});
+menu.addEventListener('click', event => {
+  if (event.target.closest('a')) closeMenu();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+    closeMenu();
+    toggle.focus();
+  }
+});
+document.addEventListener('click', event => {
+  if (!header.contains(event.target)) closeMenu();
+});
+matchMedia('(min-width: 768px)').addEventListener('change', closeMenu);
+</script>
 <script>
 (()=>{
   const screens=document.querySelectorAll('.screen');

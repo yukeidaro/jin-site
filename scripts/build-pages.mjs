@@ -17,6 +17,7 @@ const files = [
   "ja/privacy/index.html",
   "ja/accessibility/index.html",
   "how-it-works/index.html",
+  "security/index.html",
   "privacy/index.html",
   "accessibility/index.html",
   "waitlist.mjs",
