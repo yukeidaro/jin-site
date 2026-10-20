@@ -300,10 +300,9 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       <h2 class="h2">When your best AI users leave, you start over.</h2>
     </div>
     <div class="problem-grid">
-      <figure class="problem-column" data-problem="owner" data-state="idle">
-        <span class="mono-label">Fig. 01</span>
+      <figure class="problem-column" data-problem="owner" data-state="idle" tabindex="0" aria-label="Figure: agents stop when their owner leaves.">
         <div class="problem-art">
-          <svg viewBox="0 0 420 320" role="img" aria-label="An owner connects four working agents. Removing the owner will cut their shared context." data-label-idle="An owner connects four working agents. Removing the owner will cut their shared context." data-label-changed="The owner has left. All four agents are dimmed, disconnected and stopped.">
+          <svg viewBox="0 0 420 320" role="img" aria-label="An accent-colored owner connects four working agents with grey lines and flowing accent lights." data-label-idle="An accent-colored owner connects four working agents with grey lines and flowing accent lights." data-label-playing="The owner is leaving. Four connections break in turn, each marked with an accent x, and the agents stop." data-label-changed="The owner has left. An accent x marks each of the four broken connections. All four agents are stopped.">
             <defs>
               <g id="problem-agent">
                 <path class="iso-base" d="M-43 24 0 0 43 24 43 36 0 61-43 36Z"/>
@@ -328,11 +327,15 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
                 <circle class="owner-light" r="2.5" style="offset-path:path('M210 184 90 259');--delay:-1.2s"/>
                 <circle class="owner-light" r="2.5" style="offset-path:path('M210 184 330 259');--delay:-1.8s"/>
               </g>
+              <path class="owner-stop" style="--step:0" d="M144 143 156 155M156 143 144 155"/>
+              <path class="owner-stop" style="--step:1" d="M264 143 276 155M276 143 264 155"/>
+              <path class="owner-stop" style="--step:2" d="M144 215.5 156 227.5M156 215.5 144 227.5"/>
+              <path class="owner-stop" style="--step:3" d="M264 215.5 276 227.5M276 215.5 264 227.5"/>
             </g>
-            <g transform="translate(90 80)"><g class="owner-agent" style="--step:0"><use href="#problem-agent"/></g><path class="owner-stop" style="--step:0" d="M9 3 22 16M22 3 9 16"/></g>
-            <g transform="translate(330 80)"><g class="owner-agent" style="--step:1"><use href="#problem-agent"/></g><path class="owner-stop" style="--step:1" d="M9 3 22 16M22 3 9 16"/></g>
-            <g transform="translate(90 225)"><g class="owner-agent" style="--step:2"><use href="#problem-agent"/></g><path class="owner-stop" style="--step:2" d="M9 3 22 16M22 3 9 16"/></g>
-            <g transform="translate(330 225)"><g class="owner-agent" style="--step:3"><use href="#problem-agent"/></g><path class="owner-stop" style="--step:3" d="M9 3 22 16M22 3 9 16"/></g>
+            <g transform="translate(90 80)"><g class="owner-agent" style="--step:0"><use href="#problem-agent"/></g></g>
+            <g transform="translate(330 80)"><g class="owner-agent" style="--step:1"><use href="#problem-agent"/></g></g>
+            <g transform="translate(90 225)"><g class="owner-agent" style="--step:2"><use href="#problem-agent"/></g></g>
+            <g transform="translate(330 225)"><g class="owner-agent" style="--step:3"><use href="#problem-agent"/></g></g>
             <g transform="translate(210 168)">
               <path class="iso-base" d="M-43 0 0-25 43 0 43 14 0 39-43 14Z"/>
               <path d="M-43 0 0 25 43 0M0 25V39"/>
@@ -347,36 +350,58 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
           </svg>
         </div>
         <figcaption><h3>Agents stop working</h3><p>When the person who built them leaves, their agents lose the context they ran on.</p></figcaption>
-        <button class="btn problem-action" type="button" aria-controls="problem-owner-status" hidden><span data-action-idle>Remove owner</span><span data-action-changed hidden>Reset</span></button>
-        <p class="problem-status" id="problem-owner-status" aria-live="polite" aria-atomic="true" data-status-idle="Owner connected. Four agents working." data-status-changed="Owner removed. Four agents stopped.">Owner connected. Four agents working.</p>
+        <p class="problem-status" id="problem-owner-status" aria-live="polite" aria-atomic="true" data-status-idle="Owner connected. Four agents working." data-status-playing="The owner is leaving. Connections are breaking one by one." data-status-changed="The owner has left. Four connections are broken and all four agents have stopped.">Owner connected. Four agents working.</p>
       </figure>
-      <figure class="problem-column" data-problem="handover" data-state="idle">
-        <span class="mono-label">Fig. 02</span>
+      <figure class="problem-column" data-problem="handover" data-state="idle" tabindex="0" aria-label="Figure: a successor rebuilds context, rules, tools and exceptions from scratch.">
         <div class="problem-art">
-          <svg viewBox="0 0 420 320" role="img" aria-label="The predecessor has four layers of context and an output sheet. The successor has only an empty base." data-label-idle="The predecessor has four layers of context and an output sheet. The successor has only an empty base." data-label-changed="Only the output reached the successor. Context, rules, tools and exceptions stayed behind. The successor is rebuilding.">
+          <svg viewBox="0 0 420 320" role="img" aria-label="The predecessor has four named layers and an output sheet. The successor has only an empty base." data-label-idle="The predecessor has four named layers and an output sheet. The successor has only an empty base." data-label-playing="Only the output moves to the successor, who rebuilds context, rules, tools and exceptions one layer at a time. The original layers stay behind." data-label-changed="Only the output was handed over. The successor rebuilt context, rules, tools and exceptions from scratch. The predecessor's four layers remain, dimmed.">
             <defs>
               <g id="problem-layer">
-                <path class="iso-face" d="M0-28 58 5 58 20 0 53-58 20-58 5Z"/>
-                <path d="M-58 5 0 38 58 5M0 38V53"/>
+                <path class="iso-face" d="M0-23 46 3 46 15 0 42-46 15-46 3Z"/>
+                <path d="M-46 3 0 30 46 3M0 30V42"/>
               </g>
               <g id="problem-stack-base">
-                <path class="iso-base" d="M0-38 72 3 72 18 0 60-72 18-72 3Z"/>
-                <path d="M-72 3 0 45 72 3M0 45V60"/>
+                <path class="iso-base" d="M0-34 64 3 64 18 0 55-64 18-64 3Z"/>
+                <path d="M-64 3 0 40 64 3M0 40V55"/>
               </g>
             </defs>
-            <use href="#problem-stack-base" x="110" y="242"/>
-            <use href="#problem-stack-base" x="310" y="242"/>
+            <use href="#problem-stack-base" x="130" y="242"/>
+            <use href="#problem-stack-base" x="284" y="242"/>
             <g class="handover-layers">
-              <g transform="translate(110 196)"><use href="#problem-layer"/><text transform="translate(-50 18) rotate(30)">Exceptions</text></g>
-              <g transform="translate(110 160)"><use href="#problem-layer"/><text transform="translate(-50 18) rotate(30)">Tools</text></g>
-              <g transform="translate(110 124)"><use href="#problem-layer"/><text transform="translate(-50 18) rotate(30)">Rules</text></g>
-              <g transform="translate(110 88)"><use href="#problem-layer"/><text transform="translate(-50 18) rotate(30)">Context</text></g>
+              <use href="#problem-layer" x="130" y="196"/>
+              <use href="#problem-layer" x="130" y="160"/>
+              <use href="#problem-layer" x="130" y="124"/>
+              <use href="#problem-layer" x="130" y="88"/>
             </g>
-            <path class="handover-arc" d="M142 45C224 10 326 75 310 184M305 176 310 184 317 178"/>
-            <g transform="translate(310 212)">
-              <path class="handover-rebuild" pathLength="1" d="M-49 0 0-28 49 0 0 28-49 0V29L0 57 49 29V0M0 28V57M-49 15 0 43 49 15"/>
+            <g class="handover-labels">
+              <path class="handover-leader" d="M76 91H82M76 127H82M76 163H82M76 199H82"/>
+              <text x="4" y="95">Context</text>
+              <text x="4" y="131">Rules</text>
+              <text x="4" y="167">Tools</text>
+              <text x="4" y="203">Exceptions</text>
             </g>
-            <g transform="translate(110 50)">
+            <path class="handover-arc" d="M162 45C236 10 310 102 284 246M280 237 284 246 292 240"/>
+            <g class="handover-rebuild" style="--step:0" transform="translate(284 196)" data-layer="context">
+              <defs><mask id="problem-rebuild-context" maskUnits="userSpaceOnUse" x="-50" y="-28" width="100" height="76"><path class="rebuild-trace" pathLength="1" d="M-46 3 0-23 46 3 0 30-46 3V15L0 42 46 15V3M0 30V42"/></mask></defs>
+              <g class="rebuild-shape"><path class="rebuild-outline" mask="url(#problem-rebuild-context)" d="M-46 3 0-23 46 3 0 30-46 3V15L0 42 46 15V3M0 30V42"/></g>
+              <path class="handover-leader" d="M48 3H52"/><text x="56" y="7">Context</text>
+            </g>
+            <g class="handover-rebuild" style="--step:1" transform="translate(284 160)" data-layer="rules">
+              <defs><mask id="problem-rebuild-rules" maskUnits="userSpaceOnUse" x="-50" y="-28" width="100" height="76"><path class="rebuild-trace" pathLength="1" d="M-46 3 0-23 46 3 0 30-46 3V15L0 42 46 15V3M0 30V42"/></mask></defs>
+              <g class="rebuild-shape"><path class="rebuild-outline" mask="url(#problem-rebuild-rules)" d="M-46 3 0-23 46 3 0 30-46 3V15L0 42 46 15V3M0 30V42"/></g>
+              <path class="handover-leader" d="M48 3H52"/><text x="56" y="7">Rules</text>
+            </g>
+            <g class="handover-rebuild" style="--step:2" transform="translate(284 124)" data-layer="tools">
+              <defs><mask id="problem-rebuild-tools" maskUnits="userSpaceOnUse" x="-50" y="-28" width="100" height="76"><path class="rebuild-trace" pathLength="1" d="M-46 3 0-23 46 3 0 30-46 3V15L0 42 46 15V3M0 30V42"/></mask></defs>
+              <g class="rebuild-shape"><path class="rebuild-outline" mask="url(#problem-rebuild-tools)" d="M-46 3 0-23 46 3 0 30-46 3V15L0 42 46 15V3M0 30V42"/></g>
+              <path class="handover-leader" d="M48 3H52"/><text x="56" y="7">Tools</text>
+            </g>
+            <g class="handover-rebuild" style="--step:3" transform="translate(284 88)" data-layer="exceptions">
+              <defs><mask id="problem-rebuild-exceptions" maskUnits="userSpaceOnUse" x="-50" y="-28" width="100" height="76"><path class="rebuild-trace" pathLength="1" d="M-46 3 0-23 46 3 0 30-46 3V15L0 42 46 15V3M0 30V42"/></mask></defs>
+              <g class="rebuild-shape"><path class="rebuild-outline" mask="url(#problem-rebuild-exceptions)" d="M-46 3 0-23 46 3 0 30-46 3V15L0 42 46 15V3M0 30V42"/></g>
+              <path class="handover-leader" d="M48 3H52"/><text x="56" y="7">Exceptions</text>
+            </g>
+            <g transform="translate(130 50)">
               <g class="handover-output">
                 <path class="iso-face" d="M0-19 33 0 33 5 0 24-33 5-33 0Z"/>
                 <path d="M-33 0 0 19 33 0M-19-1 2 11M-11-6 11 6M-2-11 20 1"/>
@@ -385,11 +410,9 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
           </svg>
         </div>
         <figcaption><h3>Successor rebuilds from scratch</h3><p>The output gets handed over. The context, rules and judgment behind it do not.</p></figcaption>
-        <button class="btn problem-action" type="button" aria-controls="problem-handover-status" hidden><span data-action-idle>Try handover</span><span data-action-changed hidden>Reset</span></button>
-        <p class="problem-status" id="problem-handover-status" aria-live="polite" aria-atomic="true" data-status-idle="Four layers stay with the predecessor. The successor has an empty base." data-status-changed="Output handed over. Context, rules, tools and exceptions left behind. Successor rebuilding.">Four layers stay with the predecessor. The successor has an empty base.</p>
+        <p class="problem-status" id="problem-handover-status" aria-live="polite" aria-atomic="true" data-status-idle="Four layers stay with the predecessor. The successor has an empty base." data-status-playing="Only the output is handed over. The successor rebuilds context, rules, tools and exceptions from scratch." data-status-changed="Only the output was handed over. The successor rebuilt all four layers from scratch. The original layers stayed behind.">Four layers stay with the predecessor. The successor has an empty base.</p>
       </figure>
-      <figure class="problem-column" data-problem="teams" data-state="idle">
-        <span class="mono-label">Fig. 03</span>
+      <figure class="problem-column" data-problem="teams" data-state="idle" tabindex="0" aria-label="Figure: separate teams keep their workflows hidden.">
         <div class="problem-art">
           <svg viewBox="0 0 420 320" role="img" aria-label="Three separate teams have partly hidden workflows. One team has a faint accent hint." data-label-idle="Three separate teams have partly hidden workflows. One team has a faint accent hint.">
             <defs>
@@ -437,8 +460,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
           </div>
         </div>
         <figcaption><h3>Best practice stays hidden</h3><p>One team finds a workflow that works. The other teams never see it.</p></figcaption>
-        <button class="btn problem-action" type="button" aria-controls="problem-teams-status" hidden>Explore teams</button>
-        <p class="problem-status" id="problem-teams-status" aria-live="polite" aria-atomic="true">Three teams. Their workflows are partly hidden.</p>
+        <p class="problem-status" id="problem-teams-status" aria-live="polite" aria-atomic="true" data-status-idle="Three teams. Their workflows are partly hidden.">Three teams. Their workflows are partly hidden.</p>
       </figure>
     </div>
   </div>

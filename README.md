@@ -130,23 +130,33 @@ Owner removal stops four agents; handover moves only the output and leaves
 the successor rebuilding; opening separate teams reveals one unshared accent
 workflow. `problem.js` manages independent states without dependencies.
 
-Owner removal and handover finish within 1.2 seconds, then offer Reset.
+There are no figure numbers or action/reset buttons. Each named figure is
+focusable and plays once when half visible, resets after leaving view, and
+replays on mouse hover, tap or keyboard focus. Replay input during a running
+sequence is ignored, so transitions cannot stack.
+The owner and flowing lights are accent-colored from the start. After the
+owner lifts away, four accent x marks appear on the grey connections at
+200ms intervals, then the agents dim. Handover moves only the output, then
+draws four dashed successor layers in Context, Rules, Tools and Exceptions
+order. Both stacks have horizontal leader labels; the originals remain dimmed.
+These sequences finish in 1.75 and 3.6 seconds respectively.
 Team platforms are native HTML buttons outside the SVG image role, reachable
-by keyboard, mouse and touch. Explore teams opens them at 1.2-second intervals,
+by keyboard, mouse and touch. View entry opens them at 1.2-second intervals,
 ending with the accent team. Direct selection cancels that sequence.
 Repeated input cannot stack transitions. Every state updates the SVG's
-accessible description and a polite live status. All display and accessible
-strings stay in HTML for J1 to translate.
+accessible description and a polite live status. Display and accessible
+strings stay in each page's HTML, including the Japanese state descriptions.
 
 Light flow pauses when offscreen or when the tab is hidden. Reduced motion
-removes animation and changes state immediately; Explore teams opens the
-accent team directly. With JavaScript unavailable, the stills and explanatory
-copy remain, and inactive controls stay hidden with their space reserved.
+removes animation and always shows the end states, including the accent team.
+With JavaScript unavailable, the idle stills and explanatory copy remain,
+and team controls stay hidden.
 Japanese Problem figures preserve the English SVG geometry and shared
 controller, translating captions, layer labels, controls and live states.
 The validator enforces SVG, component and controller parity on all seven
 page pairs; missing Japanese routes and broken alternates are failures.
-Browser evidence and screenshots are in `.copilot-runs/notes/e6.md`.
+E6b behavior, performance evidence and bilingual screenshots are recorded in
+`.copilot-runs/notes/e6b.md`.
 
 ## Japanese typesetting
 
