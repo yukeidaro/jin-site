@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<script id="jin-page-paint">
+document.documentElement.classList.add("js-nav");
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("js-reveal");
+</script>
 <script id="jin-language-choice">
 (() => {
   if (location.pathname !== "/") return;
@@ -192,7 +196,7 @@
 <main>
 <section class="hero">
   <div class="wrap">
-    <h1>Make every employee your best AI user.</h1>
+    <h1 class="hero-reveal"><span style="--word:0">Make</span> <span style="--word:1">every</span> <span style="--word:2">employee</span> <span style="--word:3">your</span> <span style="--word:4">best</span> <span style="--word:5">AI</span> <span style="--word:6">user.</span></h1>
 
     <div class="hero-actions">
     <!-- GENERATED:CTA_HERO:START -->
@@ -383,21 +387,21 @@
   <div class="wrap">
     <div class="section-head split">
       <div>
-        <span class="mono-label">HOW IT WORKS</span>
+        <span class="mono-label">How it works</span>
         <h2 class="h2">How it works</h2>
       </div>
       <p class="harness-definition">An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.</p>
     </div>
     <div class="home-columns">
       <div>
-        <h3 class="how-audience">EMPLOYEE</h3>
+        <h3 class="how-audience">Employee</h3>
         <ol class="harness-steps">
           <li><span class="mono-label">01</span><div><h4>Connect once.</h4><p>Jin AI connects to your AI tools through MCP.</p></div></li>
           <li><span class="mono-label">02</span><div><h4>See every harness by category.</h4><p>Skills, instructions, memory and MCP settings, sorted for each person.</p></div></li>
         </ol>
       </div>
       <div>
-        <h3 class="how-audience">ADMIN</h3>
+        <h3 class="how-audience">Admin</h3>
         <ol class="harness-steps" start="3">
           <li><span class="mono-label">03</span><div><h4>See it by role.</h4><p>Which harnesses each role uses, and how often.</p></div></li>
           <li><span class="mono-label">04</span><div><h4>Decide what can move.</h4><p>Parts marked confidential connect only to the AI tools you approve.</p></div></li>

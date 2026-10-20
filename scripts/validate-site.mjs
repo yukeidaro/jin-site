@@ -241,8 +241,8 @@ const homeSections = [...home.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/
 check(homeSections.length === 7 && homeSections[0]?.[1].includes('class="hero"') &&
   homeSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() ===
   "problem,solution,how,data,pilot,demo", "Root must contain only hero, problem, solution, how, data, draft pilot and demo sections, in order.");
-check(count(home, /<h1>/g) === 1 &&
-  home.includes("<h1>Make every employee your best AI user.</h1>"),
+check(count(home, /<h1\b/g) === 1 &&
+  home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "Make every employee your best AI user.",
   "Root must use the approved H1 once.");
 const homeTitle = "Jin AI | Make every employee your best AI user";
 check(home.includes(`<title>${homeTitle}</title>`), "Root must use the approved title.");
@@ -414,9 +414,9 @@ check(howSection.includes('<h2 class="h2">How it works</h2>') &&
   howSection.includes(`<p class="harness-definition">${content.product.harness_definition}</p>`) &&
   howSection.indexOf('class="harness-definition"') < howSection.indexOf('class="home-columns"'),
   "How it works must define an AI harness directly above its columns.");
-check(howSection.includes('<span class="mono-label">HOW IT WORKS</span>') &&
-  howSection.includes('class="how-audience">EMPLOYEE</h3>') &&
-  howSection.includes('class="how-audience">ADMIN</h3>') &&
+check(howSection.includes('<span class="mono-label">How it works</span>') &&
+  howSection.includes('class="how-audience">Employee</h3>') &&
+  howSection.includes('class="how-audience">Admin</h3>') &&
   howSection.includes('href="how-it-works/">How it works &rarr;</a>') &&
   !/<(?:img|figure)\b|class="screen"/.test(howSection),
   "How it works must include its label, Employee, Admin and text link, without screens.");
@@ -440,7 +440,7 @@ for (const [page, source, prefix] of [["How it works", workflowSections.map((mat
     const section = workflowSections.find((match) => match[1] === audience.toLowerCase());
     const body = section?.[3] || "";
     const frame = body.match(/(<div class="screen"[^>]*>)([\s\S]*?)<\/div>/);
-    check(body.includes(`<h2 class="how-audience" id="${section?.[2]}">${audience.toUpperCase()}</h2>`) &&
+    check(body.includes(`<h2 class="how-audience" id="${section?.[2]}">${audience}</h2>`) &&
       body.includes('<div class="section-head split">') &&
       body.includes('<div class="product-frame moving-frame">') &&
       body.indexOf('class="harness-steps"') < body.indexOf('class="screen"') &&
@@ -482,9 +482,9 @@ for (const [attribute, name] of [["name", "description"], ["property", "og:descr
     `The companion page must use the approved ${name}.`);
 }
 check(howPage.includes(`<p class="harness-definition">${content.product.harness_definition}</p>`) &&
-  howPage.includes('<p class="mono-label">HOW IT WORKS</p>') &&
-  howPage.includes('<h2 class="how-audience" id="employee-heading">EMPLOYEE</h2>') &&
-  howPage.includes('<h2 class="how-audience" id="admin-heading">ADMIN</h2>') &&
+  howPage.includes('<p class="mono-label">How it works</p>') &&
+  howPage.includes('<h2 class="how-audience" id="employee-heading">Employee</h2>') &&
+  howPage.includes('<h2 class="how-audience" id="admin-heading">Admin</h2>') &&
   count(howPage, /<ol class="harness-steps"/g) === 2 && howPage.includes('start="3"'),
   "The companion page must define an AI harness and separate Employee and Admin steps.");
 const companionSteps = [...howPage.matchAll(/<li><span class="mono-label">(0[1-4])<\/span><div><h3>([^<]+)<\/h3>([\s\S]*?)<\/div><\/li>/g)];
@@ -522,7 +522,7 @@ check(security.includes('<html lang="en">') &&
   security.includes(`<title>${securityTitle}</title>`) &&
   count(security, /<h1\b/g) === 1 &&
   security.includes(`<h1>${content.data_principles.headline}</h1>`) &&
-  security.includes('<p class="mono-label">SECURITY</p>') &&
+  security.includes('<p class="mono-label">Security</p>') &&
   security.includes('<main data-draft>') &&
   count(security, /<span class="mono-label draft-tag">Draft copy<\/span>/g) === 1,
   "Security must have its approved title, English language, H1, label and one visible draft tag covering its body.");
@@ -706,12 +706,12 @@ for (const [relativePath, source] of [
 }
 
 const draftPages = [
-  ["company/", company, "Company", "Company", "COMPANY",
+  ["company/", company, "Company", "Company", "Company",
     "Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company.",
-    "Draft copy COMPANY Company Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Request a demo"],
-  ["resources/ai-harness/", harness, "What is an AI harness", "What is an AI harness?", "RESOURCES",
+    "Draft copy Company Company Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Request a demo"],
+  ["resources/ai-harness/", harness, "What is an AI harness", "What is an AI harness?", "Resources",
     content.product.harness_definition,
-    `Draft copy RESOURCES What is an AI harness? ${content.product.harness_definition} Instructions: how the agent should work for this role. Skills: procedures it can repeat. Memory: what it keeps across sessions. Connected tools: the MCP servers and apps it can use. For example: CLAUDE.md, skills, memory files and MCP settings. Why it matters The harnesses that work are built by a few people, and they hold both how a team got faster and the company's confidential context. Jin AI keeps them visible, safe and reusable. How it works &rarr;`]
+    `Draft copy Resources What is an AI harness? ${content.product.harness_definition} Instructions: how the agent should work for this role. Skills: procedures it can repeat. Memory: what it keeps across sessions. Connected tools: the MCP servers and apps it can use. For example: CLAUDE.md, skills, memory files and MCP settings. Why it matters The harnesses that work are built by a few people, and they hold both how a team got faster and the company's confidential context. Jin AI keeps them visible, safe and reusable. How it works &rarr;`]
 ];
 for (const [route, source, title, heading, label, description, expectedCopy] of draftPages) {
   const main = source.match(/<main\b([^>]*)>([\s\S]*?)<\/main>/);
@@ -759,6 +759,76 @@ check(harness.includes('<a class="text-link" href="/how-it-works/">How it works 
 
 const baseCss = await text("base.css");
 const englishCss = await text("theme-en.css");
+const paperCss = await text("site.css");
+function cssBlock(source, header) {
+  const start = source.indexOf(header);
+  if (start < 0) return "";
+  const opening = source.indexOf("{", start);
+  let depth = 1;
+  let end = opening + 1;
+  while (depth && end < source.length) {
+    if (source[end] === "{") depth++;
+    if (source[end] === "}") depth--;
+    end++;
+  }
+  return depth === 0 ? source.slice(opening + 1, end - 1) : "";
+}
+const paintScript = home.match(/<head>[\s\S]*?<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] || "";
+check(paintScript.includes('document.documentElement.classList.add("js-nav")') &&
+  /if\s*\(!matchMedia\("\(prefers-reduced-motion: reduce\)"\)\.matches\)\s*document\.documentElement\.classList\.add\("js-reveal"\)/.test(paintScript),
+  "Home reveal must opt in through a reduced-motion-guarded inline head script.");
+const revealHeading = home.match(/<h1 class="hero-reveal">([\s\S]*?)<\/h1>/)?.[1] || "";
+check(count(revealHeading, /<span style="--word:[0-6]">[^<]+<\/span>/g) === 7 &&
+  !/aria-hidden|aria-label/.test(revealHeading) &&
+  [...revealHeading.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "0123456",
+  "Home H1 must contain seven ordered, readable word spans.");
+const revealCss = cssBlock(englishCss, "@media (prefers-reduced-motion: no-preference)");
+check(revealCss.includes(".js-reveal .hero-reveal > span") &&
+  revealCss.includes(".js-reveal .hero-reveal + .hero-actions") &&
+  /animation:\s*hero-word-in[^;]*var\(--ease\)/.test(revealCss) &&
+  /animation:\s*hero-actions-in[^;]*var\(--ease\)/.test(revealCss) &&
+  /opacity:\s*\.001/.test(revealCss) && /filter:\s*blur\(8px\)/.test(revealCss) &&
+  /transform:\s*translateY\(\.3em\)/.test(revealCss) &&
+  cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(
+    ".hero-reveal > span, .hero-reveal + .hero-actions { animation: none; opacity: 1; filter: none; transform: none; }"),
+  "Hero reveal must be JS-class and motion-media guarded, with immediate reduced-motion final states.");
+for (const animation of ["hero-word-in", "hero-actions-in"]) {
+  const keyframes = cssBlock(revealCss, `@keyframes ${animation}`);
+  const properties = [...keyframes.matchAll(/([\w-]+)\s*:/g)].map(match => match[1]);
+  check(properties.length > 0 && properties.every(property => ["opacity", "filter", "transform"].includes(property)),
+    `${animation} may animate only opacity, filter and transform.`);
+}
+check(baseCss.includes("--t-label: 500 13px/1.4 var(--font-sans)") &&
+  englishCss.includes(".btn-p { background: var(--accent); color: var(--on-accent); }") &&
+  englishCss.includes(".btn-p:hover, .btn-p:active { background: var(--accent-strong); }") &&
+  englishCss.includes(".pilot-card .btn-p { background: var(--on-accent); color: var(--accent); }") &&
+  baseCss.includes("outline: 2px solid var(--accent-light); outline-offset: 4px") &&
+  baseCss.includes(".signup button:disabled { opacity: 1; background: var(--accent-strong); color: var(--on-accent);"),
+  "Labels, primary/inverted buttons, focus and readable disabled states must use the approved tokens.");
+for (const [route, source] of englishPages) {
+  check(source.match(/<head>([\s\S]*?)<\/head>/)?.[1].includes('document.documentElement.classList.add("js-nav")') &&
+    englishCss.includes(".js-nav .nav-panel, .has-menu .nav-panel { position: absolute;") &&
+    englishCss.includes(".js-nav header:not(.has-menu) .header-menu { display: none; }"),
+    `/${route} must establish enhanced header layout before first paint.`);
+}
+for (const [filename, css] of [
+  ["base.css", baseCss], ["theme-en.css", englishCss], ["site.css", paperCss],
+  ["agent/index.html", agent.match(/<style>([\s\S]*?)<\/style>/)?.[1] || ""]
+]) {
+  for (const [, selectors, declarations] of css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (/var\(--(?:font-mono|mono)\)/.test(declarations)) {
+      check(selectors.split(",").every(selector => /^(?:\.workflow code|code|\.files b|\.md \.path|\.md pre)$/.test(selector.trim())),
+        `${filename}: monospace is reserved for code and file names, not ${selectors.trim()}.`);
+    }
+    check(!/text-transform:\s*uppercase/.test(declarations),
+      `${filename}: site labels must not be transformed to uppercase.`);
+  }
+}
+for (const [route, source] of englishPages) {
+  for (const [, label] of source.matchAll(/<(?:span|p|h[23])\b[^>]*class="(?:mono-label[^"]*|how-audience|mobile-group-label)"[^>]*>([^<]+)</g)) {
+    check(!/[A-Z]{2}/.test(label), `/${route}: label must use sentence case: ${label}`);
+  }
+}
 const gradientStops = ["accent-surface-from", "accent-surface-to"].map(name =>
   baseCss.match(new RegExp(`--${name}:\\s*(#[\\da-f]{6})`, "i"))?.[1]);
 function whiteContrast(hex) {

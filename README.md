@@ -85,6 +85,21 @@ read-only and was not changed. Japanese frames are unchanged pending J1.
 Performance measurements, screenshots and the recommendation are recorded in
 `.copilot-runs/notes/e3.md`. No new runtime or build dependencies are required.
 
+The English home heading reveals once, word by word, followed by its action
+row. Default HTML/CSS is fully visible; an inline head script opts into the
+reveal only without reduced motion. Only opacity, blur and transform animate.
+The heading retains its exact text and accessible name. English headers opt
+into their enhanced layout before first paint to avoid a late menu collapse;
+navigation still has its existing no-JavaScript fallback.
+
+English primary demo buttons use white on `--accent`, with `--accent-strong`
+hover/active and disabled states and the offset `--accent-light` focus ring.
+On a pilot surface, primary buttons invert to white with accent text.
+Site labels use sentence-case Inter, including the Agent reference and shared
+paper-theme labels. Monospace is reserved for code and file names. Japanese
+reveal and button adoption remains with J1. E4 measurements and screenshots
+are in `.copilot-runs/notes/e4.md`.
+
 ## Content rules
 
 - Product name: **Jin AI**. It is a B2B product for AI-forward companies.
@@ -124,8 +139,8 @@ Performance measurements, screenshots and the recommendation are recorded in
 - Avoid supercharge, unlock, seamless, effortless, revolutionize, game-changer,
   empower, leverage, cutting-edge and next-level. Do not repeat "No more X"
   headlines or claim nobody else does this.
-- Keep the paper background, Source Serif headings, Inter body, JetBrains Mono
-  labels, 4px radius and existing spacing. The only accent color is `#a84a1c`.
+- Keep the paper background, Source Serif headings, Inter body and labels,
+  JetBrains Mono code, 4px radius and existing spacing. The only accent color is `#a84a1c`.
   No gradients, glows, new blurs or shadows, emoji, rows of identical icon
   cards, numbered circles, positioning grids or letter-spaced all-caps labels.
   Prefer prose, lists, tables and real product screenshots. Use one dominant
@@ -138,6 +153,9 @@ Performance measurements, screenshots and the recommendation are recorded in
   `base.css`, centered on `#a84a1c`. White text must meet 4.5:1 at both stops.
   Company and AI harness article copy has one visible Draft copy tag covering
   its `data-draft` main. Menu descriptions are short draft labels without tags.
+- E4 exception (Yu, 2026-10-20): the English home hero may use a small,
+  reduced-motion-aware reveal blur. Labels use 500-weight Inter at 13px,
+  sentence case and no added tracking. English primary buttons are vermilion.
 - Do not add `FAQPage` schema, active offers, ratings or reviews unless they
   become truthful and applicable.
 

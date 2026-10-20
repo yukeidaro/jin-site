@@ -7,7 +7,7 @@
   --on-accent: #FFFFFF;
   --font-sans: "Inter", "SF Pro Display", -apple-system, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --t-label: 400 12px/1.4 var(--font-mono);
+  --t-label: 500 13px/1.4 var(--font-sans);
   --r-pill: 9999px;
   --r-s: 4px;
   --r-m: 6px;
@@ -45,7 +45,7 @@ img, svg { display: block; max-width: 100%; }
 .language-switch { display: flex; align-items: center; gap: var(--s-2); font-size: 13px; white-space: nowrap; }
 .language-switch a { text-decoration: none; }
 .language-switch [aria-current] { color: var(--text-1); }
-.mono-label { font: var(--t-label); letter-spacing: .04em; text-transform: uppercase; }
+.mono-label { font: var(--t-label); letter-spacing: 0; }
 
 .signup { display: grid; gap: var(--s-6); text-align: left; }
 .signup-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); align-items: start; }
@@ -58,7 +58,7 @@ img, svg { display: block; max-width: 100%; }
 .signup-error, .signup-status[data-kind="error"] { color: var(--accent-light); }
 .signup-error { font-size: 13px; overflow-wrap: anywhere; }
 .signup button { width: 100%; justify-content: center; }
-.signup button:disabled { opacity: .6; cursor: wait; }
+.signup button:disabled { opacity: 1; background: var(--accent-strong); color: var(--on-accent); cursor: wait; }
 .signup-trap { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; white-space: nowrap; }
 .waitnote, .signup-privacy, .waitalt { color: var(--text-3); font-size: 12px; line-height: 1.4; }
 .signup .waitnote, .signup-privacy { text-align: center; }
