@@ -13,6 +13,10 @@
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --wrap:1120px;
 }
+:root:lang(ja){
+  --sans:"Inter","Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+  --serif:"Source Serif 4","Noto Serif JP",serif;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
@@ -220,6 +224,10 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 
 /* ── audience switch ─────────────────────────────────────────────────────── */
 .navright{display:flex;align-items:center;gap:12px}
+.language-switch{display:flex;align-items:center;gap:5px;white-space:nowrap;font:400 12px/1.5 var(--sans);flex:none}
+.language-switch a{text-decoration:none;color:var(--ink-3)}
+.language-switch a[aria-current="page"]{font-weight:600;color:var(--ink)}
+.language-switch a:hover{color:var(--accent)}
 .audience-switch{display:inline-flex;border:1px solid var(--edge);border-radius:var(--r);overflow:hidden;font-family:var(--mono);font-size:11px;background:#fff;flex:none}
 .audience-switch a{padding:7px 11px;text-decoration:none;color:var(--ink-3);letter-spacing:.04em;line-height:1.2;transition:.15s;white-space:nowrap}
 .audience-switch a+a{border-left:1px solid var(--line-2)}
@@ -332,6 +340,7 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 .read-more{display:inline-block;margin-top:36px}
 .data-promises{list-style:none;display:grid;gap:10px;margin-top:28px;font-size:18px}
 .home-page .final h2{margin-top:0}
+:lang(ja) :is(.hero h1,.h2,.final h2,.legal-copy h1,.legal-copy h2){line-height:1.4;letter-spacing:normal}
 .home-page .signup label{font:400 13.5px/1.7 var(--sans);letter-spacing:normal;text-transform:none}
 .home-page .signup input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .home-page .signup .waitnote{letter-spacing:normal}
@@ -369,6 +378,8 @@ footer{padding:54px 0 44px;color:var(--ink-3);font-size:13px}
 }
 @media(max-width:640px){
   .home-page .navright .btn{display:inline-flex}
+  .home-page .nav{gap:8px}
+  .home-page .navright .btn{padding:9px 10px;font-size:12px}
 }
 @media(prefers-reduced-motion:reduce){
   html:has(.home-page){scroll-behavior:auto}

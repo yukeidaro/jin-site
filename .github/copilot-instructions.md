@@ -27,15 +27,16 @@ CTA: **Request a demo**. Note: **We will email you to set up a demo.** Keep the 
 ## Facts and status
 
 - `agent/content.json` is the single fact source. Change facts there, then run `node scripts/generate-aeo.mjs`. Never edit inside `GENERATED:*` markers by hand.
-- Human pages (`/`, `/how-it-works/`) do not show status labels (Yu, 2026-10-19). `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`. Never claim a Building or Next item is available today in any copy.
+- Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19). `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`. Never claim a Building or Next item is available today in any copy.
 - No prices anywhere on the site, including machine-readable formats.
 - Do not publish currency amounts, Pro, Team or free-version offers, Cloud Sync, Google Drive or Notion connections, PC and phone sync, Discord, Baby Voice Recorder, TikTok, market size, competitor names, pilot candidate counts, Nov 13, know-how or DelightX. These are exclusions, not product facts. Keep `early_access.community.url` null.
 - Every number needs a source line directly under it. Do not invent metrics, testimonials, logos, ratings or user counts.
 
 ## Writing
 
-- English, plain, specific. Short sentences. Concrete scenes over abstractions.
-- No CJK characters, em dashes, en dashes or curly quotes.
+- Plain, specific English, or the approved Japanese copy on `/ja/`, `/ja/how-it-works/`, `/ja/privacy/` and `/ja/accessibility/` (Yu, 2026-10-20). Short sentences. Concrete scenes over abstractions.
+- CJK is required on the Japanese pages and forbidden in all other deployed files except the Japanese footer language-link text on English pages. Shared JavaScript keeps Japanese messages as Unicode escapes. No em dashes, en dashes or curly quotes in either language.
+- Keep each English/Japanese page pair structurally aligned, self-canonical, with reciprocal `en`, `ja` and `x-default` hreflang links and header/footer language switches. Generate both home-page CTA blocks from the same form facts; Japanese labels, surname-first order and country ordering must not change payload values or consent.
 - Banned words: supercharge, unlock, seamless, effortless, revolutionize, game-changer, empower, leverage, cutting-edge, next-level.
 - Do not repeat "No more X" headlines.
 - Do not claim nobody else does this. Say where Jin AI sits.
@@ -43,6 +44,7 @@ CTA: **Request a demo**. Note: **We will email you to set up a demo.** Keep the 
 ## Design
 
 - Keep the existing system: paper background, Source Serif headings, Inter body, JetBrains Mono labels, 4px radius, existing spacing.
+- Japanese pages add Noto Serif JP headings and Japanese body-font fallbacks; keep English fonts unchanged.
 - One accent color only: `#a84a1c`. Do not add new colors, gradients, glows, blurs, shadows beyond what exists, or emoji.
 - No rows of identical icon cards, numbered circles, 2x2 positioning charts or letter-spaced all-caps labels. Prefer prose, lists, tables and real product screenshots.
 - Vary weight: one dominant visual per section.

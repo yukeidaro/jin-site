@@ -1,19 +1,643 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="refresh" content="0;url=/">
-<title>Jin AI | Redirecting</title>
-<meta name="robots" content="noindex,follow">
-<link rel="canonical" href="https://jinai.md/">
-<link rel="icon" href="../brand/jin-mark.svg" type="image/svg+xml">
+<title>Jin AI | 全社員の AI の使い方を、底上げする</title>
+<meta name="description" content="Jin AI は、優れた社員がつくった AI ハーネスを、すべての社員にとって安全に、会社にとって再利用できる形にします。">
+<meta name="author" content="Jin AI">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<link rel="canonical" href="https://jinai.md/ja/">
+<link rel="alternate" hreflang="en" href="https://jinai.md/">
+<link rel="alternate" hreflang="ja" href="https://jinai.md/ja/">
+<link rel="alternate" hreflang="x-default" href="https://jinai.md/">
+<link rel="alternate" type="text/html" href="https://jinai.md/agent/" title="Jin AI for agents">
+<link rel="describedby" href="https://jinai.md/llms.txt">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-55 -87 500 500'%3E%3Crect x='-55' y='-87' width='500' height='500' fill='%23f5f3ef'/%3E%3Cg fill='%23252525'%3E%3Cpath d='M234 0h71L71 326H0Z'/%3E%3Cpath d='M248 129 211 180 317 326 389 326Z'/%3E%3C/g%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jin AI">
+<meta property="og:title" content="Jin AI | 全社員の AI の使い方を、底上げする">
+<meta property="og:description" content="Jin AI は、優れた社員がつくった AI ハーネスを、すべての社員にとって安全に、会社にとって再利用できる形にします。">
+<meta property="og:url" content="https://jinai.md/ja/">
+<meta property="og:image" content="https://jinai.md/shots/og-b2b.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Jin AI: Make every employee your best AI user">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jin AI | 全社員の AI の使い方を、底上げする">
+<meta name="twitter:description" content="Jin AI は、優れた社員がつくった AI ハーネスを、すべての社員にとって安全に、会社にとって再利用できる形にします。">
+<meta name="twitter:image" content="https://jinai.md/shots/og-b2b.png">
+<meta name="twitter:image:alt" content="Jin AI: Make every employee your best AI user">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Caveat:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../site.css">
 </head>
-<body>
-<main class="wrap">
-  <p><a href="/">Jin AI</a></p>
+<body class="home-page">
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="./"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
+    <nav class="navlinks" aria-label="ページ内の案内">
+      <a href="#how">仕組み</a>
+    </nav>
+    <div class="navright"><nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en">EN</a> / <a href="/ja/" lang="ja" hreflang="ja" aria-current="page">JA</a></nav>
+      <a class="btn btn-p" href="#demo">デモを申し込む</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap">
+    <h1>全社員の AI の使い方を、底上げする。</h1>
+
+    <div class="hero-actions">
+    <!-- GENERATED:CTA_HERO:START -->
+<div class="wait">
+      <a class="btn btn-p" href="#demo">デモを申し込む</a>
+    </div>
+<!-- GENERATED:CTA_HERO:END -->
+      <a class="text-link" href="#how">仕組みを見る</a>
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="wrap" id="benefits">
+    <h2 class="h2">優れた AI の使いこなしは、会社ではなく個人に残っている。</h2>
+    <div class="problem-grid">
+      <div class="problem-column">
+        <div class="art" role="img" aria-label="社内の社員が、ノート PC で AI ハーネスをつくる。そのハーネスが点線に沿って会社の外に出て、社員の個人の AI に移る。">
+<svg viewBox="0 0 480 330" id="sa-svg" aria-hidden="true">
+<rect x="20" y="50" width="250" height="250" rx="8" class="il"/>
+<text x="36" y="86" class="hw">Company</text>
+<circle cx="100" cy="168" r="12" class="il"/>
+<path d="M76 238 C76 204 124 204 124 238" class="il"/>
+<path d="M56 250 H244 M74 250 V292 M226 250 V292" class="il"/>
+<path d="M150 246 L158 206 H208 L200 246 Z M142 250 H212" class="il"/>
+<path d="M214 198 l9 -6 M216 212 l11 0 M212 186 l6 -9" class="ia sa-tick" stroke-width="1.8"/>
+<path id="sa-path" d="M184 192 C236 160 300 122 372 132" fill="none" stroke="none"/>
+<path d="M184 192 C236 160 300 122 372 132" class="ia sa-trail"/>
+<path d="M362 152 C344 152 344 124 366 122 C370 96 406 94 412 118 C434 116 438 152 416 152 Z" class="il"/>
+<text x="392" y="186" class="hw" text-anchor="middle">Personal AI</text>
+<g class="ia sa-spark" stroke-width="1.8"><path d="M424 104 l8 -8 M432 128 l11 1 M394 88 l1 -11"/></g>
+<g class="sa-bundle">
+ <g>
+  <path d="M-8 2 L6 -6 M-8 2 L6 10" class="ia"/>
+  <circle cx="-8" cy="2" r="4.5" class="iaf"/><circle cx="6" cy="-6" r="4.5" class="iaf"/><circle cx="6" cy="10" r="4.5" class="iaf"/>
+ </g>
+ <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.15;0.65;1"><mpath href="#sa-path"/></animateMotion>
+</g>
+</svg>
+        </div>
+        <h3>Shadow AI</h3>
+        <p>AI を使いこなす社員ほど、個人の AI をすでに使っていて、仕事の情報もそこに流れている。</p>
+      </div>
+      <div class="problem-column">
+        <div class="art" role="img" aria-label="社員が会社のドアから出ていき、役割ごとの AI ハーネスも一緒に出ていく。机は空になる。">
+<svg viewBox="0 0 480 330" id="ho-svg" aria-hidden="true">
+<path d="M270 120 V58 Q270 50 262 50 H28 Q20 50 20 58 V292 Q20 300 28 300 H262 Q270 300 270 292" class="il"/>
+<path d="M270 120 L302 132 V298 L270 292" class="il"/>
+<circle cx="292" cy="214" r="2.5" class="iaf" style="fill:var(--ink)"/>
+<text x="36" y="86" class="hw">Company</text>
+<path d="M44 240 H164 M58 240 V292 M150 240 V292" class="il"/>
+<path d="M88 236 L95 204 H137 L130 236 Z M82 240 H138" class="il"/>
+<g class="ho-ghost ig" stroke-dasharray="4 5"><circle cx="205" cy="152" r="12"/><path d="M187 220 C187 186 223 186 223 220 L221 248 H189 Z"/></g>
+<g class="ho-walk">
+ <circle cx="205" cy="152" r="12" class="il"/>
+ <path d="M187 220 C187 186 223 186 223 220 L221 248 H189 Z" class="il"/>
+ <path d="M199 248 V292" class="il ho-leg" id="ho-l1" stroke-width="3"/>
+ <path d="M211 248 V292" class="il ho-leg" id="ho-l2" stroke-width="3"/>
+ <path d="M222 206 L238 216" class="il"/>
+ <g class="ho-pulse">
+  <path d="M240 216 L254 208 M240 216 L254 224" class="ia"/>
+  <circle cx="240" cy="216" r="4.5" class="iaf"/><circle cx="254" cy="208" r="4.5" class="iaf"/><circle cx="254" cy="224" r="4.5" class="iaf"/>
+ </g>
+</g>
+</svg>
+        </div>
+        <h3>引き継ぎで消える</h3>
+        <p>人が辞めると、その人の AI の使い方も一緒に出ていく。どう動かしていたかを知る人は残らない。</p>
+      </div>
+      <div class="problem-column">
+        <div class="art" role="img" aria-label="人のマスが並び、トップパフォーマーだけが光っている。矢印でハーネスが 1 人ずつゆっくり渡り、その間にコストのバーが伸びていく。">
+<svg viewBox="0 0 480 330" id="ed-svg" aria-hidden="true">
+<defs>
+<pattern id="ed-hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="10" height="10" style="fill:var(--accent-50)"/><rect width="4" height="10" style="fill:var(--accent)"/></pattern>
+<marker id="ed-ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" style="stroke:var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+<clipPath id="ed-barclip"><rect x="92" y="296" width="330" height="20" rx="10"/></clipPath>
+</defs>
+<text x="30" y="28" class="hw">Top performer</text>
+<g id="ed-tiles"></g><g id="ed-arrows"></g>
+<text x="30" y="313" class="hw">Cost</text>
+<g clip-path="url(#ed-barclip)"><rect class="ed-bar" x="92" y="296" height="20" width="0" fill="url(#ed-hatch)"/></g>
+<rect x="92" y="296" width="330" height="20" rx="10" class="il"/>
+<path d="M432 290 l8 -8 M436 300 l11 -2" class="ia" stroke-width="1.8"/>
+</svg>
+        </div>
+        <h3>AI 研修</h3>
+        <p>全員に AI の使い方を教えるには、時間もお金もかかる。答えは、トップパフォーマーがすでに持っている。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="solution">
+  <div class="wrap">
+    <h2 class="h2">社員には、安全に。<br>会社には、再利用できる形で。</h2>
+    <div class="home-columns solution-copy">
+      <p>個人のコンテクストを安全に預け、安全に取り出せる。個人の AI でも使える。</p>
+      <p>機密は社内にとどめ、役割ごとの AI の使い方を見える化し、優れたハーネスを同僚や後任に引き継ぐ。</p>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2 class="h2">仕組み</h2>
+    <p class="harness-definition">AI ハーネスとは、AI エージェントを役割に合わせて働かせるための、指示・スキル・記憶・接続ツールの一式です。</p>
+    <div class="home-columns">
+      <div>
+        <h3 class="how-audience">社員</h3>
+        <div class="screen" role="img" aria-label="Jin AI の社員向けの画面。MCP の接続画面に並ぶ AI ツールの一覧を映し、次に、種類ごとに整理されたハーネスの部品と、それぞれの Can move と Confidential の表示を映します。">
+          <img class="screen-connect" src="../assets/demo/demo-1-connect.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+          <img class="screen-categories" src="../assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+        </div>
+        <ol class="harness-steps">
+          <li><h4>一度つなぐだけ。</h4><p>Jin AI は MCP を通じて、お使いの AI ツールにつながります。</p></li>
+          <li><h4>すべてのハーネスを種類ごとに。</h4><p>スキル、指示、記憶、MCP の設定を、人ごとに整理して表示します。</p></li>
+        </ol>
+      </div>
+      <div>
+        <h3 class="how-audience">管理者</h3>
+        <div class="screen" role="img" aria-label="Jin AI の管理者向けの画面。役割ごとのチームとよく使われているハーネスを映し、次に、ハーネスの方針と、承認された AI ツールと承認されていない AI ツールを映します。">
+          <img class="screen-by-role" src="../assets/demo/demo-3-by-role.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+          <img class="screen-what-can-move" src="../assets/demo/demo-4-what-can-move.webp" width="2880" height="1664" alt="" decoding="async" loading="eager">
+        </div>
+        <ol class="harness-steps" start="3">
+          <li><h4>役割ごとに見る。</h4><p>どの役割が、どのハーネスを、どれくらい使っているか。</p></li>
+          <li><h4>持ち出せるものを決める。</h4><p>機密とした部品は、承認した AI ツールにだけつながります。</p></li>
+        </ol>
+      </div>
+    </div>
+    <a class="text-link read-more" href="how-it-works/">詳しく見る</a>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap" id="privacy">
+    <h2 class="h2">会社のコンテクストは、会社のもの。</h2>
+    <ul class="data-promises">
+      <li>会社ごとにコンテクストを分けて保管します。</li>
+      <li>Jin AI は画面を録画しません。</li>
+      <li>Jin AI 自体が、お客様のデータで学習することはありません。</li>
+    </ul>
+  </div>
+</section>
+
+<section class="final" id="demo">
+  <div class="wrap" id="waitlist">
+    <h2>社内の AI ハーネスの中身を、見てみませんか。</h2>
+    <!-- GENERATED:CTA_FINAL:START -->
+<form class="signup" id="waitlistForm" action="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" data-endpoint="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" method="post" novalidate>
+      <div class="signup-row">
+        <div class="signup-field">
+          <label for="demo-email">会社のメールアドレス</label>
+          <input id="demo-email" name="email" autocomplete="email" aria-describedby="demo-email-error" required type="email" maxlength="254">
+          <p class="signup-error" id="demo-email-error" hidden></p>
+        </div>
+      </div>
+      <div class="signup-row">
+        <div class="signup-field">
+          <label for="demo-lastName">姓</label>
+          <input id="demo-lastName" name="lastName" autocomplete="family-name" aria-describedby="demo-lastName-error" required type="text" maxlength="80">
+          <p class="signup-error" id="demo-lastName-error" hidden></p>
+        </div>
+        <div class="signup-field">
+          <label for="demo-firstName">名</label>
+          <input id="demo-firstName" name="firstName" autocomplete="given-name" aria-describedby="demo-firstName-error" required type="text" maxlength="80">
+          <p class="signup-error" id="demo-firstName-error" hidden></p>
+        </div>
+      </div>
+      <div class="signup-row">
+        <div class="signup-field">
+          <label for="demo-jobTitle">役職</label>
+          <input id="demo-jobTitle" name="jobTitle" autocomplete="organization-title" aria-describedby="demo-jobTitle-error" required type="text" maxlength="120">
+          <p class="signup-error" id="demo-jobTitle-error" hidden></p>
+        </div>
+        <div class="signup-field">
+          <label for="demo-phone">電話番号（任意）</label>
+          <input id="demo-phone" name="phone" autocomplete="tel" aria-describedby="demo-phone-error" type="tel" maxlength="40">
+          <p class="signup-error" id="demo-phone-error" hidden></p>
+        </div>
+      </div>
+      <div class="signup-row">
+        <div class="signup-field">
+          <label for="demo-company">会社名</label>
+          <input id="demo-company" name="company" autocomplete="organization" aria-describedby="demo-company-error" required type="text" maxlength="160">
+          <p class="signup-error" id="demo-company-error" hidden></p>
+        </div>
+        <div class="signup-field">
+          <label for="demo-industry">業種</label>
+          <select id="demo-industry" name="industry" aria-describedby="demo-industry-error" required>
+            <option value="">業種を選んでください</option>
+            <option value="Technology">テクノロジー</option>
+            <option value="Financial services">金融</option>
+            <option value="Professional services">専門サービス</option>
+            <option value="Education">教育</option>
+            <option value="Energy">エネルギー</option>
+            <option value="Government">官公庁</option>
+            <option value="Healthcare">医療</option>
+            <option value="Manufacturing">製造</option>
+            <option value="Media">メディア</option>
+            <option value="Nonprofit">非営利</option>
+            <option value="Real estate">不動産</option>
+            <option value="Retail">小売</option>
+            <option value="Telecommunications">通信</option>
+            <option value="Transportation">運輸</option>
+            <option value="Other">その他</option>
+          </select>
+          <p class="signup-error" id="demo-industry-error" hidden></p>
+        </div>
+      </div>
+      <div class="signup-row">
+        <div class="signup-field">
+          <label for="demo-companySize">従業員数</label>
+          <select id="demo-companySize" name="companySize" aria-describedby="demo-companySize-error" required>
+            <option value="">範囲を選んでください</option>
+            <option value="1-49">1〜49 人</option>
+            <option value="50-199">50〜199 人</option>
+            <option value="200-999">200〜999 人</option>
+            <option value="1,000+">1,000 人以上</option>
+          </select>
+          <p class="signup-error" id="demo-companySize-error" hidden></p>
+        </div>
+        <div class="signup-field">
+          <label for="demo-country">国</label>
+          <select id="demo-country" name="country" autocomplete="country-name" aria-describedby="demo-country-error" required>
+            <option value="">国を選んでください</option>
+            <option value="Japan">日本</option>
+            <option value="United States">アメリカ合衆国</option>
+            <option value="Afghanistan">アフガニスタン</option>
+            <option value="Aland Islands">オーランド諸島</option>
+            <option value="Albania">アルバニア</option>
+            <option value="Algeria">アルジェリア</option>
+            <option value="American Samoa">米領サモア</option>
+            <option value="Andorra">アンドラ</option>
+            <option value="Angola">アンゴラ</option>
+            <option value="Anguilla">アンギラ</option>
+            <option value="Antarctica">南極</option>
+            <option value="Antigua and Barbuda">アンティグア・バーブーダ</option>
+            <option value="Argentina">アルゼンチン</option>
+            <option value="Armenia">アルメニア</option>
+            <option value="Aruba">アルバ</option>
+            <option value="Australia">オーストラリア</option>
+            <option value="Austria">オーストリア</option>
+            <option value="Azerbaijan">アゼルバイジャン</option>
+            <option value="Bahamas">バハマ</option>
+            <option value="Bahrain">バーレーン</option>
+            <option value="Bangladesh">バングラデシュ</option>
+            <option value="Barbados">バルバドス</option>
+            <option value="Belarus">ベラルーシ</option>
+            <option value="Belgium">ベルギー</option>
+            <option value="Belize">ベリーズ</option>
+            <option value="Benin">ベナン</option>
+            <option value="Bermuda">バミューダ</option>
+            <option value="Bhutan">ブータン</option>
+            <option value="Bolivia">ボリビア</option>
+            <option value="Bonaire, Sint Eustatius and Saba">オランダ領カリブ</option>
+            <option value="Bosnia and Herzegovina">ボスニア・ヘルツェゴビナ</option>
+            <option value="Botswana">ボツワナ</option>
+            <option value="Bouvet Island">ブーベ島</option>
+            <option value="Brazil">ブラジル</option>
+            <option value="British Indian Ocean Territory">英領インド洋地域</option>
+            <option value="British Virgin Islands">英領ヴァージン諸島</option>
+            <option value="Brunei">ブルネイ</option>
+            <option value="Bulgaria">ブルガリア</option>
+            <option value="Burkina Faso">ブルキナファソ</option>
+            <option value="Burundi">ブルンジ</option>
+            <option value="Cabo Verde">カーボベルデ</option>
+            <option value="Cambodia">カンボジア</option>
+            <option value="Cameroon">カメルーン</option>
+            <option value="Canada">カナダ</option>
+            <option value="Cayman Islands">ケイマン諸島</option>
+            <option value="Central African Republic">中央アフリカ共和国</option>
+            <option value="Chad">チャド</option>
+            <option value="Chile">チリ</option>
+            <option value="China">中国</option>
+            <option value="Christmas Island">クリスマス島</option>
+            <option value="Cocos (Keeling) Islands">ココス(キーリング)諸島</option>
+            <option value="Colombia">コロンビア</option>
+            <option value="Comoros">コモロ</option>
+            <option value="Congo">コンゴ共和国(ブラザビル)</option>
+            <option value="Cook Islands">クック諸島</option>
+            <option value="Costa Rica">コスタリカ</option>
+            <option value="Cote d'Ivoire">コートジボワール</option>
+            <option value="Croatia">クロアチア</option>
+            <option value="Cuba">キューバ</option>
+            <option value="Curacao">キュラソー</option>
+            <option value="Cyprus">キプロス</option>
+            <option value="Czechia">チェコ</option>
+            <option value="Democratic Republic of the Congo">コンゴ民主共和国(キンシャサ)</option>
+            <option value="Denmark">デンマーク</option>
+            <option value="Djibouti">ジブチ</option>
+            <option value="Dominica">ドミニカ国</option>
+            <option value="Dominican Republic">ドミニカ共和国</option>
+            <option value="Ecuador">エクアドル</option>
+            <option value="Egypt">エジプト</option>
+            <option value="El Salvador">エルサルバドル</option>
+            <option value="Equatorial Guinea">赤道ギニア</option>
+            <option value="Eritrea">エリトリア</option>
+            <option value="Estonia">エストニア</option>
+            <option value="Eswatini">エスワティニ</option>
+            <option value="Ethiopia">エチオピア</option>
+            <option value="Falkland Islands">フォークランド諸島</option>
+            <option value="Faroe Islands">フェロー諸島</option>
+            <option value="Fiji">フィジー</option>
+            <option value="Finland">フィンランド</option>
+            <option value="France">フランス</option>
+            <option value="French Guiana">仏領ギアナ</option>
+            <option value="French Polynesia">仏領ポリネシア</option>
+            <option value="French Southern Territories">仏領極南諸島</option>
+            <option value="Gabon">ガボン</option>
+            <option value="Gambia">ガンビア</option>
+            <option value="Georgia">ジョージア</option>
+            <option value="Germany">ドイツ</option>
+            <option value="Ghana">ガーナ</option>
+            <option value="Gibraltar">ジブラルタル</option>
+            <option value="Greece">ギリシャ</option>
+            <option value="Greenland">グリーンランド</option>
+            <option value="Grenada">グレナダ</option>
+            <option value="Guadeloupe">グアドループ</option>
+            <option value="Guam">グアム</option>
+            <option value="Guatemala">グアテマラ</option>
+            <option value="Guernsey">ガーンジー</option>
+            <option value="Guinea">ギニア</option>
+            <option value="Guinea-Bissau">ギニアビサウ</option>
+            <option value="Guyana">ガイアナ</option>
+            <option value="Haiti">ハイチ</option>
+            <option value="Heard Island and McDonald Islands">ハード島・マクドナルド諸島</option>
+            <option value="Honduras">ホンジュラス</option>
+            <option value="Hong Kong">中華人民共和国香港特別行政区</option>
+            <option value="Hungary">ハンガリー</option>
+            <option value="Iceland">アイスランド</option>
+            <option value="India">インド</option>
+            <option value="Indonesia">インドネシア</option>
+            <option value="Iran">イラン</option>
+            <option value="Iraq">イラク</option>
+            <option value="Ireland">アイルランド</option>
+            <option value="Isle of Man">マン島</option>
+            <option value="Israel">イスラエル</option>
+            <option value="Italy">イタリア</option>
+            <option value="Jamaica">ジャマイカ</option>
+            <option value="Jersey">ジャージー</option>
+            <option value="Jordan">ヨルダン</option>
+            <option value="Kazakhstan">カザフスタン</option>
+            <option value="Kenya">ケニア</option>
+            <option value="Kiribati">キリバス</option>
+            <option value="Kuwait">クウェート</option>
+            <option value="Kyrgyzstan">キルギス</option>
+            <option value="Laos">ラオス</option>
+            <option value="Latvia">ラトビア</option>
+            <option value="Lebanon">レバノン</option>
+            <option value="Lesotho">レソト</option>
+            <option value="Liberia">リベリア</option>
+            <option value="Libya">リビア</option>
+            <option value="Liechtenstein">リヒテンシュタイン</option>
+            <option value="Lithuania">リトアニア</option>
+            <option value="Luxembourg">ルクセンブルク</option>
+            <option value="Macao">中華人民共和国マカオ特別行政区</option>
+            <option value="Madagascar">マダガスカル</option>
+            <option value="Malawi">マラウイ</option>
+            <option value="Malaysia">マレーシア</option>
+            <option value="Maldives">モルディブ</option>
+            <option value="Mali">マリ</option>
+            <option value="Malta">マルタ</option>
+            <option value="Marshall Islands">マーシャル諸島</option>
+            <option value="Martinique">マルティニーク</option>
+            <option value="Mauritania">モーリタニア</option>
+            <option value="Mauritius">モーリシャス</option>
+            <option value="Mayotte">マヨット</option>
+            <option value="Mexico">メキシコ</option>
+            <option value="Micronesia">ミクロネシア連邦</option>
+            <option value="Moldova">モルドバ</option>
+            <option value="Monaco">モナコ</option>
+            <option value="Mongolia">モンゴル</option>
+            <option value="Montenegro">モンテネグロ</option>
+            <option value="Montserrat">モントセラト</option>
+            <option value="Morocco">モロッコ</option>
+            <option value="Mozambique">モザンビーク</option>
+            <option value="Myanmar">ミャンマー (ビルマ)</option>
+            <option value="Namibia">ナミビア</option>
+            <option value="Nauru">ナウル</option>
+            <option value="Nepal">ネパール</option>
+            <option value="Netherlands">オランダ</option>
+            <option value="New Caledonia">ニューカレドニア</option>
+            <option value="New Zealand">ニュージーランド</option>
+            <option value="Nicaragua">ニカラグア</option>
+            <option value="Niger">ニジェール</option>
+            <option value="Nigeria">ナイジェリア</option>
+            <option value="Niue">ニウエ</option>
+            <option value="Norfolk Island">ノーフォーク島</option>
+            <option value="North Korea">北朝鮮</option>
+            <option value="North Macedonia">北マケドニア</option>
+            <option value="Northern Mariana Islands">北マリアナ諸島</option>
+            <option value="Norway">ノルウェー</option>
+            <option value="Oman">オマーン</option>
+            <option value="Pakistan">パキスタン</option>
+            <option value="Palau">パラオ</option>
+            <option value="Palestine">パレスチナ自治区</option>
+            <option value="Panama">パナマ</option>
+            <option value="Papua New Guinea">パプアニューギニア</option>
+            <option value="Paraguay">パラグアイ</option>
+            <option value="Peru">ペルー</option>
+            <option value="Philippines">フィリピン</option>
+            <option value="Pitcairn Islands">ピトケアン諸島</option>
+            <option value="Poland">ポーランド</option>
+            <option value="Portugal">ポルトガル</option>
+            <option value="Puerto Rico">プエルトリコ</option>
+            <option value="Qatar">カタール</option>
+            <option value="Reunion">レユニオン</option>
+            <option value="Romania">ルーマニア</option>
+            <option value="Russia">ロシア</option>
+            <option value="Rwanda">ルワンダ</option>
+            <option value="Saint Barthelemy">サン・バルテルミー</option>
+            <option value="Saint Helena, Ascension and Tristan da Cunha">セントヘレナ</option>
+            <option value="Saint Kitts and Nevis">セントクリストファー・ネーヴィス</option>
+            <option value="Saint Lucia">セントルシア</option>
+            <option value="Saint Martin">サン・マルタン</option>
+            <option value="Saint Pierre and Miquelon">サンピエール島・ミクロン島</option>
+            <option value="Saint Vincent and the Grenadines">セントビンセント及びグレナディーン諸島</option>
+            <option value="Samoa">サモア</option>
+            <option value="San Marino">サンマリノ</option>
+            <option value="Sao Tome and Principe">サントメ・プリンシペ</option>
+            <option value="Saudi Arabia">サウジアラビア</option>
+            <option value="Senegal">セネガル</option>
+            <option value="Serbia">セルビア</option>
+            <option value="Seychelles">セーシェル</option>
+            <option value="Sierra Leone">シエラレオネ</option>
+            <option value="Singapore">シンガポール</option>
+            <option value="Sint Maarten">シント・マールテン</option>
+            <option value="Slovakia">スロバキア</option>
+            <option value="Slovenia">スロベニア</option>
+            <option value="Solomon Islands">ソロモン諸島</option>
+            <option value="Somalia">ソマリア</option>
+            <option value="South Africa">南アフリカ</option>
+            <option value="South Georgia and the South Sandwich Islands">サウスジョージア・サウスサンドウィッチ諸島</option>
+            <option value="South Korea">韓国</option>
+            <option value="South Sudan">南スーダン</option>
+            <option value="Spain">スペイン</option>
+            <option value="Sri Lanka">スリランカ</option>
+            <option value="Sudan">スーダン</option>
+            <option value="Suriname">スリナム</option>
+            <option value="Svalbard and Jan Mayen">スバールバル諸島・ヤンマイエン島</option>
+            <option value="Sweden">スウェーデン</option>
+            <option value="Switzerland">スイス</option>
+            <option value="Syria">シリア</option>
+            <option value="Taiwan">台湾</option>
+            <option value="Tajikistan">タジキスタン</option>
+            <option value="Tanzania">タンザニア</option>
+            <option value="Thailand">タイ</option>
+            <option value="Timor-Leste">東ティモール</option>
+            <option value="Togo">トーゴ</option>
+            <option value="Tokelau">トケラウ</option>
+            <option value="Tonga">トンガ</option>
+            <option value="Trinidad and Tobago">トリニダード・トバゴ</option>
+            <option value="Tunisia">チュニジア</option>
+            <option value="Turkey">トルコ</option>
+            <option value="Turkmenistan">トルクメニスタン</option>
+            <option value="Turks and Caicos Islands">タークス・カイコス諸島</option>
+            <option value="Tuvalu">ツバル</option>
+            <option value="Uganda">ウガンダ</option>
+            <option value="Ukraine">ウクライナ</option>
+            <option value="United Arab Emirates">アラブ首長国連邦</option>
+            <option value="United Kingdom">イギリス</option>
+            <option value="United States Minor Outlying Islands">合衆国領有小離島</option>
+            <option value="United States Virgin Islands">米領ヴァージン諸島</option>
+            <option value="Uruguay">ウルグアイ</option>
+            <option value="Uzbekistan">ウズベキスタン</option>
+            <option value="Vanuatu">バヌアツ</option>
+            <option value="Vatican City">バチカン市国</option>
+            <option value="Venezuela">ベネズエラ</option>
+            <option value="Vietnam">ベトナム</option>
+            <option value="Wallis and Futuna">ウォリス・フツナ</option>
+            <option value="Western Sahara">西サハラ</option>
+            <option value="Yemen">イエメン</option>
+            <option value="Zambia">ザンビア</option>
+            <option value="Zimbabwe">ジンバブエ</option>
+          </select>
+          <p class="signup-error" id="demo-country-error" hidden></p>
+        </div>
+      </div>
+      <div class="signup-trap" aria-hidden="true">
+        <label for="wl-website">この欄は空のままにしてください</label>
+        <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </div>
+      <button class="btn btn-p" type="submit" disabled>デモを申し込む</button>
+      <p class="waitnote">デモの日程を、メールでご相談します。</p>
+      <p class="signup-privacy">いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="privacy/">プライバシーポリシー</a>をご覧ください。</p>
+    </form>
+    <noscript><p class="waitalt">デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: <a href="mailto:hello@jinai.md">hello@jinai.md</a>。</p></noscript>
+    <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+    <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
+      <h3 id="waitlistHeading"></h3>
+      <dl class="signup-results">
+        <div><dt>お申し込み</dt><dd id="waitlistRegistration"></dd></div>
+        <div><dt>確認メール</dt><dd id="waitlistEmail"></dd></div>
+      </dl>
+      <p id="waitlistDetail"></p>
+    </div>
+    <p class="waitalt">ご質問・ご意見: <a href="mailto:hello@jinai.md">hello@jinai.md</a>。</p>
+<!-- GENERATED:CTA_FINAL:END -->
+  </div>
+</section>
 </main>
-<script>location.replace('/');</script>
+
+<footer>
+  <div class="wrap footer-bar">
+    <a class="brand" href="./"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
+    <a class="footer-link" href="mailto:hello@jinai.md">hello@jinai.md</a>
+    <a class="footer-link" href="how-it-works/">仕組み</a>
+    <a class="footer-link" href="privacy/">プライバシーポリシー</a>
+    <a class="footer-link" href="accessibility/">アクセシビリティ</a>
+    <span>アクセスは Cloudflare Web Analytics で数えています。Cookie は使っていません。</span>
+    <nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en">English</a> / <a href="/ja/" lang="ja" hreflang="ja" aria-current="page">日本語</a></nav>
+    <span>&copy; 2026 Jin AI</span>
+  </div>
+</footer>
+
+<script type="module" src="../waitlist.mjs"></script>
+<script>
+(()=>{
+  const screens=document.querySelectorAll('.screen');
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const visible=new Set();
+  const update=()=>screens.forEach(screen=>{
+    screen.classList.toggle('screen-running',visible.has(screen)&&!reduced.matches);
+  });
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(({target,isIntersecting})=>{
+      if(isIntersecting){visible.add(target)}else{visible.delete(target)}
+    });
+    update();
+  });
+  screens.forEach(screen=>observer.observe(screen));
+  reduced.addEventListener('change',update);
+})();
+</script>
+<script>
+(function(){
+const shadow=document.getElementById('sa-svg');
+shadow.pauseAnimations();
+shadow.setCurrentTime(0);
+const NS="http://www.w3.org/2000/svg",C=16,cols=[40,140,240,340],rows=[44,128,212],W=64;
+const order=[[1,0],[2,0],[3,0],[3,1],[2,1],[1,1],[0,1],[0,2],[1,2],[2,2],[3,2]];
+const T=document.getElementById('ed-tiles'),A=document.getElementById('ed-arrows');
+const st=document.createElement('style');let k="";
+function el(n,a,p){const e=document.createElementNS(NS,n);for(const x in a)e.setAttribute(x,a[x]);p.appendChild(e);return e}
+function person(g,x,y,cls){el('circle',{cx:x+W/2,cy:y+24,r:8,class:cls},g);el('path',{d:['M',x+W/2-14,y+54,'C',x+W/2-14,y+38,x+W/2+14,y+38,x+W/2+14,y+54].join(' '),class:cls},g)}
+for(let c=0;c<4;c++)for(let r=0;r<3;r++){const x=cols[c],y=rows[r];el('rect',{x,y,width:W,height:W,rx:6,class:'ig'},T);person(T,x,y,'ig')}
+const tp=el('g',{},T);el('rect',{x:cols[0],y:rows[0],width:W,height:W,rx:6,style:'fill:var(--accent-50);stroke:var(--accent);stroke-width:2.4'},tp);person(tp,cols[0],rows[0],'ia');
+el('path',{d:'M22 52 l-10 -4 M24 68 l-12 2 M48 38 l-2 -12 M88 36 l6 -10',class:'ia','stroke-width':1.8},T);
+let prev=[0,0];
+order.forEach(([c,r],i)=>{
+ const s=1.2+i*1.05,a0=((s-0.7)/C*100).toFixed(2),a1=((s-0.15)/C*100).toFixed(2),l=(s/C*100).toFixed(2),e=(15.2/C*100).toFixed(2);
+ const [pc,pr]=prev,cx0=cols[pc]+W/2,cy0=rows[pr]+W/2,cx1=cols[c]+W/2,cy1=rows[r]+W/2;
+ const dx=Math.sign(cx1-cx0),dy=Math.sign(cy1-cy0);
+ const x0=cx0+dx*(W/2+6),y0=cy0+dy*(W/2+6),x1=cx1-dx*(W/2+8),y1=cy1-dy*(W/2+8);
+ el('path',{d:['M',x0,y0,'L',x1,y1].join(' '),class:'ia ed-arw',pathLength:1,'stroke-dasharray':1,'marker-end':'url(#ed-ah)',style:'animation:ed-a'+i+' '+C+'s linear infinite'},A);
+ const g=el('g',{class:'ed-lit',style:'animation:ed-t'+i+' '+C+'s steps(1) infinite'},T);
+ el('rect',{x:cols[c],y:rows[r],width:W,height:W,rx:6,style:'fill:var(--accent-50);stroke:var(--accent);stroke-width:1.8'},g);person(g,cols[c],rows[r],'ia');
+ k+='@keyframes ed-a'+i+'{0%,'+a0+'%{stroke-dashoffset:1;opacity:1}'+a1+'%,'+e+'%{stroke-dashoffset:0;opacity:1}'+(+e+2).toFixed(2)+'%,100%{stroke-dashoffset:0;opacity:0}}';
+ k+='@keyframes ed-t'+i+'{0%{opacity:0}'+l+'%{opacity:1}'+e+'%{opacity:0}}';
+ prev=[c,r];
+});
+k+='.ed-bar{animation:ed-bar '+C+'s linear infinite}@keyframes ed-bar{0%{width:0}'+(13.2/C*100).toFixed(2)+'%,'+(15.2/C*100).toFixed(2)+'%{width:330px}100%{width:0}}';
+// Legs swing only while the person walks.
+let lk="";for(const [id,sign] of [["l1",1],["l2",-1]]){let f='@keyframes ho-'+id+'{0%,20%{transform:rotate(0)}';for(let p=22;p<=68;p+=2.5){f+=p.toFixed(1)+'%{transform:rotate('+(((Math.round((p-22)/2.5))%2?-1:1)*14*sign)+'deg)}'}f+='70%,100%{transform:rotate(0)}}#ho-'+id+'{animation:ho-'+id+' 9s linear infinite}';lk+=f}
+st.textContent=k+lk;document.head.appendChild(st);
+const problem=document.getElementById('problem');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+let visible=false;
+function updateMotion(){
+ const running=visible&&!reduced.matches;
+ problem.classList.toggle('animations-running',running);
+ if(running){shadow.unpauseAnimations()}else{shadow.pauseAnimations()}
+ if(reduced.matches){shadow.setCurrentTime(6.4)}
+}
+reduced.addEventListener('change',()=>{
+ if(!reduced.matches){shadow.setCurrentTime(0)}
+ updateMotion();
+});
+updateMotion();
+const observer=new IntersectionObserver(entries=>{
+ visible=entries[0].isIntersecting;
+ updateMotion();
+});
+observer.observe(problem);
+})();
+</script>
+<!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1b6168cc50c644e4bd8071508286852d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

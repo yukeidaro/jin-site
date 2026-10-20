@@ -6,24 +6,28 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Complete English Human landing page and sole product canonical |
-| `/how-it-works/` | English companion page with four steps and their delivery status |
+| `/` | Complete English Human landing page |
+| `/how-it-works/` | English companion page with four steps |
 | `/privacy/` | Approved website privacy policy |
 | `/accessibility/` | Accessibility goal, known limits and contact details |
-| `/ja/` | `noindex,follow` compatibility redirect to `/` |
-| `/ja/how-it-works/` | `noindex,follow` compatibility redirect to `/how-it-works/` |
+| `/ja/` | Japanese landing page with the same illustrations, moving screens and demo form |
+| `/ja/how-it-works/` | Japanese companion page with four steps |
+| `/ja/privacy/` | Approved Japanese website privacy policy |
+| `/ja/accessibility/` | Approved Japanese accessibility statement |
 | `/human/` | `noindex` compatibility alias that opens `/` |
 | `/en/` | `noindex` English alias that opens `/` |
 | `/agent/` | Crawlable, status-aware reference generated for machine readers |
 | `/agent/content.json` | Public fact source for Human and Agent derivatives |
 | `/llms.txt` | Concise LLM index generated from the fact source |
 | `/robots.txt` | Search policy; model-training crawlers are blocked by default |
-| `/sitemap.xml` | Contains `/`, `/how-it-works/`, `/privacy/` and `/accessibility/` |
+| `/sitemap.xml` | Contains the four English pages and their four Japanese twins |
 
-The public pages are English-only, without language switches or hreflang
-alternates. Legacy Japanese routes keep their English fallback links and use
-both meta refresh and `location.replace` redirects.
-The English content pages link to Privacy and Accessibility from their footers.
+The eight public content pages are self-canonical, with reciprocal `en`, `ja`
+and `x-default` hreflang alternates. Header and footer language switches link
+to the matching page in the other language. Japanese pages use the approved
+Japanese copy (Yu, 2026-10-20); English pages remain English except for the
+Japanese footer language link. Each language links to its own Privacy and
+Accessibility pages from the footer.
 The approved legal text describes the demo request form and how its details
 are used to reply about the request.
 
@@ -42,7 +46,7 @@ node scripts/generate-aeo.mjs
 It updates:
 
 - the root JSON-LD graph;
-- the hero and final demo-request CTAs, including the company-details form;
+- the English and Japanese hero and final demo-request CTAs, including the company-details form;
 - the content and title of `agent/index.html`;
 - `llms.txt`.
 
@@ -64,7 +68,7 @@ in check mode and fails when a derivative has drifted.
   Shadow AI is a problem label, not a claim that Jin AI blocks it.
 - Solution: **Safe for every employee.** **Reusable for the company.**
   Keep both employee and company value in the story.
-- Human pages (`/`, `/how-it-works/`) do not show status labels (Yu, 2026-10-19).
+- Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19).
   `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`.
   Never claim a Building or Next item is available today in any copy.
 - Data: **Your company's context stays yours.** Each company's context is kept
@@ -78,8 +82,11 @@ in check mode and fails when a derivative has drifted.
   Google Drive or Notion connections, PC and phone sync, Discord, Baby Voice
   Recorder, TikTok, market size, competitor names, pilot candidate counts,
   Nov 13, know-how or DelightX. These are exclusions, not product facts.
-- Write plain, specific English with short sentences. No CJK characters,
-  em dashes, en dashes or curly quotes. Do not invent claims, metrics,
+- Write plain, specific English, or the approved Japanese copy on `/ja/*`,
+  with short sentences. Japanese pages require CJK; every other deployed file
+  forbids CJK except the Japanese footer language link on English pages.
+  Shared JavaScript stores Japanese messages as Unicode escapes.
+  No em dashes, en dashes or curly quotes. Do not invent claims, metrics,
   testimonials, logos, ratings or user counts. Every number needs a source
   line directly under it.
 - Avoid supercharge, unlock, seamless, effortless, revolutionize, game-changer,
@@ -91,6 +98,8 @@ in check mode and fails when a derivative has drifted.
   cards, numbered circles, positioning grids or letter-spaced all-caps labels.
   Prefer prose, lists, tables and real product screenshots. Use one dominant
   visual per section. At 375px wide, there must be no horizontal scroll.
+  Japanese headings add Noto Serif JP and Japanese body text uses Japanese
+  font fallbacks after Inter. Keep English fonts unchanged.
 - Do not add `FAQPage` schema, active offers, ratings or reviews unless they
   become truthful and applicable.
 
@@ -104,7 +113,12 @@ company, industry, company size and country. It sends `type: "demo"` with
 consent version `demo-request-v1` to the unchanged Apps Script endpoint.
 Details are used only to reply about the demo; the form links to `privacy/`.
 There is no post-request survey.
-Legacy localized routes redirect to English and do not carry separate forms.
+The Japanese form uses the same facts, endpoint, field names, select values and
+consent. It displays surname before given name, Japanese labels, and Japan
+before the United States. Other country labels are generated from ISO region
+codes with Node's `Intl.DisplayNames`. Client messages follow the document
+language. This localization does not change the payload or backend; Japanese
+confirmation emails and Apps Script changes are the separate J2 task.
 
 The custom website form submits JSON directly to an Apps Script web app.
 **Google Forms, response receipts, hidden iframes, and form-submit triggers are
@@ -259,5 +273,5 @@ python -m http.server 8793 --bind 127.0.0.1 --directory _site
 ```
 
 Open <http://127.0.0.1:8793/>, <http://127.0.0.1:8793/how-it-works/>,
-<http://127.0.0.1:8793/ja/> (redirects to English) and
+<http://127.0.0.1:8793/ja/> and
 <http://127.0.0.1:8793/agent/>. Stop the server when finished.

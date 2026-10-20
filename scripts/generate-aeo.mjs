@@ -125,30 +125,84 @@ function replaceBlock(document, blockName, generated) {
   return `${document.slice(0, startIndex)}${start}\n${generated.trim()}\n${end}${document.slice(endIndex + end.length)}`;
 }
 
-function renderCta(source, { centred }) {
+const japaneseForm = {
+  label: "デモを申し込む",
+  note: "デモの日程を、メールでご相談します。",
+  labels: {
+    email: "会社のメールアドレス", lastName: "姓", firstName: "名", jobTitle: "役職",
+    phone: "電話番号（任意）", company: "会社名", industry: "業種", companySize: "従業員数", country: "国"
+  },
+  placeholders: { industry: "業種を選んでください", companySize: "範囲を選んでください", country: "国を選んでください" },
+  industries: ["テクノロジー", "金融", "専門サービス", "教育", "エネルギー", "官公庁", "医療", "製造", "メディア", "非営利", "不動産", "小売", "通信", "運輸", "その他"],
+  companySizes: ["1〜49 人", "50〜199 人", "200〜999 人", "1,000 人以上"]
+};
+
+function japaneseCountries(countries) {
+  const english = new Intl.DisplayNames(["en"], { type: "region" });
+  const japanese = new Intl.DisplayNames(["ja"], { type: "region" });
+  const normalize = (name) => name.normalize("NFD").replace(/\p{M}/gu, "")
+    .replaceAll("&", "and").replaceAll("\u2019", "'");
+  const codes = new Map();
+  for (let first = 65; first <= 90; first++) {
+    for (let second = 65; second <= 90; second++) {
+      const code = String.fromCharCode(first, second);
+      const name = english.of(code);
+      if (name !== code) codes.set(normalize(name), code);
+    }
+  }
+  const aliases = {
+    "Bonaire, Sint Eustatius and Saba": "BQ", "Cabo Verde": "CV", "Congo": "CG",
+    "Democratic Republic of the Congo": "CD", "Heard Island and McDonald Islands": "HM",
+    "Hong Kong": "HK", "Macao": "MO", "Myanmar": "MM", "Palestine": "PS",
+    "Saint Barthelemy": "BL", "Saint Helena, Ascension and Tristan da Cunha": "SH",
+    "Saint Kitts and Nevis": "KN", "Saint Lucia": "LC", "Saint Martin": "MF",
+    "Saint Pierre and Miquelon": "PM", "Saint Vincent and the Grenadines": "VC",
+    "South Georgia and the South Sandwich Islands": "GS", "Turkey": "TR",
+    "United States Minor Outlying Islands": "UM", "United States Virgin Islands": "VI"
+  };
+  return new Map(countries.map((country) => {
+    const code = aliases[country] || codes.get(normalize(country));
+    assert(code, `Missing ISO region code for ${country}.`);
+    return [country, japanese.of(code)];
+  }));
+}
+
+function renderCta(source, { centred, language = "en" }) {
   const access = source.early_access;
+  const ja = language === "ja";
+  const label = ja ? japaneseForm.label : access.label;
 
   if (!centred) {
     return `<div class="wait">
-      <a class="btn btn-p" href="#demo">${escapeHtml(access.hero_label)}</a>
+      <a class="btn btn-p" href="#demo">${escapeHtml(ja ? label : access.hero_label)}</a>
     </div>`;
   }
 
   const endpoint = access.form.endpoint || "";
   const action = endpoint ? ` action="${escapeHtml(endpoint)}"` : "";
-  const fields = access.form.fields.map((field) => {
+  const specifications = [...access.form.fields];
+  if (ja) [specifications[1], specifications[2]] = [specifications[2], specifications[1]];
+  const countries = ja ? japaneseCountries(specifications.find((field) => field.name === "country").options) : null;
+  const fields = specifications.map((field) => {
     const id = `demo-${field.name}`;
     const attributes = `id="${id}" name="${field.name}"` +
       (field.autocomplete ? ` autocomplete="${escapeHtml(field.autocomplete)}"` : "") +
       ` aria-describedby="${id}-error"` + (field.required ? " required" : "");
+    const options = field.type === "select" ? [...field.options] : [];
+    if (ja && field.name === "country") [options[0], options[1]] = [options[1], options[0]];
+    const optionLabel = (option) => {
+      if (!ja) return option;
+      if (field.name === "country") return countries.get(option);
+      return (field.name === "industry" ? japaneseForm.industries : japaneseForm.companySizes)[field.options.indexOf(option)];
+    };
     const control = field.type === "select" ?
       `<select ${attributes}>
-            <option value="">${escapeHtml(field.placeholder)}</option>
-${field.options.map((option) => `            <option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join("\n")}
+            <option value="">${escapeHtml(ja ? japaneseForm.placeholders[field.name] : field.placeholder)}</option>
+${options.map((option) => `            <option value="${escapeHtml(option)}">${escapeHtml(optionLabel(option))}</option>`).join("\n")}
           </select>` :
       `<input ${attributes} type="${field.type}" maxlength="${field.max_length}">`;
     return `        <div class="signup-field">
-          <label for="${id}">${escapeHtml(field.label)}</label>
+          <label for="${id}">${escapeHtml(ja ? japaneseForm.labels[field.name] : field.label)}</label>
           ${control}
           <p class="signup-error" id="${id}-error" hidden></p>
         </div>`;
@@ -158,24 +212,26 @@ ${field.options.map((option) => `            <option value="${escapeHtml(option)
   return `<form class="signup" id="waitlistForm"${action} data-endpoint="${escapeHtml(endpoint)}" method="post" novalidate>
 ${rows}
       <div class="signup-trap" aria-hidden="true">
-        <label for="wl-website">Leave this field empty</label>
+        <label for="wl-website">${ja ? "この欄は空のままにしてください" : "Leave this field empty"}</label>
         <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
       </div>
-      <button class="btn btn-p" type="submit" disabled>${escapeHtml(access.label)}</button>
-      <p class="waitnote">${escapeHtml(access.note)}</p>
-      <p class="signup-privacy">${escapeHtml(access.form.privacy_note)} See our <a href="${escapeHtml(access.form.privacy_url)}">Privacy Policy</a>.</p>
+      <button class="btn btn-p" type="submit" disabled>${escapeHtml(label)}</button>
+      <p class="waitnote">${escapeHtml(ja ? japaneseForm.note : access.note)}</p>
+      <p class="signup-privacy">${ja ?
+    `いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="${escapeHtml(access.form.privacy_url)}">プライバシーポリシー</a>をご覧ください。` :
+    `${escapeHtml(access.form.privacy_note)} See our <a href="${escapeHtml(access.form.privacy_url)}">Privacy Policy</a>.`}</p>
     </form>
-    <noscript><p class="waitalt">Please enable JavaScript to request a demo here. You can also email <a href="mailto:${escapeHtml(access.contact_email)}">${escapeHtml(access.contact_email)}</a>.</p></noscript>
+    <noscript><p class="waitalt">${ja ? "デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: " : "Please enable JavaScript to request a demo here. You can also email "}<a href="mailto:${escapeHtml(access.contact_email)}">${escapeHtml(access.contact_email)}</a>${ja ? "。" : "."}</p></noscript>
     <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
       <h3 id="waitlistHeading"></h3>
       <dl class="signup-results">
-        <div><dt>Request</dt><dd id="waitlistRegistration"></dd></div>
-        <div><dt>Confirmation email</dt><dd id="waitlistEmail"></dd></div>
+        <div><dt>${ja ? "お申し込み" : "Request"}</dt><dd id="waitlistRegistration"></dd></div>
+        <div><dt>${ja ? "確認メール" : "Confirmation email"}</dt><dd id="waitlistEmail"></dd></div>
       </dl>
       <p id="waitlistDetail"></p>
     </div>
-    <p class="waitalt">Questions or feedback? <a href="mailto:${escapeHtml(access.contact_email)}">${escapeHtml(access.contact_email)}</a>.</p>`;
+    <p class="waitalt">${ja ? "ご質問・ご意見: " : "Questions or feedback? "}<a href="mailto:${escapeHtml(access.contact_email)}">${escapeHtml(access.contact_email)}</a>${ja ? "。" : "."}</p>`;
 }
 
 function renderJsonLd(source) {
@@ -441,6 +497,11 @@ await updateGeneratedFile(path.join(root, "index.html"), [
   ["JSON_LD", renderJsonLd(data)],
   ["CTA_HERO", renderCta(data, { centred: false })],
   ["CTA_FINAL", renderCta(data, { centred: true })]
+]);
+
+await updateGeneratedFile(path.join(root, "ja", "index.html"), [
+  ["CTA_HERO", renderCta(data, { centred: false, language: "ja" })],
+  ["CTA_FINAL", renderCta(data, { centred: true, language: "ja" })]
 ]);
 
 await updateGeneratedFile(path.join(root, "agent", "index.html"), [

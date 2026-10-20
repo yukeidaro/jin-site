@@ -12,6 +12,8 @@ const files = [
   "site.css",
   "ja/index.html",
   "ja/how-it-works/index.html",
+  "ja/privacy/index.html",
+  "ja/accessibility/index.html",
   "how-it-works/index.html",
   "privacy/index.html",
   "accessibility/index.html",
