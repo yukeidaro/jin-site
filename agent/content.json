@@ -31,19 +31,19 @@
     "primary": "AI-forward companies"
   },
   "problem": {
-    "headline": "Your best AI skills live with people, not with the company.",
+    "headline": "When your best AI users leave, you start over.",
     "points": [
       {
-        "name": "Shadow AI",
-        "description": "Your heaviest AI users already run personal AI, and work context ends up there."
+        "name": "Agents stop working",
+        "description": "When the person who built them leaves, their agents lose the context they ran on."
       },
       {
-        "name": "Lost at handover",
-        "description": "When people leave, they take their AI workflows with them. No one is left knowing how they ran."
+        "name": "Successor rebuilds from scratch",
+        "description": "The output gets handed over. The context, rules and judgment behind it do not."
       },
       {
-        "name": "AI training",
-        "description": "Teaching everyone to use AI well is slow and costly. Your top performers already figured it out."
+        "name": "Best practice stays hidden",
+        "description": "One team finds a workflow that works. The other teams never see it."
       }
     ]
   },

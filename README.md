@@ -13,7 +13,7 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/resources/ai-harness/` | Draft AI harness definition and parts article |
 | `/privacy/` | Approved website privacy policy |
 | `/accessibility/` | Accessibility goal, known limits and contact details |
-| `/ja/` | Japanese landing page with the same illustrations, moving screens and demo form |
+| `/ja/` | Japanese landing page with moving screens and the same demo form; interactive Problem figures await J1 |
 | `/ja/how-it-works/` | Japanese companion page with four steps |
 | `/ja/privacy/` | Approved Japanese website privacy policy |
 | `/ja/accessibility/` | Approved Japanese accessibility statement |
@@ -112,6 +112,31 @@ new product facts. The generated form note, privacy link, payload and consent
 remain unchanged. E5 component values and browser evidence are recorded in
 `.copilot-runs/notes/e5.md`; J1 owns Japanese adoption.
 
+## Interactive Problem figures
+
+The English home Problem section uses the approved E6 copy (Yu, 2026-10-20)
+and three original inline isometric SVGs, each with the same 420:320 viewBox.
+Owner removal stops four agents; handover moves only the output and leaves
+the successor rebuilding; opening separate teams reveals one unshared accent
+workflow. `problem.js` manages independent states without dependencies.
+
+Owner removal and handover finish within 1.2 seconds, then offer Reset.
+Team platforms are native HTML buttons outside the SVG image role, reachable
+by keyboard, mouse and touch. Explore teams opens them at 1.2-second intervals,
+ending with the accent team. Direct selection cancels that sequence.
+Repeated input cannot stack transitions. Every state updates the SVG's
+accessible description and a polite live status. All display and accessible
+strings stay in HTML for J1 to translate.
+
+Light flow pauses when offscreen or when the tab is hidden. Reduced motion
+removes animation and changes state immediately; Explore teams opens the
+accent team directly. With JavaScript unavailable, the stills and explanatory
+copy remain, and inactive controls stay hidden with their space reserved.
+Japanese Problem SVGs and their legacy controller are unchanged pending J1;
+the validator reports that dependency without failing. Other shared screen
+controller, Japanese accessibility and content checks remain enforced.
+Browser evidence and screenshots are in `.copilot-runs/notes/e6.md`.
+
 ## Content rules
 
 - Product name: **Jin AI**. It is a B2B product for AI-forward companies.
@@ -123,7 +148,7 @@ remain unchanged. E5 component values and browser evidence are recorded in
 - The home page contains only the hero, problem, solution, how it works, data
   and demo request. Do not show pricing or founders on the home page.
   Founders and direct answers belong in the Agent reference.
-- Problem: **Your best AI skills live with people, not with the company.**
+- Problem: **When your best AI users leave, you start over.**
   Shadow AI is a problem label, not a claim that Jin AI blocks it.
 - Solution: **Safe for every employee.** **Reusable for the company.**
   Keep both employee and company value in the story.

@@ -31,11 +31,11 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 
 ## Problem
 
-Your best AI skills live with people, not with the company.
+When your best AI users leave, you start over.
 
-- Shadow AI: Your heaviest AI users already run personal AI, and work context ends up there.
-- Lost at handover: When people leave, they take their AI workflows with them. No one is left knowing how they ran.
-- AI training: Teaching everyone to use AI well is slow and costly. Your top performers already figured it out.
+- Agents stop working: When the person who built them leaves, their agents lose the context they ran on.
+- Successor rebuilds from scratch: The output gets handed over. The context, rules and judgment behind it do not.
+- Best practice stays hidden: One team finds a workflow that works. The other teams never see it.
 
 ## Solution (Building)
 

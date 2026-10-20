@@ -25,6 +25,7 @@ const files = [
   "waitlist.mjs",
   "language.js",
   "nav.js",
+  "problem.js",
   "robots.txt",
   "sitemap.xml",
   "llms.txt",

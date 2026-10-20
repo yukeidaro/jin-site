@@ -296,81 +296,150 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 <section class="section" id="problem">
   <div class="wrap" id="benefits">
     <div class="section-head">
-      <h2 class="h2">Your best AI skills live with people, not with the company.</h2>
+      <span class="mono-label">Problem</span>
+      <h2 class="h2">When your best AI users leave, you start over.</h2>
     </div>
     <div class="problem-grid">
-      <div class="problem-column">
-        <div class="art" role="img" aria-label="An employee in the company builds an AI harness at the laptop. The harness travels along a dashed line out of the company to the employee's personal AI.">
-<svg viewBox="0 0 480 330" id="sa-svg" aria-hidden="true">
-<rect x="20" y="50" width="250" height="250" rx="8" class="il"/>
-<text x="36" y="86" class="hw">Company</text>
-<circle cx="100" cy="168" r="12" class="il"/>
-<path d="M76 238 C76 204 124 204 124 238" class="il"/>
-<path d="M56 250 H244 M74 250 V292 M226 250 V292" class="il"/>
-<path d="M150 246 L158 206 H208 L200 246 Z M142 250 H212" class="il"/>
-<path d="M214 198 l9 -6 M216 212 l11 0 M212 186 l6 -9" class="ia sa-tick" stroke-width="1.8"/>
-<path id="sa-path" d="M184 192 C236 160 300 122 372 132" fill="none" stroke="none"/>
-<path d="M184 192 C236 160 300 122 372 132" class="ia sa-trail"/>
-<path d="M362 152 C344 152 344 124 366 122 C370 96 406 94 412 118 C434 116 438 152 416 152 Z" class="il"/>
-<text x="392" y="186" class="hw" text-anchor="middle">Personal AI</text>
-<g class="ia sa-spark" stroke-width="1.8"><path d="M424 104 l8 -8 M432 128 l11 1 M394 88 l1 -11"/></g>
-<g class="sa-bundle">
- <g>
-  <path d="M-8 2 L6 -6 M-8 2 L6 10" class="ia"/>
-  <circle cx="-8" cy="2" r="4.5" class="iaf"/><circle cx="6" cy="-6" r="4.5" class="iaf"/><circle cx="6" cy="10" r="4.5" class="iaf"/>
- </g>
- <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.15;0.65;1"><mpath href="#sa-path"/></animateMotion>
-</g>
-</svg>
+      <figure class="problem-column" data-problem="owner" data-state="idle">
+        <span class="mono-label">Fig. 01</span>
+        <div class="problem-art">
+          <svg viewBox="0 0 420 320" role="img" aria-label="An owner connects four working agents. Removing the owner will cut their shared context." data-label-idle="An owner connects four working agents. Removing the owner will cut their shared context." data-label-changed="The owner has left. All four agents are dimmed, disconnected and stopped.">
+            <defs>
+              <g id="problem-agent">
+                <path class="iso-base" d="M-43 24 0 0 43 24 43 36 0 61-43 36Z"/>
+                <path d="M-43 24 0 49 43 24M0 49V61"/>
+                <path class="iso-face" d="M-28-17 0-33 28-17 28 17 0 33-28 17Z"/>
+                <path d="M-28-17 0-1 28-17M0-1V33"/>
+                <g class="iso-highlight">
+                  <path d="M7 7 23-2V14L7 23ZM15 2V-5"/>
+                  <circle cx="15" cy="-7" r="1.5"/>
+                  <path d="M11 10V12M19 5V7M12 17 18 13"/>
+                </g>
+              </g>
+            </defs>
+            <g class="owner-links">
+              <path class="owner-link" style="--step:0" d="M210 184 90 114"/>
+              <path class="owner-link" style="--step:1" d="M210 184 330 114"/>
+              <path class="owner-link" style="--step:2" d="M210 184 90 259"/>
+              <path class="owner-link" style="--step:3" d="M210 184 330 259"/>
+              <g class="owner-lights">
+                <circle class="owner-light" r="2.5" style="offset-path:path('M210 184 90 114');--delay:0s"/>
+                <circle class="owner-light" r="2.5" style="offset-path:path('M210 184 330 114');--delay:-.6s"/>
+                <circle class="owner-light" r="2.5" style="offset-path:path('M210 184 90 259');--delay:-1.2s"/>
+                <circle class="owner-light" r="2.5" style="offset-path:path('M210 184 330 259');--delay:-1.8s"/>
+              </g>
+            </g>
+            <g transform="translate(90 80)"><g class="owner-agent" style="--step:0"><use href="#problem-agent"/></g><path class="owner-stop" style="--step:0" d="M9 3 22 16M22 3 9 16"/></g>
+            <g transform="translate(330 80)"><g class="owner-agent" style="--step:1"><use href="#problem-agent"/></g><path class="owner-stop" style="--step:1" d="M9 3 22 16M22 3 9 16"/></g>
+            <g transform="translate(90 225)"><g class="owner-agent" style="--step:2"><use href="#problem-agent"/></g><path class="owner-stop" style="--step:2" d="M9 3 22 16M22 3 9 16"/></g>
+            <g transform="translate(330 225)"><g class="owner-agent" style="--step:3"><use href="#problem-agent"/></g><path class="owner-stop" style="--step:3" d="M9 3 22 16M22 3 9 16"/></g>
+            <g transform="translate(210 168)">
+              <path class="iso-base" d="M-43 0 0-25 43 0 43 14 0 39-43 14Z"/>
+              <path d="M-43 0 0 25 43 0M0 25V39"/>
+              <path class="owner-arrow" d="M0-18V-72M-5-66 0-72 5-66"/>
+              <g class="owner-person iso-highlight">
+                <path class="iso-face" d="M-22-16 0-29 22-16 22-4 0 9-22-4Z"/>
+                <path d="M-22-16 0-3 22-16M0-3V9"/>
+                <circle cx="0" cy="-65" r="8"/>
+                <path d="M-12-36V-43C-12-55 12-55 12-43V-36Z"/>
+              </g>
+            </g>
+          </svg>
         </div>
-        <h3>Shadow AI</h3>
-        <p>Your heaviest AI users already run personal AI, and work context ends up there.</p>
-      </div>
-      <div class="problem-column">
-        <div class="art" role="img" aria-label="An employee leaves through the company door and the role-specific AI harness goes with them. The desk is left empty.">
-<svg viewBox="0 0 480 330" id="ho-svg" aria-hidden="true">
-<path d="M270 120 V58 Q270 50 262 50 H28 Q20 50 20 58 V292 Q20 300 28 300 H262 Q270 300 270 292" class="il"/>
-<path d="M270 120 L302 132 V298 L270 292" class="il"/>
-<circle cx="292" cy="214" r="2.5" class="iaf" style="fill:var(--ink)"/>
-<text x="36" y="86" class="hw">Company</text>
-<path d="M44 240 H164 M58 240 V292 M150 240 V292" class="il"/>
-<path d="M88 236 L95 204 H137 L130 236 Z M82 240 H138" class="il"/>
-<g class="ho-ghost ig" stroke-dasharray="4 5"><circle cx="205" cy="152" r="12"/><path d="M187 220 C187 186 223 186 223 220 L221 248 H189 Z"/></g>
-<g class="ho-walk">
- <circle cx="205" cy="152" r="12" class="il"/>
- <path d="M187 220 C187 186 223 186 223 220 L221 248 H189 Z" class="il"/>
- <path d="M199 248 V292" class="il ho-leg" id="ho-l1" stroke-width="3"/>
- <path d="M211 248 V292" class="il ho-leg" id="ho-l2" stroke-width="3"/>
- <path d="M222 206 L238 216" class="il"/>
- <g class="ho-pulse">
-  <path d="M240 216 L254 208 M240 216 L254 224" class="ia"/>
-  <circle cx="240" cy="216" r="4.5" class="iaf"/><circle cx="254" cy="208" r="4.5" class="iaf"/><circle cx="254" cy="224" r="4.5" class="iaf"/>
- </g>
-</g>
-</svg>
+        <figcaption><h3>Agents stop working</h3><p>When the person who built them leaves, their agents lose the context they ran on.</p></figcaption>
+        <button class="btn problem-action" type="button" aria-controls="problem-owner-status" hidden><span data-action-idle>Remove owner</span><span data-action-changed hidden>Reset</span></button>
+        <p class="problem-status" id="problem-owner-status" aria-live="polite" aria-atomic="true" data-status-idle="Owner connected. Four agents working." data-status-changed="Owner removed. Four agents stopped.">Owner connected. Four agents working.</p>
+      </figure>
+      <figure class="problem-column" data-problem="handover" data-state="idle">
+        <span class="mono-label">Fig. 02</span>
+        <div class="problem-art">
+          <svg viewBox="0 0 420 320" role="img" aria-label="The predecessor has four layers of context and an output sheet. The successor has only an empty base." data-label-idle="The predecessor has four layers of context and an output sheet. The successor has only an empty base." data-label-changed="Only the output reached the successor. Context, rules, tools and exceptions stayed behind. The successor is rebuilding.">
+            <defs>
+              <g id="problem-layer">
+                <path class="iso-face" d="M0-28 58 5 58 20 0 53-58 20-58 5Z"/>
+                <path d="M-58 5 0 38 58 5M0 38V53"/>
+              </g>
+              <g id="problem-stack-base">
+                <path class="iso-base" d="M0-38 72 3 72 18 0 60-72 18-72 3Z"/>
+                <path d="M-72 3 0 45 72 3M0 45V60"/>
+              </g>
+            </defs>
+            <use href="#problem-stack-base" x="110" y="242"/>
+            <use href="#problem-stack-base" x="310" y="242"/>
+            <g class="handover-layers">
+              <g transform="translate(110 196)"><use href="#problem-layer"/><text transform="translate(-50 18) rotate(30)">Exceptions</text></g>
+              <g transform="translate(110 160)"><use href="#problem-layer"/><text transform="translate(-50 18) rotate(30)">Tools</text></g>
+              <g transform="translate(110 124)"><use href="#problem-layer"/><text transform="translate(-50 18) rotate(30)">Rules</text></g>
+              <g transform="translate(110 88)"><use href="#problem-layer"/><text transform="translate(-50 18) rotate(30)">Context</text></g>
+            </g>
+            <path class="handover-arc" d="M142 45C224 10 326 75 310 184M305 176 310 184 317 178"/>
+            <g transform="translate(310 212)">
+              <path class="handover-rebuild" pathLength="1" d="M-49 0 0-28 49 0 0 28-49 0V29L0 57 49 29V0M0 28V57M-49 15 0 43 49 15"/>
+            </g>
+            <g transform="translate(110 50)">
+              <g class="handover-output">
+                <path class="iso-face" d="M0-19 33 0 33 5 0 24-33 5-33 0Z"/>
+                <path d="M-33 0 0 19 33 0M-19-1 2 11M-11-6 11 6M-2-11 20 1"/>
+              </g>
+            </g>
+          </svg>
         </div>
-        <h3>Lost at handover</h3>
-        <p>When people leave, they take their AI workflows with them. No one is left knowing how they ran.</p>
-      </div>
-      <div class="problem-column">
-        <div class="art" role="img" aria-label="A grid of people where only the top performer is lit. Arrows pass the harness to one person at a time, slowly, while a cost bar grows.">
-<svg viewBox="0 0 480 330" id="ed-svg" aria-hidden="true">
-<defs>
-<pattern id="ed-hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="10" height="10" style="fill:var(--accent-50)"/><rect width="4" height="10" style="fill:var(--accent)"/></pattern>
-<marker id="ed-ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" style="stroke:var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
-<clipPath id="ed-barclip"><rect x="92" y="296" width="330" height="20" rx="10"/></clipPath>
-</defs>
-<text x="30" y="28" class="hw">Top performer</text>
-<g id="ed-tiles"></g><g id="ed-arrows"></g>
-<text x="30" y="313" class="hw">Cost</text>
-<g clip-path="url(#ed-barclip)"><rect class="ed-bar" x="92" y="296" height="20" width="0" fill="url(#ed-hatch)"/></g>
-<rect x="92" y="296" width="330" height="20" rx="10" class="il"/>
-<path d="M432 290 l8 -8 M436 300 l11 -2" class="ia" stroke-width="1.8"/>
-</svg>
+        <figcaption><h3>Successor rebuilds from scratch</h3><p>The output gets handed over. The context, rules and judgment behind it do not.</p></figcaption>
+        <button class="btn problem-action" type="button" aria-controls="problem-handover-status" hidden><span data-action-idle>Try handover</span><span data-action-changed hidden>Reset</span></button>
+        <p class="problem-status" id="problem-handover-status" aria-live="polite" aria-atomic="true" data-status-idle="Four layers stay with the predecessor. The successor has an empty base." data-status-changed="Output handed over. Context, rules, tools and exceptions left behind. Successor rebuilding.">Four layers stay with the predecessor. The successor has an empty base.</p>
+      </figure>
+      <figure class="problem-column" data-problem="teams" data-state="idle">
+        <span class="mono-label">Fig. 03</span>
+        <div class="problem-art">
+          <svg viewBox="0 0 420 320" role="img" aria-label="Three separate teams have partly hidden workflows. One team has a faint accent hint." data-label-idle="Three separate teams have partly hidden workflows. One team has a faint accent hint.">
+            <defs>
+              <g id="problem-team-base">
+                <path class="iso-base" d="M0-35 60 0 60 17 0 52-60 17-60 0Z"/>
+                <path d="M-60 0 0 35 60 0M0 35V52"/>
+              </g>
+              <g id="problem-team-person">
+                <circle cx="0" cy="-45" r="6"/>
+                <path d="M-9-24V-29C-9-39 9-39 9-29V-24Z"/>
+              </g>
+              <g id="problem-team-lid">
+                <path class="team-lid-face" d="M0-74 60-39 0-4-60-39Z"/>
+                <path class="team-wall" d="M-60-39V0M60-39V0M0-4V35"/>
+              </g>
+              <g id="problem-plain-workflow">
+                <path d="M-26 0 0 15 26 0"/>
+                <path class="iso-face" d="M-36 0-26-6-16 0-26 6ZM-10 15 0 9 10 15 0 21ZM16 0 26-6 36 0 26 6Z"/>
+              </g>
+            </defs>
+            <g transform="translate(90 112)" class="problem-team" data-team-art="a">
+              <use href="#problem-team-base"/>
+              <g class="team-workflow"><use href="#problem-team-person"/><use href="#problem-plain-workflow"/></g>
+              <g class="team-lid"><use href="#problem-team-lid"/></g>
+            </g>
+            <g transform="translate(330 112)" class="problem-team" data-team-art="b">
+              <use href="#problem-team-base"/>
+              <g class="team-workflow"><use href="#problem-team-person"/><use href="#problem-plain-workflow"/></g>
+              <g class="team-lid"><use href="#problem-team-lid"/></g>
+            </g>
+            <g transform="translate(210 246)" class="problem-team team-best" data-team-art="c">
+              <use href="#problem-team-base"/>
+              <g class="team-workflow">
+                <use href="#problem-team-person"/>
+                <path d="M-26 0 0 15 26 0ZM-4 8 0 15-9 15M14 2 26 0 22 7"/>
+                <path class="iso-face" d="M-36 0-26-6-16 0-26 6ZM-10 15 0 9 10 15 0 21ZM16 0 26-6 36 0 26 6Z"/>
+              </g>
+              <g class="team-lid"><use href="#problem-team-lid"/><path class="team-hint" d="M-9-39 0-34 9-39"/></g>
+            </g>
+          </svg>
+          <div class="team-controls" hidden>
+            <button type="button" class="team-control" data-team="a" aria-pressed="false" aria-controls="problem-teams-status" data-label="Team A is open. Its grey workflow stays separate from the other teams." data-status="Team A opened. A grey workflow, separate from the other teams."><span class="problem-status">Open Team A</span></button>
+            <button type="button" class="team-control" data-team="b" aria-pressed="false" aria-controls="problem-teams-status" data-label="Team B is open. Its grey workflow stays separate from the other teams." data-status="Team B opened. A grey workflow, separate from the other teams."><span class="problem-status">Open Team B</span></button>
+            <button type="button" class="team-control" data-team="c" aria-pressed="false" aria-controls="problem-teams-status" data-label="Team C is open. Its accent workflow has an extra connection that neither other team has." data-status="Team C opened. A better workflow, never shared with the other teams."><span class="problem-status">Open Team C</span></button>
+          </div>
         </div>
-        <h3>AI training</h3>
-        <p>Teaching everyone to use AI well is slow and costly. Your top performers already figured it out.</p>
-      </div>
+        <figcaption><h3>Best practice stays hidden</h3><p>One team finds a workflow that works. The other teams never see it.</p></figcaption>
+        <button class="btn problem-action" type="button" aria-controls="problem-teams-status" hidden>Explore teams</button>
+        <p class="problem-status" id="problem-teams-status" aria-live="polite" aria-atomic="true">Three teams. Their workflows are partly hidden.</p>
+      </figure>
     </div>
   </div>
 </section>
@@ -846,58 +915,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
   reduced.addEventListener('change',update);
 })();
 </script>
-<script>
-(function(){
-const shadow=document.getElementById('sa-svg');
-shadow.pauseAnimations();
-shadow.setCurrentTime(0);
-const NS="http://www.w3.org/2000/svg",C=16,cols=[40,140,240,340],rows=[44,128,212],W=64;
-const order=[[1,0],[2,0],[3,0],[3,1],[2,1],[1,1],[0,1],[0,2],[1,2],[2,2],[3,2]];
-const T=document.getElementById('ed-tiles'),A=document.getElementById('ed-arrows');
-const st=document.createElement('style');let k="";
-function el(n,a,p){const e=document.createElementNS(NS,n);for(const x in a)e.setAttribute(x,a[x]);p.appendChild(e);return e}
-function person(g,x,y,cls){el('circle',{cx:x+W/2,cy:y+24,r:8,class:cls},g);el('path',{d:['M',x+W/2-14,y+54,'C',x+W/2-14,y+38,x+W/2+14,y+38,x+W/2+14,y+54].join(' '),class:cls},g)}
-for(let c=0;c<4;c++)for(let r=0;r<3;r++){const x=cols[c],y=rows[r];el('rect',{x,y,width:W,height:W,rx:6,class:'ig'},T);person(T,x,y,'ig')}
-const tp=el('g',{},T);el('rect',{x:cols[0],y:rows[0],width:W,height:W,rx:6,style:'fill:var(--accent-50);stroke:var(--accent);stroke-width:2.4'},tp);person(tp,cols[0],rows[0],'ia');
-el('path',{d:'M22 52 l-10 -4 M24 68 l-12 2 M48 38 l-2 -12 M88 36 l6 -10',class:'ia','stroke-width':1.8},T);
-let prev=[0,0];
-order.forEach(([c,r],i)=>{
- const s=1.2+i*1.05,a0=((s-0.7)/C*100).toFixed(2),a1=((s-0.15)/C*100).toFixed(2),l=(s/C*100).toFixed(2),e=(15.2/C*100).toFixed(2);
- const [pc,pr]=prev,cx0=cols[pc]+W/2,cy0=rows[pr]+W/2,cx1=cols[c]+W/2,cy1=rows[r]+W/2;
- const dx=Math.sign(cx1-cx0),dy=Math.sign(cy1-cy0);
- const x0=cx0+dx*(W/2+6),y0=cy0+dy*(W/2+6),x1=cx1-dx*(W/2+8),y1=cy1-dy*(W/2+8);
- el('path',{d:['M',x0,y0,'L',x1,y1].join(' '),class:'ia ed-arw',pathLength:1,'stroke-dasharray':1,'marker-end':'url(#ed-ah)',style:'animation:ed-a'+i+' '+C+'s linear infinite'},A);
- const g=el('g',{class:'ed-lit',style:'animation:ed-t'+i+' '+C+'s steps(1) infinite'},T);
- el('rect',{x:cols[c],y:rows[r],width:W,height:W,rx:6,style:'fill:var(--accent-50);stroke:var(--accent);stroke-width:1.8'},g);person(g,cols[c],rows[r],'ia');
- k+='@keyframes ed-a'+i+'{0%,'+a0+'%{stroke-dashoffset:1;opacity:1}'+a1+'%,'+e+'%{stroke-dashoffset:0;opacity:1}'+(+e+2).toFixed(2)+'%,100%{stroke-dashoffset:0;opacity:0}}';
- k+='@keyframes ed-t'+i+'{0%{opacity:0}'+l+'%{opacity:1}'+e+'%{opacity:0}}';
- prev=[c,r];
-});
-k+='.ed-bar{animation:ed-bar '+C+'s linear infinite}@keyframes ed-bar{0%{width:0}'+(13.2/C*100).toFixed(2)+'%,'+(15.2/C*100).toFixed(2)+'%{width:330px}100%{width:0}}';
-// Legs swing only while the person walks.
-let lk="";for(const [id,sign] of [["l1",1],["l2",-1]]){let f='@keyframes ho-'+id+'{0%,20%{transform:rotate(0)}';for(let p=22;p<=68;p+=2.5){f+=p.toFixed(1)+'%{transform:rotate('+(((Math.round((p-22)/2.5))%2?-1:1)*14*sign)+'deg)}'}f+='70%,100%{transform:rotate(0)}}#ho-'+id+'{animation:ho-'+id+' 9s linear infinite}';lk+=f}
-st.textContent=k+lk;document.head.appendChild(st);
-const problem=document.getElementById('problem');
-const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-let visible=false;
-function updateMotion(){
- const running=visible&&!reduced.matches;
- problem.classList.toggle('animations-running',running);
- if(running){shadow.unpauseAnimations()}else{shadow.pauseAnimations()}
- if(reduced.matches){shadow.setCurrentTime(6.4)}
-}
-reduced.addEventListener('change',()=>{
- if(!reduced.matches){shadow.setCurrentTime(0)}
- updateMotion();
-});
-updateMotion();
-const observer=new IntersectionObserver(entries=>{
- visible=entries[0].isIntersecting;
- updateMotion();
-});
-observer.observe(problem);
-})();
-</script>
+<script type="module" src="problem.js"></script>
 <!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1b6168cc50c644e4bd8071508286852d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
