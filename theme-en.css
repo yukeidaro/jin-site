@@ -77,6 +77,11 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .product-frame { position: relative; isolation: isolate; width: min(calc(100% - 64px), 1320px); margin-inline: auto; padding: var(--s-2); border: var(--border); border-radius: var(--r-xl); background: var(--surface-1); box-shadow: var(--shadow-float); mask-image: linear-gradient(to bottom, #000 70%, transparent); }
 .product-frame::before { content: ""; position: absolute; z-index: -1; inset: -48px -32px; background: var(--glow); pointer-events: none; }
 .product-frame img { width: 100%; height: auto; border-radius: var(--r-s); }
+.product-viewport .product-frame { width: min(calc(100% - 64px), 1320px); margin-inline: auto; }
+.hero-screen { position: relative; aspect-ratio: 2880 / 1664; overflow: hidden; border-radius: var(--r-s); }
+.hero-screen > img { display: block; width: 100%; height: 100%; }
+.hero-screen iframe { position: absolute; top: 0; left: 0; width: 1440px; height: 832px; max-width: none; border: 0; transform-origin: top left; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+.hero-demo-ready iframe { opacity: 1; }
 .section { padding-block: var(--s-32); }
 .section + .section > .wrap { border-top: var(--border); padding-top: var(--s-32); }
 .section + .section { padding-top: 0; }
@@ -260,6 +265,7 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
   .hero-actions { gap: var(--s-4); }
   .hero-actions .text-link { font-size: 13px; }
   .product-frame { width: 960px; margin-left: var(--s-6); margin-right: 0; }
+  .product-viewport .product-frame { width: calc(100% - 48px); }
   .product-viewport { padding-bottom: 0; }
   .section { padding-block: 80px; }
   .section + .section { padding-top: 0; }
@@ -298,6 +304,7 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero-screen iframe { display: none; transition: none; }
   .moving-frame .screen img { animation: none; transform: none; will-change: auto; }
   .moving-frame .screen img + img { opacity: 1; }
   .art * { animation: none !important; }

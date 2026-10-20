@@ -62,6 +62,29 @@ It updates:
 Do not edit content inside `GENERATED:*` markers directly. CI runs the generator
 in check mode and fails when a derivative has drifted.
 
+## English hero product demo
+
+The home product frame keeps the eager Categories WebP as its accessible
+fallback. Once the still has painted, visitors without reduced motion get
+`assets/demo/app.html?embed=hero` in an inert, untabbable iframe. A template
+prevents any iframe request under reduced motion. The frame keeps the still's
+2880:1664 ratio and scales the demo's native 1440px layout at every width.
+
+Hero mode shows Connect with ChatGPT for four seconds, selects Claude Code for
+1.2 seconds, then holds Categories for five seconds and repeats. It hides tour
+controls and summary cards and cannot navigate to admin scenes. Same-origin,
+source-checked messages pause and resume the remaining scene time when the
+frame leaves the viewport or the tab is hidden. The still remains underneath;
+the iframe fades in after its readiness message or 500ms after load.
+
+The demo copy uses system fonts and embedded or local images only. Its CSP
+blocks external resources, connections and form submissions. Three large
+inline raster assets were extracted into `assets/demo/app/`; the logo is
+stored at three times its rendered resolution. The supplied original is
+read-only and was not changed. Japanese frames are unchanged pending J1.
+Performance measurements, screenshots and the recommendation are recorded in
+`.copilot-runs/notes/e3.md`. No new runtime or build dependencies are required.
+
 ## Content rules
 
 - Product name: **Jin AI**. It is a B2B product for AI-forward companies.

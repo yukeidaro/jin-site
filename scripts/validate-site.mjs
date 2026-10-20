@@ -38,6 +38,10 @@ const expectedFiles = [
   "accessibility/index.html",
   "agent/content.json",
   "agent/index.html",
+  "assets/demo/app.html",
+  "assets/demo/app/jin-logo.webp",
+  "assets/demo/app/cursor.webp",
+  "assets/demo/app/muse-code.webp",
   "assets/demo/demo-1-connect.webp",
   "assets/demo/demo-2-categories.webp",
   "assets/demo/demo-3-by-role.webp",
@@ -265,13 +269,54 @@ for (const match of home.matchAll(/<(?:script|link)\b[^>]*(?:src|href)="(https?:
 }
 const productFrame = home.match(/<figure class="product-frame">([\s\S]*?)<\/figure>/)?.[1] || "";
 const productAlt = "Jin AI employee workspace. Harness parts are sorted by category, and each part is marked Can move or Confidential.";
-check(productFrame.trim() === `<img src="assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="${productAlt}" decoding="async" loading="lazy">` &&
+const stillTag = productFrame.match(/<img\b[^>]*>/)?.[0] || "";
+check(stillTag === `<img src="assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="${productAlt}" decoding="async" loading="eager" fetchpriority="high" elementtiming="hero-still">` &&
+  productFrame.includes('class="hero-screen"') &&
   home.indexOf('class="product-frame"') > home.indexOf("</section>") &&
   home.indexOf('class="product-frame"') < home.indexOf('id="problem"'),
-  "Root must show the one Categories screen with its exact alt and dimensions directly below the hero.");
+  "Root must retain the eager Categories fallback, exact alt and dimensions directly below the hero.");
+const demoTemplate = productFrame.match(/<template id="hero-demo-template">([\s\S]*?)<\/template>/)?.[1] || "";
+const demoIframe = demoTemplate.match(/<iframe\b[^>]*>/)?.[0] || "";
+check(count(productFrame, /<iframe\b/g) === 1 && demoIframe.includes('src="assets/demo/app.html?embed=hero"') &&
+  demoIframe.includes('title="Jin AI employee workspace demo"') &&
+  demoIframe.includes('width="1440"') && demoIframe.includes('height="832"') &&
+  demoIframe.includes('tabindex="-1"') && /\sinert(?:\s|>)/.test(demoIframe) &&
+  demoIframe.includes('aria-hidden="true"') && demoIframe.includes('scrolling="no"') &&
+  !/\bloading="lazy"/.test(demoIframe),
+  "Root needs one non-lazy, inert, aria-hidden, untabbable native-size hero iframe in an unloaded template.");
+const heroDemoScript = home.match(/<script id="jin-hero-demo">([\s\S]*?)<\/script>/)?.[1] || "";
+check(heroDemoScript.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
+  heroDemoScript.includes("if (!painted || reduced.matches || iframe) return;") &&
+  heroDemoScript.includes("iframe?.remove()") && heroDemoScript.includes("new IntersectionObserver") &&
+  heroDemoScript.includes('"visibilitychange"') && heroDemoScript.includes("!document.hidden") &&
+  heroDemoScript.includes("new ResizeObserver") && heroDemoScript.includes("/ 1440") &&
+  heroDemoScript.includes('event.source !== iframe.contentWindow') &&
+  heroDemoScript.includes('event.origin !== location.origin') &&
+  heroDemoScript.includes('event.data.action !== "ready"') &&
+  heroDemoScript.includes("setTimeout(() => reveal(frame), 500)"),
+  "Hero lifecycle must gate creation on still paint and reduced motion, scale, authenticate readiness and pause off screen or in a hidden tab.");
+const demoApp = await text("assets/demo/app.html");
+check(demoApp.includes('new URLSearchParams(location.search).get("embed") === "hero"') &&
+  demoApp.includes(".hero-embed .controls,.hero-embed .progress,.hero-embed .cursor,.hero-embed .stats{display:none!important}") &&
+  demoApp.includes(".hero-embed .tool-option:not(.chosen) .tool-ready{visibility:hidden}") &&
+  demoApp.includes("document.body.inert = true"),
+  "Demo copy needs hero-only control/stats hiding, chosen-only Ready labels and disabled interaction.");
+const heroPhases = demoApp.match(/const phases = \[([\s\S]*?)\];/)?.[1] || "";
+check(JSON.stringify([...heroPhases.matchAll(/scene: (\d+)/g)].map(match => Number(match[1]))) === "[0,0,1]" &&
+  !/By role|What can move|go\([23]\)/.test(heroPhases) &&
+  demoApp.includes("Math.min(heroEmbed?1:3,n)") &&
+  demoApp.includes("const views=heroEmbed?[connectView,categoryView]:[connectView,categoryView,roleView,policyView]") &&
+  demoApp.includes('const stepNames=heroEmbed?[\'Connect\',\'Categories\']') &&
+  demoApp.includes('event.source !== parent || event.origin !== location.origin') &&
+  demoApp.includes('event.data.action !== "pause" && event.data.action !== "play"') &&
+  demoApp.includes("clearTimeout(timeout)") && demoApp.includes("animation.pause()"),
+  "Hero demo must loop Connect then Categories only, prevent admin navigation, and authenticate pause/play for timers and animations.");
+check(demoApp.includes('content="default-src \'none\'; script-src \'unsafe-inline\'; style-src \'unsafe-inline\'; img-src \'self\' data:; base-uri \'none\'; form-action \'none\'"') &&
+  !/<(?:script|img|link)\b[^>]*(?:src|href)=["']https?:\/\//i.test(demoApp),
+  "Demo must prohibit off-site resources and network connections.");
 check(count(home, /<img\b[^>]*src="assets\/demo\//g) === 1 &&
   !/demo-[134]-|admin console|screen-by-role|screen-what-can-move/.test(home),
-  "Root must not show admin screens or any product screen beyond Categories.");
+  "Root must not show admin screens or any still beyond the Categories fallback.");
 const problemSection = homeSections.find((match) => match[1].includes('id="problem"'))?.[2] || "";
 const illustrations = [...problemSection.matchAll(/<div\b[^>]*\bclass="art"[^>]*>/g)].map((match) => match[0]);
 check(illustrations.length === 3 && illustrations.every((art) =>
@@ -943,7 +988,8 @@ for (const relativePath of htmlFiles) htmlCache.set(relativePath, await text(rel
 for (const [relativePath, source] of htmlCache) {
   const publicPath = relativePath.replace(/index\.html$/, "");
   const baseUrl = new URL(publicPath, "https://jinai.md/");
-  const references = [...source.matchAll(/\b(?:href|src)="([^"]+)"/g)];
+  const markup = source.replace(/(<script\b[^>]*>)[\s\S]*?<\/script>/g, "$1</script>");
+  const references = [...markup.matchAll(/\b(?:href|src)="([^"]+)"/g)];
 
   for (const match of references) {
     const reference = match[1];
@@ -954,7 +1000,7 @@ for (const [relativePath, source] of htmlCache) {
     let targetPath = decodeURIComponent(resolved.pathname).replace(/^\/+/, "");
     if (!targetPath || targetPath.endsWith("/")) targetPath += "index.html";
     // J1 supplies these Japanese twins. Only their exact hreflang references may be pending.
-    const tag = source.slice(source.lastIndexOf("<", match.index), source.indexOf(">", match.index) + 1);
+    const tag = markup.slice(markup.lastIndexOf("<", match.index), markup.indexOf(">", match.index) + 1);
     const pendingRoute = ["security/", "company/", "resources/ai-harness/"].find(route =>
       relativePath === `${route}index.html` && targetPath === `ja/${route}index.html`);
     if (pendingRoute && !deployedFileSet.has(targetPath) &&

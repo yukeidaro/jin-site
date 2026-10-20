@@ -207,9 +207,85 @@
 
 <div class="product-viewport">
   <figure class="product-frame">
-    <img src="assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="Jin AI employee workspace. Harness parts are sorted by category, and each part is marked Can move or Confidential." decoding="async" loading="lazy">
+    <div class="hero-screen">
+      <img src="assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="Jin AI employee workspace. Harness parts are sorted by category, and each part is marked Can move or Confidential." decoding="async" loading="eager" fetchpriority="high" elementtiming="hero-still">
+      <template id="hero-demo-template"><iframe src="assets/demo/app.html?embed=hero" title="Jin AI employee workspace demo" width="1440" height="832" tabindex="-1" inert aria-hidden="true" scrolling="no" referrerpolicy="no-referrer"></iframe></template>
+    </div>
   </figure>
 </div>
+<script id="jin-hero-demo">
+(() => {
+  const screen = document.querySelector(".hero-screen");
+  const still = screen.querySelector("img");
+  const template = document.getElementById("hero-demo-template");
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  let iframe = null;
+  let visible = false;
+  let painted = false;
+  let fallback = null;
+  const playback = () => {
+    iframe?.contentWindow.postMessage({
+      type: "jin-demo",
+      action: visible && !document.hidden && !reduced.matches ? "play" : "pause"
+    }, location.origin);
+  };
+  const reveal = frame => {
+    if (iframe !== frame) return;
+    screen.classList.add("hero-demo-ready");
+    playback();
+  };
+  const mount = () => {
+    if (!painted || reduced.matches || iframe) return;
+    const frame = template.content.firstElementChild.cloneNode(true);
+    iframe = frame;
+    frame.addEventListener("load", () => {
+      if (!frame.contentDocument?.documentElement.classList.contains("hero-embed")) {
+        console.error("The live hero demo could not be loaded. Keeping the still image.");
+        return;
+      }
+      playback();
+      fallback = setTimeout(() => reveal(frame), 500);
+    }, { once: true });
+    screen.appendChild(frame);
+    frame.style.transform = "scale(" + screen.clientWidth / 1440 + ")";
+  };
+  new ResizeObserver(([entry]) => {
+    if (iframe) iframe.style.transform = "scale(" + entry.contentRect.width / 1440 + ")";
+  }).observe(screen);
+  const observer = new IntersectionObserver(entries => {
+    visible = entries[0].isIntersecting;
+    playback();
+  });
+  observer.observe(screen);
+  addEventListener("message", event => {
+    if (!iframe || event.source !== iframe.contentWindow || event.origin !== location.origin ||
+        event.data?.type !== "jin-demo" || event.data.action !== "ready") return;
+    clearTimeout(fallback);
+    reveal(iframe);
+  });
+  document.addEventListener("visibilitychange", playback);
+  reduced.addEventListener("change", () => {
+    if (reduced.matches) {
+      playback();
+      clearTimeout(fallback);
+      iframe?.remove();
+      iframe = null;
+      screen.classList.remove("hero-demo-ready");
+    } else {
+      mount();
+    }
+  });
+  const afterPaint = () => requestAnimationFrame(() => requestAnimationFrame(() => {
+    painted = true;
+    mount();
+  }));
+  if (still.complete && still.naturalWidth) afterPaint();
+  else {
+    still.addEventListener("load", afterPaint, { once: true });
+    still.addEventListener("error", () => console.error("The hero demo still image could not be loaded."), { once: true });
+  }
+})();
+</script>
 
 <section class="section" id="problem">
   <div class="wrap" id="benefits">
