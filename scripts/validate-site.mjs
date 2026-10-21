@@ -804,7 +804,7 @@ for (const [attribute, name] of [["name", "description"], ["property", "og:descr
 }
 check(howPage.includes(`<h2 class="h2">${content.data_principles.headline}</h2>`) &&
   content.data_principles.items.every((item) => howPage.includes(`<li>${item}</li>`)) &&
-  howPage.includes('<a class="btn btn-p" href="../#demo">Request a demo</a>'),
+  howPage.includes('<a class="btn btn-p" href="../#demo">Join the waitlist</a>'),
   "The companion page must include all data promises and the demo CTA.");
 check(!/plugin-screen\.png|personal MCP|your own memory|#waitlist|Join &rarr;/.test(howPage),
   "The companion page must not publish the retired consumer copy or CTA.");
@@ -812,7 +812,7 @@ const closingBand = howPage.match(/<section class="closing-cta" aria-labelledby=
 check(closingBand.includes('<div class="wrap">') &&
   closingBand.includes(`<h2 id="closing-heading">${closingCopy}</h2>`) &&
   count(closingBand, /<(?:a|button)\b/g) === 1 &&
-  closingBand.includes('<a class="btn btn-p" href="../#demo">Request a demo</a>') &&
+  closingBand.includes('<a class="btn btn-p" href="../#demo">Join the waitlist</a>') &&
   count(howPage, /class="closing-cta"/g) === 1 &&
   howPage.indexOf('class="closing-cta"') > howPage.indexOf('id="data"'),
   "How it works must end with the closing band and exactly one primary demo button.");
@@ -875,7 +875,7 @@ check(!/Parts marked confidential|tools you approve|Decide what can move|\b04\b|
   "Security must not claim step 04 approval behavior or certifications.");
 const securityContact = security.match(/<div class="security-contact">([\s\S]*?)<\/main>/)?.[1] || "";
 check(securityContact.includes(`<p>Questions about security? Email ${emailComponent()}, or request a demo.</p>`) &&
-  securityContact.includes('<a class="btn btn-p" href="../#demo">Request a demo</a>') &&
+  securityContact.includes('<a class="btn btn-p" href="../#demo">Join the waitlist</a>') &&
   count(securityContact, /class="btn /g) === 1 && !/closing-cta/.test(security),
   "Security must use its separate wide contact band, not the How it works closing band.");
 
@@ -904,7 +904,7 @@ for (const [route, source] of [
       normalizedLandmark(home, landmark, "https://jinai.md/"),
     `${route} ${landmark} must match the home component, with route-specific links and current-page states.`);
   }
-  check(source.includes('<a class="btn btn-p" href="/#demo">Request a demo</a>'),
+  check(source.includes('<a class="btn btn-p" href="/#demo">Join the waitlist</a>'),
     `${route} must link its header demo button to the home form.`);
   check(source.includes('<script type="module" src="/nav.js"></script>'),
     `${route} must use the shared accessible navigation script.`);
@@ -929,7 +929,7 @@ for (const [route, source] of englishPages) {
   check(header.includes('aria-label="Main navigation"') &&
     header.includes('aria-label="Menu" aria-controls="primary-menu" aria-expanded="false"') &&
     header.includes('id="primary-menu"') &&
-    header.includes(`<a class="btn btn-p" href="${route ? "/#demo" : "#demo"}">Request a demo</a>`),
+    header.includes(`<a class="btn btn-p" href="${route ? "/#demo" : "#demo"}">Join the waitlist</a>`),
     `/${route} needs the main navigation, accessible mobile button and primary demo link.`);
   let topLevel = cleanHeader;
   for (const [label, id, items] of [
@@ -1012,7 +1012,7 @@ for (const [relativePath, source] of [
 const draftPages = [
   ["company/", company, "Company", "Company",
     "Our mission is to turn every company's AI into an asset it owns: secure, shared, and always up to date.",
-    "Company Our mission is to turn every company's AI into an asset it owns: secure, shared, and always up to date. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Community: Discord Request a demo"]
+    "Company Our mission is to turn every company's AI into an asset it owns: secure, shared, and always up to date. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Community: Discord Join the waitlist"]
 ];
 for (const [route, source, title, heading, description, expectedCopy] of draftPages) {
   const main = source.match(/<main\b([^>]*)>([\s\S]*?)<\/main>/);
@@ -1052,7 +1052,7 @@ for (const [route, source, title, heading, description, expectedCopy] of draftPa
     `/${route} must remain indexable.`);
 }
 check(company.includes(emailComponent()) &&
-  company.includes('<a class="btn btn-p" href="/#demo">Request a demo</a>'),
+  company.includes('<a class="btn btn-p" href="/#demo">Join the waitlist</a>'),
   "Company must show its copyable email and link to the home demo.");
 
 const baseCss = await text("base.css");
@@ -1415,7 +1415,7 @@ const fieldSpecs = [
   ["country", "Country", "select", "country-name"]
 ];
 check(controls.map(([tag]) => tag.match(/\bname="([^"]+)"/)?.[1]).join() ===
-  [...fieldSpecs.map(([name]) => name), "website"].join(),
+  "firstName,lastName,email,jobTitle,company,phone,industry,companySize,country,website",
   "The demo controls and native tab order must match the approved visual field order.");
 for (const [name, label, type, autocomplete, maxLength] of fieldSpecs) {
   const control = controls.find(([tag]) => tag.includes(`name="${name}"`))?.[0] || "";
@@ -1469,8 +1469,19 @@ check(!home.includes("A welcome email is on its way"), "The page must not promis
 check(count(home, /<form\b/g) === 1 && Boolean(form), "There must be exactly one demo form.");
 check(!access.survey && !/waitlistSurvey|signup-survey|type="radio"/.test(home),
   "The demo page must not contain the post-signup survey.");
-check(form.includes('type="submit" disabled>Request a demo</button>'),
-  "The demo button must remain disabled until the client is ready.");
+check(form.includes('data-flow="waitlist"') &&
+  form.includes('type="submit" disabled>Join the waitlist</button>'),
+  "The waitlist button must remain disabled until the client is ready.");
+const extraFields = form.match(/<fieldset class="signup-extra" id="demoFields" disabled hidden>([\s\S]*?)<\/fieldset>/)?.[1] || "";
+check([...extraFields.matchAll(/<(?:input|select)\b[^>]*name="([^"]+)"/g)].map(match => match[1]).join() ===
+  "phone,industry,companySize,country" &&
+  access.form.waitlist.consent_version === "waitlist-product-updates-v1" &&
+  access.form.waitlist.fields.join() === "firstName,lastName,email,jobTitle,company",
+  "Only the four additional demo controls start hidden and disabled; step one retains the five waitlist fields and consent.");
+check(home.includes('id="waitlist"') && home.includes('id="demoOffer" hidden') &&
+  home.includes('<h3 id="demoQuestion">Want a demo too?</h3>') &&
+  home.includes('id="openDemo" type="button" aria-controls="waitlistForm" aria-expanded="false">Request a demo</button>'),
+  "Both form anchors and the initially hidden optional demo offer must remain available.");
 check(hero.includes(`<a class="btn btn-p" href="#demo">${access.hero_label}</a>`),
   "The hero CTA must jump to the demo form.");
 check(demoSection.includes(`<p class="waitnote">${access.note}</p>`), "The demo form must retain its generated note.");
@@ -1634,6 +1645,7 @@ const japaneseNavigation = [
   ["社員向け", "For employees"], ["管理者向け", "For admins"],
   ["セキュリティ", "Security"], ["規約・方針", "Legal"], ["会社情報", "Company"],
   ["会社", "Company"], ["お問い合わせ", "Contact"], ["デモを申し込む", "Request a demo"],
+  ["ウェイトリストに登録", "Join the waitlist"],
   ["AI ハーネスとは", "What is an AI harness"], ["プライバシーポリシー", "Privacy"],
   ["アクセシビリティ", "Accessibility"],
   ["Jin AI が会社にもたらすこと。", "What Jin AI does for your company."],
@@ -1733,7 +1745,7 @@ for (const [page, translated] of [["home", japanese], ["How it works", japaneseH
   `Japanese ${page} must not show delivery status labels.`);
 }
 check(count(japaneseHow, /<img\b[^>]*class="screen-/g) === 4 &&
-  japaneseHow.includes('href="/ja/#demo">デモを申し込む</a>') &&
+  japaneseHow.includes('href="/ja/#demo">ウェイトリストに登録</a>') &&
   japaneseHow.includes('href="/ja/security/">データとセキュリティ &rarr;</a>'),
 "Japanese How it works must retain its four original stills, security link and demo CTA.");
 
@@ -1745,7 +1757,7 @@ const japaneseLabels = {
 };
 check(count(japanese, /<form\b/g) === 1 && japaneseControls.map((control) =>
   control.match(/\bname="([^"]+)"/)?.[1]).join() ===
-  "email,lastName,firstName,jobTitle,phone,company,industry,companySize,country,website",
+  "lastName,firstName,email,jobTitle,company,phone,industry,companySize,country,website",
 "Japanese form must retain all fields with surname before given name in native tab order.");
 for (const [name, label] of Object.entries(japaneseLabels)) {
   const control = japaneseControls.find((tag) => tag.includes(`name="${name}"`));
@@ -1777,11 +1789,21 @@ for (const [name, placeholder, labels] of [
 }
 check(japaneseForm.includes(`data-endpoint="${access.form.endpoint || ""}"`) &&
   japaneseForm.match(/<form\b[^>]*>/)?.[0] === form.match(/<form\b[^>]*>/)?.[0] &&
-  japaneseForm.includes('type="submit" disabled>デモを申し込む</button>') &&
+  japaneseForm.includes('type="submit" disabled>ウェイトリストに登録</button>') &&
   japaneseForm.includes('<p class="waitnote">デモの日程を、メールでご相談します。</p>') &&
   japaneseForm.includes('いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="privacy/">プライバシーポリシー</a>をご覧ください。') &&
   japanese.includes('src="/waitlist.mjs"') && !/waitlistSurvey|signup-survey|type="radio"/.test(japanese),
 "Japanese form must retain the endpoint, submission attributes, consent flow, translated notices and shared client, without a survey.");
+const formStructure = source => [...source.replace(/<select\b[^>]*>[\s\S]*?<\/select>/g,
+  match => match.replace(/<option\b[^>]*>[\s\S]*?<\/option>/g, ""))
+  .matchAll(/<(?!\/)([a-z][\w-]*)\b([^>]*)>/g)].map(([, tag, attributes]) =>
+  [tag, attributes.replace(/demo-(?:firstName|lastName)/g, "demo-name")
+    .replace(/name="(?:firstName|lastName)"/g, 'name="name"')
+    .replace(/autocomplete="(?:given-name|family-name)"/g, 'autocomplete="name"')]);
+check(JSON.stringify(formStructure(form)) === JSON.stringify(formStructure(japaneseForm)) &&
+  japanese.includes('<h3 id="demoQuestion">デモも申し込みますか？</h3>') &&
+  japanese.includes('id="openDemo" type="button" aria-controls="waitlistForm" aria-expanded="false">デモを申し込む</button>'),
+  "The complete two-step forms must match structurally except labels, name order and country labels/order.");
 
 const customerFacingTextFiles = deployedFiles.filter((file) => /\.(html|css|json|txt|xml|svg|m?js)$/.test(file));
 const cjk = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\u3000-\u303f]/u;

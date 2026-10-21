@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { CONSENT_VERSION, isAppsScriptEndpoint } from "../waitlist.mjs";
+import { CONSENT_VERSION, WAITLIST_CONSENT_VERSION, WAITLIST_FIELDS, isAppsScriptEndpoint } from "../waitlist.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const checkOnly = process.argv.includes("--check");
@@ -61,6 +61,11 @@ function validate(source) {
     (access.form.endpoint === null && access.status === "setup_pending"),
   "The demo form needs a deployed Apps Script /exec endpoint, or an explicit setup_pending state.");
   assert(access.form.consent_version === CONSENT_VERSION, "The demo consent version has drifted.");
+  assert(access.label === "Join the waitlist" && access.hero_label === access.label &&
+    access.form.demo_label === "Request a demo", "The waitlist and demo labels have drifted.");
+  assert(access.form.waitlist?.consent_version === WAITLIST_CONSENT_VERSION &&
+    JSON.stringify(access.form.waitlist.fields) === JSON.stringify(WAITLIST_FIELDS),
+  "The waitlist needs its existing consent and five required fields.");
   assert(access.contact_email === "hello@jinai.md", "Demo confirmations must send from hello@jinai.md.");
   assert(access.form.privacy_url === "privacy/" && access.form.privacy_note?.trim(),
     "The demo form must explain its purpose and link to the Privacy Policy.");
@@ -144,7 +149,8 @@ function replaceBlock(document, blockName, generated) {
 }
 
 const japaneseForm = {
-  label: "デモを申し込む",
+  label: "ウェイトリストに登録",
+  demoLabel: "デモを申し込む",
   note: "デモの日程を、メールでご相談します。",
   labels: {
     email: "会社のメールアドレス", lastName: "姓", firstName: "名", jobTitle: "役職",
@@ -198,8 +204,10 @@ function renderCta(source, { centred, language = "en" }) {
 
   const endpoint = access.form.endpoint || "";
   const action = endpoint ? ` action="${escapeHtml(endpoint)}"` : "";
-  const specifications = [...access.form.fields];
-  if (ja) [specifications[1], specifications[2]] = [specifications[2], specifications[1]];
+  const sharedNames = [...access.form.waitlist.fields];
+  if (ja) [sharedNames[0], sharedNames[1]] = [sharedNames[1], sharedNames[0]];
+  const specifications = [...sharedNames.map(name => access.form.fields.find(field => field.name === name)),
+    ...access.form.fields.filter(field => !sharedNames.includes(field.name))];
   const countries = ja ? japaneseCountries(specifications.find((field) => field.name === "country").options) : null;
   const fields = specifications.map((field) => {
     const id = `demo-${field.name}`;
@@ -225,10 +233,14 @@ ${options.map((option) => `            <option value="${escapeHtml(option)}">${e
           <p class="signup-error" id="${id}-error" hidden></p>
         </div>`;
   });
-  const rows = [fields.slice(0, 1), fields.slice(1, 3), fields.slice(3, 5), fields.slice(5, 7), fields.slice(7, 9)]
-    .map((row) => `      <div class="signup-row">\n${row.join("\n")}\n      </div>`).join("\n");
-  return `<form class="signup" id="waitlistForm"${action} data-endpoint="${escapeHtml(endpoint)}" method="post" novalidate>
-${rows}
+  const rows = (groups) => groups.map(row =>
+    `      <div class="signup-row">\n${row.join("\n")}\n      </div>`).join("\n");
+  return `<form class="signup" id="waitlistForm"${action} data-endpoint="${escapeHtml(endpoint)}" data-flow="waitlist" method="post" novalidate>
+${rows([fields.slice(0, 2), fields.slice(2, 3), fields.slice(3, 5)])}
+      <fieldset class="signup-extra" id="demoFields" disabled hidden>
+        <legend>${escapeHtml(ja ? japaneseForm.demoLabel : access.form.demo_label)}</legend>
+${rows([fields.slice(5, 7), fields.slice(7, 9)])}
+      </fieldset>
       <div class="signup-trap" aria-hidden="true">
         <label for="wl-website">${ja ? "この欄は空のままにしてください" : "Leave this field empty"}</label>
         <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
@@ -248,6 +260,10 @@ ${rows}
         <div><dt>${ja ? "確認メール" : "Confirmation email"}</dt><dd id="waitlistEmail"></dd></div>
       </dl>
       <p id="waitlistDetail"></p>
+    </div>
+    <div class="signup-offer" id="demoOffer" hidden>
+      <h3 id="demoQuestion">${ja ? "デモも申し込みますか？" : "Want a demo too?"}</h3>
+      <button class="btn btn-p" id="openDemo" type="button" aria-controls="waitlistForm" aria-expanded="false">${escapeHtml(ja ? japaneseForm.demoLabel : access.form.demo_label)}</button>
     </div>
     <p class="waitalt">${ja ? "ご質問・ご意見: " : "Questions or feedback? "}${renderEmail(access.contact_email, ja)}${ja ? "。" : "."}</p>`;
 }

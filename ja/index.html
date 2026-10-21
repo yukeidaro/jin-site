@@ -63,7 +63,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
         <li><a href="/ja/#demo">お問い合わせ</a></li>
       </ul>
     </nav>
-    <a class="btn btn-p" href="#demo">デモを申し込む</a>
+    <a class="btn btn-p" href="#demo">ウェイトリストに登録</a>
     <button class="menu-toggle" type="button" aria-label="メニュー" aria-controls="primary-menu" aria-expanded="false" hidden><span></span><span></span><span></span></button>
   </div>
 </header>
@@ -78,7 +78,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
     <div class="hero-actions">
     <!-- GENERATED:CTA_HERO:START -->
 <div class="wait">
-      <a class="btn btn-p" href="#demo">デモを申し込む</a>
+      <a class="btn btn-p" href="#demo">ウェイトリストに登録</a>
     </div>
 <!-- GENERATED:CTA_HERO:END -->
       <a class="text-link" href="/ja/how-it-works/">仕組みを見る &rarr;</a>
@@ -533,14 +533,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
     </div>
     <div class="demo-form">
     <!-- GENERATED:CTA_FINAL:START -->
-<form class="signup" id="waitlistForm" action="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" data-endpoint="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" method="post" novalidate>
-      <div class="signup-row">
-        <div class="signup-field">
-          <label for="demo-email">会社のメールアドレス</label>
-          <input id="demo-email" name="email" autocomplete="email" aria-describedby="demo-email-error" required aria-required="true" type="email" maxlength="254">
-          <p class="signup-error" id="demo-email-error" hidden></p>
-        </div>
-      </div>
+<form class="signup" id="waitlistForm" action="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" data-endpoint="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" data-flow="waitlist" method="post" novalidate>
       <div class="signup-row">
         <div class="signup-field">
           <label for="demo-lastName">姓</label>
@@ -555,21 +548,30 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       </div>
       <div class="signup-row">
         <div class="signup-field">
+          <label for="demo-email">会社のメールアドレス</label>
+          <input id="demo-email" name="email" autocomplete="email" aria-describedby="demo-email-error" required aria-required="true" type="email" maxlength="254">
+          <p class="signup-error" id="demo-email-error" hidden></p>
+        </div>
+      </div>
+      <div class="signup-row">
+        <div class="signup-field">
           <label for="demo-jobTitle">役職</label>
           <input id="demo-jobTitle" name="jobTitle" autocomplete="organization-title" aria-describedby="demo-jobTitle-error" required aria-required="true" type="text" maxlength="120">
           <p class="signup-error" id="demo-jobTitle-error" hidden></p>
         </div>
         <div class="signup-field">
-          <label for="demo-phone">電話番号</label>
-          <input id="demo-phone" name="phone" autocomplete="tel" aria-describedby="demo-phone-error" required aria-required="true" type="tel" maxlength="40">
-          <p class="signup-error" id="demo-phone-error" hidden></p>
-        </div>
-      </div>
-      <div class="signup-row">
-        <div class="signup-field">
           <label for="demo-company">会社名</label>
           <input id="demo-company" name="company" autocomplete="organization" aria-describedby="demo-company-error" required aria-required="true" type="text" maxlength="160">
           <p class="signup-error" id="demo-company-error" hidden></p>
+        </div>
+      </div>
+      <fieldset class="signup-extra" id="demoFields" disabled hidden>
+        <legend>デモを申し込む</legend>
+      <div class="signup-row">
+        <div class="signup-field">
+          <label for="demo-phone">電話番号</label>
+          <input id="demo-phone" name="phone" autocomplete="tel" aria-describedby="demo-phone-error" required aria-required="true" type="tel" maxlength="40">
+          <p class="signup-error" id="demo-phone-error" hidden></p>
         </div>
         <div class="signup-field">
           <label for="demo-industry">業種</label>
@@ -863,11 +865,12 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
           <p class="signup-error" id="demo-country-error" hidden></p>
         </div>
       </div>
+      </fieldset>
       <div class="signup-trap" aria-hidden="true">
         <label for="wl-website">この欄は空のままにしてください</label>
         <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
       </div>
-      <button class="btn btn-p" type="submit" disabled>デモを申し込む</button>
+      <button class="btn btn-p" type="submit" disabled>ウェイトリストに登録</button>
       <p class="waitnote">デモの日程を、メールでご相談します。</p>
       <p class="signup-privacy">いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="privacy/">プライバシーポリシー</a>をご覧ください。</p>
     </form>
@@ -880,6 +883,10 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
         <div><dt>確認メール</dt><dd id="waitlistEmail"></dd></div>
       </dl>
       <p id="waitlistDetail"></p>
+    </div>
+    <div class="signup-offer" id="demoOffer" hidden>
+      <h3 id="demoQuestion">デモも申し込みますか？</h3>
+      <button class="btn btn-p" id="openDemo" type="button" aria-controls="waitlistForm" aria-expanded="false">デモを申し込む</button>
     </div>
     <p class="waitalt">ご質問・ご意見: <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span>。</p>
 <!-- GENERATED:CTA_FINAL:END -->

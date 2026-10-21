@@ -174,14 +174,19 @@
   ],
   "early_access": {
     "status": "open",
-    "label": "Request a demo",
+    "label": "Join the waitlist",
     "note": "We will email you to set up a demo.",
-    "hero_label": "Request a demo",
+    "hero_label": "Join the waitlist",
     "hero_note": "We will email you to set up a demo.",
     "form": {
       "provider": "apps_script",
       "endpoint": "https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec",
       "consent_version": "demo-request-v1",
+      "demo_label": "Request a demo",
+      "waitlist": {
+        "consent_version": "waitlist-product-updates-v1",
+        "fields": ["firstName", "lastName", "email", "jobTitle", "company"]
+      },
       "privacy_url": "privacy/",
       "privacy_note": "We use these details only to reply about your demo.",
       "fields": [

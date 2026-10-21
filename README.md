@@ -13,7 +13,7 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/resources/ai-harness/` | `noindex` compatibility redirect to `/how-it-works/#harness` |
 | `/privacy/` | Approved website privacy policy |
 | `/accessibility/` | Accessibility goal, known limits and contact details |
-| `/ja/` | Japanese translation of the English home, with the live demo, interactive Problem/Solution figures and the same demo form |
+| `/ja/` | Japanese translation of the English home, with the live demo, interactive Problem/Solution figures and the same waitlist-then-demo form |
 | `/ja/how-it-works/` | Japanese twin of the five feature rows and harness definition |
 | `/ja/security/` | Draft Japanese security and data page |
 | `/ja/company/` | Draft Japanese company mission and contact page |
@@ -37,7 +37,7 @@ in two reveal phrases; the generated form preserves surname-first order and Japa
 labels without changing payload values. The English-only language-choice
 redirect and root fact graph are not duplicated on Japanese pages.
 Headers have the Product dropdown, Security, Company,
-Contact and Request a demo. Below 960px, a scroll-locking mobile panel groups
+Contact and Join the waitlist. Below 960px, a scroll-locking mobile panel groups
 the same links. `nav.js` handles keyboard, focus, click and Escape behavior.
 English footer columns are Product, Legal, Company and Connect; Japanese uses
 規約・方針 for Legal. Privacy and Accessibility are footer-only navigation links.
@@ -83,7 +83,7 @@ node scripts/generate-aeo.mjs
 It updates:
 
 - the root JSON-LD graph;
-- the English and Japanese hero and final demo-request CTAs, including the company-details form;
+- the English and Japanese hero and final waitlist CTAs, including the optional company-details demo step;
 - the content and title of `agent/index.html`;
 - `llms.txt`.
 
@@ -431,8 +431,12 @@ recorded in `.copilot-runs/notes/j1.md`.
 - Data: **Your company's context stays yours** Each company's context is kept
   separate. Jin AI never records your screen. Jin AI itself never trains on
   your data. Do not claim that Jin AI does not read conversation histories.
-- CTA: **Request a demo**. Note: **We will email you to set up a demo.**
-  The form uses `demo-request-v1` consent and links to the Privacy Policy.
+- R13b CTA (Yu, 2026-10-21): **Join the waitlist** / **ウェイトリストに登録**.
+  After signup, **Request a demo** / **デモを申し込む** opens the optional demo.
+  Note: **We will email you to set up a demo.** This and the existing
+  demo-only prose/privacy notices remain unchanged pending Yu's copy approval;
+  all proposed bilingual changes are in `.copilot-runs/notes/r13b-copy-proposals.md`.
+  The two steps use their existing separate consent versions and link to the Privacy Policy.
   Keep the endpoint and the legacy backend routes working for cached pages.
 - No prices anywhere on the site, including machine-readable formats.
   Do not publish currency amounts, Pro, Team or free-version offers, Cloud Sync,
@@ -479,12 +483,32 @@ recorded in `.copilot-runs/notes/j1.md`.
 ## Demo request and waitlist backend
 
 The English hero CTA is generated from `early_access.hero_label` and
-`early_access.hero_note` in `agent/content.json`. The demo form uses
+`early_access.hero_note` in `agent/content.json`. The shared form uses
 `early_access.label`, `early_access.note` and `early_access.form.fields`.
-All nine fields are required: work email, first and last name, job title, phone (at least six digits),
-company, industry, company size and country. It sends `type: "demo"` with
+R13b first submits only first name, last name, work email, job title and company,
+all required, plus `type: "waitlist"`, page `lang`, the existing request metadata
+and `waitlist-product-updates-v1` consent. `early_access.form.waitlist` records
+the ordered five field names and consent; `form.demo_label` records the optional demo action.
+The remaining required demo fields (phone with at least six digits, industry,
+company size and country) start in a hidden, disabled fieldset.
+
+Only server-confirmed storage replaces the first step with
+**You're on the waitlist** / **ウェイトリストに追加しました**.
+Only a server-confirmed email send shows **We sent a confirmation to {email}.**
+The email is inserted as text, not HTML. Pending, failed and uncertain sends
+say so explicitly without claiming an email was sent. Saved signups offer
+**Want a demo too?** / **デモも申し込みますか？** and a **Request a demo** button.
+Opening it reuses the same five controls with the submitted values prefilled
+and editable, reveals the remaining four controls and focuses Phone. It then
+sends all nine fields as `type: "demo"` with
 consent version `demo-request-v1` to the unchanged Apps Script endpoint.
-Details are used only to reply about the demo; the form links to `privacy/`.
+The two steps have distinct request IDs; unchanged retries within either step
+reuse their ID. Validation/transport failures keep that step's data and do
+not show success. The existing demo success and delivery states are retained.
+Both `#demo` (section) and `#waitlist` (inner wrapper) remain valid entry links;
+neither bypasses the waitlist. No survey was added or removed.
+The existing demo-only purpose notice is retained pending Yu's copy approval;
+the form still links to `privacy/`.
 There is no post-request survey.
 The Japanese form uses the same facts, endpoint, field names, select values and
 consent. It displays surname before given name, Japanese labels, and Japan
@@ -495,8 +519,7 @@ language. Demo payloads include `lang` (`ja` for document languages starting wit
 with a company and surname greeting for `ja`, or the approved English email for
 `en` or missing `lang`.
 
-R13a is backend-only: the deployed page still submits a demo request, without
-a new waitlist UI. The backend now also accepts waitlist payloads with required
+R13a added the backend support used by R13b's frontend. The backend accepts waitlist payloads with required
 `firstName` (80 characters), `lastName` (80), `email` (254), `jobTitle` (120) and
 `company` (160), plus `lang` (`en` or `ja`, default `en`), the existing request ID,
 source, consent version and honeypot. Text is trimmed and control characters
@@ -560,7 +583,8 @@ Keep the current deployment and `/exec` URL; do not create a replacement endpoin
 Run `inspectWaitlistSender` and ensure `installWaitlistRetry` has been run.
 The source version is `2026-10-21.1` (replacing `2026-10-20.1`). Do this before
 publishing the R13b waitlist form. The existing frontend, endpoint, consent
-versions, manifest/scopes and retry trigger are unchanged. Publish the site
+versions, manifest/scopes and retry trigger are unchanged by R13a; R13b selects
+the appropriate existing consent for each form step. Publish the site
 artifact containing `brand/jin-mark-email.png` before sending branded emails,
 so the remote logo is available. Setup does not queue or email historical rows;
 the existing retry trigger still processes only eligible pending records.
@@ -678,6 +702,22 @@ and phone widths. `r13-email-texts.md` contains all four subjects and text
 alternatives; `r13-email-metrics.json` records dimensions, logo loading and
 no-horizontal-overflow assertions at 600, 390 and 375 pixels. Implementation
 and check results are in `.copilot-runs/notes/r13a.md`.
+
+### Form review evidence (R13b)
+
+Run `node .copilot-runs\notes\r13b-browser.mjs` while the built `_site` is
+served on `127.0.0.1:8793`. The zero-dependency runner uses installed Chrome
+and a dedicated debugging pipe. Every Apps Script request is intercepted and
+fulfilled locally. Only local assets and the site's existing Google Fonts
+requests are allowed through; it never calls the live endpoint.
+It exercises both languages with keyboard-only input,
+captures all four states at 1440 and 390 pixels plus failure states, checks
+375px overflow, reduced motion, both anchors and home CLS. Screenshots and
+machine-readable results are under `.copilot-runs/notes/r13b-*`.
+The runner closes only its own Chrome instance and removes its profile.
+Stop the local server after review. See `r13b.md` for commands, exact results
+and the screenshot inventory. No package install, commit, push or deployment
+is part of this local review.
 
 ## Deployment boundary
 

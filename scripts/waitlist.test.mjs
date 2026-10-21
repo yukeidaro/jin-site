@@ -3,8 +3,8 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import vm from "node:vm";
 import {
-  CONSENT_VERSION, SURVEY_ID, describeResult, isAppsScriptEndpoint, submitSignup, submitSurvey,
-  validateResponse, validateSurveyResponse, validateDemoFields, initializeWaitlist
+  CONSENT_VERSION, WAITLIST_CONSENT_VERSION, WAITLIST_FIELDS, SURVEY_ID, describeResult, isAppsScriptEndpoint, submitSignup, submitSurvey,
+  validateResponse, validateSurveyResponse, validateDemoFields, validateWaitlistFields, initializeWaitlist
 } from "../waitlist.mjs";
 
 const source = await readFile(new URL("./waitlist-mailer.gs", import.meta.url), "utf8");
@@ -1458,7 +1458,7 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
   }
 });
 
-async function clientFixture(t, fetchImpl, configured = true, language) {
+async function clientFixture(t, fetchImpl, configured = true, language, flow = "demo") {
   const html = await readFile(new URL(
     language?.startsWith("ja") ? "../ja/index.html" : "../index.html", import.meta.url), "utf8");
   const formHtml = html.match(/<form\b[^>]*\bid="waitlistForm"[^>]*>[\s\S]*?<\/form>/)[0];
@@ -1476,12 +1476,14 @@ async function clientFixture(t, fetchImpl, configured = true, language) {
       getAttribute: (name) => attributes[name] ?? null,
       setAttribute: (name, value) => { attributes[name] = value; },
       removeAttribute: (name) => { delete attributes[name]; },
+      addEventListener: (name, listener) => listeners.set(id === "waitlistForm" ? name : `${id}:${name}`, listener),
       focus() { document.activeElement = node; },
       scrollIntoView() {}
     };
     elements.set(id, node);
     return node;
   }
+  document.body = element("body");
   for (const match of formHtml.matchAll(/<(input|select)\b([^>]*)>/g)) {
     const attributes = Object.fromEntries([...match[2].matchAll(/([\w-]+)="([^"]*)"/g)]
       .map((attribute) => [attribute[1], attribute[2]]));
@@ -1496,9 +1498,11 @@ async function clientFixture(t, fetchImpl, configured = true, language) {
       element(attributes["aria-describedby"], { hidden: true });
     }
   }
-  const button = element("submit", { textContent: "Request a demo", disabled: true });
+  const button = element("submit", {
+    textContent: flow === "waitlist" ? "Join the waitlist" : "Request a demo", disabled: true
+  });
   const form = element("waitlistForm", {
-    dataset: { endpoint: configured ? endpoint : "" },
+    dataset: { endpoint: configured ? endpoint : "", flow },
     querySelector: (selector) => selector === 'button[type="submit"]' ? button :
       controls.get(selector.match(/name="([^"]+)"/)?.[1]),
     addEventListener: (name, listener) => listeners.set(name, listener)
@@ -1508,6 +1512,9 @@ async function clientFixture(t, fetchImpl, configured = true, language) {
     assert.ok(html.includes(`id="${id}"`));
     element(id, { hidden: id === "waitlistStatus" || id === "waitlistDone" });
   }
+  element("demoFields", { hidden: true, disabled: true });
+  element("demoOffer", { hidden: true });
+  element("openDemo", { textContent: "Request a demo" });
   t.mock.method(globalThis, "FormData", function MockFormData() {
     this.get = (name) => controls.get(name)?.value ?? null;
   });
@@ -1520,6 +1527,7 @@ async function clientFixture(t, fetchImpl, configured = true, language) {
       for (const [name, control] of controls) control.value = payload[name] || "";
     },
     submit: () => listeners.get("submit")({ preventDefault() {} }),
+    openDemo: () => listeners.get("openDemo:click")(),
     input: (name) => listeners.get("input")({ target: controls.get(name) })
   };
 }
@@ -1684,6 +1692,208 @@ test("an unconfigured demo client disables submission and gives a contact fallba
   assert.equal(f.button.disabled, true);
   assert.equal(f.elements.get("waitlistStatus").hidden, false);
   assert.match(f.elements.get("waitlistStatus").textContent, /unavailable.*hello@jinai.md/);
+});
+
+test("waitlist client validation requires only the five common fields", () => {
+  assert.deepEqual(validateWaitlistFields(waitlistInput()), {});
+  for (const name of WAITLIST_FIELDS) {
+    assert.deepEqual(Object.keys(validateWaitlistFields(waitlistInput({ [name]: "" }))), [name]);
+    assert.deepEqual(Object.keys(validateWaitlistFields(waitlistInput({ [name]: "bad\nvalue" }))), [name]);
+  }
+  assert.deepEqual(Object.keys(validateWaitlistFields(waitlistInput({ email: "a..b@example.com" }))), ["email"]);
+  assert.equal(WAITLIST_CONSENT_VERSION, backend.WAITLIST_CONSENT);
+});
+
+for (const language of ["en", "ja"]) {
+  test(`waitlist then demo sends distinct payloads and carries editable common values in ${language}`, async (t) => {
+    const requests = [];
+    const f = await clientFixture(t, async (url, options) => {
+      assert.equal(url, endpoint);
+      const payload = JSON.parse(options.body);
+      requests.push(payload);
+      return { ok: true, json: async () => ({ ...response(), requestId: payload.requestId }) };
+    }, true, language, "waitlist");
+    assert.equal(f.elements.get("demoFields").hidden, true);
+    assert.equal(f.elements.get("demoFields").disabled, true);
+    f.openDemo();
+    assert.equal(f.form.hidden, false);
+    assert.equal(f.elements.get("demoFields").hidden, true);
+    f.fill({ firstName: "  Alex  ", phone: "", industry: "", companySize: "", country: "" });
+    await f.submit();
+    const signup = requests[0];
+    assert.deepEqual(Object.keys(signup), [
+      "type", "lang", "firstName", "lastName", "email", "jobTitle", "company",
+      "website", "source", "consentVersion", "requestId"
+    ]);
+    assert.equal(signup.type, "waitlist");
+    assert.equal(signup.lang, language);
+    assert.equal(signup.firstName, "Alex");
+    assert.equal(signup.consentVersion, WAITLIST_CONSENT_VERSION);
+    assert.equal(signup.source, "https://jinai.md");
+    assert.equal(f.form.hidden, true);
+    assert.equal(f.elements.get("demoOffer").hidden, false);
+    assert.equal(f.elements.get("waitlistHeading").textContent,
+      language === "ja" ? "ウェイトリストに追加しました" : "You're on the waitlist");
+    assert.equal(f.elements.get("waitlistDetail").textContent, language === "ja" ?
+      `${signup.email} に確認メールをお送りしました。` : `We sent a confirmation to ${signup.email}.`);
+    assert.equal(f.document.activeElement.id, "waitlistDone");
+    f.openDemo();
+    assert.equal(f.form.hidden, false);
+    assert.equal(f.elements.get("demoFields").hidden, false);
+    assert.equal(f.elements.get("demoFields").disabled, false);
+    assert.equal(f.elements.get("demoOffer").hidden, true);
+    assert.equal(f.elements.get("waitlistDone").hidden, true);
+    assert.equal(f.document.activeElement.id, "demo-phone");
+    assert.equal(f.elements.get("openDemo").getAttribute("aria-expanded"), "true");
+    for (const name of WAITLIST_FIELDS) assert.equal(f.controls.get(name).value, signup[name], name);
+    f.controls.get("company").value = "Updated Company";
+    f.controls.get("phone").value = "+81 90 1234 5678";
+    f.controls.get("industry").value = "Technology";
+    f.controls.get("companySize").value = "50-199";
+    f.controls.get("country").value = "Japan";
+    await f.submit();
+    const demo = requests[1];
+    assert.equal(demo.type, "demo");
+    assert.equal(demo.consentVersion, CONSENT_VERSION);
+    assert.equal(demo.lang, language);
+    assert.notEqual(demo.requestId, signup.requestId);
+    for (const name of WAITLIST_FIELDS.filter(name => name !== "company")) assert.equal(demo[name], signup[name]);
+    assert.equal(demo.company, "Updated Company");
+    assert.equal(demo.phone, "+81 90 1234 5678");
+    assert.equal(demo.country, "Japan");
+    assert.equal(f.form.hidden, true);
+    assert.equal(f.elements.get("demoOffer").hidden, true);
+    assert.equal(f.document.activeElement.id, "waitlistDone");
+    assert.equal(f.elements.get("waitlistHeading").textContent, describeResult(response(), language).heading);
+    assert.equal(f.errorLogs.length, 0);
+  });
+
+  test(`empty waitlist validates only visible fields in native name order in ${language}`, async (t) => {
+    const f = await clientFixture(t, async () => assert.fail("Invalid form must not submit"), true, language, "waitlist");
+    await f.submit();
+    assert.equal(f.document.activeElement.id, language === "ja" ? "demo-lastName" : "demo-firstName");
+    for (const name of WAITLIST_FIELDS) assert.equal(f.controls.get(name).getAttribute("aria-invalid"), "true");
+    for (const name of ["phone", "industry", "companySize", "country"]) {
+      assert.equal(f.controls.get(name).getAttribute("aria-invalid"), null);
+      assert.equal(f.elements.get(`demo-${name}-error`).hidden, true);
+    }
+    assert.equal(f.elements.get("demoOffer").hidden, true);
+  });
+
+  for (const welcome of ["pending", "failed", "unknown"]) {
+    test(`saved waitlist with ${welcome} email is honest and still offers demo in ${language}`, async (t) => {
+      const f = await clientFixture(t, async (_url, options) => ({
+        ok: true, json: async () => ({ ...response("saved", welcome), requestId: JSON.parse(options.body).requestId })
+      }), true, language, "waitlist");
+      f.fill();
+      await f.submit();
+      assert.equal(f.form.hidden, true);
+      assert.equal(f.elements.get("demoOffer").hidden, false);
+      assert.equal(f.elements.get("waitlistDone").dataset.kind, "pending");
+      assert.equal(f.elements.get("waitlistDetail").textContent,
+        describeResult(response("saved", welcome), language, "waitlist").detail);
+      assert.doesNotMatch(f.elements.get("waitlistDetail").textContent, /We sent|お送りしました/);
+    });
+  }
+}
+
+for (const step of ["waitlist", "demo"]) {
+  for (const failure of ["not_saved", "unknown", "transport", "mismatched"]) {
+    test(`${step} ${failure} does not claim success or discard fields; retry keeps its request ID`, async (t) => {
+      const requests = [];
+      let fail = true;
+      const f = await clientFixture(t, async (_url, options) => {
+        const payload = JSON.parse(options.body);
+        requests.push(payload);
+        if (fail && payload.type === step) {
+          if (failure === "transport") throw new Error("Offline");
+          return { ok: true, json: async () => ({
+            ...response(failure === "not_saved" ? "not_saved" : "unknown", "not_attempted", "busy"),
+            requestId: failure === "mismatched" ? "wrong" : payload.requestId
+          }) };
+        }
+        return { ok: true, json: async () => ({ ...response(), requestId: payload.requestId }) };
+      }, true, "en", "waitlist");
+      f.fill();
+      if (step === "demo") {
+        await f.submit();
+        f.openDemo();
+      }
+      const before = Object.fromEntries([...f.controls].map(([name, control]) => [name, control.value]));
+      await f.submit();
+      const first = requests.at(-1);
+      assert.equal(f.form.hidden, false);
+      assert.equal(f.elements.get("demoOffer").hidden, true);
+      if (!f.elements.get("waitlistDone").hidden) {
+        assert.notEqual(f.elements.get("waitlistRegistration").textContent, "Saved");
+      }
+      assert.deepEqual(Object.fromEntries([...f.controls].map(([name, control]) => [name, control.value])), before);
+      assert.equal(f.button.disabled, false);
+      fail = false;
+      await f.submit();
+      assert.equal(requests.at(-1).requestId, first.requestId);
+      assert.equal(f.form.hidden, true);
+    });
+  }
+}
+
+for (const language of ["en", "ja"]) {
+  test(`both client steps reach their backend stores and send once despite lost responses in ${language}`, async (t) => {
+    const stores = { waitlist: fixture(), demo: fixture() };
+    const requests = { waitlist: [], demo: [] };
+    const f = await clientFixture(t, async (_url, options) => {
+      const payload = JSON.parse(options.body);
+      requests[payload.type].push(payload);
+      const register = payload.type === "waitlist" ? backend.registerWaitlist_ : backend.registerDemo_;
+      const result = register(payload, stores[payload.type].deps);
+      if (requests[payload.type].length === 1) throw new Error("Response lost after saving");
+      return { ok: true, json: async () => result };
+    }, true, language, "waitlist");
+    f.fill();
+    await f.submit();
+    assert.equal(f.form.hidden, false);
+    assert.equal(f.elements.get("demoOffer").hidden, true);
+    await f.submit();
+    assert.equal(f.form.hidden, true);
+    assert.equal(f.elements.get("demoOffer").hidden, false);
+    f.openDemo();
+    await f.submit();
+    assert.equal(f.form.hidden, false);
+    await f.submit();
+    assert.equal(f.form.hidden, true);
+    for (const type of ["waitlist", "demo"]) {
+      assert.equal(requests[type][0].requestId, requests[type][1].requestId);
+      assert.equal(stores[type].records.length, 1);
+      assert.equal(stores[type].sends(), 1);
+      assert.equal(stores[type].records[0].lang, language);
+      assert.equal(stores[type].records[0].company, "Example Company");
+    }
+    assert.notEqual(requests.waitlist[0].requestId, requests.demo[0].requestId);
+    assert.equal(f.errorLogs.length, 2);
+  });
+}
+
+for (const flow of ["waitlist", "demo"]) {
+  for (const editing of [false, true]) {
+    test(`${flow} transport failure restores a blurred submit button without stealing editing focus (${editing})`, async (t) => {
+      const f = await clientFixture(t, async () => {
+        f.document.activeElement = editing ? f.controls.get("company") : f.document.body;
+        throw new Error("Offline");
+      }, true, "en", flow);
+      f.fill();
+      await f.submit();
+      assert.equal(f.form.hidden, false);
+      assert.equal(f.button.disabled, false);
+      assert.equal(f.document.activeElement, editing ? f.controls.get("company") : f.button);
+      assert.equal(f.elements.get("waitlistStatus").dataset.kind, "error");
+    });
+  }
+}
+
+test("waitlist email interpolation remains literal text, including HTML and replacement metacharacters", () => {
+  const email = "<img>$&@example.com";
+  assert.equal(describeResult(response(), "en", "waitlist", email).detail, `We sent a confirmation to ${email}.`);
+  assert.equal(describeResult(response(), "ja", "waitlist", email).detail, `${email} に確認メールをお送りしました。`);
 });
 
 test("all nine demo fields are required in facts and both generated forms", async () => {
