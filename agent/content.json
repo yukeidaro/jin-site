@@ -31,19 +31,19 @@
     "primary": "AI-forward companies"
   },
   "problem": {
-    "headline": "AI is everywhere now. Is it really set up to last?",
+    "headline": "Is your company in control of its AI?",
     "points": [
       {
         "name": "Shadow AI",
-        "description": "Work context flows into personal AI tools, outside the company's control."
+        "description": "Confidential company information could end up in personal AI tools, outside the company's control."
       },
       {
         "name": "Agents that depend on one person",
-        "description": "Agents, context and workflows live with whoever built them. When that person leaves, the agents stop and the successor starts over."
+        "description": "Agents and workflows stay with the people who built them. When they leave, everything starts over."
       },
       {
         "name": "Skills stuck in one team",
-        "description": "One team finds what works. The rest of the company never sees it."
+        "description": "Teams build useful AI workflows, but they rarely get shared across the company."
       }
     ]
   },

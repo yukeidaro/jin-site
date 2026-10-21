@@ -1,4 +1,5 @@
 import { readFile, readdir, stat } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { CONSENT_VERSION, isAppsScriptEndpoint } from "../waitlist.mjs";
@@ -392,13 +393,13 @@ check(count(home, /<img\b[^>]*src="assets\/demo\//g) === 1 &&
 const problemMatch = homeSections.find((match) => match[1].includes('id="problem"'));
 const problemSection = problemMatch?.[2] || "";
 const problemCopy = [
-  ["shadow", "Shadow AI", "Work context flows into personal AI tools, outside the company's control."],
-  ["dependency", "Agents that depend on one person", "Agents, context and workflows live with whoever built them. When that person leaves, the agents stop and the successor starts over."],
-  ["teams", "Skills stuck in one team", "One team finds what works. The rest of the company never sees it."]
+  ["shadow", "Shadow AI", "Confidential company information could end up in personal AI tools, outside the company's control."],
+  ["dependency", "Agents that depend on one person", "Agents and workflows stay with the people who built them. When they leave, everything starts over."],
+  ["teams", "Skills stuck in one team", "Teams build useful AI workflows, but they rarely get shared across the company."]
 ];
 const problemFigures = [...problemSection.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
 check(problemSection.includes('<span class="mono-label">Problem</span>') &&
-  problemSection.includes('<h2 class="h2">AI is everywhere now. Is it really set up to last?</h2>') &&
+  problemSection.includes('<h2 class="h2">Is your company in control of its AI?</h2>') &&
   !/Draft copy|\bdata-draft\b/.test((problemMatch?.[1] || "") + problemSection),
   "Problem must use the exact approved label and H2 without a Draft copy tag or data-draft.");
 check(problemFigures.length === 3 && count(problemSection, /<svg\b/g) === 3 &&
@@ -438,29 +439,31 @@ check(problemFigures[0]?.[2].includes('aria-label="Figure: company work flows in
 check(!/\b(?:sa-|ho-|ed-)|class="art"|animateMotion/.test(problemSection) &&
   !/sa-svg|ho-svg|ed-svg|ed-tiles|ed-arrows|pauseAnimations/.test(home),
   "English home must not retain the old shadow AI, handover or education illustrations or controller.");
-const ownerFigure = problemFigures[1]?.[3] || "";
-const ownerConnections = ownerFigure.slice(ownerFigure.indexOf('<g class="owner-links">'), ownerFigure.indexOf('<g transform="translate(90 80)">'));
-check(count(ownerFigure, /class="owner-link"/g) === 4 &&
-  count(ownerFigure, /class="owner-light"/g) === 4 &&
-  count(ownerFigure, /class="owner-stop"/g) === 4 &&
-  count(ownerConnections, /class="owner-stop"/g) === 4 &&
-  ["M144 143 156 155M156 143 144 155", "M264 143 276 155M276 143 264 155",
-    "M144 215.5 156 227.5M156 215.5 144 227.5", "M264 215.5 276 227.5M276 215.5 264 227.5"]
-    .every(d => ownerConnections.includes(`d="${d}"`)),
-  "Owner needs four grey connections, four accent lights and exactly four x marks centered on the lines, not on agents.");
-const handoverFigure = problemFigures[1]?.[3] || "";
-const rebuildLayers = [...handoverFigure.matchAll(/<g class="handover-rebuild" style="--step:(\d)" transform="translate\(280 (\d+)\)" data-layer="([^"]+)">([\s\S]*?)<\/text>/g)];
+const dependencyFigure = problemFigures[1]?.[3] || "";
+const layerNames = ["Context", "Instructions", "Tools", "Workflows"];
+const dependencyStages = [...dependencyFigure.matchAll(/class="dependency-stage[^"]*" data-stage="([^"]+)" transform="translate\((\d+) 0\)"/g)];
+const rebuildLayers = [...dependencyFigure.matchAll(/<g class="dependency-rebuild" data-layer="([^"]+)" style="--step:(\d)" transform="translate\(0 (\d+)\)">\s*<use class="dependency-outline" href="#dependency-layer" mask="url\(#dependency-([^"]+)\)"\/><text y="25">([^<]+)<\/text>/g)];
+check(dependencyStages.length === 3 && dependencyStages.every((stage, index) =>
+  stage[1] === ["owner", "departure", "successor"][index] && Number(stage[2]) === 66 + index * 144) &&
+  count(dependencyFigure, /class="dependency-transition"/g) === 2 &&
+  count(dependencyFigure, /href="#dependency-person"/g) === 4 &&
+  count(dependencyFigure, /class="dependency-break"/g) === 1 &&
+  dependencyFigure.includes('class="dependency-owner-gone"') &&
+  dependencyFigure.includes('class="dependency-stack dependency-faded-stack"') &&
+  dependencyFigure.includes('class="dependency-link dependency-new-link"') &&
+  dependencyFigure.includes('class="dependency-redo"') &&
+  dependencyFigure.includes('data-label-rebuilding="') && dependencyFigure.includes('data-status-rebuilding="') &&
+  problemFigures[1]?.[2].includes('aria-label="Figure: when the owner leaves, the successor rebuilds context, instructions, tools and workflows from scratch"'),
+  "Dependency needs three left-to-right owner/leaving/successor stages, two arrows, a broken connection, fading stack, new owner and redo arrow.");
 check(rebuildLayers.length === 4 && rebuildLayers.every((layer, index) =>
-  layer[1] === String(index) && Number(layer[2]) === 220 - index * 36 &&
-  layer[3] === ["context", "rules", "tools", "exceptions"][index] &&
-  layer[4].includes('class="rebuild-trace" pathLength="1"') &&
-  layer[4].includes('class="rebuild-outline" mask="url(#problem-rebuild-') &&
-  layer[4].includes(`<text x="50" y="7">${["Context", "Rules", "Tools", "Exceptions"][index]}`)) &&
-  count(handoverFigure, /<text\b/g) === 8 && !/<text\b[^>]*transform=/.test(handoverFigure) &&
-  count(handoverFigure.match(/<g class="handover-layers">([\s\S]*?)<\/g>/)?.[1] || "", /<use\b/g) === 4 &&
-  handoverFigure.includes('transform="translate(0 8) scale(.52)"') &&
-  handoverFigure.includes('data-label-rebuilding="') && handoverFigure.includes('data-status-rebuilding="'),
-  "Handover needs four masked dashed successor layers in Context/Rules/Tools/Exceptions build order, retained predecessor layers and eight horizontal leader labels.");
+  layer[1] === layerNames[index].toLowerCase() && Number(layer[2]) === 3 - index &&
+  Number(layer[3]) === 126 + index * 44 && layer[4] === layer[1] && layer[5] === layerNames[index]) &&
+  count(dependencyFigure, /class="dependency-trace" pathLength="1"/g) === 4 &&
+  count(dependencyFigure, /href="#dependency-layer" y=/g) === 8 &&
+  [...dependencyFigure.matchAll(/<text\b[^>]*>([^<]*)<\/text>/g)].map(match => match[1]).join() ===
+    [...layerNames, ...layerNames, ...layerNames].join() &&
+  !/\b(?:Rules|Exceptions)\b|<text\b[^>]*transform=/.test(dependencyFigure),
+  "Dependency needs four front labels per stack in Context/Instructions/Tools/Workflows order, bottom-up masked rebuilding and no stage captions or other SVG text.");
 const teamFigure = problemFigures[2]?.[3] || "";
 for (const team of ["a", "b", "c"]) {
   check(teamFigure.includes(`data-team-art="${team}"`) &&
@@ -468,19 +471,19 @@ for (const team of ["a", "b", "c"]) {
     `Team ${team.toUpperCase()} needs an independently focusable, named HTML button and translated-in-place state strings.`);
 }
 check(teamFigure.indexOf('class="team-controls"') > teamFigure.indexOf("</svg>") &&
-  count(problemSection, /<text\b/g) === 8 &&
-  ["Context", "Rules", "Tools", "Exceptions"].every(label =>
+  count(problemSection, /<text\b/g) === 12 &&
+  layerNames.every(label =>
     problemSection.includes(`>${label}</text>`)) &&
   count(home, /<script type="module" src="problem.js"><\/script>/g) === 1,
-  "Team controls must sit outside role=img; only the eight stack labels may be SVG text; home must load problem.js once.");
+  "Team controls must sit outside role=img; only the twelve stack labels may be SVG text; home must load problem.js once.");
 const problemClient = await text("problem.js");
 check(problemClient.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
   problemClient.includes('querySelectorAll("[data-problem]")') &&
   problemClient.includes('figure.dataset.problem === "shadow" || figure.dataset.problem === "dependency"') &&
   problemClient.includes('figure.dataset.problem === "dependency"') &&
-  problemClient.includes('event.animationName === "problem-handover"') &&
+  problemClient.includes('event.animationName === "problem-dependency-successor"') &&
   problemClient.includes('describe("Rebuilding")') &&
-  problemClient.includes("event.target.matches('[data-layer=\"exceptions\"] text')") &&
+  problemClient.includes('event.animationName === "problem-dependency-redo"') &&
   problemClient.includes('querySelector(".shadow-document").addEventListener("animationend"') &&
   problemClient.includes('event.animationName === "problem-shadow-document" && figure.dataset.busy === "true"') &&
   problemClient.includes("new IntersectionObserver") && problemClient.includes('"visibilitychange"') &&
@@ -1076,25 +1079,33 @@ check(cssBlock(englishCss, ".shadow-route {").includes("stroke-dasharray: 4 6") 
     .every(rule => cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(rule)),
   "Shadow AI needs a single three-second sequence, dashed path, boundary warning/pulse, faint AI outline, visibility pause and CSS reduced-motion end state.");
 check(cssBlock(englishCss, ".problem-art svg").includes("aspect-ratio: 420 / 320") &&
-  cssBlock(englishCss, ".owner-person").includes("stroke: var(--accent-light)") &&
-  cssBlock(englishCss, ".owner-light").includes("fill: var(--accent-light)") &&
-  cssBlock(englishCss, '[data-problem="dependency"] .problem-art *').includes("animation-play-state: paused") &&
-  cssBlock(englishCss, '[data-problem="dependency"].problem-flow-running .problem-art *').includes("animation-play-state: running") &&
-  !/infinite/.test(englishCss.slice(englishCss.indexOf(".owner-person"), englishCss.indexOf(".team-lid"))) &&
-  cssBlock(englishCss, '[data-state="changed"] .handover-output').includes("1.7s both") &&
-  cssBlock(englishCss, '[data-state="changed"] .handover-rebuild text').includes("2.86s + var(--step) * .5s") &&
+  cssBlock(englishCss, ".dependency-person,").includes("stroke: var(--accent-light)") &&
+  cssBlock(englishCss, ".dependency-stack").includes("stroke: var(--text-3)") &&
+  cssBlock(englishCss, '[data-problem="dependency"][data-state] .problem-art *').includes("animation-play-state: paused") &&
+  cssBlock(englishCss, '[data-problem="dependency"][data-state].problem-flow-running .problem-art *').includes("animation-play-state: running") &&
+  !/infinite/.test(englishCss.slice(englishCss.indexOf(".dependency-person"), englishCss.indexOf(".team-lid"))) &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-departure').includes(".85s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-successor').includes("2.2s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-trace').includes("2.4s + var(--step) * .45s") &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-redo').includes(".7s ease 3.8s both") &&
+  cssBlock(englishCss, "@keyframes problem-dependency-redo").includes("rotate(-360deg)") &&
+  cssBlock(englishCss, "@keyframes problem-dependency-fade").includes("stroke-dasharray: 4 5; opacity: .36") &&
+  cssBlock(englishCss, "@keyframes problem-dependency-dash").includes("stroke-dasharray: 4 5; opacity: .5") &&
   cssBlock(englishCss, "@media (min-width: 1024px)").includes(".problem-grid, .solution-copy { grid-template-columns: repeat(3, minmax(0, 1fr)); }") &&
-  cssBlock(englishCss, ".problem-art .handover-labels text,").includes("font-size: 16px") &&
-  cssBlock(englishCss, ".rebuild-outline").includes("stroke-dasharray: 4 4") &&
+  cssBlock(englishCss, ".problem-art .dependency-stage text").includes("font-size: 16.5px") &&
+  cssBlock(englishCss, ".dependency-owner-gone, .dependency-new-link,").includes("stroke-dasharray: 4 5") &&
+  layerNames.every((name, index) => cssBlock(englishCss, `#dependency-${name.toLowerCase()}`).includes(`--step: ${3 - index}`)) &&
   cssBlock(englishCss, "@keyframes problem-draw").includes("stroke-dashoffset: 1") &&
   cssBlock(englishCss, "#problem .problem-column:focus-visible").includes("outline: 2px solid var(--accent-light)") &&
   cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(
     ".problem-art * { animation: none !important; transition: none !important; }") &&
-  ['[data-problem="dependency"] .owner-stop { opacity: 1;', '[data-problem="dependency"] .owner-agent { opacity: .24;',
-    '[data-problem="dependency"] .rebuild-trace { stroke-dashoffset: 0;',
-    '[data-problem="dependency"] .handover-rebuild,', '[data-team-art="c"] .team-workflow { opacity: 1;']
+  ['[data-problem="dependency"] .dependency-owner-solid { opacity: 0;',
+    '[data-problem="dependency"] .dependency-owner-gone { opacity: .5;',
+    '[data-problem="dependency"] .dependency-faded-stack { stroke-dasharray: 4 5; opacity: .36;',
+    '[data-problem="dependency"] .dependency-trace { stroke-dashoffset: 0;',
+    '[data-problem="dependency"] .dependency-redo { opacity: 1;', '[data-team-art="c"] .team-workflow { opacity: 1;']
     .every(rule => cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(rule)),
-  "Problem figures need reserved geometry, idle accent owner/lights, real dashed-outline drawing, visible keyboard focus, paused flow and CSS reduced-motion end states.");
+  "Problem figures need reserved geometry, a finite 4.5s three-stage sequence, legible front labels, dashed-outline drawing, visible keyboard focus, paused flow and CSS reduced-motion end states.");
 check(stageCss.includes("padding: var(--s-12)") && stageCss.includes("border: var(--border)") &&
   stageCss.includes("border-radius: 24px") && stageCss.includes("background: var(--surface-1)") &&
   windowCss.includes("overflow: hidden") && windowCss.includes("border-radius: var(--r-xl)") &&
@@ -1238,6 +1249,8 @@ const retiredReviewTexts = [
 for (const filename of deployedFiles.filter(filename => /\.(?:html|json|txt|css|m?js)$/.test(filename))) {
   const source = await text(filename);
   const plainText = source.replace(/<[^>]*>/g, "").replace(/\s+/g, " ");
+  check(!/AI is everywhere now|Is it really set up to last|Work context flows into personal|Agents, context and workflows live with whoever|One team finds what works|AIは全社に広がった|でも、本当に使いこなせていますか|仕事の文脈が、会社の外にある|エージェント、文脈、ワークフローが、作った人の中にしかない|うまくいくやり方が、ひとつのチームから広がらない/.test(plainText),
+    `${filename} must not contain superseded Problem headings or bodies.`);
   for (const retired of retiredReviewTexts) {
     check(!plainText.includes(retired) && !source.includes(retired),
       `${filename} must not contain replaced R8 copy: ${retired}`);
@@ -1361,16 +1374,16 @@ check(count(japaneseProblem, /<svg\b[^>]*role="img"[^>]*aria-label="[^"]+"/g) ==
   JSON.stringify(svgGeometry(japaneseProblem)) === JSON.stringify(svgGeometry(problemSection)),
   "Japanese Problem SVGs must match English geometry, with three translated accessible descriptions.");
 const japaneseProblemCopy = [
-  ["shadow", "シャドーAI", "仕事の文脈が、会社の外にある個人のAIへ流れていく。"],
-  ["dependency", "エージェントの属人化", "エージェント、文脈、ワークフローが、作った人の中にしかない。その人が辞めると止まり、後任は一から組み直す。"],
-  ["teams", "スキルの共有不足", "うまくいくやり方が、ひとつのチームから広がらない。"]
+  ["shadow", "シャドーAI", "会社の機密情報が、会社の管理の外にある個人のAIツールに入ってしまうかもしれません。"],
+  ["dependency", "エージェントの属人化", "エージェントとワークフローは、作った人のもとにしか残りません。その人が辞めると、すべてが一からやり直しになります。"],
+  ["teams", "スキルの共有不足", "チームが役に立つAIのワークフローを作っても、会社全体に共有されることはほとんどありません。"]
 ];
 const japaneseFigures = [...japaneseProblem.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
 check(japaneseFigures[0]?.[2].includes('aria-label="図: 会社の仕事が個人のAIに流れていく"') &&
   japaneseFigures[0]?.[3].includes('data-status-changed="機密の書類が、会社の外の個人のAIに渡りました。"'),
   "Japanese Shadow AI must use its exact accessible name and completed live status.");
 check(japaneseProblem.includes('<span class="mono-label">課題</span>') &&
-  withoutJapanesePhrases(japaneseProblem).includes('<h2 class="h2">AIは全社に広がった。でも、本当に使いこなせていますか？</h2>') &&
+  withoutJapanesePhrases(japaneseProblem).includes('<h2 class="h2">御社のAIは、会社の管理下にありますか？</h2>') &&
   japaneseFigures.length === 3 && count(japaneseProblem, /<h2\b/g) === 1 &&
   count(japaneseProblem, /<h3\b/g) === 3 && count(japaneseProblem, /<p\b/g) === 6 &&
   !/data-draft|draft-tag|sa-svg|ho-svg|ed-svg/.test(japaneseProblem) &&
@@ -1396,9 +1409,25 @@ for (const [index, [id, heading, description]] of japaneseProblemCopy.entries())
   check(problemMarkup(japaneseProblem) === problemMarkup(problemSection),
     "English and Japanese Problem markup and SVG must be identical apart from text.");
 }
-check(["文脈", "ルール", "ツール", "例外"].every(label => japaneseProblem.includes(`>${label}</text>`)) &&
+check([...(japaneseFigures[1]?.[3] || "").matchAll(/<text\b[^>]*>([^<]*)<\/text>/g)].map(match => match[1]).join() ===
+    [...layerNames, ...layerNames, ...layerNames].join() &&
+  japaneseFigures[1]?.[2].includes('aria-label="図: 担当者が辞めると、後任者が文脈・指示・ツール・ワークフローを一から作り直す"') &&
   ["A", "B", "C"].every(team => japaneseProblem.includes(`>チーム ${team} を開く</span>`)),
-  "Japanese handover layers and independently accessible team controls must be translated.");
+  "Japanese dependency layers must keep the same English labels; the figure name, states and team controls must be translated.");
+// R10 changes only the captions of the original R9 Shadow AI and teams figures.
+for (const [filename, source, hashes] of [
+  ["index.html", home, ["3cb6fd9cf58ec7d1b5688d076e36585fb52d24df74652041a008eb74a035094f",
+    "2cc1bc24fbc71b9efec5af075ab22d04e6fbfa59616d7bce2d35c68c9c11f91e"]],
+  ["ja/index.html", japanese, ["77a42afcb83c94223fb37ab94194359f0d68f1c776253df90f1e4b0e983ea614",
+    "006717f75376835549b5caa52fddc46f394706e81ccbc6b0660f3aefcd189042"]]
+]) {
+  for (const [index, id] of ["shadow", "teams"].entries()) {
+    const figure = source.match(new RegExp(`<figure class="problem-column" data-problem="${id}"[\\s\\S]*?</figure>`))?.[0] || "";
+    const preserved = figure.replace(/<figcaption>[\s\S]*?<\/figcaption>/, "");
+    check(createHash("sha256").update(preserved).digest("hex") === hashes[index],
+      `${filename} ${id} drawing, name, states and controls must remain unchanged from R9.`);
+  }
+}
 
 const japaneseSolution = japaneseSections.find((match) => match[1].includes('id="solution"'))?.[2] || "";
 const japaneseSolutionCopy = [
@@ -1526,7 +1555,7 @@ check(count(japaneseReveal, /<span style="--word:[0-1]">[^<]+<\/span>/g) === 2 &
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
   "Japanese hero must preserve its two-phrase reveal, exact R7 text, accessible name and motion opt-in.");
 for (const [page, source, phrases] of [
-  ["/ja/", japanese, ["AIは全社に広がった。", "でも、本当に", "使いこなせていますか？", "エージェントの", "属人化", "シャドーAI", "スキルの共有不足", "Jin AIが、", "会社のAIを", "キープします。", "安全にキープ", "会社にキープ", "みんなでキープ", "御社のAIを、", "会社の資産に。"]],
+  ["/ja/", japanese, ["御社のAIは、", "会社の管理下に", "ありますか？", "エージェントの", "属人化", "シャドーAI", "スキルの共有不足", "Jin AIが、", "会社のAIを", "キープします。", "安全にキープ", "会社にキープ", "みんなでキープ", "御社のAIを、", "会社の資産に。"]],
   ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "御社のAIを、", "会社の資産に。"]],
   ["/ja/security/", japaneseSecurity, ["コンテクストは、", "会社のもの。"]],
   ["/ja/privacy/", japanesePrivacy, ["プライバシー", "ポリシー", "取り扱いを", "委託している", "事業者"]]

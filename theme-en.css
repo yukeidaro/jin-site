@@ -109,47 +109,46 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .iso-highlight { stroke: var(--text-1); }
 .problem-art text { fill: var(--text-2); stroke: none; font: 12px var(--font-sans); }
 .problem-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.owner-person { stroke: var(--accent-light); }
-.owner-arrow, .owner-stop { opacity: 0; stroke: var(--accent-light); }
-.owner-arrow { stroke-dasharray: 3 5; }
-.owner-stop { stroke-width: 2; }
-.owner-light { fill: var(--accent-light); stroke: none; offset-distance: 50%; opacity: .8; }
-[data-state="changed"] .owner-person { animation: problem-owner .55s var(--ease) both; }
-[data-state="changed"] .owner-arrow { animation: problem-layer-in .2s ease both; }
-[data-state="changed"] .owner-link { stroke-dasharray: 3 9; animation: problem-link .2s ease calc(.6s + var(--step) * .2s) both; }
-[data-state="changed"] .owner-agent { animation: problem-agent .25s ease calc(.8s + var(--step) * .2s) both; }
-[data-state="changed"] .owner-stop { animation: problem-layer-in .15s ease calc(.6s + var(--step) * .2s) both; }
-[data-state="changed"] .owner-light { animation: problem-light .6s linear both; }
-@keyframes problem-owner { to { transform: translateY(-44px); opacity: .65; } }
-@keyframes problem-link { to { opacity: .2; } }
-@keyframes problem-agent { to { opacity: .24; } }
-@keyframes problem-light { 90% { opacity: .8; } 100% { offset-distance: 100%; opacity: 0; } }
-.handover-arc { stroke: var(--accent-light); stroke-dasharray: 4 6; }
-.handover-output { stroke: var(--accent-light); }
-.handover-leader { stroke: var(--text-3); }
-.problem-art .handover-labels text, .problem-art .handover-rebuild text { font-size: 16px; fill: var(--text-1); }
-.handover-rebuild { opacity: 0; stroke: var(--accent-light); }
-.rebuild-outline { stroke-dasharray: 4 4; }
-.rebuild-trace { fill: none; stroke: white; stroke-width: 4; stroke-dasharray: 1; stroke-dashoffset: 1; }
-.handover-rebuild text, .handover-rebuild .handover-leader { opacity: 0; }
-[data-state="changed"] .handover-layers { animation: problem-predecessor .4s ease 1.65s both; }
-[data-state="changed"] .handover-output { animation: problem-handover .65s var(--ease) 1.7s both; }
-[data-state="changed"] .handover-rebuild { animation: problem-layer-in .01s linear calc(2.4s + var(--step) * .5s) both; }
-[data-state="changed"] .rebuild-trace { animation: problem-draw .32s linear calc(2.4s + var(--step) * .5s) both; }
-[data-state="changed"] .rebuild-shape { animation: problem-settle .14s ease calc(2.72s + var(--step) * .5s) both; }
-[data-state="changed"] .handover-rebuild text, [data-state="changed"] .handover-rebuild .handover-leader { animation: problem-layer-in .16s ease calc(2.86s + var(--step) * .5s) both; }
-[data-problem="dependency"] .problem-art * { animation-play-state: paused; }
-[data-problem="dependency"].problem-flow-running .problem-art * { animation-play-state: running; }
-@keyframes problem-predecessor { to { opacity: .45; } }
-@keyframes problem-handover {
-  0% { transform: translate(0, 0); }
-  45% { transform: translate(106px, -10px); }
-  75% { transform: translate(154px, 48px); }
-  100% { transform: translate(148px, 100px); }
+.dependency-person, .dependency-link, .dependency-break, .dependency-transition, .dependency-outline, .dependency-redo { stroke: var(--accent-light); }
+.dependency-person, .dependency-owner-gone { stroke-width: 1.8; }
+.dependency-stack { stroke: var(--text-3); }
+.problem-art .dependency-stage text { font-size: 16.5px; fill: var(--text-1); text-anchor: middle; }
+.dependency-departure, .dependency-successor, .dependency-transition, .dependency-owner-gone, .dependency-break, .dependency-rebuild, .dependency-rebuild text, .dependency-redo { opacity: 0; }
+.dependency-owner-gone, .dependency-new-link, .dependency-outline { stroke-dasharray: 4 5; }
+.dependency-broken-link { stroke: var(--text-3); }
+.dependency-break { stroke-width: 2; }
+.dependency-trace { fill: none; stroke: white; stroke-width: 4; stroke-dasharray: 1; stroke-dashoffset: 1; }
+#dependency-context { --step: 3; }
+#dependency-instructions { --step: 2; }
+#dependency-tools { --step: 1; }
+#dependency-workflows { --step: 0; }
+.dependency-redo { transform-box: fill-box; transform-origin: center; stroke-width: 1.8; }
+[data-state="changed"] .dependency-transition { animation: problem-layer-in .25s ease calc(.65s + var(--step) * 1.35s) both; }
+[data-state="changed"] .dependency-departure { animation: problem-layer-in .25s ease .85s both; }
+[data-state="changed"] .dependency-owner-solid { animation: problem-dependency-leave .45s ease 1.25s both; }
+[data-state="changed"] .dependency-owner-gone { animation: problem-dependency-ghost .45s ease 1.25s both; }
+[data-state="changed"] .dependency-broken-link { animation: problem-dependency-dash .45s ease 1.25s both; }
+[data-state="changed"] .dependency-break { animation: problem-layer-in .2s ease 1.5s both; }
+[data-state="changed"] .dependency-faded-stack { animation: problem-dependency-fade .6s ease 1.35s both; }
+[data-state="changed"] .dependency-successor { animation: problem-dependency-successor .25s ease 2.2s both; }
+[data-state="changed"] .dependency-rebuild { animation: problem-layer-in .01s linear calc(2.4s + var(--step) * .45s) both; }
+[data-state="changed"] .dependency-trace { animation: problem-draw .5s linear calc(2.4s + var(--step) * .45s) both; }
+[data-state="changed"] .dependency-rebuild text { animation: problem-layer-in .15s ease calc(2.75s + var(--step) * .45s) both; }
+[data-state="changed"] .dependency-redo { animation: problem-dependency-redo .7s ease 3.8s both; }
+[data-problem="dependency"][data-state] .problem-art * { animation-play-state: paused; }
+[data-problem="dependency"][data-state].problem-flow-running .problem-art * { animation-play-state: running; }
+@keyframes problem-dependency-leave { to { opacity: 0; } }
+@keyframes problem-dependency-ghost { to { opacity: .5; } }
+@keyframes problem-dependency-dash { to { stroke-dasharray: 4 5; opacity: .5; } }
+@keyframes problem-dependency-fade { to { stroke-dasharray: 4 5; opacity: .36; } }
+@keyframes problem-dependency-successor { from { opacity: 0; } to { opacity: 1; } }
+@keyframes problem-dependency-redo {
+  0% { opacity: 0; transform: rotate(-360deg); }
+  15% { opacity: 1; }
+  100% { opacity: 1; transform: rotate(0); }
 }
 @keyframes problem-layer-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes problem-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes problem-settle { 0% { transform: translateY(-2px); } 60% { transform: translateY(1px); } 100% { transform: none; } }
 .team-lid { transition: transform .35s var(--ease), opacity .35s ease; }
 .team-lid-face { fill: var(--surface-1); fill-opacity: .88; }
 .team-wall { stroke-dasharray: 3 5; opacity: .4; }
@@ -432,15 +431,13 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 
 @media (prefers-reduced-motion: reduce) {
   .problem-art * { animation: none !important; transition: none !important; }
-  .problem-art .owner-light { opacity: 0; }
-  [data-problem="dependency"] .owner-person { transform: translateY(-44px); opacity: .65; }
-  [data-problem="dependency"] .owner-arrow, [data-problem="dependency"] .owner-stop { opacity: 1; }
-  [data-problem="dependency"] .owner-link { stroke-dasharray: 3 9; opacity: .2; }
-  [data-problem="dependency"] .owner-agent { opacity: .24; }
-  [data-problem="dependency"] .handover-layers { opacity: .45; }
-  [data-problem="dependency"] .handover-output { transform: translate(148px, 100px); }
-  [data-problem="dependency"] .handover-rebuild, [data-problem="dependency"] .handover-rebuild text, [data-problem="dependency"] .handover-leader { opacity: 1; }
-  [data-problem="dependency"] .rebuild-trace { stroke-dashoffset: 0; }
+  [data-problem="dependency"] .dependency-departure, [data-problem="dependency"] .dependency-successor, [data-problem="dependency"] .dependency-transition,
+  [data-problem="dependency"] .dependency-break, [data-problem="dependency"] .dependency-rebuild, [data-problem="dependency"] .dependency-rebuild text, [data-problem="dependency"] .dependency-redo { opacity: 1; }
+  [data-problem="dependency"] .dependency-owner-solid { opacity: 0; }
+  [data-problem="dependency"] .dependency-owner-gone { opacity: .5; }
+  [data-problem="dependency"] .dependency-broken-link { stroke-dasharray: 4 5; opacity: .5; }
+  [data-problem="dependency"] .dependency-faded-stack { stroke-dasharray: 4 5; opacity: .36; }
+  [data-problem="dependency"] .dependency-trace { stroke-dashoffset: 0; }
   [data-problem="teams"] .team-lid { transform: none; }
   [data-problem="teams"] [data-team-art="c"] .team-lid { opacity: .2; }
   [data-problem="teams"] [data-team-art="c"] .team-workflow { opacity: 1; }

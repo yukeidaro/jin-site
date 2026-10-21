@@ -274,8 +274,17 @@ removing a tag does not approve its copy.
 
 ## Interactive Problem figures
 
-Both home pages use the approved R6 Keep copy (Yu, 2026-10-21), word for word
-from `.copilot-runs/design/13-コピー全文-Keep-2026-10-21.md`.
+Both home pages use the approved R10 Problem heading
+"Is your company in control of its AI?" / "御社のAIは、会社の管理下にありますか？"
+(Yu, 2026-10-21). Titles are unchanged; the exact bodies are:
+
+| Problem | English | Japanese |
+|---|---|---|
+| Shadow AI | Confidential company information could end up in personal AI tools, outside the company's control. | 会社の機密情報が、会社の管理の外にある個人のAIツールに入ってしまうかもしれません。 |
+| Agents that depend on one person | Agents and workflows stay with the people who built them. When they leave, everything starts over. | エージェントとワークフローは、作った人のもとにしか残りません。その人が辞めると、すべてが一からやり直しになります。 |
+| Skills stuck in one team | Teams build useful AI workflows, but they rarely get shared across the company. | チームが役に立つAIのワークフローを作っても、会社全体に共有されることはほとんどありません。 |
+
+R6's remaining Keep copy is unchanged.
 Three inline isometric SVGs share a 420:320 viewBox, in Shadow AI, dependency,
 then team-sharing order. The original Shadow AI and teams drawings and
 behavior are unchanged. `problem.js` manages independent states without dependencies.
@@ -284,16 +293,19 @@ There are no figure numbers or action/reset buttons. Each of the three
 animated figures is focusable and plays once when half visible, resets after leaving view, and
 replays on mouse hover, tap or keyboard focus. Replay input during a running
 sequence is ignored, so transitions cannot stack.
-The merged dependency drawing keeps the owner/agents at upper left, original
-layers below them, and the successor stack at right. The owner and lights start
-accent-colored. After the owner lifts, four accent x marks appear on the grey
-connections at 200ms intervals and the agents stop. Only then does the output
-cross, followed by dashed Context, Rules, Tools and Exceptions layers built
-from the successor's base upward. Both stacks keep horizontal leader labels;
-the original layers dim but stay behind. The last label finishes at 4.52
-seconds. CSS clocks pause while hidden, and animation completion updates
-the translated rebuilding/end descriptions and polite status without a
-separate completion timer. The sequence never loops.
+R10's dependency drawing shows three stages from left to right: an accent
+owner connected to a solid grey stack; the departing owner becoming a dashed
+grey outline, an x on the dashed connection and a fading dashed stack; a new
+accent owner rebuilding four dashed accent layers. Two accent arrows connect
+the stages. Each stack has front labels in Context, Instructions, Tools,
+Workflows order, including on Japanese pages. No stage captions or other
+visible text appear inside the SVG.
+The sequence lasts 4.5 seconds: departure appears at 0.85s and fades through
+1.95s; the successor appears at 2.2s; layers draw from bottom to top starting
+at 2.4s, spaced by 0.45s; the redo arrow turns once from 3.8s to 4.5s.
+CSS clocks pause while hidden. Successor/redo animation completion updates
+translated rebuilding/end descriptions and polite status without a separate
+completion timer. The sequence never loops.
 The Shadow AI figure shows an employee at a desk inside a company platform and
 a separate personal AI block identified by a chat icon. A lock-marked document
 travels out along a dashed accent path; a boundary warning pulses once and the
@@ -303,9 +315,9 @@ animation completion, rather than an independent timer, updates its named SVG
 and polite status. Reduced motion shows the end state even before enhancement,
 and the idle drawing remains readable without JavaScript.
 Problem and Solution use three columns from 1024px, otherwise one column.
-Drawings are capped at their native 420px width. The merged drawing's labels
-are drawn at 16px rather than the original 14px to stay readable at three
-columns. R6's report records actual rendered sizes at 1280px and 1440px.
+Drawings are capped at their native 420px width. Dependency labels use 16.5px
+in SVG coordinates to stay readable in three columns. R10's report records
+rendered sizes at 1024px, 1280px and 1440px.
 Solution has three Keep title/body answers followed by its approved closing
 line. The home excerpt and data promises remain unchanged.
 Team platforms are native HTML buttons outside the SVG image role, reachable
@@ -320,13 +332,15 @@ removes animation and always shows the end states, including the accent team.
 With JavaScript unavailable, the idle stills and explanatory copy remain,
 and team controls stay hidden.
 Japanese Problem figures preserve the English SVG geometry and shared
-controller, translating captions, layer labels, controls and live states.
+controller, translating captions, controls and live states. R10's four layer
+names remain English in both languages.
 The validator enforces SVG, component and controller parity on all six
 page pairs; missing Japanese routes and broken alternates are failures.
 E6b behavior, performance evidence and bilingual screenshots are recorded in
 `.copilot-runs/notes/e6b.md`. R2's fourth-figure evidence and screenshots are in
-`.copilot-runs/notes/r2.md`. R6's exact-copy, preservation, browser,
-performance and screenshot evidence is in `.copilot-runs/notes/r6.md`.
+`.copilot-runs/notes/r2.md`. R6's evidence is in `.copilot-runs/notes/r6.md`;
+R10's exact-copy, preservation, browser, performance and screenshot evidence
+is in `.copilot-runs/notes/r10.md`.
 
 ## Japanese typesetting
 
@@ -354,18 +368,17 @@ recorded in `.copilot-runs/notes/j1.md`.
 - Do not display draft tags or `data-draft` attributes. Track unapproved copy
   in the E6c register instead.
 - Use **agent harness**, **AI harness** or **harnesses** for this concept.
-  Preserve the approved R6 exceptions: "set up" in the Problem heading and
-  "setups" in the Solution closing line.
+  Preserve the approved R6 exception "setups" in the Solution closing line.
   An AI harness is the instructions, skills, memory and connected tools around
   an AI agent that make it work for a role.
 - The home page contains only the hero, problem, solution, how it works, data
   and demo request. Do not show pricing or founders on the home page.
   Founders and direct answers belong in the Agent reference.
-- Problem: **AI is everywhere now. Is it really set up to last?**
+- Problem: **Is your company in control of its AI?**
   Shadow AI is a problem label, not a claim that Jin AI blocks it.
 - Solution: **How Jin AI keeps your AI**, followed by **Keep it safe**, **Keep it in
   the company**, **Keep it shared**. Keep both employee and company value.
-  R6's English/Japanese copy, with R7 hero and R8 review fixes, is approved word for word;
+  R6's English/Japanese copy, with R7 hero, R8 review fixes and R10 Problem copy, is approved word for word;
   it supersedes R1's pending headline and copy choices. No draft tag appears.
 - Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19).
   `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`.

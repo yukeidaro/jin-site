@@ -101,9 +101,8 @@ for (const figure of figures) {
   if (figure.dataset.problem === "dependency") {
     drawing.addEventListener("animationend", event => {
       if (figure.dataset.busy !== "true") return;
-      if (event.animationName === "problem-handover") describe("Rebuilding");
-      if (event.animationName === "problem-layer-in" &&
-          event.target.matches('[data-layer="exceptions"] text')) end();
+      if (event.animationName === "problem-dependency-successor") describe("Rebuilding");
+      if (event.animationName === "problem-dependency-redo") end();
     });
   }
   for (const control of controls) {

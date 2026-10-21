@@ -31,11 +31,11 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 
 ## Problem
 
-AI is everywhere now. Is it really set up to last?
+Is your company in control of its AI?
 
-- Shadow AI: Work context flows into personal AI tools, outside the company's control.
-- Agents that depend on one person: Agents, context and workflows live with whoever built them. When that person leaves, the agents stop and the successor starts over.
-- Skills stuck in one team: One team finds what works. The rest of the company never sees it.
+- Shadow AI: Confidential company information could end up in personal AI tools, outside the company's control.
+- Agents that depend on one person: Agents and workflows stay with the people who built them. When they leave, everything starts over.
+- Skills stuck in one team: Teams build useful AI workflows, but they rarely get shared across the company.
 
 ## Solution (Building)
 

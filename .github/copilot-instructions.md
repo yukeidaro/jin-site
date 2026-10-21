@@ -13,11 +13,11 @@ Its page and social titles omit the final Japanese full stop.
 
 R7 hero (Yu, 2026-10-21): small **Jin AI** eyebrow; line **Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.** / **AIエージェント、スキル、ナレッジを、安全に、再利用できる形で、組織全体で使えるように保ちます。**; four muted list badges **Secure**, **Company-owned**, **Shared**, **Up to date** / **安全**, **会社のもの**, **共有**, **いつも最新**, with decorative thin-line icons. Preserve the reveal, CTAs and demo. R7 replaces only R6's hero copy; the remaining R6 copy stays approved.
 
-Use **agent harness**, **AI harness** or **harnesses** for this concept. An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role. R6's approved copy uses "set up" in the Problem heading and "setups" in the Solution closing line; preserve those exact exceptions.
+Use **agent harness**, **AI harness** or **harnesses** for this concept. An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role. R6's approved copy uses "setups" in the Solution closing line; preserve that exact exception.
 
-Problem: **AI is everywhere now. Is it really set up to last?** Three problems, in order: **Shadow AI**, **Agents that depend on one person**, **Skills stuck in one team**. Shadow AI is a problem label, not something Jin AI claims to block.
+Problem (R10, Yu, 2026-10-21): **Is your company in control of its AI?** / **御社のAIは、会社の管理下にありますか？** Three problems, in order: **Shadow AI**, **Agents that depend on one person**, **Skills stuck in one team**. Use R10's exact English/Japanese bodies recorded in `README.md`. Shadow AI is a problem label, not something Jin AI claims to block. Dependency figure labels stay English in both languages: **Context**, **Instructions**, **Tools**, **Workflows**, top to bottom.
 
-Solution: **Jin AI keeps it**. Three answers, in order: **Keep it safe**, **Keep it in the company**, **Keep it shared**. Keep both employee and company value in the story. The exact English/Japanese R6 copy is approved by Yu (2026-10-21) in `.copilot-runs/design/13-コピー全文-Keep-2026-10-21.md`; do not replace it with historical pitch copy.
+Solution: **Jin AI keeps it**. Three answers, in order: **Keep it safe**, **Keep it in the company**, **Keep it shared**. Keep both employee and company value in the story. The exact English/Japanese R6 copy is approved by Yu (2026-10-21) in `.copilot-runs/design/13-コピー全文-Keep-2026-10-21.md`, with the R7 hero, R8 review fixes and R10 Problem copy superseding their respective parts; do not replace it with historical pitch copy.
 
 Data: **Your company's context stays yours** Each company's context is kept separate. Jin AI never records your screen. Jin AI itself never trains on your data. Do not claim that Jin AI does not read conversation histories.
 
