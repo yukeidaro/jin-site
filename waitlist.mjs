@@ -286,6 +286,7 @@ export function initializeWaitlist(document, dependencies = {}) {
   const waitlistLabel = button.textContent;
   let originalLabel = button.textContent;
   let pending = false;
+  let submitted = false;
   let requestId = null;
   let fingerprint = null;
   let savedValues = null;
@@ -340,7 +341,7 @@ export function initializeWaitlist(document, dependencies = {}) {
   }
 
   function syncHash(focus = true) {
-    if (!waitlistFlow) return;
+    if (!waitlistFlow || submitted) return;
     const hash = document.defaultView?.location.hash;
     if (hash === "#request-demo") {
       showDemo(null, focus ? fieldNames[0] : null);
@@ -418,6 +419,7 @@ export function initializeWaitlist(document, dependencies = {}) {
       fingerprint = nextFingerprint;
     }
     payload.requestId = requestId;
+    submitted = true;
     pending = true;
     button.disabled = true;
     button.textContent = message("Saving your request...");
@@ -464,7 +466,6 @@ export function initializeWaitlist(document, dependencies = {}) {
       button.disabled = false;
       button.textContent = originalLabel;
       form.removeAttribute("aria-busy");
-      syncHash();
       if (!form.hidden && document.activeElement === document.body) button.focus();
     }
   });

@@ -696,24 +696,29 @@ for (const [name, columns] of [
     const store = backend.sheetStore_(name, columns);
     const historical = headers.map(() => "Historical value");
     rows.push(historical.slice());
-    for (const value of ["09012345678", "007", "10-4", "3/4", "TRUE", "=1+1", "+123456", "-1", "@name", "'literal", "", 7, false]) {
+    for (const value of ["09012345678", "007", "10-4", "3/4", "TRUE", "=1+1", "+123456", "-1", "@name", "'literal", "", null, undefined, 7, false]) {
       const record = Object.fromEntries(Array.from(columns, ([key]) => [
         key, key === "attempts" ? 2 : /At$/.test(key) ? "2026-10-21T02:00:00.000Z" : value
       ]));
       record.requestId = requestId;
+      writes.length = 0;
       store.append(record);
+      const appendWrites = writes.slice();
       rows[record.row - 1][2] = "=1+1";
       writes.length = 0;
       store.update(record);
       const saved = store.find("requestId", requestId);
       for (const [key, header] of columns) {
-        const written = writes.find(cell => cell.column === headers.indexOf(header) + 1);
         const text = key !== "attempts" && !/At$/.test(key);
-        assert.equal(written.value, text ? "'" + String(record[key]) : record[key], key);
-        assert.equal(saved[key], text ? String(record[key]) : record[key], key);
+        const normalized = text ? String(record[key] ?? "") : record[key];
+        for (const rawWrites of [appendWrites, writes]) {
+          const written = rawWrites.find(cell => cell.column === headers.indexOf(header) + 1);
+          assert.equal(written.value, text && normalized !== "" ? "'" + normalized : normalized, key);
+        }
+        assert.equal(saved[key], normalized, key);
       }
       assert.equal(rows[record.row - 1][2], "=1+1");
-      assert.ok(writes.every(cell => cell.column !== 3 && cell.row === record.row));
+      assert.ok([...appendWrites, ...writes].every(cell => cell.column !== 3 && cell.row === record.row));
       assert.deepEqual(rows[1], historical, "No historical row may be rewritten.");
       rows.pop();
     }
@@ -2045,27 +2050,131 @@ for (const language of ["en", "ja"]) {
   });
 }
 
-test("a direct-demo hash change waits for an in-flight waitlist request before switching steps", async (t) => {
-  let resolve;
-  const f = await clientFixture(t, (_url, options) => new Promise(done => {
-    const payload = JSON.parse(options.body);
-    assert.equal(payload.type, "waitlist");
-    resolve = () => done({ ok: true, json: async () => ({ ...response(), requestId: payload.requestId }) });
-  }), true, "en", "waitlist");
-  f.fill();
-  const submission = f.submit();
-  f.setHash("#request-demo");
-  assert.equal(f.elements.get("demoFields").hidden, true);
-  assert.equal(f.button.disabled, true);
-  resolve();
-  await submission;
-  assert.equal(f.elements.get("demoFields").hidden, false);
-  assert.equal(f.elements.get("demoOffer").hidden, true);
-  assert.equal(f.form.hidden, false);
-  assert.equal(f.controls.get("company").value, "Example Company");
-  assert.equal(f.button.textContent, "Request a demo");
-  assert.equal(f.document.activeElement.id, "demo-firstName");
-});
+for (const language of ["en", "ja"]) {
+  for (const hash of ["#demo", "#waitlist"]) {
+    for (const outcome of ["saved", "not_saved", "unknown", "transport", "mismatched"]) {
+      test(`submitted direct demo keeps its ${outcome} result after pending and completed ${hash} navigation in ${language}`, async (t) => {
+        let resolve;
+        const payloads = [];
+        const result = outcome === "saved" ? response() :
+          response(outcome === "not_saved" ? "not_saved" : "unknown", "not_attempted",
+            outcome === "not_saved" ? "busy" : null);
+        const f = await clientFixture(t, (_url, options) => {
+          const payload = JSON.parse(options.body);
+          payloads.push(payload);
+          assert.equal(payload.type, "demo");
+          assert.equal(payload.consentVersion, CONSENT_VERSION);
+          if (payloads.length > 1) {
+            return Promise.resolve({ ok: true, json: async () => ({ ...response(), requestId: payload.requestId }) });
+          }
+          return new Promise((done, reject) => {
+            resolve = () => outcome === "transport" ? reject(new Error("Offline")) : done({
+              ok: true, json: async () => ({
+                ...result, requestId: outcome === "mismatched" ? "wrong" : payload.requestId
+              })
+            });
+          });
+        }, true, language, "waitlist", "#request-demo");
+        f.fill();
+        const submission = f.submit();
+        const status = f.elements.get("waitlistStatus");
+        const done = f.elements.get("waitlistDone");
+        const pendingMessage = status.textContent;
+        f.setHash(hash);
+        assert.equal(f.elements.get("demoFields").hidden, false);
+        assert.equal(f.elements.get("demoFields").disabled, false);
+        assert.equal(f.elements.get("demoNote").hidden, false);
+        assert.equal(f.elements.get("waitlistNote").hidden, true);
+        assert.equal(status.hidden, false);
+        assert.equal(status.textContent, pendingMessage);
+        assert.equal(f.button.disabled, true);
+        assert.equal(done.hidden, true);
+        resolve();
+        await submission;
+        const unconfirmed = outcome === "transport" || outcome === "mismatched";
+        assert.equal(f.form.hidden, outcome === "saved");
+        assert.equal(done.hidden, unconfirmed);
+        assert.equal(status.hidden, !unconfirmed);
+        if (unconfirmed) {
+          assert.equal(status.dataset.kind, "error");
+          assert.equal(status.textContent, language === "ja" ?
+            "お申し込みの保存と確認メールの状態を確認できませんでした。もう一度お試しください。同じ内容を再送しても、重複して保存されることはありません。" :
+            "We could not confirm your request or email status. Please try again; retries will not create duplicate requests.");
+          assert.equal(f.errorLogs.length, 1);
+        } else {
+          const presentation = describeResult(result, language);
+          assert.equal(done.dataset.kind, presentation.kind);
+          for (const [id, key] of [
+            ["waitlistHeading", "heading"], ["waitlistRegistration", "registration"],
+            ["waitlistEmail", "welcome"], ["waitlistDetail", "detail"]
+          ]) assert.equal(f.elements.get(id).textContent, presentation[key], id);
+        }
+        const resultMessage = status.textContent;
+        for (const nextHash of [hash === "#demo" ? "#waitlist" : "#demo", "#request-demo"]) {
+          f.setHash(nextHash);
+          assert.equal(f.elements.get("demoFields").disabled, false);
+          assert.equal(f.elements.get("demoNote").hidden, false);
+          assert.equal(f.elements.get("waitlistNote").hidden, true);
+          assert.equal(f.form.hidden, outcome === "saved");
+          assert.equal(done.hidden, unconfirmed);
+          assert.equal(status.hidden, !unconfirmed);
+          assert.equal(status.textContent, resultMessage);
+        }
+        assert.equal(f.button.textContent, f.elements.get("openDemo").textContent);
+        assert.equal(f.elements.get("demoOffer").hidden, true);
+        for (const name of Object.keys(demoInput()).filter(name => f.controls.has(name))) {
+          assert.equal(f.controls.get(name).value, demoInput()[name], name);
+        }
+        if (outcome !== "saved") {
+          await f.submit();
+          assert.equal(payloads[1].type, "demo");
+          assert.equal(payloads[1].requestId, payloads[0].requestId);
+          assert.equal(f.form.hidden, true);
+        }
+      });
+    }
+  }
+}
+
+for (const outcome of ["saved", "not_saved", "unknown", "transport"]) {
+  test(`a submitted waitlist keeps its ${outcome} result instead of switching to a demo on hash changes`, async (t) => {
+    let resolve;
+    const result = outcome === "saved" ? response() :
+      response(outcome === "not_saved" ? "not_saved" : "unknown", "not_attempted", "busy");
+    const f = await clientFixture(t, (_url, options) => new Promise((done, reject) => {
+      const payload = JSON.parse(options.body);
+      assert.equal(payload.type, "waitlist");
+      resolve = () => outcome === "transport" ? reject(new Error("Offline")) :
+        done({ ok: true, json: async () => ({ ...result, requestId: payload.requestId }) });
+    }), true, "en", "waitlist");
+    f.fill();
+    const submission = f.submit();
+    f.setHash("#request-demo");
+    assert.equal(f.elements.get("demoFields").hidden, true);
+    assert.equal(f.button.disabled, true);
+    resolve();
+    await submission;
+    for (const hash of ["#request-demo", "#demo", "#waitlist"]) {
+      f.setHash(hash);
+      assert.equal(f.elements.get("demoFields").hidden, true);
+      assert.equal(f.elements.get("demoFields").disabled, true);
+      assert.equal(f.elements.get("waitlistDone").hidden, outcome === "transport");
+      assert.equal(f.elements.get("waitlistStatus").hidden, outcome !== "transport");
+      assert.equal(f.elements.get("demoOffer").hidden, outcome !== "saved");
+      assert.equal(f.form.hidden, outcome === "saved");
+      assert.equal(f.button.textContent, "Join the waitlist");
+    }
+    assert.equal(f.controls.get("company").value, "Example Company");
+    if (outcome === "saved") {
+      f.openDemo();
+      assert.equal(f.elements.get("demoFields").hidden, false);
+      assert.equal(f.elements.get("demoOffer").hidden, true);
+      assert.equal(f.form.hidden, false);
+      assert.equal(f.button.textContent, "Request a demo");
+      assert.equal(f.document.activeElement.id, "demo-phone");
+    }
+  });
+}
 
 for (const entry of ["initial", "hashchange"]) {
   test(`direct demo ${entry} keeps an unconfigured endpoint explicitly unavailable`, async (t) => {

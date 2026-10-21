@@ -568,9 +568,9 @@ function sheetStore_(sheetName, columns) {
 
 function safeCell_(value, textColumn) {
   // Sheets consumes this escape on write, preserving text without coercion or formulas.
-  if (textColumn) return "'" + String(value === undefined || value === null ? '' : value);
-  if (typeof value === 'number') return value;
   var text = String(value === undefined || value === null ? '' : value);
+  if (textColumn) return text ? "'" + text : '';
+  if (typeof value === 'number') return value;
   return /^[=+\-@]/.test(text) ? "'" + text : text;
 }
 
