@@ -30,7 +30,8 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 
 The public content pages are self-canonical, with `en`, `ja` and `x-default`
 hreflang alternates. Every Japanese page has the same body structure, section
-IDs, component classes, images and controllers as its English twin. The
+IDs, component classes, images and controllers as its English twin, except
+the approved Japanese two-part Solution closing (bold line plus paragraph). The
 Japanese home heading uses the approved text `AIを、会社の資産に。`
 in two reveal phrases; the generated form preserves surname-first order and Japanese country
 labels without changing payload values. The English-only language-choice
@@ -191,7 +192,7 @@ load errors retain the underlying still and are reported to the console.
 
 The five exact English/Japanese feature texts are recorded in
 `.copilot-runs/notes/r3-new-copy.md`. The fact source retains them under
-`how_it_works.features`; `solution.steps` now contains R6's three Keep answers,
+`how_it_works.features`; `solution.steps` now contains R11's three Keep answers,
 retaining Building status. The capability delivery facts and
 form/endpoint/consent are unchanged. R3 evidence, measurements and
 decisions are in `.copilot-runs/notes/r3.md`.
@@ -241,8 +242,10 @@ after the last word finishes and the buttons after the body. R7 uses six
 English words and two unbroken Japanese phrases. Titles and social titles
 omit only the Japanese headline's final full stop.
 
-R7's exact hero line is "Keep your AI agents, skills, and knowledge secure,
-reusable, and accessible across your organization." The four muted badges
+The exact English hero line is "Keep your AI agents, skills, and knowledge secure,
+reusable, and accessible across your organization." R11's Japanese hero line is
+"AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。"
+It also supplies the Japanese home page and social descriptions. The four muted badges
 are Secure, Company-owned, Shared and Up to date; Japanese uses 安全, 会社のもの,
 共有 and いつも最新. They form one list with decorative shield, building, people
 and circular-arrow SVGs, not buttons. Badges sit below the buttons, keeping the
@@ -251,8 +254,8 @@ browser metrics and screenshots are recorded in `.copilot-runs/notes/r7.md`.
 R7 removes the pilot sentence from the availability fact and its direct answer,
 preserving the workspace beta and company-feature delivery statuses.
 
-R8 (Yu, 2026-10-21) changes the home Solution heading to
-"How Jin AI keeps your AI" / "Jin AIが、会社のAIをキープします。".
+The home Solution heading is "How Jin AI keeps your AI" /
+"Jin AIが実現する、安心して使い続けられるAI環境" (R11, Yu, 2026-10-21).
 Both home and How it works closing headings read
 "Turn your team's AI into a company asset" / "御社のAIを、会社の資産に。".
 Company has one top H1, no repeated label, and the approved mission:
@@ -276,15 +279,15 @@ removing a tag does not approve its copy.
 
 Both home pages use the approved R10 Problem heading
 "Is your company in control of its AI?" / "御社のAIは、会社の管理下にありますか？"
-(Yu, 2026-10-21). Titles are unchanged; the exact bodies are:
+(Yu, 2026-10-21). English copy stays R10; Japanese titles and bodies use
+R11's approved text:
 
-| Problem | English | Japanese |
+| Problem | English | Japanese title and body |
 |---|---|---|
-| Shadow AI | Confidential company information could end up in personal AI tools, outside the company's control. | 会社の機密情報が、会社の管理の外にある個人のAIツールに入ってしまうかもしれません。 |
-| Agents that depend on one person | Agents and workflows stay with the people who built them. When they leave, everything starts over. | エージェントとワークフローは、作った人のもとにしか残りません。その人が辞めると、すべてが一からやり直しになります。 |
-| Skills stuck in one team | Teams build useful AI workflows, but they rarely get shared across the company. | チームが役に立つAIのワークフローを作っても、会社全体に共有されることはほとんどありません。 |
+| Shadow AI | Confidential company information could end up in personal AI tools, outside the company's control. | シャドーAIによる情報漏洩リスク / 会社の機密情報が個人のAIツールに共有され、企業が把握・管理できない状態になっているかもしれません。 |
+| Agents that depend on one person | Agents and workflows stay with the people who built them. When they leave, everything starts over. | AIエージェントの属人化 / AIエージェントやワークフローが作成者個人に依存。担当者が異動・退職すると、後任者は一から作り直さなければなりません。 |
+| Skills stuck in one team | Teams build useful AI workflows, but they rarely get shared across the company. | AI活用ノウハウの共有不足 / 各チームで生まれた便利なAI活用方法やワークフローが、ほかのチームに共有されず、組織全体に広がっていません。 |
 
-R6's remaining Keep copy is unchanged.
 Three inline isometric SVGs share a 420:320 viewBox, in Shadow AI, dependency,
 then team-sharing order. The original Shadow AI and teams drawings and
 behavior are unchanged. `problem.js` manages independent states without dependencies.
@@ -318,8 +321,23 @@ Problem and Solution use three columns from 1024px, otherwise one column.
 Drawings are capped at their native 420px width. Dependency labels use 16.5px
 in SVG coordinates to stay readable in three columns. R10's report records
 rendered sizes at 1024px, 1280px and 1440px.
-Solution has three Keep title/body answers followed by its approved closing
-line. The home excerpt and data promises remain unchanged.
+Solution uses R11's exact copy (Yu, 2026-10-21):
+
+| English title and body | Japanese title and body |
+|---|---|
+| Keep it safe / Separate confidential information from reusable context, skills, and workflows. Share each part only with the AI tools you approve. | 機密情報を安全に管理する / 機密情報と共有可能な知識・スキル・ワークフローを自動で分類。情報に応じて適切なAIツールだけに共有することで、安全なAI活用を実現します。 |
+| Keep it in the company / Context, instructions, tools, and workflows stay with the company, not with one person. Even when someone leaves, the setup keeps working and the next person can continue from there. | AIを会社の資産として残す / AIエージェントを構成する知識・ルール・ツール・ワークフローを組織に蓄積。担当者が異動・退職しても、AIエージェントをそのまま使い続けられます。 |
+| Keep it shared / Useful workflows and skills can be shared across teams and recommended where they fit, so good AI practices spread instead of staying in one team. | AI活用のノウハウを組織全体に広げる / 各チームで生まれた優れたAI活用方法やワークフローを共有。ほかのチームにも最適な活用方法を自動でおすすめし、組織全体の生産性向上につなげます。 |
+
+English closing: "As people improve the way they work with AI, Jin AI keeps those improvements available to the whole company."
+Japanese closing: bold "一人ひとりのAI活用が、会社全体の資産になる。"
+then a paragraph "Jin AIは、日々進化するAIの活用方法を組織に蓄積し、誰もが活用できる環境をつくります。"
+Only this two-part closing differs structurally between the two Solution
+sections. Both lists have no number labels or rendered figures yet; each
+list item can accept a figure before its H3 in R12. From 1024px, Solution
+uses Problem's exact column tracks, zero column gap and 16px inner padding
+so future figures align. Phones use one column. The home excerpt and data
+promises remain unchanged. R11 evidence is in `.copilot-runs/notes/r11.md`.
 Team platforms are native HTML buttons outside the SVG image role, reachable
 by keyboard, mouse and touch. View entry opens them at 1.2-second intervals,
 ending with the accent team. Direct selection cancels that sequence.
@@ -368,7 +386,6 @@ recorded in `.copilot-runs/notes/j1.md`.
 - Do not display draft tags or `data-draft` attributes. Track unapproved copy
   in the E6c register instead.
 - Use **agent harness**, **AI harness** or **harnesses** for this concept.
-  Preserve the approved R6 exception "setups" in the Solution closing line.
   An AI harness is the instructions, skills, memory and connected tools around
   an AI agent that make it work for a role.
 - The home page contains only the hero, problem, solution, how it works, data
@@ -378,7 +395,8 @@ recorded in `.copilot-runs/notes/j1.md`.
   Shadow AI is a problem label, not a claim that Jin AI blocks it.
 - Solution: **How Jin AI keeps your AI**, followed by **Keep it safe**, **Keep it in
   the company**, **Keep it shared**. Keep both employee and company value.
-  R6's English/Japanese copy, with R7 hero, R8 review fixes and R10 Problem copy, is approved word for word;
+  R6's English/Japanese copy, with R7 hero, R8 review fixes, R10 English Problem
+  and R11 Solution, Japanese Problem and Japanese hero copy, is approved word for word;
   it supersedes R1's pending headline and copy choices. No draft tag appears.
 - Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19).
   `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`.

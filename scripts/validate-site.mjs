@@ -7,6 +7,7 @@ import { CONSENT_VERSION, isAppsScriptEndpoint } from "../waitlist.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const site = path.join(root, "_site");
 const errors = [];
+const approvedCompanySolution = "Context, instructions, tools, and workflows stay with the company, not with one person. Even when someone leaves, the setup keeps working and the next person can continue from there.";
 
 function check(condition, message) {
   if (!condition) errors.push(message);
@@ -152,7 +153,7 @@ check([...demoClient.matchAll(/\bheading:\s*(?:[^?\n]+\?\s*)?"([^"]+)"/g)]
 
 const pagePairs = [
   ["", home, japanese, "AIを、会社の資産に。", "Jin AI | AIを、会社の資産に",
-    "Jin AI は、優れた社員がつくった AI ハーネスを、すべての社員にとって安全に、会社にとって再利用できる形にします。"],
+    "AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。"],
   ["how-it-works/", howPage, japaneseHow, "仕組み", "仕組み | Jin AI",
     "Jin AI が AI ツールにつながり、AI ハーネスを種類ごとに整理し、持ち出せるものを会社が決める仕組みです。"],
   ["security/", security, japaneseSecurity, "会社のコンテクストは、会社のもの。", "セキュリティ | Jin AI",
@@ -506,7 +507,7 @@ check(!home.includes("Turn the AI you already use into an assistant that actuall
   "Root must not publish the old headline, product image, privacy tabs or retired sections.");
 check(!/[\u2013\u2014\u2018\u2019\u201c\u201d]/u.test(home),
   "Root must not contain em dashes, en dashes or curly quotes.");
-check(!/(?:\$|\bPro\b|Cloud Sync|Baby Voice|TikTok|\bsetup\b)/i.test(home),
+check(!/(?:\$|\bPro\b|Cloud Sync|Baby Voice|TikTok|\bsetup\b)/i.test(home.replaceAll(approvedCompanySolution, "")),
   "Root contains retired offers, products or terminology.");
 check(agent.includes('id="what-is-jin-ai"'), "Agent page must carry the generated direct answers.");
 check(!/<img(?![^>]*\bsrc=)[^>]*>/i.test(home), "Every root image must have a static src.");
@@ -573,11 +574,11 @@ for (const point of content.problem.points) {
 }
 const solutionSection = homeSections.find((match) => match[1].includes('id="solution"'))?.[2] || "";
 const solutionCopy = [
-  ["Keep it safe", "Confidential parts stay inside the company and connect only to the AI tools you approve."],
-  ["Keep it in the company", "Agents, context and workflows stay with the role, not the person. A successor starts where the last person left off."],
-  ["Keep it shared", "The best skills reach every team that does the same work."]
+  ["Keep it safe", "Separate confidential information from reusable context, skills, and workflows. Share each part only with the AI tools you approve."],
+  ["Keep it in the company", approvedCompanySolution],
+  ["Keep it shared", "Useful workflows and skills can be shared across teams and recommended where they fit, so good AI practices spread instead of staying in one team."]
 ];
-const solutionClosing = "As people improve their setups, Jin AI keeps the shared version up to date.";
+const solutionClosing = "As people improve the way they work with AI, Jin AI keeps those improvements available to the whole company.";
 function exactElement(source, tag, value) {
   return [...withoutJapanesePhrases(source).matchAll(new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)</${tag}>`, "g"))]
     .filter(([, inner]) => inner === value).length === 1;
@@ -1272,6 +1273,30 @@ for (const filename of deployedFiles.filter(filename => /\.(?:html|json|txt|css|
     check(!keepText.includes(retired), `${filename} must not contain retired Keep copy: ${retired}`);
   }
 }
+const retiredR11Copy = /Confidential parts stay inside|Agents, context and workflows stay with the role|The best skills reach every team|As people improve their setups|Jin AIが、会社のAIを|(?:安全に|会社に|みんなで)キープ|機密は会社の中に残し|エージェント、文脈、ワークフローは、人ではなく|いちばんいいスキルが、同じ仕事|社員が使い方を磨くたびに|AIエージェント、スキル、ナレッジを、安全に|会社の機密情報が、会社の管理の外|エージェントとワークフローは、作った人|チームが役に立つAIのワークフロー/;
+for (const filename of [...deployedFiles.filter(file => /\.(?:html|json|txt|css|m?js)$/.test(file)),
+  "README.md", ".github/copilot-instructions.md"]) {
+  const source = filename.endsWith(".md") ? await readFile(path.join(root, filename), "utf8") : await text(filename);
+  check(!retiredR11Copy.test(withoutJapanesePhrases(source).replace(/<[^>]*>/g, "")),
+    `${filename} must not contain superseded R11 Solution, Japanese Problem or hero copy.`);
+  check(!/>\s*(?:シャドーAI|(?:エージェントの|スキルの)(?:属人化|共有不足))\s*</.test(withoutJapanesePhrases(source)),
+    `${filename} must not contain a retired standalone Japanese Problem title.`);
+}
+for (const [language, source] of [["English", home], ["Japanese", japanese]]) {
+  for (const id of ["problem", "solution"]) {
+    const section = source.match(new RegExp(`<section\\b[^>]*id="${id}"[^>]*>([\\s\\S]*?)</section>`))?.[1] || "";
+    check(!/\b(?:number-label|step-number|figure-number)\b/.test(section) &&
+      !/>\s*\d+(?:[.)、．]|\s*<)/.test(section) &&
+      [...section.matchAll(/<h3\b[^>]*>([\s\S]*?)<\/h3>/g)].every(([, heading]) =>
+        !/^\s*\d+[.)、．]\s*/.test(heading.replace(/<[^>]*>/g, ""))),
+    `${language} ${id} titles must not have number labels.`);
+  }
+}
+check(cssBlock(englishCss, ".solution-copy {").includes("row-gap: var(--s-8)") &&
+  !/(?:^|[;{])\s*(?:gap|column-gap)\s*:/.test(cssBlock(englishCss, ".solution-copy {")) &&
+  cssBlock(englishCss, "@media (min-width: 1024px)").includes(".solution-copy li { padding-inline: var(--s-4); }") &&
+  cssBlock(englishCss, "#problem .problem-column {").includes("padding-inline: var(--s-4)"),
+  "Solution must match Problem's column widths, zero column gap and desktop inner padding.");
 check(!/class="(?:final|closing-cta|cta-band)"/.test(home) &&
   homeSections.at(-1)?.[1].includes('id="demo"'),
   "The form must close the home page, with no additional closing CTA band.");
@@ -1374,9 +1399,9 @@ check(count(japaneseProblem, /<svg\b[^>]*role="img"[^>]*aria-label="[^"]+"/g) ==
   JSON.stringify(svgGeometry(japaneseProblem)) === JSON.stringify(svgGeometry(problemSection)),
   "Japanese Problem SVGs must match English geometry, with three translated accessible descriptions.");
 const japaneseProblemCopy = [
-  ["shadow", "シャドーAI", "会社の機密情報が、会社の管理の外にある個人のAIツールに入ってしまうかもしれません。"],
-  ["dependency", "エージェントの属人化", "エージェントとワークフローは、作った人のもとにしか残りません。その人が辞めると、すべてが一からやり直しになります。"],
-  ["teams", "スキルの共有不足", "チームが役に立つAIのワークフローを作っても、会社全体に共有されることはほとんどありません。"]
+  ["shadow", "シャドーAIによる情報漏洩リスク", "会社の機密情報が個人のAIツールに共有され、企業が把握・管理できない状態になっているかもしれません。"],
+  ["dependency", "AIエージェントの属人化", "AIエージェントやワークフローが作成者個人に依存。担当者が異動・退職すると、後任者は一から作り直さなければなりません。"],
+  ["teams", "AI活用ノウハウの共有不足", "各チームで生まれた便利なAI活用方法やワークフローが、ほかのチームに共有されず、組織全体に広がっていません。"]
 ];
 const japaneseFigures = [...japaneseProblem.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
 check(japaneseFigures[0]?.[2].includes('aria-label="図: 会社の仕事が個人のAIに流れていく"') &&
@@ -1431,20 +1456,24 @@ for (const [filename, source, hashes] of [
 
 const japaneseSolution = japaneseSections.find((match) => match[1].includes('id="solution"'))?.[2] || "";
 const japaneseSolutionCopy = [
-  ["安全にキープ", "機密は会社の中に残し、承認したAIツールにだけつなぎます。"],
-  ["会社にキープ", "エージェント、文脈、ワークフローは、人ではなく役割に残ります。後任は、前任者の続きから始められます。"],
-  ["みんなでキープ", "いちばんいいスキルが、同じ仕事をするすべてのチームに届きます。"]
+  ["機密情報を安全に管理する", "機密情報と共有可能な知識・スキル・ワークフローを自動で分類。情報に応じて適切なAIツールだけに共有することで、安全なAI活用を実現します。"],
+  ["AIを会社の資産として残す", "AIエージェントを構成する知識・ルール・ツール・ワークフローを組織に蓄積。担当者が異動・退職しても、AIエージェントをそのまま使い続けられます。"],
+  ["AI活用のノウハウを組織全体に広げる", "各チームで生まれた優れたAI活用方法やワークフローを共有。ほかのチームにも最適な活用方法を自動でおすすめし、組織全体の生産性向上につなげます。"]
 ];
-check(exactElement(japaneseSolution, "h2", "Jin AIが、会社のAIをキープします。") &&
+const japaneseSolutionClosing = `<div class="solution-closing">
+      <p><strong>一人ひとりのAI活用が、会社全体の資産になる。</strong></p>
+      <p>Jin AIは、日々進化するAIの活用方法を組織に蓄積し、誰もが活用できる環境をつくります。</p>
+    </div>`;
+check(exactElement(japaneseSolution, "h2", "Jin AIが実現する、安心して使い続けられるAI環境") &&
   count(japaneseSolution, /<li>/g) === 3 && count(japaneseSolution, /<h3\b/g) === 3 &&
-  count(japaneseSolution, /<p\b/g) === 4 &&
+  count(japaneseSolution, /<p\b/g) === 5 &&
   japaneseSolutionCopy.every(([title, body]) => exactElement(japaneseSolution, "h3", title) && exactElement(japaneseSolution, "p", body)) &&
-  exactElement(japaneseSolution, "p", "社員が使い方を磨くたびに、共有されている設定も最新に保ちます。"),
-  "Japanese Solution needs the exact Keep heading, three title/body pairs and closing line, each once.");
+  count(japaneseSolution, /class="solution-closing"/g) === 1 && japaneseSolution.includes(japaneseSolutionClosing),
+  "Japanese Solution needs the exact R11 heading, three title/body pairs and two-part bold/paragraph closing, each once.");
 for (const [language, source, introduction, badges] of [
   ["English", home, "Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.",
     ["Secure", "Company-owned", "Shared", "Up to date"]],
-  ["Japanese", japanese, "AIエージェント、スキル、ナレッジを、安全に、再利用できる形で、組織全体で使えるように保ちます。",
+  ["Japanese", japanese, "AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。",
     ["安全", "会社のもの", "共有", "いつも最新"]]
 ]) {
   const section = source.match(/<section class="hero">([\s\S]*?)<\/section>/)?.[1] || "";
@@ -1454,7 +1483,7 @@ for (const [language, source, introduction, badges] of [
   check(count(source, /class="hero-intro"/g) === 1 &&
     section.match(/<h1 class="hero-reveal"[^>]*>[\s\S]*?<\/h1>\s*<p class="hero-intro">([^<]*)<\/p>\s*<div class="hero-actions">/)?.[1] === introduction &&
     /<div class="hero-actions">[\s\S]*?<\/div>\s*<ul class="hero-badges"/.test(section),
-    `${language} hero must use the exact R7 introduction directly after the H1.`);
+    `${language} hero must use the exact approved introduction directly after the H1.`);
   const list = section.match(/<ul class="hero-badges" role="list">([\s\S]*?)<\/ul>/)?.[1] || "";
   const items = [...list.matchAll(/<li>([\s\S]*?)<\/li>/g)].map(match => match[1]);
   check(count(section, /class="hero-badges"/g) === 1 && items.length === 4 &&
@@ -1482,9 +1511,11 @@ check(content.product.headline === "Turn AI into a company asset" &&
   content.direct_answers.find(answer => answer.id === "is-jin-ai-available")?.answer === content.product.availability,
   "R7 facts must use the new headline and preserve the description tail and availability without a pilot sentence.");
 
-const bodyStructure = source => {
+const bodyStructure = (source, japaneseHome = false) => {
   const body = source.match(/<body\b[^>]*>([\s\S]*?)<\/body>/)?.[1] || "";
-  return [...withoutJapanesePhrases(body).replace(/<!-- GENERATED:CTA_FINAL:START -->[\s\S]*?<!-- GENERATED:CTA_FINAL:END -->/g, "")
+  const alignedBody = japaneseHome
+    ? body.replace(japaneseSolutionClosing, '<p class="solution-closing"></p>') : body;
+  return [...withoutJapanesePhrases(alignedBody).replace(/<!-- GENERATED:CTA_FINAL:START -->[\s\S]*?<!-- GENERATED:CTA_FINAL:END -->/g, "")
     .replace(/<h1 class="hero-reveal"[^>]*>[\s\S]*?<\/h1>/g, '<h1 class="hero-reveal"></h1>')
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>|<!--[\s\S]*?-->/g, "")
     .matchAll(/<(?!\/)([a-z][\w-]*)\b([^>]*)>/g)].map(([, tag, attributes]) =>
@@ -1528,8 +1559,8 @@ for (const [route, english, translated] of pagePairs) {
       normalizedLandmark(expectedNavigation, landmark, `https://jinai.md/${route}`),
       `/ja/${route} ${landmark} must have the complete translated navigation, descriptions, footer columns and matching links.`);
   }
-  check(JSON.stringify(bodyStructure(english)) === JSON.stringify(bodyStructure(translated)),
-    `/ja/${route} must match its English twin's complete element, section ID and component-class structure, except form order and H1 typesetting.`);
+  check(JSON.stringify(bodyStructure(english)) === JSON.stringify(bodyStructure(translated, route === "")),
+    `/ja/${route} must match its English twin's complete element, section ID and component-class structure, except form order, H1 typesetting and the exact Japanese home Solution closing.`);
   check(JSON.stringify(scripts(english, route)) === JSON.stringify(scripts(translated, `ja/${route}`)),
     `/ja/${route} must retain all English scripts, except the English-only language choice and fact graph.`);
   const stylesheets = [...translated.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)]
@@ -1555,7 +1586,7 @@ check(count(japaneseReveal, /<span style="--word:[0-1]">[^<]+<\/span>/g) === 2 &
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
   "Japanese hero must preserve its two-phrase reveal, exact R7 text, accessible name and motion opt-in.");
 for (const [page, source, phrases] of [
-  ["/ja/", japanese, ["御社のAIは、", "会社の管理下に", "ありますか？", "エージェントの", "属人化", "シャドーAI", "スキルの共有不足", "Jin AIが、", "会社のAIを", "キープします。", "安全にキープ", "会社にキープ", "みんなでキープ", "御社のAIを、", "会社の資産に。"]],
+  ["/ja/", japanese, ["御社のAIは、", "会社の管理下に", "ありますか？", "シャドーAIによる", "情報漏洩リスク", "AIエージェントの", "属人化", "AI活用ノウハウの", "共有不足", "Jin AIが実現する、", "安心して", "使い続けられる", "AI環境", "機密情報を", "安全に管理する", "AIを会社の", "資産として残す", "AI活用のノウハウを", "組織全体に広げる", "御社のAIを、", "会社の資産に。"]],
   ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "御社のAIを、", "会社の資産に。"]],
   ["/ja/security/", japaneseSecurity, ["コンテクストは、", "会社のもの。"]],
   ["/ja/privacy/", japanesePrivacy, ["プライバシー", "ポリシー", "取り扱いを", "委託している", "事業者"]]
@@ -1661,7 +1692,8 @@ for (const relativePath of customerFacingTextFiles) {
   }
   check(!/[\u2013\u2014\u2018\u2019\u201c\u201d]/u.test(source),
     `${relativePath} contains em dashes, en dashes or curly quotes.`);
-  check(!/\bsetup\b/i.test(source), `${relativePath} contains the retired word setup.`);
+  check(!/\bsetup\b/i.test(source.replaceAll(approvedCompanySolution, "")),
+    `${relativePath} contains setup outside the exact R11-approved Solution body.`);
   if (!relativePath.endsWith(".html") && !["agent/content.json", "llms.txt"].includes(relativePath)) {
     check(!/\bDiscord\b|discord\.gg/i.test(source), `${relativePath} contains an out-of-scope community mention.`);
   }

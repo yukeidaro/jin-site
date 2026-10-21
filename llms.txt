@@ -41,11 +41,11 @@ Is your company in control of its AI?
 
 How Jin AI keeps your AI
 
-- Keep it safe: Confidential parts stay inside the company and connect only to the AI tools you approve.
-- Keep it in the company: Agents, context and workflows stay with the role, not the person. A successor starts where the last person left off.
-- Keep it shared: The best skills reach every team that does the same work.
+- Keep it safe: Separate confidential information from reusable context, skills, and workflows. Share each part only with the AI tools you approve.
+- Keep it in the company: Context, instructions, tools, and workflows stay with the company, not with one person. Even when someone leaves, the setup keeps working and the next person can continue from there.
+- Keep it shared: Useful workflows and skills can be shared across teams and recommended where they fit, so good AI practices spread instead of staying in one team.
 
-As people improve their setups, Jin AI keeps the shared version up to date.
+As people improve the way they work with AI, Jin AI keeps those improvements available to the whole company.
 
 ## How it works and status
 
