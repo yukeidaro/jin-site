@@ -476,9 +476,123 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
   <div class="wrap">
     <h2 class="h2 solution-heading">How Jin AI keeps your AI</h2>
     <ul class="solution-copy">
-      <li><h3>Keep it safe</h3><p>Separate confidential information from reusable context, skills, and workflows. Share each part only with the AI tools you approve.</p></li>
-      <li><h3>Keep it in the company</h3><p>Context, instructions, tools, and workflows stay with the company, not with one person. Even when someone leaves, the setup keeps working and the next person can continue from there.</p></li>
-      <li><h3>Keep it shared</h3><p>Useful workflows and skills can be shared across teams and recommended where they fit, so good AI practices spread instead of staying in one team.</p></li>
+      <li>
+        <figure class="solution-figure" data-solution="safe" data-state="idle" tabindex="0" aria-label="Figure: confidential parts stay inside; reusable parts reach only approved AI tools">
+          <div class="problem-art">
+            <svg viewBox="0 0 420 320" role="img" aria-label="A bundle is inside the company platform. An approved AI tool and a personal AI are outside." data-label-idle="A bundle is inside the company platform. An approved AI tool and a personal AI are outside." data-label-playing="The bundle separates. The locked part stays inside; the reusable part moves toward the checked AI tool. The personal AI route stops at an x." data-label-changed="The locked confidential part remains inside the company. Only the reusable part reaches the approved AI tool. An x stops the route to the personal AI.">
+              <g class="safe-company">
+                <path class="iso-base" d="M20 174 145 102 270 174V194L145 266 20 194Z"/>
+                <path class="safe-boundary" d="M20 174 145 246 270 174M145 246V266"/>
+              </g>
+              <g class="safe-approved">
+                <path class="iso-base" d="M292 123 345 93 398 123V139L345 170 292 139Z"/>
+                <path d="M292 123 345 154 398 123M345 154V170"/>
+                <path class="iso-face" d="M317 104 345 88 373 104V125L345 141 317 125Z"/>
+                <path d="M317 104 345 120 373 104M345 120V141"/>
+                <path class="safe-check" d="M332 67 341 76 359 57"/>
+              </g>
+              <g class="safe-personal">
+                <path class="iso-base" d="M292 264 345 234 398 264V280L345 311 292 280Z"/>
+                <path d="M292 264 345 295 398 264M345 295V311"/>
+                <path class="iso-face" d="M317 245 345 229 373 245V266L345 282 317 266Z"/>
+                <path d="M317 245 345 261 373 245M345 261V282"/>
+                <path class="iso-face" d="M330 190H360V215H345L335 223V215H330ZM337 198H353M337 205H348"/>
+              </g>
+              <path class="safe-approved-route" pathLength="1" d="M118 154 174 171 260 121 329 106"/>
+              <path class="safe-blocked-route" pathLength="1" d="M159 186 218 220 263 246"/>
+              <path class="safe-block" d="M256 239 270 253M270 239 256 253"/>
+              <g transform="translate(118 154)">
+                <g class="safe-confidential">
+                  <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1ZM-24-1 0 13 24-1M0 13V18"/>
+                  <g class="safe-lock" transform="translate(0 -4)">
+                    <path class="iso-face" d="M-5-2H5V6H-5ZM-3-2V-5A3 3 0 0 1 3-5V-2"/>
+                    <path d="M0 1V3"/>
+                  </g>
+                </g>
+                <g class="safe-reusable solution-finish">
+                  <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1ZM-24-1 0 13 24-1M0 13V18"/>
+                  <path d="M-12-1 0 6 12-1M-6-5 6 2"/>
+                </g>
+              </g>
+            </svg>
+          </div>
+          <span class="problem-status" id="solution-safe-status" aria-live="polite" aria-atomic="true" data-status-idle="One bundle is inside the company, ready to separate." data-status-playing="Confidential and reusable parts separate. Only the approved AI route carries a part." data-status-changed="Confidential parts stayed inside. The reusable part reached only the approved AI tool. The personal AI route stopped.">One bundle is inside the company, ready to separate.</span>
+        </figure>
+        <h3>Keep it safe</h3><p>Separate confidential information from reusable context, skills, and workflows. Share each part only with the AI tools you approve.</p>
+      </li>
+      <li>
+        <figure class="solution-figure" data-solution="company" data-state="idle" tabindex="0" aria-label="Figure: the stack stays with the company and the next person connects to it">
+          <div class="problem-art">
+            <svg viewBox="0 0 420 320" role="img" aria-label="Context, instructions, tools and workflows sit in solid layers inside the company platform, connected to one person." data-label-idle="Context, instructions, tools and workflows sit in solid layers inside the company platform, connected to one person." data-label-playing="The first person leaves as a dashed outline. All four company layers stay solid while the next person connects to them." data-label-changed="The first person has left. The same four solid company layers are connected to the next person by a solid line, without rebuilding.">
+              <defs>
+                <g id="solution-company-person">
+                  <circle r="10"/><path d="M-17 46V34C-17 12 17 12 17 34V46Z"/>
+                </g>
+                <g id="solution-company-layer">
+                  <path class="iso-face" d="M-56 0 0-9 56 0V24L0 33-56 24ZM-56 0 0 9 56 0"/>
+                </g>
+              </defs>
+              <g class="company-platform">
+                <path class="iso-base" d="M40 204 210 106 380 204V214L210 312 40 214Z"/>
+                <path d="M40 204 210 302 380 204M210 302V312"/>
+              </g>
+              <path class="company-old-link" d="M100 185 154 217"/>
+              <path class="company-new-link solution-finish" pathLength="1" d="M328 185 266 217"/>
+              <g transform="translate(83 139)">
+                <use class="company-owner" href="#solution-company-person"/>
+                <use class="company-departed" href="#solution-company-person"/>
+              </g>
+              <g class="company-successor" transform="translate(345 139)">
+                <use href="#solution-company-person"/>
+              </g>
+              <g class="company-stack" transform="translate(210 0)">
+                <use href="#solution-company-layer" y="226"/><use href="#solution-company-layer" y="182"/>
+                <use href="#solution-company-layer" y="138"/><use href="#solution-company-layer" y="94"/>
+                <text y="119">Context</text><text y="163">Instructions</text>
+                <text y="207">Tools</text><text y="251">Workflows</text>
+              </g>
+            </svg>
+          </div>
+          <span class="problem-status" id="solution-company-status" aria-live="polite" aria-atomic="true" data-status-idle="One person connects to the company's four solid layers." data-status-playing="The first person leaves. The layers remain with the company as the next person connects." data-status-changed="Context, instructions, tools and workflows stayed with the company. The next person connected without rebuilding.">One person connects to the company's four solid layers.</span>
+        </figure>
+        <h3>Keep it in the company</h3><p>Context, instructions, tools, and workflows stay with the company, not with one person. Even when someone leaves, the setup keeps working and the next person can continue from there.</p>
+      </li>
+      <li>
+        <figure class="solution-figure" data-solution="shared" data-state="idle" tabindex="0" aria-label="Figure: one team's workflow spreads to the other teams">
+          <div class="problem-art">
+            <svg viewBox="0 0 420 320" role="img" aria-label="Three team platforms are separate. One team holds an accent workflow card." data-label-idle="Three team platforms are separate. One team holds an accent workflow card." data-label-playing="The original workflow stays in its team while copies follow accent lines to the other two teams." data-label-changed="All three teams have the same accent workflow. The original remains in its team and the other teams have their own copies.">
+              <defs>
+                <g id="solution-team-base">
+                  <path class="iso-base" d="M0-35 60 0 60 17 0 52-60 17-60 0Z"/>
+                  <path d="M-60 0 0 35 60 0M0 35V52"/>
+                </g>
+                <g id="solution-team-person">
+                  <circle cy="-45" r="6"/><path d="M-9-24V-29C-9-39 9-39 9-29V-24Z"/>
+                </g>
+                <g id="solution-workflow">
+                  <path class="iso-face" d="M-40-12 0-35 40-12V-4L0 19-40-4ZM-40-12 0 11 40-12M0 11V19"/>
+                  <path d="M-23-12 0 1 23-12ZM-5-6 0 1-8 1M12-10 23-12 19-5"/>
+                  <path class="iso-face" d="M-31-12-23-17-15-12-23-7ZM-8 1 0-4 8 1 0 6ZM15-12 23-17 31-12 23-7Z"/>
+                </g>
+              </defs>
+              <g transform="translate(90 112)"><use href="#solution-team-base"/><use href="#solution-team-person" x="-35" y="-9"/></g>
+              <g transform="translate(330 112)"><use href="#solution-team-base"/><use href="#solution-team-person" x="-35" y="-9"/></g>
+              <g transform="translate(210 246)"><use href="#solution-team-base"/><use href="#solution-team-person" x="-35" y="-9"/></g>
+              <path class="shared-route shared-route-a" pathLength="1" d="M188 219C156 189 124 150 100 127"/>
+              <path class="shared-route shared-route-b" pathLength="1" d="M232 219C264 189 296 150 320 127"/>
+              <g class="shared-source" transform="translate(210 234)"><use href="#solution-workflow"/></g>
+              <g transform="translate(90 100)"><use class="shared-target-a" href="#solution-workflow"/></g>
+              <g transform="translate(330 100)"><use class="shared-target-b" href="#solution-workflow"/></g>
+              <g transform="translate(210 234)">
+                <g class="shared-moving-a"><use href="#solution-workflow"/></g>
+                <g class="shared-moving-b solution-finish"><use href="#solution-workflow"/></g>
+              </g>
+            </svg>
+          </div>
+          <span class="problem-status" id="solution-shared-status" aria-live="polite" aria-atomic="true" data-status-idle="One team has a workflow card. The other two teams do not have it yet." data-status-playing="Copies of the workflow travel to the other two teams. The original stays in place." data-status-changed="The same workflow is now in all three teams. Each team keeps its own copy.">One team has a workflow card. The other two teams do not have it yet.</span>
+        </figure>
+        <h3>Keep it shared</h3><p>Useful workflows and skills can be shared across teams and recommended where they fit, so good AI practices spread instead of staying in one team.</p>
+      </li>
     </ul>
     <p class="solution-closing">As people improve the way they work with AI, Jin AI keeps those improvements available to the whole company.</p>
   </div>

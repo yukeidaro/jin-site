@@ -13,7 +13,7 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/resources/ai-harness/` | `noindex` compatibility redirect to `/how-it-works/#harness` |
 | `/privacy/` | Approved website privacy policy |
 | `/accessibility/` | Accessibility goal, known limits and contact details |
-| `/ja/` | Japanese translation of the English home, with the live demo, interactive Problem figures and the same demo form |
+| `/ja/` | Japanese translation of the English home, with the live demo, interactive Problem/Solution figures and the same demo form |
 | `/ja/how-it-works/` | Japanese twin of the five feature rows and harness definition |
 | `/ja/security/` | Draft Japanese security and data page |
 | `/ja/company/` | Draft Japanese company mission and contact page |
@@ -290,7 +290,8 @@ R11's approved text:
 
 Three inline isometric SVGs share a 420:320 viewBox, in Shadow AI, dependency,
 then team-sharing order. The original Shadow AI and teams drawings and
-behavior are unchanged. `problem.js` manages independent states without dependencies.
+behavior are unchanged. `problem.js` manages independent states for both
+Problem and Solution without dependencies.
 
 There are no figure numbers or action/reset buttons. Each of the three
 animated figures is focusable and plays once when half visible, resets after leaving view, and
@@ -333,10 +334,11 @@ English closing: "As people improve the way they work with AI, Jin AI keeps thos
 Japanese closing: bold "一人ひとりのAI活用が、会社全体の資産になる。"
 then a paragraph "Jin AIは、日々進化するAIの活用方法を組織に蓄積し、誰もが活用できる環境をつくります。"
 Only this two-part closing differs structurally between the two Solution
-sections. Both lists have no number labels or rendered figures yet; each
-list item can accept a figure before its H3 in R12. From 1024px, Solution
-uses Problem's exact column tracks, zero column gap and 16px inner padding
-so future figures align. Phones use one column. The home excerpt and data
+sections. Both lists have no number labels. R12 puts an interactive figure
+before each Solution H3, without a caption. From 1024px, Solution uses
+Problem's exact column tracks, zero column gap and 16px inner padding.
+A transparent divider reserves Problem's border width, matching the drawing
+origins and widths exactly. Phones use one column. The home excerpt and data
 promises remain unchanged. R11 evidence is in `.copilot-runs/notes/r11.md`.
 Team platforms are native HTML buttons outside the SVG image role, reachable
 by keyboard, mouse and touch. View entry opens them at 1.2-second intervals,
@@ -359,6 +361,31 @@ E6b behavior, performance evidence and bilingual screenshots are recorded in
 `.copilot-runs/notes/r2.md`. R6's evidence is in `.copilot-runs/notes/r6.md`;
 R10's exact-copy, preservation, browser, performance and screenshot evidence
 is in `.copilot-runs/notes/r10.md`.
+
+### Solution figures (R12)
+
+The three original 420:320 isometric SVGs answer the Problem columns in order.
+Keep it safe separates one bundle: the locked confidential part stays inside
+the company platform, the reusable part follows an accent route to a checked
+AI tool, and the personal AI route stops at an accent x.
+Keep it in the company retains four solid layers inside the company platform.
+The first person leaves as a dashed outline; the next accent person connects
+to the same stack by a solid line, without rebuilding. Its only drawing text
+is Context, Instructions, Tools and Workflows, top to bottom, in both languages.
+Keep it shared retains one team's accent workflow and copies it along accent
+routes to the other two team platforms; all three end with the same workflow.
+
+Each named figure is independently focusable and uses the existing shared
+controller's half-visible entry, full-exit reset and hover/tap/focus replay.
+The 3.6-second CSS sequences play once, ignore replay input while busy and
+pause their actual clocks while the tab is hidden. One terminal animation
+per figure synchronizes its translated image description and polite live
+status with completion. There is no additional animation timer or controller.
+Reduced motion, including without JavaScript, shows the completed still.
+Without JavaScript and normal motion, the readable idle drawings remain.
+The existing drawing size and 24px figure-to-heading gap match Problem.
+Layer labels use 16.5px SVG type; rendered sizes, bilingual browser evidence
+and screenshots are recorded in `.copilot-runs/notes/r12.md`.
 
 ## Japanese typesetting
 

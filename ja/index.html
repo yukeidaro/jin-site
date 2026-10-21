@@ -359,9 +359,123 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
   <div class="wrap">
     <h2 class="h2 solution-heading"><span class="ja-phrase">Jin AIが実現する、</span><span class="ja-phrase">安心して</span><span class="ja-phrase">使い続けられる</span><span class="ja-phrase">AI環境</span></h2>
     <ul class="solution-copy">
-      <li><h3><span class="ja-phrase">機密情報を</span><span class="ja-phrase">安全に管理する</span></h3><p>機密情報と共有可能な知識・スキル・ワークフローを自動で分類。情報に応じて適切なAIツールだけに共有することで、安全なAI活用を実現します。</p></li>
-      <li><h3><span class="ja-phrase">AIを会社の</span><span class="ja-phrase">資産として残す</span></h3><p>AIエージェントを構成する知識・ルール・ツール・ワークフローを組織に蓄積。担当者が異動・退職しても、AIエージェントをそのまま使い続けられます。</p></li>
-      <li><h3><span class="ja-phrase">AI活用のノウハウを</span><span class="ja-phrase">組織全体に広げる</span></h3><p>各チームで生まれた優れたAI活用方法やワークフローを共有。ほかのチームにも最適な活用方法を自動でおすすめし、組織全体の生産性向上につなげます。</p></li>
+      <li>
+        <figure class="solution-figure" data-solution="safe" data-state="idle" tabindex="0" aria-label="図: 機密は社内に残り、再利用できる部分だけが承認したAIツールに届く">
+          <div class="problem-art">
+            <svg viewBox="0 0 420 320" role="img" aria-label="会社の台の内側に、ひとつの束があります。承認したAIツールと個人のAIは外側にあります。" data-label-idle="会社の台の内側に、ひとつの束があります。承認したAIツールと個人のAIは外側にあります。" data-label-playing="束が分かれます。鍵の付いた部分は社内に残り、再利用できる部分はチェックの付いたAIツールへ進みます。個人のAIへの経路は、ばつ印で止まります。" data-label-changed="鍵の付いた機密情報は社内に残りました。再利用できる部分だけが承認したAIツールに届き、個人のAIへの経路は、ばつ印で止まりました。">
+              <g class="safe-company">
+                <path class="iso-base" d="M20 174 145 102 270 174V194L145 266 20 194Z"/>
+                <path class="safe-boundary" d="M20 174 145 246 270 174M145 246V266"/>
+              </g>
+              <g class="safe-approved">
+                <path class="iso-base" d="M292 123 345 93 398 123V139L345 170 292 139Z"/>
+                <path d="M292 123 345 154 398 123M345 154V170"/>
+                <path class="iso-face" d="M317 104 345 88 373 104V125L345 141 317 125Z"/>
+                <path d="M317 104 345 120 373 104M345 120V141"/>
+                <path class="safe-check" d="M332 67 341 76 359 57"/>
+              </g>
+              <g class="safe-personal">
+                <path class="iso-base" d="M292 264 345 234 398 264V280L345 311 292 280Z"/>
+                <path d="M292 264 345 295 398 264M345 295V311"/>
+                <path class="iso-face" d="M317 245 345 229 373 245V266L345 282 317 266Z"/>
+                <path d="M317 245 345 261 373 245M345 261V282"/>
+                <path class="iso-face" d="M330 190H360V215H345L335 223V215H330ZM337 198H353M337 205H348"/>
+              </g>
+              <path class="safe-approved-route" pathLength="1" d="M118 154 174 171 260 121 329 106"/>
+              <path class="safe-blocked-route" pathLength="1" d="M159 186 218 220 263 246"/>
+              <path class="safe-block" d="M256 239 270 253M270 239 256 253"/>
+              <g transform="translate(118 154)">
+                <g class="safe-confidential">
+                  <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1ZM-24-1 0 13 24-1M0 13V18"/>
+                  <g class="safe-lock" transform="translate(0 -4)">
+                    <path class="iso-face" d="M-5-2H5V6H-5ZM-3-2V-5A3 3 0 0 1 3-5V-2"/>
+                    <path d="M0 1V3"/>
+                  </g>
+                </g>
+                <g class="safe-reusable solution-finish">
+                  <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1ZM-24-1 0 13 24-1M0 13V18"/>
+                  <path d="M-12-1 0 6 12-1M-6-5 6 2"/>
+                </g>
+              </g>
+            </svg>
+          </div>
+          <span class="problem-status" id="solution-safe-status" aria-live="polite" aria-atomic="true" data-status-idle="会社の内側に、分ける前のひとつの束があります。" data-status-playing="機密情報と再利用できる部分が分かれ、承認したAIへの経路だけに情報が流れます。" data-status-changed="機密は社内に残りました。再利用できる部分だけが承認したAIツールに届き、個人のAIへの経路は止まりました。">会社の内側に、分ける前のひとつの束があります。</span>
+        </figure>
+        <h3><span class="ja-phrase">機密情報を</span><span class="ja-phrase">安全に管理する</span></h3><p>機密情報と共有可能な知識・スキル・ワークフローを自動で分類。情報に応じて適切なAIツールだけに共有することで、安全なAI活用を実現します。</p>
+      </li>
+      <li>
+        <figure class="solution-figure" data-solution="company" data-state="idle" tabindex="0" aria-label="図: 設定は会社に残り、次の担当者がそのままつながる">
+          <div class="problem-art">
+            <svg viewBox="0 0 420 320" role="img" aria-label="文脈・指示・ツール・ワークフローの四層が、会社の台の内側に実線で描かれ、一人の担当者につながっています。" data-label-idle="文脈・指示・ツール・ワークフローの四層が、会社の台の内側に実線で描かれ、一人の担当者につながっています。" data-label-playing="最初の担当者が破線の輪郭になって離れます。会社の四層は実線のまま残り、次の担当者がつながります。" data-label-changed="最初の担当者が離れた後も、同じ四層が会社に残っています。次の担当者が実線でつながり、作り直す必要はありません。">
+              <defs>
+                <g id="solution-company-person">
+                  <circle r="10"/><path d="M-17 46V34C-17 12 17 12 17 34V46Z"/>
+                </g>
+                <g id="solution-company-layer">
+                  <path class="iso-face" d="M-56 0 0-9 56 0V24L0 33-56 24ZM-56 0 0 9 56 0"/>
+                </g>
+              </defs>
+              <g class="company-platform">
+                <path class="iso-base" d="M40 204 210 106 380 204V214L210 312 40 214Z"/>
+                <path d="M40 204 210 302 380 204M210 302V312"/>
+              </g>
+              <path class="company-old-link" d="M100 185 154 217"/>
+              <path class="company-new-link solution-finish" pathLength="1" d="M328 185 266 217"/>
+              <g transform="translate(83 139)">
+                <use class="company-owner" href="#solution-company-person"/>
+                <use class="company-departed" href="#solution-company-person"/>
+              </g>
+              <g class="company-successor" transform="translate(345 139)">
+                <use href="#solution-company-person"/>
+              </g>
+              <g class="company-stack" transform="translate(210 0)">
+                <use href="#solution-company-layer" y="226"/><use href="#solution-company-layer" y="182"/>
+                <use href="#solution-company-layer" y="138"/><use href="#solution-company-layer" y="94"/>
+                <text y="119">Context</text><text y="163">Instructions</text>
+                <text y="207">Tools</text><text y="251">Workflows</text>
+              </g>
+            </svg>
+          </div>
+          <span class="problem-status" id="solution-company-status" aria-live="polite" aria-atomic="true" data-status-idle="一人の担当者が、会社の四層につながっています。" data-status-playing="最初の担当者が離れても、四層は会社に残り、次の担当者がつながります。" data-status-changed="文脈・指示・ツール・ワークフローは会社に残りました。次の担当者が、作り直さずにそのままつながりました。">一人の担当者が、会社の四層につながっています。</span>
+        </figure>
+        <h3><span class="ja-phrase">AIを会社の</span><span class="ja-phrase">資産として残す</span></h3><p>AIエージェントを構成する知識・ルール・ツール・ワークフローを組織に蓄積。担当者が異動・退職しても、AIエージェントをそのまま使い続けられます。</p>
+      </li>
+      <li>
+        <figure class="solution-figure" data-solution="shared" data-state="idle" tabindex="0" aria-label="図: ひとつのチームのワークフローが、ほかのチームに広がる">
+          <div class="problem-art">
+            <svg viewBox="0 0 420 320" role="img" aria-label="三つのチームの台があります。ひとつのチームだけに、アクセント色のワークフローカードがあります。" data-label-idle="三つのチームの台があります。ひとつのチームだけに、アクセント色のワークフローカードがあります。" data-label-playing="元のワークフローはチームに残り、コピーがアクセント色の線に沿って、ほかの二つのチームへ進みます。" data-label-changed="三つのチームすべてに、同じアクセント色のワークフローがあります。元のチームにも残り、ほかのチームはそれぞれコピーを持っています。">
+              <defs>
+                <g id="solution-team-base">
+                  <path class="iso-base" d="M0-35 60 0 60 17 0 52-60 17-60 0Z"/>
+                  <path d="M-60 0 0 35 60 0M0 35V52"/>
+                </g>
+                <g id="solution-team-person">
+                  <circle cy="-45" r="6"/><path d="M-9-24V-29C-9-39 9-39 9-29V-24Z"/>
+                </g>
+                <g id="solution-workflow">
+                  <path class="iso-face" d="M-40-12 0-35 40-12V-4L0 19-40-4ZM-40-12 0 11 40-12M0 11V19"/>
+                  <path d="M-23-12 0 1 23-12ZM-5-6 0 1-8 1M12-10 23-12 19-5"/>
+                  <path class="iso-face" d="M-31-12-23-17-15-12-23-7ZM-8 1 0-4 8 1 0 6ZM15-12 23-17 31-12 23-7Z"/>
+                </g>
+              </defs>
+              <g transform="translate(90 112)"><use href="#solution-team-base"/><use href="#solution-team-person" x="-35" y="-9"/></g>
+              <g transform="translate(330 112)"><use href="#solution-team-base"/><use href="#solution-team-person" x="-35" y="-9"/></g>
+              <g transform="translate(210 246)"><use href="#solution-team-base"/><use href="#solution-team-person" x="-35" y="-9"/></g>
+              <path class="shared-route shared-route-a" pathLength="1" d="M188 219C156 189 124 150 100 127"/>
+              <path class="shared-route shared-route-b" pathLength="1" d="M232 219C264 189 296 150 320 127"/>
+              <g class="shared-source" transform="translate(210 234)"><use href="#solution-workflow"/></g>
+              <g transform="translate(90 100)"><use class="shared-target-a" href="#solution-workflow"/></g>
+              <g transform="translate(330 100)"><use class="shared-target-b" href="#solution-workflow"/></g>
+              <g transform="translate(210 234)">
+                <g class="shared-moving-a"><use href="#solution-workflow"/></g>
+                <g class="shared-moving-b solution-finish"><use href="#solution-workflow"/></g>
+              </g>
+            </svg>
+          </div>
+          <span class="problem-status" id="solution-shared-status" aria-live="polite" aria-atomic="true" data-status-idle="ひとつのチームにワークフローカードがあり、ほかの二つのチームにはまだありません。" data-status-playing="ワークフローのコピーが、ほかの二つのチームへ進みます。元のワークフローは残ります。" data-status-changed="同じワークフローが三つのチームに広がりました。それぞれのチームがコピーを持っています。">ひとつのチームにワークフローカードがあり、ほかの二つのチームにはまだありません。</span>
+        </figure>
+        <h3><span class="ja-phrase">AI活用のノウハウを</span><span class="ja-phrase">組織全体に広げる</span></h3><p>各チームで生まれた優れたAI活用方法やワークフローを共有。ほかのチームにも最適な活用方法を自動でおすすめし、組織全体の生産性向上につなげます。</p>
+      </li>
     </ul>
     <div class="solution-closing">
       <p><strong>一人ひとりのAI活用が、会社全体の資産になる。</strong></p>

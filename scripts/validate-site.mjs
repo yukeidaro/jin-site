@@ -479,7 +479,7 @@ check(teamFigure.indexOf('class="team-controls"') > teamFigure.indexOf("</svg>")
   "Team controls must sit outside role=img; only the twelve stack labels may be SVG text; home must load problem.js once.");
 const problemClient = await text("problem.js");
 check(problemClient.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
-  problemClient.includes('querySelectorAll("[data-problem]")') &&
+  problemClient.includes('querySelectorAll("[data-problem], [data-solution]")') &&
   problemClient.includes('figure.dataset.problem === "shadow" || figure.dataset.problem === "dependency"') &&
   problemClient.includes('figure.dataset.problem === "dependency"') &&
   problemClient.includes('event.animationName === "problem-dependency-successor"') &&
@@ -492,7 +492,7 @@ check(problemClient.includes('matchMedia("(prefers-reduced-motion: reduce)")') &
   problemClient.includes('if (figure.dataset.busy === "true") return;') &&
   problemClient.includes("clearTimeout(timer)") &&
   problemClient.includes("cancelAnimationFrame(frame)") &&
-  problemClient.includes('threshold: [0, .5]') && problemClient.includes("controller.reset()") &&
+  problemClient.includes('threshold: [0, .5]') && problemClient.includes("else controller.reset();") &&
   problemClient.includes('figure.addEventListener("focus"') &&
   problemClient.includes('figure.addEventListener("pointerenter"') &&
   problemClient.includes('figure.addEventListener("click"') &&
@@ -588,8 +588,73 @@ check(exactElement(solutionSection, "h2", "How Jin AI keeps your AI") &&
   count(solutionSection, /<p\b/g) === 4 &&
   solutionCopy.every(([title, body]) => exactElement(solutionSection, "h3", title) && exactElement(solutionSection, "p", body)) &&
   exactElement(solutionSection, "p", solutionClosing) &&
-  !/<(?:img|svg)\b|class="(?:ph|eyebrow)"/.test(solutionSection),
+  !/<img\b|class="(?:ph|eyebrow)"/.test(solutionSection),
   "Root Solution needs the exact Keep heading, three title/body pairs and closing line, each once.");
+const solutionNames = {
+  en: [
+    "Figure: confidential parts stay inside; reusable parts reach only approved AI tools",
+    "Figure: the stack stays with the company and the next person connects to it",
+    "Figure: one team's workflow spreads to the other teams"
+  ],
+  ja: [
+    "図: 機密は社内に残り、再利用できる部分だけが承認したAIツールに届く",
+    "図: 設定は会社に残り、次の担当者がそのままつながる",
+    "図: ひとつのチームのワークフローが、ほかのチームに広がる"
+  ]
+};
+function checkSolutionFigures(section, language) {
+  const items = [...section.matchAll(/<li>([\s\S]*?)<\/li>/g)];
+  const figures = [...section.matchAll(/<figure class="solution-figure" data-solution="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
+  check(figures.length === 3 && count(section, /<svg\b/g) === 3 &&
+    count(section, /<figure\b/g) === 3 && count(section, /<text\b/g) === 4 &&
+    !/<figcaption\b|<(?:button|img|image)\b|data-draft|draft-tag/.test(section),
+    `${language} Solution needs three original inline drawings before the text, no captions, buttons, images, draft tags or extra SVG text.`);
+  for (const [index, id] of ["safe", "company", "shared"].entries()) {
+    const attributes = figures[index]?.[2] || "", body = figures[index]?.[3] || "";
+    const svg = body.match(/<svg\b[^>]*>/)?.[0] || "";
+    const status = body.match(new RegExp(`<span class="problem-status" id="solution-${id}-status" aria-live="polite" aria-atomic="true"([^>]*)>([^<]*)</span>`));
+    const localized = value => Boolean(value?.trim()) &&
+      (language !== "ja" || /[\p{Script=Han}\p{Script=Hiragana}]/u.test(value));
+    check(figures[index]?.[1] === id && attributes.includes('tabindex="0"') &&
+      attributes.includes(`aria-label="${solutionNames[language][index]}"`) &&
+      /^\s*<figure\b[\s\S]*?<\/figure>\s*<h3>/.test(items[index]?.[1] || "") &&
+      svg.includes('viewBox="0 0 420 320"') && svg.includes('role="img"') &&
+      localized(svg.match(/\baria-label="([^"]*)"/)?.[1]) &&
+      ["idle", "playing", "changed"].every(state =>
+        localized(svg.match(new RegExp(`\\bdata-label-${state}="([^"]*)"`))?.[1]) &&
+        localized(status?.[1].match(new RegExp(`\\bdata-status-${state}="([^"]*)"`))?.[1])) &&
+      localized(status?.[2]) &&
+      status?.[2] === status?.[1].match(/\bdata-status-idle="([^"]*)"/)?.[1] &&
+      count(body, /class="[^"]*\bsolution-finish\b[^"]*"/g) === 1 &&
+      count(body, /<path\b[^>]*\bd="[^"]+"/g) >= (id === "company" ? 6 : 8),
+      `${language} Solution ${id} needs ordered placement, a focusable accessible name, shared geometry, a drawn scene, one completion clock and localized idle/playing/end descriptions and live status.`);
+  }
+  const safe = figures[0]?.[3] || "", company = figures[1]?.[3] || "", shared = figures[2]?.[3] || "";
+  check(["safe-company", "safe-boundary", "safe-approved", "safe-personal", "safe-check", "safe-lock",
+    "safe-confidential", "safe-reusable", "safe-approved-route", "safe-blocked-route", "safe-block"].every(name =>
+    new RegExp(`class="[^"]*\\b${name}\\b`).test(safe)) &&
+    safe.includes('class="safe-blocked-route" pathLength="1" d="M159 186 218 220 263 246"') &&
+    safe.includes('class="safe-block" d="M256 239 270 253M270 239 256 253"'),
+    `${language} safe figure needs a company boundary, locked confidential part, reusable part, checked tool and a personal route that ends at the x.`);
+  check(["company-platform", "company-stack", "company-owner", "company-departed", "company-successor",
+    "company-old-link", "company-new-link"].every(name => new RegExp(`class="[^"]*\\b${name}\\b`).test(company)) &&
+    [...company.matchAll(/<text\b[^>]*>([^<]*)<\/text>/g)].map(m => m[1]).join() === layerNames.join() &&
+    count(company, /href="#solution-company-layer" y=/g) === 4 &&
+    !/<mask\b|dependency-rebuild|<text\b[^>]*transform=/.test(company),
+    `${language} company figure needs four permanent solid layers in Context/Instructions/Tools/Workflows order, a departing person and a connected successor, with no rebuild or captions.`);
+  check(count(shared, /href="#solution-team-base"/g) === 3 &&
+    count(shared, /href="#solution-workflow"/g) === 5 &&
+    ["shared-source", "shared-target-a", "shared-target-b", "shared-moving-a", "shared-moving-b",
+      "shared-route-a", "shared-route-b"].every(name => new RegExp(`class="[^"]*\\b${name}\\b`).test(shared)),
+    `${language} shared figure needs three team platforms, a retained source workflow and two routed copies with matching destination workflows.`);
+  return figures.map(m => m[0]);
+}
+const solutionFigures = checkSolutionFigures(solutionSection, "en");
+check(problemClient.includes('figure.dataset.solution || figure.dataset.problem === "shadow"') &&
+  problemClient.includes('figure.querySelector(".solution-finish").addEventListener("animationend"') &&
+  problemClient.includes('event.target.classList.contains("solution-finish") && figure.dataset.busy === "true"') &&
+  count(problemClient, /new IntersectionObserver/g) === 1,
+  "Both figure sections must share one visibility/replay/reduced-motion controller and finish Solution states on their single CSS completion clock.");
 const howSection = homeSections.find((match) => match[1].includes('id="how"'))?.[2] || "";
 const featureCopy = [
   ["connect", "Connect once", "一度つなぐだけ", "Connect your usual AI tools once, through MCP.", "MCPで、いつものAIツールに一度つなぐだけ。", "Connect in one click", "ワンクリックでつなぐ", "demo-1-connect.webp", "connect"],
@@ -1297,6 +1362,26 @@ check(cssBlock(englishCss, ".solution-copy {").includes("row-gap: var(--s-8)") &
   cssBlock(englishCss, "@media (min-width: 1024px)").includes(".solution-copy li { padding-inline: var(--s-4); }") &&
   cssBlock(englishCss, "#problem .problem-column {").includes("padding-inline: var(--s-4)"),
   "Solution must match Problem's column widths, zero column gap and desktop inner padding.");
+check(cssBlock(englishCss, ".solution-figure {").includes("margin-bottom: var(--s-6)") &&
+  cssBlock(englishCss, ".solution-figure:focus-visible").includes("outline: 2px solid var(--accent-light)") &&
+  cssBlock(englishCss, "@media (min-width: 1024px)").includes(".solution-copy li + li { border-left: 1px solid transparent; }") &&
+  cssBlock(englishCss, ".problem-art .company-stack text").includes("font-size: 16.5px") &&
+  cssBlock(englishCss, '[data-solution][data-state] .problem-art *').includes("animation-play-state: paused") &&
+  cssBlock(englishCss, '[data-solution][data-state].problem-flow-running .problem-art *').includes("animation-play-state: running") &&
+  ["safe-reuse", "company-connect", "copy-b"].every(name =>
+    englishCss.includes(`animation: solution-${name} 3.6s`)) &&
+  !/[^{}]*\{[^}]*animation[^}]*\binfinite\b/.test(englishCss.slice(
+    englishCss.indexOf(".solution-figure {"), englishCss.indexOf(".solution-copy h3"))) &&
+  !/[^{}]*\.company-stack[^{}]*\{[^}]*(?:animation|stroke-dasharray)/.test(englishCss) &&
+  ['[data-solution] .safe-confidential { transform: translate(-24px, 45px);',
+    '[data-solution] .safe-reusable { transform: translate(211px, -48px);',
+    '[data-solution] .company-owner { opacity: 0;',
+    '[data-solution] .company-departed { opacity: .5; transform: translate(-24px, -25px);',
+    '[data-solution] .company-old-link { opacity: .4; stroke-dasharray: 4 5;',
+    '[data-solution] .shared-target-a, [data-solution] .shared-target-b { opacity: 1;',
+    '[data-solution] .company-new-link, [data-solution] .shared-route { stroke-dashoffset: 0;']
+    .every(rule => cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(rule)),
+  "Solution figures need matched drawing rhythm, readable layer names, visible focus, finite 3.6s clocks, solid retained layers, hidden-tab pause and CSS-only reduced-motion end states.");
 check(!/class="(?:final|closing-cta|cta-band)"/.test(home) &&
   homeSections.at(-1)?.[1].includes('id="demo"'),
   "The form must close the home page, with no additional closing CTA band.");
@@ -1470,6 +1555,20 @@ check(exactElement(japaneseSolution, "h2", "Jin AIが実現する、安心して
   japaneseSolutionCopy.every(([title, body]) => exactElement(japaneseSolution, "h3", title) && exactElement(japaneseSolution, "p", body)) &&
   count(japaneseSolution, /class="solution-closing"/g) === 1 && japaneseSolution.includes(japaneseSolutionClosing),
   "Japanese Solution needs the exact R11 heading, three title/body pairs and two-part bold/paragraph closing, each once.");
+const japaneseSolutionFigures = checkSolutionFigures(japaneseSolution, "ja");
+const solutionMarkup = figures => figures.map(figure => figure
+  .replace(/\b(?:aria-label|data-label-(?:idle|playing|changed)|data-status-(?:idle|playing|changed))="[^"]*"/g, 'data-translated="TEXT"')
+  .replace(/(<span\b[^>]*>)[^<]*(<\/span>)/g, "$1TEXT$2"));
+check(JSON.stringify(solutionMarkup(solutionFigures)) === JSON.stringify(solutionMarkup(japaneseSolutionFigures)),
+  "English and Japanese Solution figures must have identical full markup and SVG geometry apart from accessible text; layer names stay English.");
+for (const [filename, source, hash] of [
+  ["index.html", home, "86201423accbb544335eb8963118a5896b2dfb03aa84c9f91d7183db937a53c1"],
+  ["ja/index.html", japanese, "2a88698510eac755398463145e4c461b156c2a3e88f85fbff67f5ca1164f5d02"]
+]) {
+  const preserved = source.match(/<section class="section" id="problem">[\s\S]*?<\/section>/)?.[0] || "";
+  check(createHash("sha256").update(preserved).digest("hex") === hash,
+    `${filename} entire Problem section must remain unchanged from R11 (7c6dc8b) during R12.`);
+}
 for (const [language, source, introduction, badges] of [
   ["English", home, "Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.",
     ["Secure", "Company-owned", "Shared", "Up to date"]],

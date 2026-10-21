@@ -197,6 +197,63 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .home-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-16); }
 .solution-copy { display: grid; grid-template-columns: 1fr; row-gap: var(--s-8); padding: 0; list-style: none; }
 .solution-copy li { min-width: 0; }
+.solution-figure { position: relative; margin-bottom: var(--s-6); border-radius: var(--r-s); }
+.solution-figure:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 4px; }
+.solution-figure .safe-confidential, .safe-reusable, .safe-approved-route, .safe-blocked-route, .safe-block, .safe-check,
+.company-successor, .company-new-link, .shared-source, .shared-target-a, .shared-target-b, .shared-moving-a, .shared-moving-b, .shared-route { stroke: var(--accent-light); }
+.safe-reusable { transform: translate(0, -7px); }
+.safe-check, .safe-block { stroke-width: 2; }
+.safe-approved-route, .safe-blocked-route, .company-new-link, .shared-route { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.safe-block, .company-departed, .company-successor, .shared-target-a, .shared-target-b, .shared-moving-a, .shared-moving-b { opacity: 0; }
+.company-departed { stroke-dasharray: 4 5; }
+.company-owner, .company-departed, .company-successor { stroke-width: 1.8; }
+.problem-art .company-stack text { font-size: 16.5px; fill: var(--text-1); text-anchor: middle; }
+[data-state="changed"] .safe-confidential { animation: solution-safe-stay 3.6s ease both; }
+[data-state="changed"] .safe-reusable { animation: solution-safe-reuse 3.6s linear both; }
+[data-state="changed"] .safe-approved-route { animation: solution-route 2.8s linear both; }
+[data-state="changed"] .safe-blocked-route { animation: solution-route 1.8s linear both; }
+[data-state="changed"] .safe-block { animation: solution-appear .2s ease 1.6s both; }
+[data-state="changed"] .company-owner { animation: solution-owner-leave 1.6s ease both; }
+[data-state="changed"] .company-departed { animation: solution-owner-ghost 1.6s ease both; }
+[data-state="changed"] .company-old-link { animation: solution-old-link 1.6s ease both; }
+[data-state="changed"] .company-successor { animation: solution-appear .4s ease 1.8s both; }
+[data-state="changed"] .company-new-link { animation: solution-company-connect 3.6s linear both; }
+[data-state="changed"] .shared-route-a { animation: solution-route 2.7s linear both; }
+[data-state="changed"] .shared-route-b { animation: solution-route 3.4s linear both; }
+[data-state="changed"] .shared-moving-a { animation: solution-copy-a 3.6s ease-in-out both; }
+[data-state="changed"] .shared-moving-b { animation: solution-copy-b 3.6s ease-in-out both; }
+[data-state="changed"] .shared-target-a { animation: solution-appear .01s linear 2.7s both; }
+[data-state="changed"] .shared-target-b { animation: solution-appear .01s linear 3.4s both; }
+[data-solution][data-state] .problem-art * { animation-play-state: paused; }
+[data-solution][data-state].problem-flow-running .problem-art * { animation-play-state: running; }
+@keyframes solution-safe-stay {
+  0%, 10% { transform: translate(0, 0); }
+  35%, 100% { transform: translate(-24px, 45px); }
+}
+@keyframes solution-safe-reuse {
+  0%, 10% { transform: translate(0, -7px); }
+  32% { transform: translate(56px, 10px); }
+  65% { transform: translate(142px, -40px); }
+  85%, 100% { transform: translate(211px, -48px); }
+}
+@keyframes solution-route { 0%, 15% { stroke-dashoffset: 1; } 100% { stroke-dashoffset: 0; } }
+@keyframes solution-appear { from { opacity: 0; } to { opacity: 1; } }
+@keyframes solution-owner-leave { 0%, 25% { opacity: 1; } 100% { opacity: 0; transform: translate(-24px, -25px); } }
+@keyframes solution-owner-ghost { 0%, 25% { opacity: 0; } 100% { opacity: .5; transform: translate(-24px, -25px); } }
+@keyframes solution-old-link { 0%, 25% { opacity: 1; } 100% { opacity: .4; stroke-dasharray: 4 5; } }
+@keyframes solution-company-connect { 0%, 58% { stroke-dashoffset: 1; } 92%, 100% { stroke-dashoffset: 0; } }
+@keyframes solution-copy-a {
+  0%, 18% { opacity: 0; transform: translate(0, 0); }
+  22% { opacity: 1; transform: translate(0, 0); }
+  75% { opacity: 1; transform: translate(-120px, -134px); }
+  76%, 100% { opacity: 0; transform: translate(-120px, -134px); }
+}
+@keyframes solution-copy-b {
+  0%, 35% { opacity: 0; transform: translate(0, 0); }
+  39% { opacity: 1; transform: translate(0, 0); }
+  94.4% { opacity: 1; transform: translate(120px, -134px); }
+  95.4%, 100% { opacity: 0; transform: translate(120px, -134px); }
+}
 .solution-copy h3 { margin-bottom: var(--s-4); font-size: var(--t-lead); line-height: 1.33; }
 .solution-copy p { max-width: 44ch; color: var(--text-2); font-size: var(--t-body-l); line-height: 1.6; }
 .solution-closing { max-width: 720px; margin-top: var(--s-12); color: var(--text-2); font-size: var(--t-lead); line-height: 1.6; }
@@ -337,6 +394,7 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 @media (min-width: 1024px) {
   .problem-grid, .solution-copy { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .solution-copy li { padding-inline: var(--s-4); }
+  .solution-copy li + li { border-left: 1px solid transparent; }
   .how-excerpt { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: var(--s-16); }
   .how-excerpt > div { grid-template-columns: minmax(0, 1fr); }
 }
@@ -448,6 +506,15 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
   [data-problem="shadow"] .shadow-route { opacity: .65; }
   [data-problem="shadow"] .shadow-warning { opacity: 1; }
   [data-problem="shadow"] .shadow-ai-outline { opacity: .6; }
+  [data-solution] .safe-confidential { transform: translate(-24px, 45px); }
+  [data-solution] .safe-reusable { transform: translate(211px, -48px); }
+  [data-solution] .safe-approved-route, [data-solution] .safe-blocked-route,
+  [data-solution] .company-new-link, [data-solution] .shared-route { stroke-dashoffset: 0; }
+  [data-solution] .safe-block, [data-solution] .company-successor,
+  [data-solution] .shared-target-a, [data-solution] .shared-target-b { opacity: 1; }
+  [data-solution] .company-owner { opacity: 0; }
+  [data-solution] .company-departed { opacity: .5; transform: translate(-24px, -25px); }
+  [data-solution] .company-old-link { opacity: .4; stroke-dasharray: 4 5; }
   .hero-reveal > span, .hero-intro, .hero-badges, .hero-actions { animation: none; opacity: 1; filter: none; transform: none; }
   .hero-screen iframe, .screen iframe { display: none; transition: none; }
   .moving-frame .screen img { animation: none; transform: none; will-change: auto; }

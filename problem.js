@@ -1,5 +1,5 @@
 const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-const figures = [...document.querySelectorAll("[data-problem]")];
+const figures = [...document.querySelectorAll("[data-problem], [data-solution]")];
 const visible = new Set();
 const controllers = new Map();
 
@@ -7,7 +7,7 @@ function updateFlow() {
   for (const figure of figures) {
     figure.classList.toggle("problem-flow-running",
       visible.has(figure) && !document.hidden && !reduced.matches &&
-      (figure.dataset.problem === "shadow" || figure.dataset.problem === "dependency" ||
+      (figure.dataset.solution || figure.dataset.problem === "shadow" || figure.dataset.problem === "dependency" ||
         figure.dataset.state === "idle" || figure.dataset.disconnected === "false"));
   }
 }
@@ -103,6 +103,11 @@ for (const figure of figures) {
       if (figure.dataset.busy !== "true") return;
       if (event.animationName === "problem-dependency-successor") describe("Rebuilding");
       if (event.animationName === "problem-dependency-redo") end();
+    });
+  }
+  if (figure.dataset.solution) {
+    figure.querySelector(".solution-finish").addEventListener("animationend", event => {
+      if (event.target.classList.contains("solution-finish") && figure.dataset.busy === "true") end();
     });
   }
   for (const control of controls) {
