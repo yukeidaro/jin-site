@@ -281,6 +281,7 @@ ${rows([fields.slice(5, 7), fields.slice(7, 9)])}
 }
 
 function renderJsonLd(source) {
+  const citations = source.evidence.filter((item) => item.source_url).map((item) => item.source_url);
   const graph = [
     {
       "@type": "Organization",
@@ -308,7 +309,7 @@ function renderJsonLd(source) {
       url: source.canonical_url,
       name: source.product.name,
       description: source.product.description,
-      inLanguage: source.language,
+      inLanguage: ["en", "ja"],
       publisher: { "@id": `${source.canonical_url}#organization` }
     },
     {
@@ -319,7 +320,6 @@ function renderJsonLd(source) {
       applicationCategory: "BusinessApplication",
       applicationSubCategory: source.product.category,
       description: source.product.description,
-      softwareVersion: statusLabels[source.product.status],
       audience: {
         "@type": "Audience",
         audienceType: source.audience.primary
@@ -337,12 +337,12 @@ function renderJsonLd(source) {
       isPartOf: { "@id": `${source.canonical_url}#website` },
       about: { "@id": `${source.canonical_url}#software` },
       mainEntity: { "@id": `${source.canonical_url}#software` },
-      citation: source.evidence.filter((item) => item.source_url).map((item) => item.source_url)
+      ...(citations.length ? { citation: citations } : {})
     }
   ];
 
   return `<script type="application/ld+json">
-${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2)}
+${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2).replaceAll("<", "\\u003c")}
 </script>`;
 }
 
@@ -478,7 +478,23 @@ ${answers}
 </article>`;
 }
 
-function renderLlms(source) {
+async function renderLlms(source) {
+  const { text: sitemap } = await readText(path.join(root, "sitemap.xml"));
+  const pageUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  assert(pageUrls.length > 0 && new Set(pageUrls).size === pageUrls.length,
+    "Sitemap needs unique canonical page URLs.");
+  const origin = new URL(source.canonical_url).origin;
+  const pageLinks = await Promise.all(pageUrls.map(async (url) => {
+    const pageUrl = new URL(url);
+    assert(pageUrl.origin === origin && pageUrl.pathname.endsWith("/") && !pageUrl.search && !pageUrl.hash,
+      `Sitemap needs a local canonical page URL: ${url}`);
+    const { text: document } = await readText(path.join(root, ...pageUrl.pathname.split("/"), "index.html"));
+    const title = document.match(/<title>([^<]+)<\/title>/)?.[1];
+    const description = document.match(/<meta name="description" content="([^"]+)">/)?.[1];
+    assert(title && description, `Sitemap page needs its title and meta description: ${url}`);
+    return `- [${title}](${url}): ${description}`;
+  }));
+
   const answerLinks = source.direct_answers.map((item) =>
     `- [${item.question}](${source.resources.agent_page}#${item.id}): ${item.answer}`
   ).join("\n");
@@ -514,7 +530,7 @@ function renderLlms(source) {
 Status: ${statusLabels[source.product.status]}. Last updated: ${source.last_updated}.
 ${source.product.availability}
 
-${statusGuidance} The Human page at ${source.canonical_url} is the sole canonical product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
+${statusGuidance} The Human pages listed under Pages are canonical; the English home page at ${source.canonical_url} is the primary product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
 
 For ${source.audience.primary}.
 
@@ -527,7 +543,11 @@ ${source.product.harness_definition}
 - [Canonical Human page](${source.resources.human_page}): Company and employee value, how it works, data and waitlist signup, with an optional demo request.
 - [Agent reference](${source.resources.agent_page}): Status-aware HTML with direct answers, capabilities, data principles and founders.
 - [Structured fact source](${source.resources.structured_data}): Public JSON used to generate agent-facing derivatives.
-- [Sitemap](${source.resources.sitemap}): Canonical indexable URL.
+- [Sitemap](${source.resources.sitemap}): Canonical indexable URLs.
+
+## Pages
+
+${pageLinks.join("\n")}
 
 ## Direct answers
 
@@ -598,6 +618,7 @@ async function updateGeneratedFile(filePath, transforms, title, script = false) 
 }
 
 validate(data);
+const expectedLlms = await renderLlms(data);
 
 await updateGeneratedFile(path.join(root, "scripts", "waitlist-mailer.gs"), [
   ["DEMO_BOOKING", `var DEMO_BOOKING_URL = ${JSON.stringify(data.early_access.form.demo_booking.url)};`]
@@ -621,7 +642,6 @@ await updateGeneratedFile(path.join(root, "agent", "index.html"), [
 ], "Jin AI for agents | Product facts and status");
 
 const llmsPath = path.join(root, "llms.txt");
-const expectedLlms = renderLlms(data);
 const { text: currentLlms, eol: llmsEol } = await readText(llmsPath);
 if (checkOnly) {
   assert(currentLlms === expectedLlms, "llms.txt is out of date. Run node scripts/generate-aeo.mjs.");

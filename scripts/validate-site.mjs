@@ -603,12 +603,25 @@ Allow: /
 Sitemap: https://jinai.md/sitemap.xml
 `, "robots.txt policy has drifted.");
 
-const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).sort();
+const sitemapPageUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+const sitemapUrls = [...sitemapPageUrls].sort();
 check(JSON.stringify(sitemapUrls) === JSON.stringify(
   pagePairs.flatMap(([route]) => [`https://jinai.md/${route}`, `https://jinai.md/ja/${route}`]).sort()),
   "Sitemap must contain exactly the twelve English and Japanese content page URLs, without retired articles.");
 check(!llms.includes(".md)"), "llms.txt must not link to Markdown mirrors.");
 check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blockquote summary.");
+const expectedLlmsPages = `## Pages\n\n${(await Promise.all(sitemapPageUrls.map(async (url) => {
+  const page = await text(path.join(...new URL(url).pathname.split("/"), "index.html"));
+  const title = page.match(/<title>([^<]+)<\/title>/)?.[1];
+  const description = page.match(/<meta name="description" content="([^"]+)">/)?.[1];
+  check(title && description, `${url} needs its title and meta description for the LLM page index.`);
+  return `- [${title}](${url}): ${description}`;
+}))).join("\n")}`;
+const llmsPages = llms.match(/(?:^|\n\n)(## Pages\n\n[\s\S]*?)(?=\n\n## |$)/)?.[1];
+const exactLlmsPages = llmsPages === expectedLlmsPages && count(llms, /^## Pages$/gm) === 1;
+check(exactLlmsPages, "llms.txt Pages must list every sitemap URL once, in order, with its exact HTML title and meta description.");
+check(!llms.includes("sole canonical product page") && !llms.includes("Canonical indexable URL."),
+  "llms.txt must describe the canonical Human pages in the plural.");
 
 const content = JSON.parse(contentJson);
 check(content.product.name === "Jin AI", "Structured data product name is invalid.");
@@ -1962,8 +1975,9 @@ for (const relativePath of customerFacingTextFiles) {
     const englishRoute = englishPages.find(([route]) => relativePath === `${route}index.html`)?.[0];
     const allowedLink = englishRoute === undefined ? "" :
       '<a href="/ja/" lang="ja" hreflang="ja" data-jin-lang="ja">日本語</a>';
-    const englishOnly = allowedLink ? source.replace(allowedLink, "") : source;
-    check(!cjk.test(englishOnly), `${relativePath} contains CJK outside its Japanese footer language link.`);
+    const withoutPageIndex = relativePath === "llms.txt" && exactLlmsPages ? source.replace(llmsPages, "") : source;
+    const englishOnly = allowedLink ? withoutPageIndex.replace(allowedLink, "") : withoutPageIndex;
+    check(!cjk.test(englishOnly), `${relativePath} contains CJK outside its Japanese footer language link or verified LLM page index.`);
   }
   check(!/[\u2013\u2014\u2018\u2019\u201c\u201d]/u.test(source),
     `${relativePath} contains em dashes, en dashes or curly quotes.`);
@@ -2006,6 +2020,7 @@ for (const [relativePath, source] of htmlCache) {
   const nodes = [];
   for (const [, json] of source.matchAll(/<script\b[^>]*\btype=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
     jsonLdBlockCount++;
+    check(!json.includes("<"), `${relativePath} JSON-LD must escape less-than characters.`);
     try {
       nodes.push(...schemaNodes(JSON.parse(json)));
     } catch (error) {
@@ -2015,6 +2030,20 @@ for (const [relativePath, source] of htmlCache) {
   }
   jsonLdByFile.set(relativePath, nodes);
 }
+
+const homeNodes = jsonLdByFile.get("index.html");
+const homeWebsite = homeNodes.find(node => node["@type"] === "WebSite");
+check(JSON.stringify(homeWebsite?.inLanguage) === JSON.stringify(["en", "ja"]),
+  "The WebSite must declare both English and Japanese.");
+const homeSoftware = homeNodes.find(node => node["@type"] === "SoftwareApplication");
+check(homeSoftware && !Object.hasOwn(homeSoftware, "softwareVersion"),
+  "The SoftwareApplication must not use a delivery status as a software version.");
+const homeWebPage = homeNodes.find(node => node["@type"] === "WebPage");
+check(homeWebPage?.inLanguage === "en", "The English home WebPage must retain its English language.");
+const citedSources = content.evidence.filter(item => item.source_url).map(item => item.source_url);
+check(homeWebPage && (citedSources.length ?
+  JSON.stringify(homeWebPage.citation) === JSON.stringify(citedSources) : !Object.hasOwn(homeWebPage, "citation")),
+  "The home WebPage must cite its evidence URLs only when they are non-empty.");
 
 const faqPages = jsonLdByFile.get("agent/index.html").filter(node => node["@type"] === "FAQPage");
 check(faqPages.length === 1, "Agent must contain exactly one generated FAQPage.");
