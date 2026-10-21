@@ -675,30 +675,38 @@ function requestEmail_(record, type) {
   var last = emailValue_(record.lastName) || legacyName;
   var company = emailValue_(record.company);
   var home = 'https://jinai.md/' + (ja ? 'ja/' : '');
+  var heading = ja ? (demo ? ['お話しできるのを', '楽しみにしております'] :
+    ['ウェイトリストへの', 'ご登録', 'ありがとうございます！']) :
+    [demo ? "We're looking forward to meeting you" : "You're on the waitlist!"];
   return {
     lang: ja ? 'ja' : 'en',
     subject: ja ? last + (demo ? '様、Jin AI のデモにお申し込みいただきありがとうございます' :
       '様、Jin AI のウェイトリストにご登録いただきました') :
       first + (demo ? ', thanks for requesting a Jin AI demo' : ", you're on the Jin AI waitlist"),
-    heading: ja ? (demo ? 'お話しできるのを楽しみにしております' : 'ウェイトリストへのご登録ありがとうございます') :
-      (demo ? "We're looking forward to meeting you" : "You're on the waitlist"),
-    salutation: ja ? (company ? [company, last + ' 様'] : [last + ' 様']) : ['Hi ' + first + ','],
+    heading: heading.join(''),
+    headingPhrases: heading,
+    salutation: ja ? (company ? [company, last + '様'] : [last + '様']) : ['Hi ' + first + ','],
     paragraphs: ja ? (demo ? [
       'Jin AI のデモにお申し込みいただき、ありがとうございます。',
       '日程の調整のため、こちらからメールでご連絡します。デモで特に見たいことがあれば、このメールにそのまま返信してください。'
     ] : [
-      'Jin AI のウェイトリストにご登録いただき、ありがとうございます。',
-      'Jin AI は、AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。',
-      '順番にご案内を始めています。準備ができしだい、メールでお知らせします。早めにご覧になりたい場合は、デモをお申し込みいただくか、このメールにそのまま返信してください。'
+      'Jin AI にご関心をお寄せいただき、ありがとうございます。',
+      'Jin AIは、企業の大切な情報を守りながら、AIエージェントの知識やスキルを組織全体で共有・活用できるようにするプラットフォームです。',
+      '現在、サービスの公開に向けて準備を進めています。',
+      '先行利用のご案内や最新情報は、ご登録いただいたメールアドレスにお届けします。',
+      'また、' + last + '様のご利用環境に合わせたデモもご案内しています。ご興味がございましたら、ぜひお気軽にお申し込みください。'
     ]) : (demo ? [
       'Thanks for requesting a Jin AI demo for ' + company + '.',
       "We'll email you to find a time. If there's anything you'd like us to cover, just reply to this email."
     ] : [
-      'Thanks for joining the Jin AI waitlist.' + (company ? " We've added " + company + ' to the list.' : ''),
-      "Jin AI keeps your company's AI agents, skills, and knowledge secure, shared across teams, and always up to date.",
-      "We're opening access in small batches and will email you when it's your turn. Want to see it sooner? Request a demo, or just reply to this email."
+      'Thanks for your interest in Jin AI!' + (company ? " We've added " + company + ' to our waitlist.' : ''),
+      'Jin AI helps companies keep their AI agents, skills, and knowledge secure, shared across teams, and always up to date.',
+      "We're getting ready to launch and will email you when early access becomes available.",
+      "In the meantime, we'd love to show you how Jin AI could work for your team. If you're interested, feel free to book a demo."
     ]),
     button: demo ? '' : (ja ? 'デモを申し込む' : 'Request a demo'),
+    closing: demo ? '' : (ja ? last + '様にJin AIをお試しいただける日を楽しみにしております。' :
+      'We look forward to having you try Jin AI, ' + first + '!'),
     demoUrl: home + '#demo',
     home: home,
     privacy: ja ? 'プライバシーポリシー' : 'Privacy Policy',
@@ -711,6 +719,7 @@ function requestEmail_(record, type) {
 function requestEmailText_(email) {
   var blocks = [email.heading, email.salutation.join('\r\n')].concat(email.paragraphs);
   if (email.button) blocks.push(email.button + '\r\n' + email.demoUrl);
+  if (email.closing) blocks.push(email.closing);
   blocks.push('Yu Asano\r\nFounder, Jin AI');
   blocks.push('jinai.md: ' + email.home + '\r\n' + email.privacy + ': ' + email.privacyUrl);
   if (email.unsubscribe) blocks.push(email.unsubscribe);
@@ -727,7 +736,10 @@ function requestEmailHtml_(email) {
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Yu Gothic,Meiryo,Arial,sans-serif;overflow-wrap:anywhere;">',
     '<tr><td style="padding:24px 28px;background:#000000;"><img src="https://jinai.md/brand/jin-mark-email.png" width="136" height="40" alt="Jin AI" style="display:block;border:0;color:#ffffff;"></td></tr>',
     '<tr><td style="padding:32px 28px;">',
-    '<h1 style="margin:0 0 28px;font-size:26px;line-height:1.5;font-weight:700;">' + escapeEmailHtml_(email.heading) + '</h1>',
+    '<h1 style="margin:0 0 28px;font-size:26px;line-height:1.5;font-weight:700;' +
+      (email.lang === 'ja' ? 'word-break:keep-all;overflow-wrap:normal;">' + email.headingPhrases.map(function (phrase) {
+        return '<span style="display:inline-block;white-space:nowrap;">' + escapeEmailHtml_(phrase) + '</span>';
+      }).join('') : '">' + escapeEmailHtml_(email.heading)) + '</h1>',
     '<p style="' + paragraph + '">' + email.salutation.map(escapeEmailHtml_).join('<br>') + '</p>',
     email.paragraphs.map(function (text) {
       return '<p style="' + paragraph + '">' + escapeEmailHtml_(text) + '</p>';
@@ -735,6 +747,7 @@ function requestEmailHtml_(email) {
     email.button ? '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0;"><tr><td bgcolor="#A84A1C" style="border-radius:4px;background:#A84A1C;">' +
       '<a href="' + email.demoUrl + '" style="display:inline-block;padding:14px 24px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;">' +
       escapeEmailHtml_(email.button) + '</a></td></tr></table>' : '',
+    email.closing ? '<p style="' + paragraph + '">' + escapeEmailHtml_(email.closing) + '</p>' : '',
     '<p style="margin:28px 0 0;font-size:16px;line-height:1.8;">Yu Asano<br>Founder, Jin AI</p>',
     '</td></tr><tr><td style="padding:20px 28px;border-top:1px solid #e5e5e5;font-size:13px;line-height:1.8;color:#616161;">',
     '<a href="' + email.home + '" style="color:#616161;">jinai.md</a><br>',

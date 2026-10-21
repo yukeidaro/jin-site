@@ -251,7 +251,7 @@ ${rows([fields.slice(5, 7), fields.slice(7, 9)])}
     `いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="${escapeHtml(access.form.privacy_url)}">プライバシーポリシー</a>をご覧ください。` :
     `${escapeHtml(access.form.privacy_note)} See our <a href="${escapeHtml(access.form.privacy_url)}">Privacy Policy</a>.`}</p>
     </form>
-    <noscript><p class="waitalt">${ja ? "デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: " : "Please enable JavaScript to request a demo here. You can also email "}${renderEmail(access.contact_email, ja)}${ja ? "。" : "."}</p></noscript>
+    <noscript><p class="waitalt">${ja ? "デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: " : "Please enable JavaScript to request a demo here. You can also email "}${renderEmail(access.contact_email, ja)}</p></noscript>
     <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
       <h3 id="waitlistHeading"></h3>
@@ -265,7 +265,7 @@ ${rows([fields.slice(5, 7), fields.slice(7, 9)])}
       <h3 id="demoQuestion">${ja ? "デモも申し込みますか？" : "Want a demo too?"}</h3>
       <button class="btn btn-p" id="openDemo" type="button" aria-controls="waitlistForm" aria-expanded="false">${escapeHtml(ja ? japaneseForm.demoLabel : access.form.demo_label)}</button>
     </div>
-    <p class="waitalt">${ja ? "ご質問・ご意見: " : "Questions or feedback? "}${renderEmail(access.contact_email, ja)}${ja ? "。" : "."}</p>`;
+    <p class="waitalt">${ja ? "ご質問・ご意見: " : "Questions or feedback? "}${renderEmail(access.contact_email, ja)}</p>`;
 }
 
 function renderJsonLd(source) {

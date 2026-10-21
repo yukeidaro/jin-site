@@ -632,14 +632,27 @@ retries from duplicating a row or confirmation. A new request ID is a separate
 intentional demo request, even if the email is the same, so later company
 details are not silently discarded.
 
-R13a sends the approved 2026-10-21 copy in matching plain-text and branded HTML
-alternatives. Subjects include the first name in English or surname in Japanese:
+R13c uses Yu's revised 2026-10-21 waitlist copy in matching plain-text and branded
+HTML alternatives. Subjects are unchanged and include the first name in English
+or surname in Japanese:
 `{First}, you're on the Jin AI waitlist` and
 `{First}, thanks for requesting a Jin AI demo`, or
 `{Last}様、Jin AI のウェイトリストにご登録いただきました` and
 `{Last}様、Jin AI のデモにお申し込みいただきありがとうございます`.
-Japanese salutations put company above `{Last} 様`; English opening paragraphs
-include the company. The signature is `Yu Asano` / `Founder, Jin AI`.
+Japanese salutations put company above `{Last}様`, without a space, in both
+waitlist and demo emails. English opening paragraphs include the company.
+The waitlist headings are `You're on the waitlist!` and
+`ウェイトリストへのご登録ありがとうございます！`. The revised paragraphs
+describe preparing to launch, early-access updates and an optional demo,
+followed by the demo button and personalized closing. The demo text is otherwise
+unchanged. Japanese headings wrap only between inline-block phrases, with
+`word-break: keep-all`, so words stay intact on phones.
+Legacy records without company omit the company salutation line in Japanese;
+their English first paragraph is exactly `Thanks for your interest in Jin AI!`,
+without the `We've added {Company} to our waitlist.` part. All other revised
+wording remains, using the first word of legacy `name` in English and the full
+legacy `name` before `様` in Japanese.
+The signature is `Yu Asano` / `Founder, Jin AI`.
 Every subject is RFC 2047 encoded; inserted HTML values are escaped and text
 values are control-character-free.
 
@@ -685,12 +698,12 @@ reached. Existing response history is not automatically emailed during migration
 Keep the approved community invite in `early_access.community`; the generator
 publishes it in the LLM index, not the demo form or confirmation flow.
 
-### Email review previews (R13a)
+### Email review previews (R13a, refreshed for R13c)
 
 Run `node .copilot-runs\notes\r13-email-previews.mjs` with installed Chrome.
 It uses the same VM-loaded `.gs` templates as the tests, sample
 `Maya` / `Tanaka` / `Contoso`, and a dedicated headless Chrome debugging pipe.
-It installs nothing, uses no port, blocks HTTP/HTTPS requests in the preview
+By default it installs nothing, uses no port, blocks HTTP/HTTPS requests in the preview
 page and does not send emails. The script renders the white source mark plus
 wordmark into `brand/jin-mark-email.png` at 272 x 80 pixels, displayed at
 136 x 40 in the emails, below 20 KB.
@@ -700,8 +713,16 @@ they load the logo via a relative local path before deployment.
 The corresponding `-600.png` and `-390.png` files show each email at desktop
 and phone widths. `r13-email-texts.md` contains all four subjects and text
 alternatives; `r13-email-metrics.json` records dimensions, logo loading and
-no-horizontal-overflow assertions at 600, 390 and 375 pixels. Implementation
-and check results are in `.copilot-runs/notes/r13a.md`.
+no-horizontal-overflow and Japanese heading phrase assertions at 600, 390 and
+375 pixels. Original implementation results are in `.copilot-runs/notes/r13a.md`;
+the revised copy, checks and preview inventory are in `.copilot-runs/notes/r13c.md`.
+Sentence-ending contact Copy components have no detached trailing period,
+including the generated form notes and noscript fallbacks.
+After building `_site`, add `--contact` to the preview command to capture
+`r13c-contact-{en,ja}-{1440,390}.png` and `r13c-contact-metrics.json`.
+This optional mode starts and closes its own localhost server on an assigned
+port, permits only its local site and the existing Google Fonts hosts,
+and blocks every POST and all other page requests.
 
 ### Form review evidence (R13b)
 
