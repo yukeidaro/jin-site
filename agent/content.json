@@ -183,6 +183,12 @@
       "endpoint": "https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec",
       "consent_version": "demo-request-v1",
       "demo_label": "Request a demo",
+      "demo_note": "Then you'll pick a time for your demo.",
+      "demo_booking": {
+        "url": "https://cal.com/yu-jinai/jin-ai-demo",
+        "note": "Pick a 20-minute time that works for you. Times show in your time zone.",
+        "label": "Pick a time"
+      },
       "waitlist": {
         "consent_version": "waitlist-product-updates-v1",
         "fields": ["firstName", "lastName", "email", "jobTitle", "company"]

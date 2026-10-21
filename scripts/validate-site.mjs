@@ -703,20 +703,22 @@ for (const [page, date, sections] of [
   [privacy, "Last updated: October 21, 2026", [
     ["What we collect", "When you join the waitlist, we collect your first and last name, work email, job title and company. If you also request a demo, we collect your phone number, industry, company size and country. We use your phone number only to arrange your demo. We also record when each request was made and whether its confirmation email was sent."],
     ["How we use it", "We use waitlist details to send confirmation and access updates. If you request a demo, we use your details to reply, arrange a time and follow up about that request. We do not sell your information, share it for advertising or use it to train AI models."],
-    ["Who processes it for us", "We use Google (Google Apps Script, Google Sheets and Gmail) to store waitlist signups and demo requests and send confirmations, GitHub to host the site, and Cloudflare to count visits. These providers may process information outside your country."],
+    ["Who processes it for us", "We use Google (Google Apps Script, Google Sheets and Gmail) to store waitlist signups and demo requests and send confirmations, GitHub to host the site, and Cloudflare to count visits. We use Cal.com for demo booking. Opening the booking link sends Cal.com your prefilled name and email; when you book, it also receives your chosen time. These providers may process information outside your country."],
+    ["Cookies and Do Not Track", "jinai.md does not use cookies. The separate booking page on cal.com may use cookies. We do not track you across other websites, so we do not respond differently to Do Not Track signals."],
     ["How long we keep it", "We keep waitlist details while we send access updates, and demo request details for as long as needed to reply and follow up. You can ask us to delete them sooner."]
   ]],
   [japanesePrivacy, "最終更新日: 2026 年 10 月 21 日", [
     ["お預かりする情報", "ウェイトリストに登録するとき、姓名、会社のメールアドレス、役職、会社名をお預かりします。デモもお申し込みいただく場合は、電話番号、業種、従業員数、国もお預かりします。電話番号は、デモの日程調整のためだけに使います。あわせて、それぞれのお申し込みの日時と、確認メールを送れたかどうかを記録します。"],
     ["利用目的", "ウェイトリストの情報は、登録確認とご案内のために使います。デモをお申し込みいただいた場合は、返信、日程調整、そのお申し込みについてのご連絡に使います。情報を販売したり、広告のために提供したり、AI モデルの学習に使ったりすることはありません。"],
-    ["取り扱いを委託している事業者", "ウェイトリスト登録とデモのお申し込みの保存、確認メールの送信には Google（Google Apps Script、Google スプレッドシート、Gmail）を、サイトの公開には GitHub を、閲覧数の集計には Cloudflare を使っています。これらの事業者は、お客様のお住まいの国の外で情報を取り扱うことがあります。"],
+    ["取り扱いを委託している事業者", "ウェイトリスト登録とデモのお申し込みの保存、確認メールの送信には Google（Google Apps Script、Google スプレッドシート、Gmail）を、サイトの公開には GitHub を、閲覧数の集計には Cloudflare を使っています。デモの予約には Cal.com を使っています。予約リンクを開くと、入力済みの姓名とメールアドレスが Cal.com に送られ、予約すると、選んだ日時も送られます。これらの事業者は、お客様のお住まいの国の外で情報を取り扱うことがあります。"],
+    ["Cookie と Do Not Track", "jinai.md は Cookie を使っていません。別のサイトである cal.com の予約ページでは、Cookie が使われることがあります。ほかのサイトをまたいでお客様を追跡しないため、Do Not Track の信号によって動きを変えることはありません。"],
     ["保存する期間", "ウェイトリストの情報はご案内に必要な間、デモのお申し込みの情報は返信とその後のご連絡に必要な間だけ保存します。ご依頼があれば、それより前に削除します。"]
   ]]
 ]) {
   check(exactElement(page, "p", date), "Privacy must use the R13e approval date.");
   for (const [heading, paragraph] of sections) {
     check(withoutJapanesePhrases(page).includes(`<h2>${heading}</h2>\n<p>${paragraph}</p>`),
-      `Privacy must put the exact R13e paragraph under ${heading}.`);
+      `Privacy must put the exact waitlist/demo and booking disclosure under ${heading}.`);
   }
 }
 for (const [ja, page] of [[false, home], [true, japanese], [false, howPage], [true, japaneseHow]]) {
@@ -1523,10 +1525,10 @@ check(access.note === waitlistNote && access.hero_note === waitlistNote &&
   llms.includes("- [Canonical Human page](https://jinai.md/): Company and employee value, how it works, data and waitlist signup, with an optional demo request."),
   "The fact source, Agent reference and LLM index must use the exact R13e waitlist copy.");
 for (const [page, initial, demo, fallback, ja] of [
-  [home, waitlistNote, "We'll email you to find a time.",
+  [home, waitlistNote, "Then you'll pick a time for your demo.",
     "Please enable JavaScript to join the waitlist here. You can also email ", false],
   [japanese, "ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。",
-    "日程の調整のため、こちらからメールでご連絡します。",
+    "次に、デモの日時をお選びいただけます。",
     "ウェイトリストの登録には JavaScript を有効にしてください。メールでも受け付けています: ", true]
 ]) {
   check(page.includes(`<p class="waitnote" id="waitlistNote">${initial}</p>`) &&
@@ -1536,6 +1538,22 @@ for (const [page, initial, demo, fallback, ja] of [
 }
 check(demoClient.includes("waitlistNote.hidden = true;") && demoClient.includes("demoNote.hidden = false;"),
   "Both direct and post-waitlist demo entry must switch the generated notes.");
+check(access.form.demo_note === "Then you'll pick a time for your demo." &&
+  access.form.demo_booking.url === "https://cal.com/yu-jinai/jin-ai-demo" &&
+  access.form.demo_booking.note === "Pick a 20-minute time that works for you. Times show in your time zone." &&
+  access.form.demo_booking.label === "Pick a time",
+  "The booking facts must match the demo-booking brief.");
+for (const [page, note, label] of [
+  [home, access.form.demo_booking.note, access.form.demo_booking.label],
+  [japanese, "ご都合のよい時間を20分でお選びください。時間はお使いの地域の時刻で表示されます。", "日時を選ぶ"]
+]) {
+  const booking = page.match(/<div id="demoBooking" hidden>([\s\S]*?)<\/div>/)?.[1] || "";
+  check(booking.includes(`<p>${note}</p>`) &&
+    booking.includes(`<a class="btn btn-p" id="demoBookingLink" href="${access.form.demo_booking.url}" target="_blank" rel="noopener">${label}</a>`),
+    "Both demo results need initially hidden booking instructions and a primary link that opens a new tab.");
+  check(!/<(?:script|iframe)\b[^>]*(?:src|data-src)="https:\/\/(?:[^/]+\.)?cal\.com\b/.test(page),
+    "Demo booking must not load a Cal.com script or iframe on jinai.md.");
+}
 check(!/<a[^>]*class="btn[^"]*"[^>]*href="#?"/.test(home), "No CTA may link to an empty or placeholder target.");
 check(access.community?.url === communityUrl && access.community.name === "Discord" &&
   access.community.label === "Discord", "The community fact must use only the approved Discord name and invite.");
