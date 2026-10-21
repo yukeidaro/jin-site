@@ -7,7 +7,8 @@ function updateFlow() {
   for (const figure of figures) {
     figure.classList.toggle("problem-flow-running",
       visible.has(figure) && !document.hidden && !reduced.matches &&
-      (figure.dataset.problem === "shadow" || figure.dataset.state === "idle" || figure.dataset.disconnected === "false"));
+      (figure.dataset.problem === "shadow" || figure.dataset.problem === "dependency" ||
+        figure.dataset.state === "idle" || figure.dataset.disconnected === "false"));
   }
 }
 
@@ -86,16 +87,6 @@ for (const figure of figures) {
           next();
         } else {
           describe("Playing");
-          if (figure.dataset.problem === "owner") {
-            figure.dataset.disconnected = "false";
-            later(() => {
-              figure.dataset.disconnected = "true";
-              updateFlow();
-            }, 600);
-          }
-          if (figure.dataset.problem !== "shadow") {
-            later(end, figure.dataset.problem === "owner" ? 1750 : 3600);
-          }
         }
         updateFlow();
       });
@@ -105,6 +96,14 @@ for (const figure of figures) {
     // Animation completion keeps the status in sync when visibility pauses motion.
     figure.querySelector(".shadow-document").addEventListener("animationend", event => {
       if (event.animationName === "problem-shadow-document" && figure.dataset.busy === "true") end();
+    });
+  }
+  if (figure.dataset.problem === "dependency") {
+    drawing.addEventListener("animationend", event => {
+      if (figure.dataset.busy !== "true") return;
+      if (event.animationName === "problem-handover") describe("Rebuilding");
+      if (event.animationName === "problem-layer-in" &&
+          event.target.matches('[data-layer="exceptions"] text')) end();
     });
   }
   for (const control of controls) {

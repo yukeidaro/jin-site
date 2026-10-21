@@ -6,16 +6,16 @@ This repo is the public site for Jin AI. Read `README.md` and the supersession n
 
 Jin AI is a B2B product for AI-forward companies. Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
 
-Headline: **Make every employee your best AI user**
+Headline: **We keep your agent harness up to date**
 
-Japanese home headline: **全社員のAI力を最大限引き出す。**
+Japanese home headline: **会社のAI活用に必要な設定を、いつも最新にキープします。**
 Its page and social titles omit the final Japanese full stop.
 
-Use **AI harness** or **harnesses**, never "setup" for this concept. An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.
+Use **agent harness**, **AI harness** or **harnesses** for this concept. An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role. R6's approved copy uses "set up" in the Problem heading and "setups" in the Solution closing line; preserve those exact exceptions.
 
-Problem: **Your best AI skills live with people, not with the company** Shadow AI is a problem label, not something Jin AI claims to block.
+Problem: **AI is everywhere now. Is it really set up to last?** Three problems, in order: **Shadow AI**, **Agents that depend on one person**, **Skills stuck in one team**. Shadow AI is a problem label, not something Jin AI claims to block.
 
-Solution: **Safe for every employee** **Reusable for the company** Keep both employee and company value in the story.
+Solution: **Jin AI keeps it**. Three answers, in order: **Keep it safe**, **Keep it in the company**, **Keep it shared**. Keep both employee and company value in the story. The exact English/Japanese R6 copy is approved by Yu (2026-10-21) in `.copilot-runs/design/13-コピー全文-Keep-2026-10-21.md`; do not replace it with historical pitch copy.
 
 Data: **Your company's context stays yours** Each company's context is kept separate. Jin AI never records your screen. Jin AI itself never trains on your data. Do not claim that Jin AI does not read conversation histories.
 

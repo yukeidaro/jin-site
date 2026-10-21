@@ -1,8 +1,8 @@
 # Jin AI
 
-> Make every employee your best AI user. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
+> We keep your agent harness up to date. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
 
-Status: Building. Last updated: 2026-10-19.
+Status: Building. Last updated: 2026-10-21.
 The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.
 
 Live means available now. Building means active development. Next means intended next work. Never present Building or Next as shipped. The Human page at https://jinai.md/ is the sole canonical product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
@@ -22,7 +22,7 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 
 ## Direct answers
 
-- [What is Jin AI?](https://jinai.md/agent/#what-is-jin-ai): Make every employee your best AI user. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
+- [What is Jin AI?](https://jinai.md/agent/#what-is-jin-ai): We keep your agent harness up to date. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
 - [What is an AI harness?](https://jinai.md/agent/#what-is-an-ai-harness): An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.
 - [Is Jin AI available now?](https://jinai.md/agent/#is-jin-ai-available): The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.
 - [Which AI tools does it work with?](https://jinai.md/agent/#which-ai-tools-does-it-work-with): Claude Code first. Other AI tools are next.
@@ -31,22 +31,31 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 
 ## Problem
 
-AI spread fast. Has everything else kept up?
+AI is everywhere now. Is it really set up to last?
 
-- When someone leaves, do their agents keep working?: When the person who built them leaves, their agents lose the context they ran on.
-- Can a successor pick up where they left off?: The output gets handed over. The context, rules and judgment behind it do not.
-- Does your best AI practice reach every team?: One team finds a workflow that works. The other teams never see it.
-- Is company work flowing into personal AI?: Your heaviest AI users already run personal AI, and work context ends up there.
+- Shadow AI: Work context flows into personal AI tools, outside the company's control.
+- Agents that depend on one person: Agents, context and workflows live with whoever built them. When that person leaves, the agents stop and the successor starts over.
+- Skills stuck in one team: One team finds what works. The rest of the company never sees it.
 
 ## Solution (Building)
+
+Jin AI keeps it
+
+- Keep it safe: Confidential parts stay inside the company and connect only to the AI tools you approve.
+- Keep it in the company: Agents, context and workflows stay with the role, not the person. A successor starts where the last person left off.
+- Keep it shared: The best skills reach every team that does the same work.
+
+As people improve their setups, Jin AI keeps the shared version up to date.
+
+## How it works and status
+
+Connect once, see every part, and Jin AI keeps each team's shared harness up to date.
 
 - Connect once: Connect your usual AI tools once, through MCP.
 - See every part by type: Skills, prompts, memory and MCP settings, sorted by type.
 - See what each team uses most: See which harnesses each department uses most.
 - Separate personal from company: Keep what came from personal AI apart from parts that hold confidential company context.
 - Control approved AI tools: Let people use only the tools you approve. For example: Claude Code for developers only, your company policy in Copilot, and only non-confidential parts in ChatGPT.
-
-## How it works and status
 
 - Workspace beta (Live)
 - Connect once (Building): Jin AI connects to your AI tools through MCP. Claude Code first.

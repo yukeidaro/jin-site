@@ -31,8 +31,8 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 The public content pages are self-canonical, with `en`, `ja` and `x-default`
 hreflang alternates. Every Japanese page has the same body structure, section
 IDs, component classes, images and controllers as its English twin. The
-Japanese home heading uses the approved text `全社員のAI力を最大限引き出す。`
-in four reveal phrases; the generated form preserves surname-first order and Japanese country
+Japanese home heading uses the approved text `会社のAI活用に必要な設定を、いつも最新にキープします。`
+in five reveal phrases; the generated form preserves surname-first order and Japanese country
 labels without changing payload values. The English-only language-choice
 redirect and root fact graph are not duplicated on Japanese pages.
 Headers have the Product dropdown, Security, Company,
@@ -164,16 +164,21 @@ removed under reduced motion. A 500ms post-load fallback matches the hero;
 load errors retain the underlying still and are reported to the console.
 
 The five exact English/Japanese feature texts are recorded in
-`.copilot-runs/notes/r3-new-copy.md`. Solution steps in the fact source use the
-same five English features, retaining Building status; the capability delivery
-facts and form/endpoint/consent are unchanged. R3 evidence, measurements and
+`.copilot-runs/notes/r3-new-copy.md`. The fact source retains them under
+`how_it_works.features`; `solution.steps` now contains R6's three Keep answers,
+retaining Building status. The capability delivery facts and
+form/endpoint/consent are unchanged. R3 evidence, measurements and
 decisions are in `.copilot-runs/notes/r3.md`.
 
 The home heading reveals once, word by word (phrases in Japanese), followed
-by the R1 body line and then its action row. The body uses the existing
-opacity/transform reveal at 630ms; the buttons keep their 830ms start.
+by the approved Keep body line and then its action row. The body uses the existing
+opacity/transform reveal at 720ms, after the eighth English word finishes at
+675ms; the buttons follow at 920ms.
 Its 720px maximum line measure does not change when Inter replaces the
 system font, avoiding a tablet line-count shift before the demo still.
+The theme reserves a stable scrollbar gutter from first paint. This keeps
+the longer Japanese Keep intro at its final width while the rest of the page
+parses, rather than adding a line when the vertical scrollbar appears.
 Default HTML/CSS is fully visible; an inline head script opts into the
 reveal only without reduced motion. Only opacity, blur and transform animate.
 The heading retains its exact text and accessible name. English headers opt
@@ -195,15 +200,16 @@ Edit the text inside its reveal spans in place, keeping sequential `--word`
 values starting at zero and English spaces between words. Keep Japanese
 phrases unbroken and update that H1's matching accessible name. Do not copy
 the headline into a second visible component or a runtime text constant.
-The R1 body is the separate `p.hero-intro` directly below the H1.
+The body is the separate `p.hero-intro` directly below the H1.
 
 When Yu chooses a new tagline, also update `product.headline` in
 `agent/content.json`, the corresponding page/social titles and image alt
 text, the share-image source/render, and the exact-headline/reveal assertions
 in the generator and validator. Regenerate with `node scripts\generate-aeo.mjs`;
 never edit generated blocks. If the span count changes, keep the body reveal
-after the last word finishes and the buttons after the body. R1 retains the
-current headlines and metadata unchanged.
+after the last word finishes and the buttons after the body. R6 uses eight
+English words and five unbroken Japanese phrases. Titles and social titles
+omit only the Japanese headline's final full stop.
 
 The closing home intro has a Getting started heading and two
 waitlist/private-beta notes supplied by Yu for E5. They are draft copy, not
@@ -216,26 +222,27 @@ removing a tag does not approve its copy.
 
 ## Interactive Problem figures
 
-Both home pages use the R1 four-question Problem structure (Yu, 2026-10-21).
-Its exact new wording still needs word-by-word approval and is registered,
-English beside Japanese, in `.copilot-runs/notes/r1-new-copy.md`.
-Four original inline isometric SVGs share a 420:320 viewBox. The first three
-retain their drawings and motion.
-Owner removal stops four agents; handover moves only the output and leaves
-the successor rebuilding; opening separate teams reveals one unshared accent
-workflow. `problem.js` manages independent states without dependencies.
+Both home pages use the approved R6 Keep copy (Yu, 2026-10-21), word for word
+from `.copilot-runs/design/13-コピー全文-Keep-2026-10-21.md`.
+Three inline isometric SVGs share a 420:320 viewBox, in Shadow AI, dependency,
+then team-sharing order. The original Shadow AI and teams drawings and
+behavior are unchanged. `problem.js` manages independent states without dependencies.
 
-There are no figure numbers or action/reset buttons. Each of the four
+There are no figure numbers or action/reset buttons. Each of the three
 animated figures is focusable and plays once when half visible, resets after leaving view, and
 replays on mouse hover, tap or keyboard focus. Replay input during a running
 sequence is ignored, so transitions cannot stack.
-The owner and flowing lights are accent-colored from the start. After the
-owner lifts away, four accent x marks appear on the grey connections at
-200ms intervals, then the agents dim. Handover moves only the output, then
-draws four dashed successor layers in Context, Rules, Tools and Exceptions
-order. Both stacks have horizontal leader labels; the originals remain dimmed.
-These sequences finish in 1.75 and 3.6 seconds respectively.
-The fourth figure shows an employee at a desk inside a company platform and
+The merged dependency drawing keeps the owner/agents at upper left, original
+layers below them, and the successor stack at right. The owner and lights start
+accent-colored. After the owner lifts, four accent x marks appear on the grey
+connections at 200ms intervals and the agents stop. Only then does the output
+cross, followed by dashed Context, Rules, Tools and Exceptions layers built
+from the successor's base upward. Both stacks keep horizontal leader labels;
+the original layers dim but stay behind. The last label finishes at 4.52
+seconds. CSS clocks pause while hidden, and animation completion updates
+the translated rebuilding/end descriptions and polite status without a
+separate completion timer. The sequence never loops.
+The Shadow AI figure shows an employee at a desk inside a company platform and
 a separate personal AI block identified by a chat icon. A lock-marked document
 travels out along a dashed accent path; a boundary warning pulses once and the
 personal AI gains a faint accent outline. Its three-second sequence uses the
@@ -243,11 +250,12 @@ same replay/reset behavior. CSS pauses its animation clocks while hidden;
 animation completion, rather than an independent timer, updates its named SVG
 and polite status. Reduced motion shows the end state even before enhancement,
 and the idle drawing remains readable without JavaScript.
-The desktop grid uses two columns with drawings capped at their native 420px
-width; phones use one column. R1 compares both two-column and four-column
-options at 1280px and 1440px, with evidence in `.copilot-runs/notes/r1.md`.
-The Solution heading follows the employee/company split; its two existing
-paragraphs remain unchanged, employee first and company second.
+Problem and Solution use three columns from 1024px, otherwise one column.
+Drawings are capped at their native 420px width. The merged drawing's labels
+are drawn at 16px rather than the original 14px to stay readable at three
+columns. R6's report records actual rendered sizes at 1280px and 1440px.
+Solution has three Keep title/body answers followed by its approved closing
+line. The home excerpt and data promises remain unchanged.
 Team platforms are native HTML buttons outside the SVG image role, reachable
 by keyboard, mouse and touch. View entry opens them at 1.2-second intervals,
 ending with the accent team. Direct selection cancels that sequence.
@@ -265,7 +273,8 @@ The validator enforces SVG, component and controller parity on all six
 page pairs; missing Japanese routes and broken alternates are failures.
 E6b behavior, performance evidence and bilingual screenshots are recorded in
 `.copilot-runs/notes/e6b.md`. R2's fourth-figure evidence and screenshots are in
-`.copilot-runs/notes/r2.md`.
+`.copilot-runs/notes/r2.md`. R6's exact-copy, preservation, browser,
+performance and screenshot evidence is in `.copilot-runs/notes/r6.md`.
 
 ## Japanese typesetting
 
@@ -284,26 +293,28 @@ recorded in `.copilot-runs/notes/j1.md`.
 
 - Product name: **Jin AI**. It is a B2B product for AI-forward companies.
   Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
-- Headline: **Make every employee your best AI user**
-- Japanese home headline: **全社員のAI力を最大限引き出す。**
+- Headline: **We keep your agent harness up to date**
+- Japanese home headline: **会社のAI活用に必要な設定を、いつも最新にキープします。**
   Its page and social titles omit the final Japanese full stop.
 - English headings and heading-like titles have no final period, including each
   line separated by a `br`. Keep sentence punctuation in running descriptions,
   question and exclamation marks, and Japanese heading punctuation.
 - Do not display draft tags or `data-draft` attributes. Track unapproved copy
   in the E6c register instead.
-- Use **AI harness** or **harnesses**, never "setup" for this concept.
+- Use **agent harness**, **AI harness** or **harnesses** for this concept.
+  Preserve the approved R6 exceptions: "set up" in the Problem heading and
+  "setups" in the Solution closing line.
   An AI harness is the instructions, skills, memory and connected tools around
   an AI agent that make it work for a role.
 - The home page contains only the hero, problem, solution, how it works, data
   and demo request. Do not show pricing or founders on the home page.
   Founders and direct answers belong in the Agent reference.
-- Problem: **AI spread fast. Has everything else kept up?**
+- Problem: **AI is everywhere now. Is it really set up to last?**
   Shadow AI is a problem label, not a claim that Jin AI blocks it.
-- Solution: **Employees keep their context safe** **The company reuses it safely**
-  Keep both employee and company value in the story.
-  R1's restructure is approved, but its new wording remains in the R1 copy
-  register pending word-by-word approval; no draft tag appears on the site.
+- Solution: **Jin AI keeps it**, followed by **Keep it safe**, **Keep it in
+  the company**, **Keep it shared**. Keep both employee and company value.
+  R6's English/Japanese copy is approved word for word in the source above;
+  it supersedes R1's pending headline and copy choices. No draft tag appears.
 - Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19).
   `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`.
   Never claim a Building or Next item is available today in any copy.

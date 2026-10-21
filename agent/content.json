@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "content_version": "2.0",
-  "last_updated": "2026-10-19",
+  "last_updated": "2026-10-21",
   "language": "en",
   "canonical_url": "https://jinai.md/",
   "resources": {
@@ -19,9 +19,9 @@
   },
   "product": {
     "name": "Jin AI",
-    "headline": "Make every employee your best AI user",
+    "headline": "We keep your agent harness up to date",
     "category": "AI harnesses for companies",
-    "description": "Make every employee your best AI user. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.",
+    "description": "We keep your agent harness up to date. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.",
     "harness_definition": "An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.",
     "status": "building",
     "availability": "The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.",
@@ -31,30 +31,45 @@
     "primary": "AI-forward companies"
   },
   "problem": {
-    "headline": "AI spread fast. Has everything else kept up?",
+    "headline": "AI is everywhere now. Is it really set up to last?",
     "points": [
       {
-        "name": "When someone leaves, do their agents keep working?",
-        "description": "When the person who built them leaves, their agents lose the context they ran on."
+        "name": "Shadow AI",
+        "description": "Work context flows into personal AI tools, outside the company's control."
       },
       {
-        "name": "Can a successor pick up where they left off?",
-        "description": "The output gets handed over. The context, rules and judgment behind it do not."
+        "name": "Agents that depend on one person",
+        "description": "Agents, context and workflows live with whoever built them. When that person leaves, the agents stop and the successor starts over."
       },
       {
-        "name": "Does your best AI practice reach every team?",
-        "description": "One team finds a workflow that works. The other teams never see it."
-      },
-      {
-        "name": "Is company work flowing into personal AI?",
-        "description": "Your heaviest AI users already run personal AI, and work context ends up there."
+        "name": "Skills stuck in one team",
+        "description": "One team finds what works. The rest of the company never sees it."
       }
     ]
   },
   "evidence": [],
   "solution": {
     "status": "building",
+    "headline": "Jin AI keeps it",
     "steps": [
+      {
+        "name": "Keep it safe",
+        "description": "Confidential parts stay inside the company and connect only to the AI tools you approve."
+      },
+      {
+        "name": "Keep it in the company",
+        "description": "Agents, context and workflows stay with the role, not the person. A successor starts where the last person left off."
+      },
+      {
+        "name": "Keep it shared",
+        "description": "The best skills reach every team that does the same work."
+      }
+    ],
+    "closing": "As people improve their setups, Jin AI keeps the shared version up to date."
+  },
+  "how_it_works": {
+    "introduction": "Connect once, see every part, and Jin AI keeps each team's shared harness up to date.",
+    "features": [
       {
         "name": "Connect once",
         "description": "Connect your usual AI tools once, through MCP."
@@ -129,7 +144,7 @@
     {
       "id": "what-is-jin-ai",
       "question": "What is Jin AI?",
-      "answer": "Make every employee your best AI user. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
+      "answer": "We keep your agent harness up to date. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
     },
     {
       "id": "what-is-an-ai-harness",

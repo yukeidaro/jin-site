@@ -34,7 +34,8 @@ function validate(source) {
     "The product needs an AI harness definition.");
   assert(typeof source.problem?.headline === "string" && source.problem.headline.trim(),
     "The problem needs a headline.");
-  for (const [name, items] of [["Problem points", source.problem.points], ["Solution steps", source.solution.steps]]) {
+  for (const [name, items] of [["Problem points", source.problem.points], ["Solution steps", source.solution.steps],
+    ["How it works features", source.how_it_works?.features]]) {
     assert(Array.isArray(items) && items.length > 0, `${name} must not be empty.`);
     for (const item of items) {
       assert(typeof item.name === "string" && item.name.trim() &&
@@ -47,8 +48,10 @@ function validate(source) {
   assert(Array.isArray(source.data_principles.items) && source.data_principles.items.length > 0 &&
     source.data_principles.items.every((item) => typeof item === "string" && item.trim()),
   "Data principles need non-empty facts.");
-  assert(source.product.headline === "Make every employee your best AI user",
+  assert(source.product.headline === "We keep your agent harness up to date",
     "The product headline must match the approved English H1 without a final period.");
+  assert(source.solution.headline === "Jin AI keeps it" && source.solution.closing?.trim() &&
+    source.how_it_works.introduction?.trim(), "Solution and How it works need their approved Keep copy.");
 
   const access = source.early_access;
   assert(access?.label && access?.note && access?.hero_label && access?.hero_note,
@@ -107,8 +110,9 @@ function validate(source) {
     `A capability in development needs a description: ${capability.id}`);
   }
 
-  for (const heading of [source.problem.headline, source.data_principles.headline,
+  for (const heading of [source.problem.headline, source.solution.headline, source.data_principles.headline,
     ...source.problem.points.map(item => item.name), ...source.solution.steps.map(item => item.name),
+    ...source.how_it_works.features.map(item => item.name),
     ...source.capabilities.map(item => item.name)]) {
     assert(typeof heading === "string" && !heading.trim().endsWith("."),
       `English fact headings must not end with a period: ${heading}`);
@@ -321,6 +325,9 @@ function renderAgent(source) {
   const solutionSteps = source.solution.steps.map((step) => `
     <h3>${escapeHtml(step.name)}</h3>
     <p>${escapeHtml(step.description)}</p>`).join("");
+  const howFeatures = source.how_it_works.features.map(feature => `
+    <h3>${escapeHtml(feature.name)}</h3>
+    <p>${escapeHtml(feature.description)}</p>`).join("");
 
   const capabilities = source.capabilities.map((capability) => `
       <section>
@@ -369,15 +376,18 @@ function renderAgent(source) {
 
 ${source.evidence.length ? `  <h2>Evidence and limits</h2>\n  ${evidence}\n` : ""}
 
-  <h2>Solution</h2>
+  <h2>${escapeHtml(source.solution.headline)}</h2>
   <p><span class="badge" data-status="${source.solution.status}">${statusLabels[source.solution.status]}</span></p>
 ${solutionSteps}
+  <p>${escapeHtml(source.solution.closing)}</p>
 
   <h2>${escapeHtml(source.data_principles.headline)}</h2>
   <ul>${dataPrinciples}
   </ul>
 
   <h2>How it works and status</h2>
+  <p>${escapeHtml(source.how_it_works.introduction)}</p>
+${howFeatures}
   <p>${statusGuidance}</p>
 ${capabilities}
 
@@ -418,6 +428,9 @@ function renderLlms(source) {
 
   const solutionSteps = source.solution.steps.map((step) =>
     `- ${step.name}: ${step.description}`
+  ).join("\n");
+  const howFeatures = source.how_it_works.features.map(feature =>
+    `- ${feature.name}: ${feature.description}`
   ).join("\n");
 
   const capabilities = source.capabilities.map((capability) =>
@@ -462,9 +475,17 @@ ${problemPoints}
 
 ## Solution (${statusLabels[source.solution.status]})
 
+${source.solution.headline}
+
 ${solutionSteps}
 
+${source.solution.closing}
+
 ## How it works and status
+
+${source.how_it_works.introduction}
+
+${howFeatures}
 
 ${capabilities}
 
