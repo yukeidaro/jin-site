@@ -182,7 +182,6 @@ navigation still has its existing no-JavaScript fallback.
 
 English primary demo buttons use white on `--accent`, with `--accent-strong`
 hover/active and disabled states and the offset `--accent-light` focus ring.
-On a pilot surface, primary buttons invert to white with accent text.
 Site labels use sentence-case Inter, including the Agent reference and shared
 paper-theme labels. Monospace is reserved for code and file names. Japanese
 pages use the same reveal and primary buttons. E4 measurements and screenshots
@@ -341,9 +340,10 @@ recorded in `.copilot-runs/notes/j1.md`.
   Japanese pages use Yu Gothic with Japanese system and Noto Sans JP fallbacks;
   `theme-ja.css` changes only typesetting. Keep English fonts unchanged.
 - E1 draft exception (Yu, 2026-10-20): preserve the D1/D2 dark English theme
-  and pill buttons. The pilot's vermilion surface uses a subtle top-left to
-  bottom-right gradient, `--accent-surface-from` to `--accent-surface-to` in
-  `base.css`, centered on `#a84a1c`. White text must meet 4.5:1 at both stops.
+  and pill buttons. R5 removes the pilot card in both languages, its unused
+  styles and gradient tokens. Data now leads directly into the demo request,
+  with the existing section spacing and divider unchanged. The fact source
+  has no pilot steps; the separate paid-pilot availability fact is unchanged.
   Company copy remains unapproved in the E6c register; the AI harness article
   is retired in R3.
   Menu descriptions are short draft labels without tags.

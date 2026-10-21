@@ -290,9 +290,9 @@ check(shareImage.length >= 24 && shareImage.length < 300000 &&
   "The B2B share image must be a 1200 x 630 PNG below 300 KB.");
 check(home.includes("<main>") && home.includes("</main>"), "Root must have a main landmark.");
 const homeSections = [...home.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
-check(homeSections.length === 7 && homeSections[0]?.[1].includes('class="hero"') &&
+check(homeSections.length === 6 && homeSections[0]?.[1].includes('class="hero"') &&
   homeSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() ===
-  "problem,solution,how,data,pilot,demo", "Root must contain only hero, problem, solution, how, data, draft pilot and demo sections, in order.");
+  "problem,solution,how,data,demo", "Root must contain only hero, problem, solution, how, data and demo sections, in order.");
 check(count(home, /<h1\b/g) === 1 &&
   home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "Make every employee your best AI user",
   "Root must use the approved H1 once.");
@@ -1027,10 +1027,9 @@ for (const animation of ["hero-word-in", "hero-actions-in"]) {
 check(baseCss.includes("--t-label: 500 13px/1.4 var(--font-sans)") &&
   englishCss.includes(".btn-p { background: var(--accent); color: var(--on-accent); }") &&
   englishCss.includes(".btn-p:hover, .btn-p:active { background: var(--accent-strong); }") &&
-  englishCss.includes(".pilot-card .btn-p { background: var(--on-accent); color: var(--accent); }") &&
   baseCss.includes("outline: 2px solid var(--accent-light); outline-offset: 4px") &&
   baseCss.includes(".signup button:disabled { opacity: 1; background: var(--accent-strong); color: var(--on-accent);"),
-  "Labels, primary/inverted buttons, focus and readable disabled states must use the approved tokens.");
+  "Labels, primary buttons, focus and readable disabled states must use the approved tokens.");
 for (const [route, source] of englishPages) {
   check(source.match(/<head>([\s\S]*?)<\/head>/)?.[1].includes('document.documentElement.classList.add("js-nav")') &&
     englishCss.includes(".js-nav .nav-panel, .has-menu .nav-panel { position: absolute;") &&
@@ -1055,16 +1054,6 @@ for (const [route, source] of englishPages) {
     check(!/[A-Z]{2}/.test(label), `/${route}: label must use sentence case: ${label}`);
   }
 }
-const gradientStops = ["accent-surface-from", "accent-surface-to"].map(name =>
-  baseCss.match(new RegExp(`--${name}:\\s*(#[\\da-f]{6})`, "i"))?.[1]);
-function whiteContrast(hex) {
-  const channels = hex.slice(1).match(/../g).map(value => parseInt(value, 16) / 255)
-    .map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4);
-  return 1.05 / (channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722 + .05);
-}
-check(gradientStops.every(stop => stop && whiteContrast(stop) >= 4.5) &&
-  englishCss.includes("background-image: linear-gradient(135deg, var(--accent-surface-from), var(--accent-surface-to))"),
-  "Vermilion surfaces must use the subtle tokenized gradient with at least 4.5:1 white-text contrast at both stops.");
 for (const [route, source] of [["privacy", privacy], ["accessibility", accessibility]]) {
   check(source.includes('<main class="legal-copy">'), `${route} must use the narrow article layout.`);
 }
@@ -1084,17 +1073,23 @@ check(gettingStarted.includes("<h3>Getting started</h3>") &&
     "The fastest way in is an introduction from someone already in the Jin AI private beta. :)"
   ]) && !demoIntro.includes("<p>We will email you to set up a demo.</p>"),
   "The closing demo intro must contain the exact two-item Getting started list and H3.");
-const pilotSection = homeSections.find((match) => match[1].includes('id="pilot"'))?.[2] || "";
-check(pilotSection.includes('<div class="pilot-card">') &&
-  pilotSection.includes('<h2 id="pilot-heading">How a pilot works</h2>'),
-  "The pilot card must retain its supplied heading and layout.");
-for (const [heading, description] of [
-  ["Request a demo", "We walk through Jin AI with your team's AI harnesses."],
-  ["Run a paid pilot", "One team uses Jin AI with Claude Code for a set period."],
-  ["Decide together", "We review what the team reused and what stayed confidential, and agree on next steps."]
-]) {
-  check(pilotSection.includes(`<h3>${heading}</h3><p>${description}</p>`),
-    `The pilot must retain the supplied draft copy: ${heading}`);
+const retiredPilotTexts = [
+  "How a pilot works", "We walk through Jin AI with your team's AI harnesses.",
+  "Run a paid pilot", "One team uses Jin AI with Claude Code for a set period.",
+  "Decide together", "We review what the team reused and what stayed confidential, and agree on next steps.",
+  "導入の流れ", "デモのお申し込み。", "チームの AI ハーネスで、Jin AI をご覧いただきます。",
+  "有償のパイロット。", "1 つのチームで、Claude Code とあわせて一定期間お使いいただきます。",
+  "振り返りと導入のご判断。", "何を引き継げて、何が社内にとどまったかを一緒に振り返り、次の進め方を決めます。"
+];
+for (const filename of deployedFiles.filter(filename => /\.(?:html|json|txt|css)$/.test(filename))) {
+  const source = await text(filename);
+  const plainText = source.replace(/<[^>]*>/g, "").replace(/\s+/g, " ");
+  check(!/\bpilot(?:-card|-head|-heading|-steps)?\b|accent-surface-(?:from|to)/.test(
+    source.replaceAll("Companies start with a paid pilot.", "")),
+    `${filename} must not contain retired pilot markup, facts, styles or gradient tokens.`);
+  for (const retired of retiredPilotTexts) {
+    check(!plainText.includes(retired), `${filename} must not contain retired pilot copy: ${retired}`);
+  }
 }
 check(!/class="(?:final|closing-cta|cta-band)"/.test(home) &&
   homeSections.at(-1)?.[1].includes('id="demo"'),
@@ -1187,9 +1182,9 @@ check(llms.includes(`[Discord](${communityUrl})`) && count(llms, /https:\/\/disc
   "The LLM index must publish the single approved community invite.");
 
 const japaneseSections = [...japanese.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
-check(japaneseSections.length === 7 && japaneseSections[0]?.[1].includes('class="hero"') &&
+check(japaneseSections.length === 6 && japaneseSections[0]?.[1].includes('class="hero"') &&
   japaneseSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() ===
-  "problem,solution,how,data,pilot,demo", "Japanese home must retain the seven English home sections in order.");
+  "problem,solution,how,data,demo", "Japanese home must retain the six English home sections in order.");
 const japaneseProblem = japaneseSections.find((match) => match[1].includes('id="problem"'))?.[2] || "";
 const svgGeometry = source => [...source.matchAll(/<svg\b[\s\S]*?<\/svg>/g)].map(([svg]) =>
   svg.replace(/\s(?:aria-label|data-label-idle|data-label-playing|data-label-changed)="[^"]*"/g, "")

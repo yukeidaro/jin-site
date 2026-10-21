@@ -8,7 +8,7 @@ h1, h2, h3, h4 { line-height: 1.3; letter-spacing: 0; text-wrap: balance; word-b
 .hero h1, .closing-cta h2 { line-height: 1.3; }
 .harness-definition, .solution-copy p, .draft-article .article-lead,
 .security-contact p { line-height: 1.6; letter-spacing: 0; }
-.data-promises li, .security-items li, .pilot-steps h3,
+.data-promises li, .security-items li,
 .workflow .harness-steps h3, #problem .problem-column h3 { line-height: 1.6; letter-spacing: 0; }
 .legal-copy { line-height: 1.8; }
 .legal-copy h1, .legal-copy h2, .security-split h2 { line-height: 1.4; }
