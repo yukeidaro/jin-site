@@ -5,7 +5,7 @@
 Status: Building. Last updated: 2026-10-21.
 The workspace beta is live. Company features are being built, starting with Claude Code.
 
-Live means available now. Building means active development. Next means intended next work. Never present Building or Next as shipped. The Human page at https://jinai.md/ is the sole canonical product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
+Live means available now. Building means active development. Next means intended next work. Never present Building or Next as shipped. The Human pages listed under Pages are canonical; the English home page at https://jinai.md/ is the primary product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
 
 For AI-forward companies.
 
@@ -18,7 +18,22 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 - [Canonical Human page](https://jinai.md/): Company and employee value, how it works, data and waitlist signup, with an optional demo request.
 - [Agent reference](https://jinai.md/agent/): Status-aware HTML with direct answers, capabilities, data principles and founders.
 - [Structured fact source](https://jinai.md/agent/content.json): Public JSON used to generate agent-facing derivatives.
-- [Sitemap](https://jinai.md/sitemap.xml): Canonical indexable URL.
+- [Sitemap](https://jinai.md/sitemap.xml): Canonical indexable URLs.
+
+## Pages
+
+- [Jin AI | Turn AI into a company asset](https://jinai.md/): Jin AI keeps the AI harnesses your best people build safe for every employee and reusable for the company.
+- [How it works | Jin AI](https://jinai.md/how-it-works/): How Jin AI connects to your AI tools, sorts each AI harness by category, and lets the company decide what can move.
+- [Security &amp; data | Jin AI](https://jinai.md/security/): How Jin AI keeps each company's context separate, and what it does not do.
+- [Company | Jin AI](https://jinai.md/company/): Our mission is to turn every company's AI into an asset it owns: secure, shared, and always up to date.
+- [Privacy Policy | Jin AI](https://jinai.md/privacy/): How Jin AI collects and uses the information you give us on jinai.md.
+- [Accessibility | Jin AI](https://jinai.md/accessibility/): Our accessibility goal for jinai.md and how to report a problem.
+- [Jin AI | AIを、会社の資産に](https://jinai.md/ja/): AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。
+- [仕組み | Jin AI](https://jinai.md/ja/how-it-works/): Jin AI が AI ツールにつながり、AI ハーネスを種類ごとに整理し、持ち出せるものを会社が決める仕組みです。
+- [セキュリティ | Jin AI](https://jinai.md/ja/security/): 会社ごとにコンテクストを分けて保管します。個人のコンテクストと会社のコンテクストも、分けて扱います。
+- [会社情報 | Jin AI](https://jinai.md/ja/company/): 私たちの使命は、会社のAIを、その会社の資産にすることです。安全に、みんなで使えて、いつも最新の状態で。
+- [プライバシーポリシー | Jin AI](https://jinai.md/ja/privacy/): jinai.md でお預かりする情報と、その使い方について。
+- [アクセシビリティ | Jin AI](https://jinai.md/ja/accessibility/): jinai.md のアクセシビリティの目標と、問題を見つけたときのご連絡先。
 
 ## Direct answers
 

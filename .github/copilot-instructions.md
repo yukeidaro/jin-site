@@ -32,6 +32,7 @@ R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイト�
 ## Facts and status
 
 - `agent/content.json` is the single fact source. Change facts there, then run `node scripts/generate-aeo.mjs`. Never edit inside `GENERATED:*` markers by hand.
+- AEO: Generate `llms.txt`, JSON-LD and `/agent/` from `agent/content.json` with `node scripts/generate-aeo.mjs`; never edit these derivatives by hand.
 - Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19). `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`. Never claim a Building or Next item is available today in any copy.
 - No prices anywhere on the site, including machine-readable formats.
 - Availability: **The workspace beta is live. Company features are being built, starting with Claude Code.** Do not add a pilot requirement.
@@ -45,7 +46,7 @@ R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイト�
 - Plain, specific English, or the approved Japanese copy on `/ja/`, `/ja/how-it-works/`, `/ja/privacy/` and `/ja/accessibility/` (Yu, 2026-10-20). Short sentences. Concrete scenes over abstractions.
 - English headings and heading-like titles have no final period, including each line separated by a `br`. Keep sentence punctuation in running descriptions, question and exclamation marks, and Japanese heading punctuation.
 - Do not display draft tags or `data-draft` attributes. Track unapproved copy in `.copilot-runs/notes/e6c-unapproved-copy.md` instead; removing a tag does not approve the copy.
-- CJK is required on the Japanese pages and forbidden in all other deployed files except the Japanese footer language-link text on English pages. Shared JavaScript keeps Japanese messages as Unicode escapes. No em dashes, en dashes or curly quotes in either language.
+- CJK is required on the Japanese pages and forbidden in all other deployed files except the Japanese footer language-link text on English pages and exact Japanese page titles and descriptions in the generated `llms.txt` Pages index. Shared JavaScript keeps Japanese messages as Unicode escapes. No em dashes, en dashes or curly quotes in either language.
 - Keep each English/Japanese page pair structurally aligned, self-canonical, with reciprocal `en`, `ja` and `x-default` hreflang links and header/footer language switches. Generate both home-page CTA blocks from the same form facts; Japanese labels, surname-first order and country ordering must not change payload values or consent.
 - Banned words: supercharge, unlock, seamless, effortless, revolutionize, game-changer, empower, leverage, cutting-edge, next-level.
 - Do not repeat "No more X" headlines.
@@ -53,7 +54,7 @@ R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイト�
 
 ## Design
 
-- Keep the existing system: paper background, Source Serif headings, Inter body, JetBrains Mono labels, 4px radius, existing spacing.
+- Keep the existing system: dark `#08090A` background, Inter headings, body and sentence-case labels (not monospace), primary buttons with white text on `#A84A1C`, existing radii and spacing. Monospace is reserved for code and file names.
 - Japanese pages use `"Yu Gothic", "YuGothic", "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif` for Japanese and Latin text, with body weight 500 and existing heading weights. Keep the Noto Sans JP web-font fallback and English fonts unchanged. Protect heading phrases with nonbreaking spans and progressively enhance with `word-break: auto-phrase`.
 - One accent color only: `#a84a1c`. Do not add new colors, gradients, glows, blurs, shadows beyond what exists, or emoji.
 - No rows of identical icon cards, numbered circles, 2x2 positioning charts or letter-spaced all-caps labels. Prefer prose, lists, tables and real product screenshots.
