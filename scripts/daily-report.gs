@@ -278,16 +278,16 @@ function reportSheetRecords_(spreadsheet, sheetName, columns) {
   if (!sheet) throw new Error('storage_not_configured: ' + sheetName);
   var lastRow = sheet.getLastRow();
   if (lastRow < 1) throw new Error('storage_not_configured: ' + sheetName);
-  var headers = sheet.getRange(1, 1, 1, columns.length).getValues()[0];
-  if (JSON.stringify(headers) !== JSON.stringify(columns.map(function (column) { return column[1]; }))) {
-    throw new Error('storage_schema_mismatch: ' + sheetName);
-  }
+  var width = sheet.getLastColumn();
+  var headers = width ? sheet.getRange(1, 1, 1, width).getValues()[0] : [];
+  var indexes = sheetColumnIndexes_(headers, columns, 'storage_schema_mismatch: ' + sheetName);
   if (lastRow < 2) return [];
-  return sheet.getRange(2, 1, lastRow - 1, columns.length).getValues()
+  return sheet.getRange(2, 1, lastRow - 1, width).getValues()
     .map(function (cells) {
       var record = {};
       columns.forEach(function (column, index) {
-        record[column[0]] = cells[index] instanceof Date ? cells[index].toISOString() : cells[index];
+        var value = cells[indexes[index]];
+        record[column[0]] = value instanceof Date ? value.toISOString() : value;
       });
       return record;
     });

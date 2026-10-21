@@ -1,4 +1,6 @@
 export const CONSENT_VERSION = "demo-request-v1";
+export const WAITLIST_CONSENT_VERSION = "waitlist-product-updates-v1";
+export const WAITLIST_FIELDS = ["firstName", "lastName", "email", "jobTitle", "company"];
 export const REQUEST_TIMEOUT_MS = 45000;
 export const SURVEY_ID = "ai-friction-v1";
 
@@ -23,7 +25,19 @@ const validationMessages = {
   request_conflict: "This request ID belongs to a different request. Please refresh the page and try again.",
   busy: "Demo requests are busy right now. Please try again in a moment."
 };
+const waitlistValidationMessages = {
+  invalid_consent: "Please refresh the page and try again.",
+  invalid_source: "Please refresh the page and try again.",
+  invalid_request: "Please refresh the page and try again.",
+  request_conflict: "Please refresh the page and try again.",
+  busy: "We couldn't save your signup right now. Please try again in a moment.",
+  storage_error: "We couldn't save your signup right now. Please try again in a moment.",
+  storage_not_configured: "We couldn't save your signup right now. Please try again in a moment.",
+  storage_schema_mismatch: "We couldn't save your signup right now. Please try again in a moment."
+};
 const japaneseMessages = {
+  "We couldn't save your signup right now. Please try again in a moment.": "\u305f\u3060\u3044\u307e\u3054\u767b\u9332\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u5c11\u3057\u5f85\u3063\u3066\u304b\u3089\u3001\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002",
+  "Signups are temporarily unavailable. Please email hello@jinai.md.": "\u305f\u3060\u3044\u307e\u30d5\u30a9\u30fc\u30e0\u304b\u3089\u306e\u3054\u767b\u9332\u3092\u53d7\u3051\u4ed8\u3051\u3066\u3044\u307e\u305b\u3093\u3002hello@jinai.md \u307e\u3067\u3054\u9023\u7d61\u304f\u3060\u3055\u3044\u3002",
   "Please enter your name (up to 120 characters).": "\u304a\u540d\u524d\u3092 120 \u6587\u5b57\u4ee5\u5185\u3067\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
   "Please enter a valid email address.": "\u6b63\u3057\u3044\u30e1\u30fc\u30eb\u30a2\u30c9\u30ec\u30b9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
   "Please enter what you do (up to 160 characters).": "\u304a\u4ed5\u4e8b\u306e\u5185\u5bb9\u3092 160 \u6587\u5b57\u4ee5\u5185\u3067\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
@@ -60,6 +74,12 @@ const japaneseMessages = {
   "Please check the marked fields.": "\u8868\u793a\u3055\u308c\u305f\u5165\u529b\u6b04\u3092\u3054\u78ba\u8a8d\u304f\u3060\u3055\u3044\u3002",
   "Saving your request...": "\u4fdd\u5b58\u3057\u3066\u3044\u307e\u3059...",
   "Saving your demo request. Please keep this page open.": "\u30c7\u30e2\u306e\u304a\u7533\u3057\u8fbc\u307f\u3092\u4fdd\u5b58\u3057\u3066\u3044\u307e\u3059\u3002\u3053\u306e\u30da\u30fc\u30b8\u3092\u958b\u3044\u305f\u307e\u307e\u304a\u5f85\u3061\u304f\u3060\u3055\u3044\u3002",
+  "Saving your waitlist signup. Please keep this page open.": "\u30a6\u30a7\u30a4\u30c8\u30ea\u30b9\u30c8\u3078\u306e\u767b\u9332\u3092\u4fdd\u5b58\u3057\u3066\u3044\u307e\u3059\u3002\u3053\u306e\u30da\u30fc\u30b8\u3092\u958b\u3044\u305f\u307e\u307e\u304a\u5f85\u3061\u304f\u3060\u3055\u3044\u3002",
+  "You're on the waitlist": "\u30a6\u30a7\u30a4\u30c8\u30ea\u30b9\u30c8\u306b\u8ffd\u52a0\u3057\u307e\u3057\u305f",
+  "We sent a confirmation to {email}.": "{email} \u306b\u78ba\u8a8d\u30e1\u30fc\u30eb\u3092\u304a\u9001\u308a\u3057\u307e\u3057\u305f\u3002",
+  "You're on the waitlist. Your confirmation email is pending. You do not need to submit again.": "\u30a6\u30a7\u30a4\u30c8\u30ea\u30b9\u30c8\u306b\u8ffd\u52a0\u3057\u307e\u3057\u305f\u3002\u78ba\u8a8d\u30e1\u30fc\u30eb\u306f\u9001\u4fe1\u5f85\u3061\u3067\u3059\u3002\u518d\u767b\u9332\u306f\u4e0d\u8981\u3067\u3059\u3002",
+  "You're on the waitlist, but we could not send your confirmation email. You do not need to submit again.": "\u30a6\u30a7\u30a4\u30c8\u30ea\u30b9\u30c8\u306b\u8ffd\u52a0\u3057\u307e\u3057\u305f\u304c\u3001\u78ba\u8a8d\u30e1\u30fc\u30eb\u3092\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u518d\u767b\u9332\u306f\u4e0d\u8981\u3067\u3059\u3002",
+  "You're on the waitlist, but we could not confirm the email send. You do not need to submit again.": "\u30a6\u30a7\u30a4\u30c8\u30ea\u30b9\u30c8\u306b\u8ffd\u52a0\u3057\u307e\u3057\u305f\u304c\u3001\u78ba\u8a8d\u30e1\u30fc\u30eb\u306e\u9001\u4fe1\u3092\u78ba\u8a8d\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u518d\u767b\u9332\u306f\u4e0d\u8981\u3067\u3059\u3002",
   "We could not confirm your request or email status. Please try again; retries will not create duplicate requests.": "\u304a\u7533\u3057\u8fbc\u307f\u306e\u4fdd\u5b58\u3068\u78ba\u8a8d\u30e1\u30fc\u30eb\u306e\u72b6\u614b\u3092\u78ba\u8a8d\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002\u540c\u3058\u5185\u5bb9\u3092\u518d\u9001\u3057\u3066\u3082\u3001\u91cd\u8907\u3057\u3066\u4fdd\u5b58\u3055\u308c\u308b\u3053\u3068\u306f\u3042\u308a\u307e\u305b\u3093\u3002"
 };
 
@@ -84,8 +104,17 @@ const fieldCodes = {
 };
 
 export function validateDemoFields(payload, choices, language = "en") {
+  return validateFields(payload, choices, Object.keys(fieldLimits), language);
+}
+
+export function validateWaitlistFields(payload, language = "en") {
+  return validateFields(payload, {}, WAITLIST_FIELDS, language);
+}
+
+function validateFields(payload, choices, names, language) {
   const errors = {};
-  for (const [field, limit] of Object.entries(fieldLimits)) {
+  for (const field of names) {
+    const limit = fieldLimits[field];
     const raw = payload[field];
     const value = typeof raw === "string" ? raw.trim() : "";
     let invalid = typeof raw !== "string" || /[\u0000-\u001f\u007f]/.test(raw) ||
@@ -130,14 +159,14 @@ export function validateSurveyResponse(value, requestId) {
   return value;
 }
 
-export function describeResult(result, language = "en") {
+export function describeResult(result, language = "en", type = "demo", email = "") {
   if (result.registration !== "saved") {
     return localizeResult({
       saved: false,
       heading: result.registration === "not_saved" ? "Your request was not saved" : "Your request is not confirmed",
       registration: result.registration === "not_saved" ? "Not saved" : "Not confirmed",
       welcome: "Not sent",
-      detail: validationMessages[result.code] ||
+      detail: (type === "waitlist" && waitlistValidationMessages[result.code]) || validationMessages[result.code] ||
         "We could not confirm that your request was saved. Please try again; retries will not create duplicate requests.",
       kind: "error"
     }, language);
@@ -164,6 +193,20 @@ export function describeResult(result, language = "en") {
       kind: "pending"
     }
   };
+  if (type === "waitlist") {
+    const details = {
+      sent: "We sent a confirmation to {email}.",
+      pending: "You're on the waitlist. Your confirmation email is pending. You do not need to submit again.",
+      failed: "You're on the waitlist, but we could not send your confirmation email. You do not need to submit again.",
+      unknown: "You're on the waitlist, but we could not confirm the email send. You do not need to submit again."
+    };
+    const presentation = localizeResult({
+      saved: true, heading: "You're on the waitlist", registration: "Saved",
+      ...messages[result.welcome], detail: details[result.welcome]
+    }, language);
+    presentation.detail = presentation.detail.replace("{email}", () => email);
+    return presentation;
+  }
   return localizeResult({ saved: true, heading: "Your demo request is saved", registration: "Saved", ...messages[result.welcome] }, language);
 }
 
@@ -210,8 +253,23 @@ export function initializeWaitlist(document, dependencies = {}) {
   }
   const button = form.querySelector('button[type="submit"]');
   if (!button) throw new Error("The demo form is missing its submit button.");
-  const fieldNames = Object.keys(fieldLimits);
-  if (language.startsWith("ja")) [fieldNames[1], fieldNames[2]] = [fieldNames[2], fieldNames[1]];
+  const waitlistFlow = form.dataset.flow === "waitlist";
+  const extra = document.getElementById("demoFields");
+  const offer = document.getElementById("demoOffer");
+  const openDemo = document.getElementById("openDemo");
+  const waitlistNote = document.getElementById("waitlistNote");
+  const demoNote = document.getElementById("demoNote");
+  if (waitlistFlow && (!extra || !offer || !openDemo || !waitlistNote || !demoNote)) {
+    throw new Error("The waitlist form is missing its optional demo step.");
+  }
+  let step = waitlistFlow ? "waitlist" : "demo";
+  const fieldNames = waitlistFlow ? [...WAITLIST_FIELDS,
+    ...Object.keys(fieldLimits).filter(name => !WAITLIST_FIELDS.includes(name))] : Object.keys(fieldLimits);
+  if (language.startsWith("ja")) {
+    const first = fieldNames.indexOf("firstName");
+    const last = fieldNames.indexOf("lastName");
+    [fieldNames[first], fieldNames[last]] = [fieldNames[last], fieldNames[first]];
+  }
   const fields = Object.fromEntries(fieldNames.map((name) => {
     const control = form.querySelector(`[name="${name}"]`);
     const error = document.getElementById(`demo-${name}-error`);
@@ -225,10 +283,80 @@ export function initializeWaitlist(document, dependencies = {}) {
   const choices = Object.fromEntries(["industry", "companySize", "country"].map((name) =>
     [name, [...fields[name].control.options].map((option) => option.value).filter(Boolean)]));
   const endpoint = form.dataset.endpoint;
-  const originalLabel = button.textContent;
+  const waitlistLabel = button.textContent;
+  let originalLabel = button.textContent;
   let pending = false;
+  let submitted = false;
   let requestId = null;
   let fingerprint = null;
+  let savedValues = null;
+
+  function showUnavailable() {
+    status.textContent = message(step === "waitlist" ?
+      "Signups are temporarily unavailable. Please email hello@jinai.md." :
+      "Demo requests are temporarily unavailable. Please email hello@jinai.md.");
+    status.dataset.kind = "pending";
+    status.hidden = false;
+    button.disabled = true;
+  }
+
+  function showDemo(values, focusName) {
+    if (pending || step !== "waitlist") return;
+    step = "demo";
+    if (values) {
+      for (const name of WAITLIST_FIELDS) fields[name].control.value = values[name];
+    }
+    extra.disabled = false;
+    extra.hidden = false;
+    waitlistNote.hidden = true;
+    demoNote.hidden = false;
+    done.hidden = true;
+    offer.hidden = true;
+    if (isAppsScriptEndpoint(endpoint)) status.hidden = true;
+    else showUnavailable();
+    form.hidden = false;
+    originalLabel = openDemo.textContent;
+    button.textContent = originalLabel;
+    openDemo.setAttribute("aria-expanded", "true");
+    showFieldErrors({});
+    if (focusName) fields[focusName].control.focus();
+  }
+
+  function showWaitlist(focus) {
+    if (pending || step !== "demo" || savedValues || form.hidden) return;
+    step = "waitlist";
+    extra.disabled = true;
+    extra.hidden = true;
+    waitlistNote.hidden = false;
+    demoNote.hidden = true;
+    done.hidden = true;
+    offer.hidden = true;
+    if (isAppsScriptEndpoint(endpoint)) status.hidden = true;
+    else showUnavailable();
+    originalLabel = waitlistLabel;
+    button.textContent = originalLabel;
+    openDemo.setAttribute("aria-expanded", "false");
+    showFieldErrors({});
+    if (focus) fields[fieldNames[0]].control.focus();
+  }
+
+  function syncHash(focus = true) {
+    if (!waitlistFlow || submitted) return;
+    const hash = document.defaultView?.location.hash;
+    if (hash === "#request-demo") {
+      showDemo(null, focus ? fieldNames[0] : null);
+    } else if (hash === "#demo" || hash === "#waitlist") {
+      showWaitlist(focus);
+    }
+  }
+
+  if (waitlistFlow) {
+    openDemo.addEventListener("click", () => {
+      if (savedValues) showDemo(savedValues, "phone");
+    });
+    document.defaultView?.addEventListener("hashchange", () => syncHash());
+    syncHash(false);
+  }
 
   function showFieldErrors(errors) {
     let firstInvalid = null;
@@ -247,10 +375,7 @@ export function initializeWaitlist(document, dependencies = {}) {
   }
 
   if (!isAppsScriptEndpoint(endpoint)) {
-    status.textContent = message("Demo requests are temporarily unavailable. Please email hello@jinai.md.");
-    status.dataset.kind = "pending";
-    status.hidden = false;
-    button.disabled = true;
+    showUnavailable();
     return;
   }
   button.disabled = false;
@@ -268,15 +393,17 @@ export function initializeWaitlist(document, dependencies = {}) {
     event.preventDefault();
     if (pending) return;
     const values = new FormData(form);
+    const activeNames = step === "waitlist" ? WAITLIST_FIELDS : Object.keys(fields);
     const payload = {
-      type: "demo",
+      type: step,
       lang: language.startsWith("ja") ? "ja" : "en",
-      ...Object.fromEntries(Object.keys(fields).map((name) => [name, String(values.get(name) || "")])),
+      ...Object.fromEntries(activeNames.map((name) => [name, String(values.get(name) || "")])),
       website: String(values.get("website") || ""),
       source: "https://jinai.md",
-      consentVersion: CONSENT_VERSION
+      consentVersion: step === "waitlist" ? WAITLIST_CONSENT_VERSION : CONSENT_VERSION
     };
-    const invalid = showFieldErrors(validateDemoFields(payload, choices, language));
+    const invalid = showFieldErrors(step === "waitlist" ?
+      validateWaitlistFields(payload, language) : validateDemoFields(payload, choices, language));
     if (invalid) {
       done.hidden = true;
       status.textContent = message("Please check the marked fields.");
@@ -285,25 +412,28 @@ export function initializeWaitlist(document, dependencies = {}) {
       invalid.focus();
       return;
     }
-    for (const name of Object.keys(fields)) payload[name] = payload[name].trim();
+    for (const name of activeNames) payload[name] = payload[name].trim();
     const nextFingerprint = JSON.stringify(payload);
     if (nextFingerprint !== fingerprint) {
       requestId = crypto.randomUUID();
       fingerprint = nextFingerprint;
     }
     payload.requestId = requestId;
+    submitted = true;
     pending = true;
     button.disabled = true;
     button.textContent = message("Saving your request...");
     form.setAttribute("aria-busy", "true");
-    status.textContent = message("Saving your demo request. Please keep this page open.");
+    status.textContent = message(step === "waitlist" ?
+      "Saving your waitlist signup. Please keep this page open." :
+      "Saving your demo request. Please keep this page open.");
     status.dataset.kind = "pending";
     status.hidden = false;
     done.hidden = true;
 
     try {
       const result = await submitSignup(endpoint, payload, dependencies);
-      const presentation = describeResult(result, language);
+      const presentation = describeResult(result, language, step, payload.email);
       document.getElementById("waitlistHeading").textContent = presentation.heading;
       document.getElementById("waitlistRegistration").textContent = presentation.registration;
       document.getElementById("waitlistEmail").textContent = presentation.welcome;
@@ -312,6 +442,10 @@ export function initializeWaitlist(document, dependencies = {}) {
       done.hidden = false;
       status.hidden = true;
       form.hidden = presentation.saved;
+      if (waitlistFlow && step === "waitlist" && presentation.saved) {
+        savedValues = payload;
+        offer.hidden = false;
+      }
       const field = !presentation.saved &&
         Object.keys(fields).find((name) => fieldCodes[name] === result.code);
       const invalid = showFieldErrors(field ? { [field]: message(validationMessages[result.code]) } : {});
@@ -319,10 +453,10 @@ export function initializeWaitlist(document, dependencies = {}) {
         invalid.focus();
       } else {
         done.focus({ preventScroll: true });
-        done.scrollIntoView({ block: "center", behavior: "smooth" });
+        done.scrollIntoView({ block: "center", behavior: "auto" });
       }
     } catch (error) {
-      console.error("Demo request confirmation failed:", error);
+      console.error("Request confirmation failed:", error);
       status.textContent = message("We could not confirm your request or email status. Please try again; retries will not create duplicate requests.");
       status.dataset.kind = "error";
       status.hidden = false;
@@ -332,6 +466,7 @@ export function initializeWaitlist(document, dependencies = {}) {
       button.disabled = false;
       button.textContent = originalLabel;
       form.removeAttribute("aria-busy");
+      if (!form.hidden && document.activeElement === document.body) button.focus();
     }
   });
 }

@@ -278,6 +278,16 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .getting-started ul { margin-top: var(--s-4); padding-left: var(--s-6); color: var(--text-3); }
 .getting-started li + li { margin-top: var(--s-4); }
 .demo-form { min-width: 0; }
+.signup-extra { display: grid; gap: var(--s-6); min-width: 0; margin: 0; padding: 0; border: 0; }
+.signup-extra legend { margin-bottom: var(--s-6); font-size: var(--t-lead); }
+.signup[data-flow="waitlist"] > .signup-row:first-child { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.signup[data-flow="waitlist"] > .signup-row:nth-child(2) { grid-template-columns: minmax(0, 1fr); }
+.signup-offer { margin-top: var(--s-8); }
+.signup-offer h3 { font-size: var(--t-lead); margin-bottom: var(--s-4); }
+.signup-done { overflow-wrap: anywhere; }
+@media (max-width: 479px) {
+  .signup[data-flow="waitlist"] > .signup-row:first-child { grid-template-columns: minmax(0, 1fr); }
+}
 
 .how-hero h1 { font-size: var(--t-display-xl); }
 .workflow .how-audience { border: 0; padding: 0; }

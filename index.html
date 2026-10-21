@@ -180,7 +180,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
         <li><a href="/#demo">Contact</a></li>
       </ul>
     </nav>
-    <a class="btn btn-p" href="#demo">Request a demo</a>
+    <a class="btn btn-p" href="#demo">Join the waitlist</a>
     <button class="menu-toggle" type="button" aria-label="Menu" aria-controls="primary-menu" aria-expanded="false" hidden><span></span><span></span><span></span></button>
   </div>
 </header>
@@ -195,7 +195,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
     <div class="hero-actions">
     <!-- GENERATED:CTA_HERO:START -->
 <div class="wait">
-      <a class="btn btn-p" href="#demo">Request a demo</a>
+      <a class="btn btn-p" href="#demo">Join the waitlist</a>
     </div>
 <!-- GENERATED:CTA_HERO:END -->
       <a class="text-link" href="how-it-works/">How it works &rarr;</a>
@@ -640,21 +640,14 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       <div class="getting-started">
         <h3>Getting started</h3>
         <ul>
-          <li>We're working through our waitlist, so thank you for your patience. If your company wants to try Jin AI, request a demo below.</li>
+          <li>We're working through our waitlist, so thank you for your patience. Join below. After signing up, you can also request a demo for your company.</li>
           <li>The fastest way in is an introduction from someone already in the Jin AI private beta.</li>
         </ul>
       </div>
     </div>
-    <div class="demo-form">
+    <div class="demo-form" id="request-demo">
     <!-- GENERATED:CTA_FINAL:START -->
-<form class="signup" id="waitlistForm" action="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" data-endpoint="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" method="post" novalidate>
-      <div class="signup-row">
-        <div class="signup-field">
-          <label for="demo-email">Work email</label>
-          <input id="demo-email" name="email" autocomplete="email" aria-describedby="demo-email-error" required aria-required="true" type="email" maxlength="254">
-          <p class="signup-error" id="demo-email-error" hidden></p>
-        </div>
-      </div>
+<form class="signup" id="waitlistForm" action="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" data-endpoint="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" data-flow="waitlist" method="post" novalidate>
       <div class="signup-row">
         <div class="signup-field">
           <label for="demo-firstName">First name</label>
@@ -669,21 +662,30 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       </div>
       <div class="signup-row">
         <div class="signup-field">
+          <label for="demo-email">Work email</label>
+          <input id="demo-email" name="email" autocomplete="email" aria-describedby="demo-email-error" required aria-required="true" type="email" maxlength="254">
+          <p class="signup-error" id="demo-email-error" hidden></p>
+        </div>
+      </div>
+      <div class="signup-row">
+        <div class="signup-field">
           <label for="demo-jobTitle">Job title</label>
           <input id="demo-jobTitle" name="jobTitle" autocomplete="organization-title" aria-describedby="demo-jobTitle-error" required aria-required="true" type="text" maxlength="120">
           <p class="signup-error" id="demo-jobTitle-error" hidden></p>
         </div>
         <div class="signup-field">
-          <label for="demo-phone">Phone</label>
-          <input id="demo-phone" name="phone" autocomplete="tel" aria-describedby="demo-phone-error" required aria-required="true" type="tel" maxlength="40">
-          <p class="signup-error" id="demo-phone-error" hidden></p>
-        </div>
-      </div>
-      <div class="signup-row">
-        <div class="signup-field">
           <label for="demo-company">Company</label>
           <input id="demo-company" name="company" autocomplete="organization" aria-describedby="demo-company-error" required aria-required="true" type="text" maxlength="160">
           <p class="signup-error" id="demo-company-error" hidden></p>
+        </div>
+      </div>
+      <fieldset class="signup-extra" id="demoFields" disabled hidden>
+        <legend>Request a demo</legend>
+      <div class="signup-row">
+        <div class="signup-field">
+          <label for="demo-phone">Phone</label>
+          <input id="demo-phone" name="phone" autocomplete="tel" aria-describedby="demo-phone-error" required aria-required="true" type="tel" maxlength="40">
+          <p class="signup-error" id="demo-phone-error" hidden></p>
         </div>
         <div class="signup-field">
           <label for="demo-industry">Industry</label>
@@ -977,15 +979,17 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
           <p class="signup-error" id="demo-country-error" hidden></p>
         </div>
       </div>
+      </fieldset>
       <div class="signup-trap" aria-hidden="true">
         <label for="wl-website">Leave this field empty</label>
         <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
       </div>
-      <button class="btn btn-p" type="submit" disabled>Request a demo</button>
-      <p class="waitnote">We will email you to set up a demo.</p>
-      <p class="signup-privacy">We use these details only to reply about your demo. See our <a href="privacy/">Privacy Policy</a>.</p>
+      <button class="btn btn-p" type="submit" disabled>Join the waitlist</button>
+      <p class="waitnote" id="waitlistNote">We'll email you when access is ready. You can request a demo after joining.</p>
+      <p class="waitnote" id="demoNote" hidden>We'll email you to find a time.</p>
+      <p class="signup-privacy">We use these details for waitlist updates and, if you request one, to arrange your demo. See our <a href="privacy/">Privacy Policy</a>.</p>
     </form>
-    <noscript><p class="waitalt">Please enable JavaScript to request a demo here. You can also email <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">Copy</button></span>.</p></noscript>
+    <noscript><p class="waitalt">Please enable JavaScript to join the waitlist here. You can also email <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">Copy</button></span>.</p></noscript>
     <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
       <h3 id="waitlistHeading"></h3>
@@ -995,7 +999,11 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       </dl>
       <p id="waitlistDetail"></p>
     </div>
-    <p class="waitalt">Questions or feedback? <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">Copy</button></span>.</p>
+    <div class="signup-offer" id="demoOffer" hidden>
+      <h3 id="demoQuestion">Want a demo too?</h3>
+      <button class="btn btn-p" id="openDemo" type="button" aria-controls="waitlistForm" aria-expanded="false">Request a demo</button>
+    </div>
+    <p class="waitalt">Questions or feedback? <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">Copy</button></span></p>
 <!-- GENERATED:CTA_FINAL:END -->
     </div>
   </div>

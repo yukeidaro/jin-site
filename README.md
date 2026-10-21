@@ -13,7 +13,7 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/resources/ai-harness/` | `noindex` compatibility redirect to `/how-it-works/#harness` |
 | `/privacy/` | Approved website privacy policy |
 | `/accessibility/` | Accessibility goal, known limits and contact details |
-| `/ja/` | Japanese translation of the English home, with the live demo, interactive Problem/Solution figures and the same demo form |
+| `/ja/` | Japanese translation of the English home, with the live demo, interactive Problem/Solution figures and the same waitlist-then-demo form |
 | `/ja/how-it-works/` | Japanese twin of the five feature rows and harness definition |
 | `/ja/security/` | Draft Japanese security and data page |
 | `/ja/company/` | Draft Japanese company mission and contact page |
@@ -37,7 +37,7 @@ in two reveal phrases; the generated form preserves surname-first order and Japa
 labels without changing payload values. The English-only language-choice
 redirect and root fact graph are not duplicated on Japanese pages.
 Headers have the Product dropdown, Security, Company,
-Contact and Request a demo. Below 960px, a scroll-locking mobile panel groups
+Contact and Join the waitlist. Below 960px, a scroll-locking mobile panel groups
 the same links. `nav.js` handles keyboard, focus, click and Escape behavior.
 English footer columns are Product, Legal, Company and Connect; Japanese uses
 規約・方針 for Legal. Privacy and Accessibility are footer-only navigation links.
@@ -49,8 +49,8 @@ Japanese copy (Yu, 2026-10-20); English pages remain English except for the
 Japanese footer language link. Japanese footer language links open the matching
 English twin and remember the choice using the shared handler. Each language links to its own Privacy and
 Accessibility pages from the footer.
-The approved legal text describes the demo request form and how its details
-are used to reply about the request.
+The approved legal text describes waitlist signups, access updates and optional
+demo requests, with phone numbers used only to arrange a demo.
 
 Every visible contact email uses the same selectable plain-text address and
 small Copy button, including legal pages, form notes and noscript fallbacks.
@@ -83,7 +83,7 @@ node scripts/generate-aeo.mjs
 It updates:
 
 - the root JSON-LD graph;
-- the English and Japanese hero and final demo-request CTAs, including the company-details form;
+- the English and Japanese hero and final waitlist CTAs, including the optional company-details demo step;
 - the content and title of `agent/index.html`;
 - `llms.txt`.
 
@@ -261,15 +261,20 @@ Both home and How it works closing headings read
 Company has one top H1, no repeated label, and the approved mission:
 "Our mission is to turn every company's AI into an asset it owns: secure,
 shared, and always up to date." / "私たちの使命は、会社のAIを、その会社の資産にすることです。安全に、みんなで使えて、いつも最新の状態で。".
-Matching Company descriptions use the same mission. The privacy policies
-state that phone is collected and used only to arrange the demo, matching
-the required form field. All other policy text is unchanged.
+Matching Company descriptions use the same mission. The privacy policies distinguish the five waitlist fields from the four
+additional demo fields. They cover confirmation and access updates, demo
+follow-up, processors and retention, and keep phone use limited to arranging
+the demo. Their update date is October 21, 2026.
 
 The closing home intro has a Getting started heading and two
-waitlist/private-beta notes supplied by Yu for E5. They are draft copy, not
-new product facts. R8 removes the trailing smiley from English item 2.
-The generated form note, privacy link, payload and consent
-remain unchanged. E5 component values and browser evidence are recorded in
+waitlist/private-beta notes supplied by Yu for E5. R13e applies the approved
+first item in both languages, explaining signup before the optional demo.
+R8 removes the trailing smiley from English item 2.
+R13e also applies the approved form, privacy, noscript, Security contact and
+LLM index copy. The Company Contact email and community line remain unchanged,
+with only the approved waitlist button and no additional sentence.
+Payloads, the privacy link, endpoint and consent are unchanged.
+E5 component values and browser evidence are recorded in
 `.copilot-runs/notes/e5.md`. Japanese pages share these components and
 the supplied Japanese notes. No page displays approval tags. The complete
 unapproved-copy register is `.copilot-runs/notes/e6c-unapproved-copy.md`;
@@ -431,8 +436,13 @@ recorded in `.copilot-runs/notes/j1.md`.
 - Data: **Your company's context stays yours** Each company's context is kept
   separate. Jin AI never records your screen. Jin AI itself never trains on
   your data. Do not claim that Jin AI does not read conversation histories.
-- CTA: **Request a demo**. Note: **We will email you to set up a demo.**
-  The form uses `demo-request-v1` consent and links to the Privacy Policy.
+- R13b CTA (Yu, 2026-10-21): **Join the waitlist** / **ウェイトリストに登録**.
+  After signup, **Request a demo** / **デモを申し込む** opens the optional demo.
+  R13e applies all copy proposals approved by Yu on 2026-10-21 from
+  `.copilot-runs/notes/r13b-copy-proposals.md`.
+  Waitlist note: **We'll email you when access is ready. You can request a demo after joining.**
+  Demo note: **We'll email you to find a time.**
+  The two steps use their existing separate consent versions and link to the Privacy Policy.
   Keep the endpoint and the legacy backend routes working for cached pages.
 - No prices anywhere on the site, including machine-readable formats.
   Do not publish currency amounts, Pro, Team or free-version offers, Cloud Sync,
@@ -476,28 +486,85 @@ recorded in `.copilot-runs/notes/j1.md`.
 - Do not add `FAQPage` schema, active offers, ratings or reviews unless they
   become truthful and applicable.
 
-## Demo request and legacy waitlist backend
+## Demo request and waitlist backend
 
 The English hero CTA is generated from `early_access.hero_label` and
-`early_access.hero_note` in `agent/content.json`. The demo form uses
+`early_access.hero_note` in `agent/content.json`. The shared form uses
 `early_access.label`, `early_access.note` and `early_access.form.fields`.
-All nine fields are required: work email, first and last name, job title, phone (at least six digits),
-company, industry, company size and country. It sends `type: "demo"` with
+R13b first submits only first name, last name, work email, job title and company,
+all required, plus `type: "waitlist"`, page `lang`, the existing request metadata
+and `waitlist-product-updates-v1` consent. `early_access.form.waitlist` records
+the ordered five field names and consent; `form.demo_label` records the optional demo action.
+The remaining required demo fields (phone with at least six digits, industry,
+company size and country) start in a hidden, disabled fieldset.
+
+Only server-confirmed storage replaces the first step with
+**You're on the waitlist** / **ウェイトリストに追加しました**.
+Only a server-confirmed email send shows **We sent a confirmation to {email}.**
+The email is inserted as text, not HTML. Pending, failed and uncertain sends
+say so explicitly without claiming an email was sent. Saved signups offer
+**Want a demo too?** / **デモも申し込みますか？** and a **Request a demo** button.
+Opening it reuses the same five controls with the submitted values prefilled
+and editable, reveals the remaining four controls and focuses Phone. It then
+sends all nine fields as `type: "demo"` with
 consent version `demo-request-v1` to the unchanged Apps Script endpoint.
-Details are used only to reply about the demo; the form links to `privacy/`.
+The two steps have distinct request IDs; unchanged retries within either step
+reuse their ID. Validation/transport failures keep that step's data and do
+not show success. The existing demo success and delivery states are retained.
+Both `#demo` (section) and `#waitlist` (inner wrapper) remain valid entry links;
+neither bypasses the waitlist. No survey was added or removed.
+R13d adds `/#request-demo` and `/ja/#request-demo` for the waitlist email's
+demo button. Opening either link, or changing the hash to `#request-demo`,
+reveals all nine required fields together and submits only a demo request
+with the existing demo consent. Initial navigation keeps native fragment
+focus; Tab reaches the first name control (surname first in Japanese).
+Hash changes focus that control directly. This path does not create a
+waitlist signup or send a waitlist email.
+Before either step has been saved, changing from `#request-demo` to `#demo`
+or `#waitlist` restores the five-field waitlist step, its button and note.
+Entered values are retained, while the additional demo controls are hidden
+and disabled again. Waitlist anchors never reset a saved signup or demo result.
+The optional demo after signup still focuses Phone; retries, delivery states
+and completed-demo handling remain unchanged.
+R13e uses the approved waitlist-and-demo privacy notice in both form steps;
+the form still links to `privacy/`.
+The generated notes are switched by the shared demo-opening handler, not
+duplicated in JavaScript:
+
+| Form state | English note | Japanese note |
+| --- | --- | --- |
+| Initial waitlist, including `#demo` and `#waitlist` | We'll email you when access is ready. You can request a demo after joining. | ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。 |
+| Direct `#request-demo`, initial navigation or hash change | We'll email you to find a time. | 日程の調整のため、こちらからメールでご連絡します。 |
+| Optional demo opened after a saved waitlist signup | We'll email you to find a time. | 日程の調整のため、こちらからメールでご連絡します。 |
+
+Validation and transport failures retain the active step's note. Saving a
+waitlist signup or demo request hides both notes with the form; the existing
+saved-request and email-delivery messages show instead. The privacy notice
+remains the same in both editable steps:
+"We use these details for waitlist updates and, if you request one, to arrange your demo. See our Privacy Policy." /
+"いただいた情報は、ウェイトリストのご案内と、ご希望の場合はデモの日程調整に使います。詳しくはプライバシーポリシーをご覧ください。"
 There is no post-request survey.
+Waitlist errors use signup-specific busy/unavailable wording and neutral
+refresh guidance, never demo wording. Demo-step error messages are unchanged.
 The Japanese form uses the same facts, endpoint, field names, select values and
 consent. It displays surname before given name, Japanese labels, and Japan
 before the United States. Other country labels are generated from ISO region
 codes with Node's `Intl.DisplayNames`. Client messages follow the document
 language. Demo payloads include `lang` (`ja` for document languages starting with
 `ja`, otherwise `en`); the backend stores it and sends Japanese confirmations
-with a surname greeting for `ja`, or the unchanged English email for `en` or
-missing `lang`.
+with a company and surname greeting for `ja`, or the approved English email for
+`en` or missing `lang`.
 
-The `Demo requests` sheet has not been deployed yet, so its new `Language` column
-after `Country` is safe to include from the first deploy; run `setupWaitlist`
-once after merging, as documented below.
+R13a added the backend support used by R13b's frontend. The backend accepts waitlist payloads with required
+`firstName` (80 characters), `lastName` (80), `email` (254), `jobTitle` (120) and
+`company` (160), plus `lang` (`en` or `ja`, default `en`), the existing request ID,
+source, consent version and honeypot. Text is trimmed and control characters
+are rejected. A waitlist payload omits `type` or uses `type: "waitlist"`; demo
+requests keep `type: "demo"`. Waitlist consent stays
+`waitlist-product-updates-v1`; demo consent stays `demo-request-v1`.
+For one compatibility release, cached pages can still send `name` and `role`
+without any of the new waitlist fields. Only this legacy shape may omit company.
+The backend also writes combined `name` and job title as `role` for new signups.
 
 The custom website form submits JSON directly to an Apps Script web app.
 **Google Forms, response receipts, hidden iframes, and form-submit triggers are
@@ -522,7 +589,12 @@ as" identity. There is no fallback to a personal Gmail From address.
 3. Run `setupWaitlist`, authorize the listed permissions, then run
    `inspectWaitlistSender`. Both must succeed. This creates the `Demo requests`
    tab with its own header row, plus `Waitlist` and `Survey` if missing.
-   Existing tabs, columns and response history are not modified or deleted.
+   Existing columns and response history are never moved, cleared or deleted.
+   Missing headers are appended at the end of existing tabs. For an old
+   `Waitlist` tab, these are `First name`, `Last name`, `Company` and `Language`,
+   after the original fifteen columns. Existing rows remain unchanged, with
+   those new cells blank. All mailer reads and writes use header names;
+   unmanaged columns and their formulas are preserved.
 4. Deploy a **Web app**, **Execute as: Me**, **Who has access: Anyone**.
    Anonymous visitors must not have to sign in to Google. Use the full `/exec`
    URL, not an editor URL or a `/dev` test deployment.
@@ -539,14 +611,20 @@ as" identity. There is no fallback to a personal Gmail From address.
    address before calling confirmation-email delivery complete.
 
 Updating an Apps Script project does not update a versioned web app deployment.
-**After merging this migration, Yu must copy the updated mailer and daily report
-source into the same project, run `setupWaitlist` once, and redeploy the existing
+**After merging R13a, Yu must copy the entire updated, self-contained mailer and
+the updated daily report source into the same project, run `setupWaitlist` once,
+and redeploy the existing
 web app with Deploy > Manage deployments > Edit > New version > Deploy.**
 Keep the current deployment and `/exec` URL; do not create a replacement endpoint.
 Run `inspectWaitlistSender` and ensure `installWaitlistRetry` has been run.
-The source version is `2026-10-20.1`. Do this before publishing the new form:
-the old deployed backend cannot accept demo requests. Source changes alone do
-not deploy anything or send any real request.
+The source version is `2026-10-21.1` (replacing `2026-10-20.1`). Do this before
+publishing the R13b waitlist form. The existing frontend, endpoint, consent
+versions, manifest/scopes and retry trigger are unchanged by R13a; R13b selects
+the appropriate existing consent for each form step. Publish the site
+artifact containing `brand/jin-mark-email.png` before sending branded emails,
+so the remote logo is available. Setup does not queue or email historical rows;
+the existing retry trigger still processes only eligible pending records.
+Source changes alone do not deploy anything or send any real request.
 
 ### Daily report
 
@@ -585,20 +663,63 @@ scope change does require re-authorization.
 The private `Demo requests` tab records created time, request ID, source,
 `demo-request-v1` consent, all nine form fields, language, confirmation status,
 attempts, last and next attempt time, sent time, Gmail message ID and last error code.
-Text cells are protected against formulas. A script lock prevents simultaneous
+Every managed text value is written with a leading apostrophe, which Sheets
+consumes as a text escape rather than including in read-back values. This
+prevents formula execution and preserves zero-leading phones, numeric-looking
+names/companies, date-like text and boolean-looking text on new writes and
+normal status updates. Date and numeric attempt columns retain their existing
+handling. No historical rows are migrated, reformatted or rewritten.
+A script lock prevents simultaneous
 retries from duplicating a row or confirmation. A new request ID is a separate
 intentional demo request, even if the email is the same, so later company
 details are not silently discarded.
+All managed text columns in Waitlist, Demo requests and Survey are converted
+to strings when read, including numbers and booleans coerced by Sheets.
+Date handling and numeric attempt counts are unchanged. This applies to
+lookups and retry scans without moving or rewriting existing rows.
+The sheet mock verifies escaped writes and unchanged read-back/email values,
+but cannot prove real Google Sheets coercion. After deploying the mailer, a
+person should submit one test demo with phone `09012345678`, names `10-4`
+and `3/4`, and company `007` (then `TRUE` if checking both), and verify the
+sheet's exact text, retry read-back and confirmation values without a visible
+escape apostrophe. Existing confirmations intentionally do not include phones.
 
-The English confirmation subject is **We received your Jin AI demo request**.
-The short plain-text and HTML alternatives thank the buyer by first name, say we will
-email to arrange a time, and invite questions by reply to `hello@jinai.md`.
-They explain why the message was sent and link only to the website and Privacy
-Policy. No marketing consent is requested or recorded for demos.
+R13c uses Yu's revised 2026-10-21 waitlist copy in matching plain-text and branded
+HTML alternatives. Subjects are unchanged and include the first name in English
+or surname in Japanese:
+`{First}, you're on the Jin AI waitlist` and
+`{First}, thanks for requesting a Jin AI demo`, or
+`{Last}様、Jin AI のウェイトリストにご登録いただきました` and
+`{Last}様、Jin AI のデモにお申し込みいただきありがとうございます`.
+Japanese salutations put company above `{Last}様`, without a space, in both
+waitlist and demo emails. English opening paragraphs include the company.
+The waitlist headings are `You're on the waitlist!` and
+`ウェイトリストへのご登録ありがとうございます！`. The revised paragraphs
+describe preparing to launch, early-access updates and an optional demo,
+followed by the demo button and personalized closing. The demo text is otherwise
+unchanged. Japanese headings wrap only between inline-block phrases, with
+`word-break: keep-all`, so words stay intact on phones.
+Legacy records without company omit the company salutation line in Japanese;
+their English first paragraph is exactly `Thanks for your interest in Jin AI!`,
+without the `We've added {Company} to our waitlist.` part. All other revised
+wording remains, using the first word of legacy `name` in English and the full
+legacy `name` before `様` in Japanese.
+The signature is `Yu Asano` / `Founder, Jin AI`.
+Every subject is RFC 2047 encoded; inserted HTML values are escaped and text
+values are control-character-free.
 
-The private legacy `Waitlist` tab records the original registration, consent version,
+Both emails use a white card, grey background, black logo band and localized
+Privacy Policy link. Only the waitlist email has a vermilion demo button
+(`/#request-demo` or `/ja/#request-demo`) and reply-to-unsubscribe line.
+The demo email says we will email to find a time, not that a time is booked.
+Neither contains a community invite or postal address block. No marketing
+consent is requested or recorded for demos. Someone registering and then
+requesting a demo receives both confirmations, each with its own queue/status.
+
+The private `Waitlist` tab records the original registration, consent version,
 request ID, welcome-mail status, attempts, timestamps, Gmail message ID and last
-error code. Names and roles are validated and protected against sheet formulas.
+error code, followed by first name, last name, company and language. Names,
+roles and company are validated and protected against sheet formulas.
 Emails are normalized and deduplicated under a script lock. Retrying a request
 cannot insert another registration or resend an already-sent welcome.
 Its `waitlist-product-updates-v1` consent and old welcome-email path remain
@@ -628,6 +749,70 @@ The limit is shared by both mail queues. Requests remain saved when it is
 reached. Existing response history is not automatically emailed during migration.
 Keep the approved community invite in `early_access.community`; the generator
 publishes it in the LLM index, not the demo form or confirmation flow.
+
+### Email review previews (R13a, refreshed for R13c)
+
+Run `node .copilot-runs\notes\r13-email-previews.mjs` with installed Chrome.
+It uses the same VM-loaded `.gs` templates as the tests, sample
+`Maya` / `Tanaka` / `Contoso`, and a dedicated headless Chrome debugging pipe.
+By default it installs nothing, uses no port, blocks HTTP/HTTPS requests in the preview
+page and does not send emails. The script renders the white source mark plus
+wordmark into `brand/jin-mark-email.png` at 272 x 80 pixels, displayed at
+136 x 40 in the emails, below 20 KB.
+
+Review `.copilot-runs/notes/r13-email-{waitlist,demo}-{en,ja}.html`;
+they load the logo via a relative local path before deployment.
+The corresponding `-600.png` and `-390.png` files show each email at desktop
+and phone widths. `r13-email-texts.md` contains all four subjects and text
+alternatives; `r13-email-metrics.json` records dimensions, logo loading and
+no-horizontal-overflow and Japanese heading phrase assertions at 600, 390 and
+375 pixels. Original implementation results are in `.copilot-runs/notes/r13a.md`;
+the revised copy, checks and preview inventory are in `.copilot-runs/notes/r13c.md`.
+Contact Copy components retain selectable email addresses. R13e's approved
+noscript fallbacks include their exact sentence-ending punctuation.
+After building `_site`, add `--contact` to the preview command to capture
+`r13c-contact-{en,ja}-{1440,390}.png` and `r13c-contact-metrics.json`.
+This optional mode starts and closes its own localhost server on an assigned
+port, permits only its local site and the existing Google Fonts hosts,
+and blocks every POST and all other page requests.
+
+### Form review evidence (R13b)
+
+Run `node .copilot-runs\notes\r13b-browser.mjs` while the built `_site` is
+served on `127.0.0.1:8793`. The zero-dependency runner uses installed Chrome
+and a dedicated debugging pipe. Every Apps Script request is intercepted and
+fulfilled locally. Only local assets and the site's existing Google Fonts
+requests are allowed through; it never calls the live endpoint.
+It exercises both languages with keyboard-only input,
+captures all four states at 1440 and 390 pixels plus failure states, checks
+375px overflow, reduced motion, both anchors and home CLS. Screenshots and
+machine-readable results are under `.copilot-runs/notes/r13b-*`.
+The runner closes only its own Chrome instance and removes its profile.
+Stop the local server after review. See `r13b.md` for commands, exact results
+and the screenshot inventory. No package install, commit, push or deployment
+is part of this local review.
+
+For R13d direct-demo coverage, run
+`node .copilot-runs\notes\r13d-browser.mjs` against the same local port.
+It validates intercepted demo payloads with the actual backend validator,
+checks direct/hash-change entry and failure retries, and saves bilingual
+1440px/390px screenshots plus 375px overflow evidence under `r13d-*`.
+The email preview command above also refreshes the new button links.
+
+For R13e copy evidence, run `node .copilot-runs\notes\r13e-browser.mjs`
+against port 8793 after building. The installed-Chrome runner intercepts all
+form POSTs locally, checks both note states and the optional demo transition,
+and captures the waitlist form, direct demo, Security band, Company Contact and
+changed Privacy sections in both languages at 1440px and 390px. It also checks
+375px overflow and the no-JavaScript fallback. The screenshot inventory,
+commands and outcomes are recorded in `.copilot-runs/notes/r13e.md`.
+
+For R13f regression evidence, run `node .copilot-runs\notes\r13f-browser.mjs`
+against the built site on port 8793. It intercepts all form POSTs locally,
+checks bilingual direct-demo/return-to-waitlist navigation at 1440px and a
+waitlist busy error at 390px, and records screenshots and results under
+`.copilot-runs/notes/r13f-*`. Decisions and the post-deployment Sheets check
+are recorded in `r13f.md`.
 
 ## Deployment boundary
 
