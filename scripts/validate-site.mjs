@@ -350,12 +350,14 @@ check(heroDemoScript.includes('matchMedia("(prefers-reduced-motion: reduce)")') 
   "Hero lifecycle must gate creation on still paint and reduced motion, scale, authenticate readiness and pause off screen or in a hidden tab.");
 const demoApp = await text("assets/demo/app.html");
 check(demoApp.includes('new URLSearchParams(location.search).get("embed") === "hero"') &&
-  demoApp.includes(".hero-embed .controls,.hero-embed .progress,.hero-embed .cursor,.hero-embed .stats{display:none!important}") &&
+  demoApp.includes(".hero-embed .controls,.hero-embed .progress,.hero-embed .stats{display:none!important}") &&
+  demoApp.includes(".hero-embed .cursor{display:block!important;overflow:visible;filter:none;left:0;top:0;transition:transform .65s ease}") &&
+  !/[^{}]*hero-embed[^{}]*\.cursor[^{}]*\{[^}]*display:\s*none/.test(demoApp) &&
   demoApp.includes(".hero-embed .tool-option:not(.chosen) .tool-ready{visibility:hidden}") &&
   demoApp.includes("document.body.inert = true"),
-  "Demo copy needs hero-only control/stats hiding, chosen-only Ready labels and disabled interaction.");
+  "Demo copy must show the hero cursor while hiding controls/progress/stats, retaining chosen-only Ready labels and disabled interaction.");
 const heroPhases = demoApp.match(/const phases = \[([\s\S]*?)\];/)?.[1] || "";
-check(JSON.stringify([...heroPhases.matchAll(/scene: (\d+)/g)].map(match => Number(match[1]))) === "[0,0,1]" &&
+check(JSON.stringify([...heroPhases.matchAll(/scene: (\d+)/g)].map(match => Number(match[1]))) === "[0,0,0,1]" &&
   !/By role|What can move|go\([23]\)/.test(heroPhases) &&
   demoApp.includes("Math.min(heroEmbed?1:3,n)") &&
   demoApp.includes("const views=heroEmbed?[connectView,categoryView]:[connectView,categoryView,roleView,policyView]") &&
@@ -364,6 +366,23 @@ check(JSON.stringify([...heroPhases.matchAll(/scene: (\d+)/g)].map(match => Numb
   demoApp.includes('event.data.action !== "pause" && event.data.action !== "play"') &&
   demoApp.includes("clearTimeout(timeout)") && demoApp.includes("animation.pause()"),
   "Hero demo must loop Connect then Categories only, prevent admin navigation, and authenticate pause/play for timers and animations.");
+const heroTargets = [...heroPhases.matchAll(/target: '([^']+)'/g)].map(match => match[1]);
+const heroDuration = [...heroPhases.matchAll(/duration: (\d+)/g)].reduce((sum, match) => sum + Number(match[1]), 0);
+const heroSchedule = demoApp.match(/function schedule\(\) \{([\s\S]*?)\n  function updatePlayback/)?.[1] || "";
+check(JSON.stringify(heroTargets) === JSON.stringify([
+  '[data-step="0"]', '[data-connect-tool="ChatGPT"]', '[data-connect-tool="Claude Code"]', '[data-step="1"]'
+]) && heroDuration >= 9200 && heroDuration <= 11200 &&
+  demoApp.includes("const travel = 650;") &&
+  heroSchedule.includes("move(phases[phase].target)") && heroSchedule.includes("click(phases[phase].target)") &&
+  heroSchedule.includes("if (approaching)") && heroSchedule.includes("remaining = phases[phase].duration - travel") &&
+  demoApp.includes("if(heroEmbed)el.onclick();else el.click()") &&
+  demoApp.includes("s.height/$('stage').offsetHeight") &&
+  demoApp.includes("if(!heroEmbed)el.scrollIntoView({block:'nearest'})") &&
+  demoApp.includes("if(heroEmbed)$('cursor').style.transform=`translate(${x}px,${y}px)`") &&
+  demoApp.includes('.hero-embed .cursor.click circle{animation:embed-click .35s ease-out}') &&
+  demoApp.includes('addEventListener("animationend", () => $(\'cursor\').classList.remove("click"))') &&
+  demoApp.includes('<circle cx="2" cy="2" r="14" style="opacity:0"/>'),
+  "Hero must move then click every target without scrolling the parent or shifting cursor layout, show a pausable ring, use the actual stage height and keep its loop within one second of 10.2s.");
 check(demoApp.includes('content="default-src \'none\'; script-src \'unsafe-inline\'; style-src \'unsafe-inline\'; img-src \'self\' data:; base-uri \'none\'; form-action \'none\'"') &&
   !/<(?:script|img|link)\b[^>]*(?:src|href)=["']https?:\/\//i.test(demoApp),
   "Demo must prohibit off-site resources and network connections.");
@@ -633,6 +652,8 @@ for (const [ja, source, homeSource] of [[false, howPage, home], [true, japaneseH
     const body = withoutJapanesePhrases(row?.[3] || "");
     const title = f[ja ? 2 : 1], description = f[ja ? 4 : 3], caption = f[ja ? 6 : 5];
     const embedUrl = `/assets/demo/app-v2.html?scene=${f[0]}&amp;embed=1&amp;loop=1`;
+    const camera = body.match(/<div class="screen-camera [^"]+">([\s\S]*?)<\/div>/)?.[1] || "";
+    const cursor = '<svg class="workflow-cursor" aria-hidden="true" viewBox="0 0 24 32"><circle cx="2" cy="2" r="14"/><path d="M2 2L2 26L8 20L13 30L18 28L13 18L22 18Z"/></svg>';
     check(row?.[1] === f[0] && (row?.[2] === "" || row?.[2] === embedUrl) &&
       body.includes(`<div class="feature-copy"><h3>${title}</h3><p>${description}</p></div>`) &&
       body.includes(`<figcaption class="screen-caption">${caption}</figcaption>`) &&
@@ -645,6 +666,12 @@ for (const [ja, source, homeSource] of [[false, howPage, home], [true, japaneseH
           count(body, /<img\b/g) === 1 && !/<iframe\b/.test(body)
         : body.includes('<span class="placeholder-mark" aria-hidden="true"></span>') && !/<(?:img|iframe|svg)\b/.test(body)),
       `${label} ${f[0]} needs its exact title, description, caption, named screen and single still or empty tools placeholder.`);
+    check(index < 4
+      ? body.includes(`<div class="screen-camera screen-${f[8]}">`) &&
+        count(body, /class="screen-camera /g) === 1 && count(body, /class="workflow-cursor"/g) === 1 &&
+        count(body, /<svg\b/g) === 1 && camera.includes(cursor) && /<img\b[^>]*>\s*<svg/.test(camera)
+      : !/screen-camera|workflow-cursor/.test(body),
+      `${label} ${f[0]} must keep one decorative arrow and click ring inside its still's transformed camera layer, with none in the hidden tools stage.`);
   });
   check(excerpt.includes('<div class="how-excerpt">') && count(excerpt, /class="how-audience"/g) === 2 &&
     count(excerpt, /class="feature-titles"/g) === 2 &&
@@ -1016,6 +1043,25 @@ check(cssBlock(englishCss, ".feature-row {").includes("grid-template-columns: mi
   !englishCss.includes("screen-crossfade") &&
   cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(".moving-frame .screen img { animation: none; transform: none;"),
   "R3 rows need responsive text-first layout, label captions, left-aligned email wrapping and independent reduced-motion stills.");
+check(cssBlock(englishCss, ".screen-camera {").includes("animation-duration: 9s") &&
+  cssBlock(englishCss, ".screen-camera {").includes("animation-play-state: paused") &&
+  cssBlock(englishCss, ".screen-running .screen-camera").includes("animation-play-state: running") &&
+  cssBlock(englishCss, ".workflow-cursor {").includes("display: none") &&
+  cssBlock(englishCss, ".workflow-cursor {").includes("left: var(--cursor-x); top: var(--cursor-y)") &&
+  cssBlock(englishCss, ".workflow-cursor {").includes("workflow-pointer 9s ease-in-out infinite paused") &&
+  cssBlock(englishCss, ".workflow-cursor circle").includes("workflow-click 9s linear infinite paused") &&
+  cssBlock(englishCss, ".screen-running .workflow-cursor {").includes("animation-play-state: running") &&
+  cssBlock(englishCss, ".screen-running .workflow-cursor circle").includes("animation-play-state: running") &&
+  cssBlock(englishCss, ".workflow-demo-ready .workflow-cursor").includes("display: none") &&
+  ["connect", "categories", "by-role", "what-can-move"].every(scene =>
+    /--cursor-x: [\d.]+%; --cursor-y: [\d.]+%/.test(cssBlock(englishCss, `.screen-camera.screen-${scene}`))) &&
+  cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(
+    ".moving-frame .screen-camera { animation: none; transform: none; will-change: auto; }") &&
+  cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(
+    ".moving-frame .workflow-cursor { display: none; animation: none; }") &&
+  ["workflow-pointer", "workflow-pointer-connect", "workflow-click", "workflow-click-connect"].every(name =>
+    englishCss.includes(`@keyframes ${name} {`)),
+  "Workflow cursors must share the nine-second camera lifecycle, use still-relative targets, yield to future frames and disappear under reduced motion.");
 check(cssBlock(englishCss, ".shadow-route {").includes("stroke-dasharray: 4 6") &&
   cssBlock(englishCss, '[data-state="changed"] .shadow-document').includes("animation: problem-shadow-document 3s linear both") &&
   cssBlock(englishCss, "@keyframes problem-shadow-document").includes("transform: translate(164px, 82px)") &&
@@ -1074,6 +1120,9 @@ check(count(revealHeading, /<span style="--word:[0-5]">[^<]+<\/span>/g) === 6 &&
 const revealCss = cssBlock(englishCss, "@media (prefers-reduced-motion: no-preference)");
 check(cssBlock(englishCss, ".hero-intro {").includes("max-width: 720px"),
   "The hero body must use a font-independent line measure so font swapping cannot change its line count on tablets.");
+check(cssBlock(englishCss, "@media (max-width: 400px)").includes(
+  "html:lang(en) .hero-reveal + .hero-intro { min-height: 3lh; }"),
+  "Reserve the English phone hero's existing three-line intro height during font loading without changing Japanese or larger layouts.");
 check(revealCss.includes(".js-reveal .hero-reveal > span") &&
   revealCss.includes(".js-reveal .hero-badges, .js-reveal .hero-actions") &&
   cssBlock(revealCss, ".js-reveal .hero-intro {").includes("hero-actions-in .2s var(--ease) .72s both") &&
@@ -1670,6 +1719,9 @@ for (const [relativePath, source] of htmlCache) {
         screen?.name === "div" && (hasClass(screen, "hero-screen") || hasClass(screen, "screen")) &&
         screen.children.length > 0 && screen.children.every(child =>
           child.name === "img" || child.name === "iframe" ||
+          (child.name === "div" && hasClass(child, "screen-camera") && child.children.length === 2 &&
+            child.children[0].name === "img" && child.children[1].name === "svg" &&
+            hasClass(child.children[1], "workflow-cursor")) ||
           (hasClass(screen, "screen-placeholder") && child.name === "span" && hasClass(child, "placeholder-mark")) ||
           (child.name === "template" && child.children.length === 1 && child.children[0].name === "iframe")),
         `${relativePath}: demo-stage must contain only an optional caption and one demo-window/screen, with no added title bar.`);

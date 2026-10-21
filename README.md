@@ -104,11 +104,19 @@ prevents any iframe request under reduced motion. The frame keeps the still's
 2880:1664 ratio and scales the demo's native 1440px layout at every width.
 
 Hero mode shows Connect with ChatGPT for four seconds, selects Claude Code for
-1.2 seconds, then holds Categories for five seconds and repeats. It hides tour
+1.2 seconds, then holds Categories for five seconds and repeats. R9 shows the
+demo's arrow moving to and clicking each tool or navigation control, with a
+short accent ring. Returning to Connect includes a 650ms move to ChatGPT,
+making the full cycle 10.85 seconds (previously 10.2). The existing helpers
+invoke the control handlers in hero mode without unblocking user interaction;
+cursor coordinates use the actual 832px stage height. It hides tour
 controls and summary cards and cannot navigate to admin scenes. Same-origin,
 source-checked messages pause and resume the remaining scene time when the
 frame leaves the viewport or the tab is hidden. The still remains underneath;
 the iframe fades in after its readiness message or 500ms after load.
+Hero cursor travel uses transforms, not layout coordinates, and does not
+scroll the parent page. The standalone demo retains its original scrolling
+and coordinate behavior.
 
 The demo copy uses system fonts and embedded or local images only. Its CSP
 blocks external resources, connections and form submissions. Three large
@@ -146,6 +154,20 @@ When demo v2 arrives, remove that figure's `hidden` attribute and set its
 `workflow.js` runs a camera only in view and resets it offscreen or while the
 tab is hidden. Reduced motion and no JavaScript show full stills.
 
+R9 adds one decorative SVG cursor inside each still's `.screen-camera` layer.
+The existing camera animation now transforms that layer, keeping the still,
+arrow and fading click ring together without changing any camera keyframe.
+Targets are fractions of the original still: Connect, the Skills category
+heading, Engineering in the team list, and the first movement-policy label.
+The cursor arrives and clicks at the corresponding camera stop (7.5 seconds
+for Connect, 2.8 seconds for the other three). Its nine-second CSS clock shares
+the camera's in-view, hidden-tab and reset rules through the existing controller.
+Reduced motion and no JavaScript hide cursors; the hidden tools stage has none.
+No row currently uses an iframe. A future ready v2 frame hides the underlying
+still cursor; that supplied embed will need its own visible cursor verified
+when it is integrated. R9 screenshots and measurements are in
+`.copilot-runs/notes/r9.md`.
+
 To replace a row with Yu's v2 demo, change that row's one `data-demo-src`
 attribute from `""` to the matching URL:
 
@@ -180,6 +202,10 @@ opacity/transform reveal at 720ms, after the sixth English word finishes at
 585ms; the buttons and badges follow at 920ms.
 Its 720px maximum line measure does not change when Inter replaces the
 system font, avoiding a tablet line-count shift before the demo still.
+At English phone widths up to 400px, the intro reserves its existing
+three-line loaded height while Inter loads; the final typography and layout
+are unchanged. This also prevents the two-to-three-line fallback-font shift
+at 390px. Japanese and larger layouts are unaffected.
 The theme reserves a stable scrollbar gutter from first paint. This keeps
 the Japanese intro at its final width while the rest of the page
 parses, rather than adding a line when the vertical scrollbar appears.

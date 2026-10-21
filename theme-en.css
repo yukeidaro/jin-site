@@ -236,12 +236,37 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .harness-note { padding-block: var(--s-12); border-top: var(--border); }
 .harness-note p { max-width: 800px; }
 .screen { position: relative; aspect-ratio: 2880 / 1664; border-radius: var(--r-s); overflow: hidden; background: var(--surface-1); }
-.screen img { position: absolute; inset: 0; width: 100%; height: 100%; transform-origin: 0 0; animation-duration: 9s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; animation-play-state: paused; }
-.screen .screen-connect { animation-name: screen-connect; }
-.screen .screen-by-role { animation-name: screen-by-role; }
-.screen .screen-categories { animation-name: screen-categories; }
-.screen .screen-what-can-move { animation-name: screen-what-can-move; }
-.screen-running img { animation-play-state: running; will-change: transform; }
+.screen img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.screen-camera { position: absolute; inset: 0; transform-origin: 0 0; animation-duration: 9s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; animation-play-state: paused; }
+.screen-camera.screen-connect { animation-name: screen-connect; --cursor-x: 71%; --cursor-y: 70%; }
+.screen-camera.screen-by-role { animation-name: screen-by-role; --cursor-x: 25%; --cursor-y: 46.5%; }
+.screen-camera.screen-categories { animation-name: screen-categories; --cursor-x: 27%; --cursor-y: 34.3%; }
+.screen-camera.screen-what-can-move { animation-name: screen-what-can-move; --cursor-x: 55.5%; --cursor-y: 43.9%; }
+.workflow-cursor { display: none; position: absolute; left: var(--cursor-x); top: var(--cursor-y); width: 2%; height: auto; overflow: visible; pointer-events: none; animation: workflow-pointer 9s ease-in-out infinite paused; }
+.workflow-cursor path { fill: #25252c; stroke: white; stroke-width: 2; }
+.workflow-cursor circle { fill: none; stroke: var(--accent); stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; animation: workflow-click 9s linear infinite paused; }
+.screen-connect .workflow-cursor { animation-name: workflow-pointer-connect; }
+.screen-connect .workflow-cursor circle { animation-name: workflow-click-connect; }
+.screen-running .screen-camera { animation-play-state: running; will-change: transform; }
+.screen-running .workflow-cursor { display: block; animation-play-state: running; }
+.screen-running .workflow-cursor circle { animation-play-state: running; }
+.workflow-demo-ready .workflow-cursor { display: none; }
+@keyframes workflow-pointer {
+  0%, 13.334%, 95.556%, 100% { transform: translate(-400%, 250%); }
+  31.112%, 83.334% { transform: translate(0, 0); }
+}
+@keyframes workflow-pointer-connect {
+  0%, 66.666%, 95.556%, 100% { transform: translate(-400%, -250%); }
+  83.334%, 87.222% { transform: translate(0, 0); }
+}
+@keyframes workflow-click {
+  0%, 31.111%, 35%, 100% { opacity: 0; transform: scale(1.5); }
+  31.112% { opacity: .9; transform: scale(.25); }
+}
+@keyframes workflow-click-connect {
+  0%, 83.333%, 87.222%, 100% { opacity: 0; transform: scale(1.5); }
+  83.334% { opacity: .9; transform: scale(.25); }
+}
 .screen iframe { position: absolute; top: 0; left: 0; width: 1440px; height: 832px; max-width: none; border: 0; transform-origin: top left; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
 .workflow-demo-ready iframe { opacity: 1; }
 @keyframes screen-connect {
@@ -387,6 +412,10 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
   .legal-copy h1 { font-size: 32px; line-height: 1.125; }
 }
 
+@media (max-width: 400px) {
+  html:lang(en) .hero-reveal + .hero-intro { min-height: 3lh; }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .js-reveal .hero-reveal > span { display: inline-block; animation: hero-word-in .36s var(--ease) both; animation-delay: calc(var(--word) * 45ms); }
   .js-reveal .hero-intro { animation: hero-actions-in .2s var(--ease) .72s both; }
@@ -422,4 +451,7 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
   .hero-reveal > span, .hero-intro, .hero-badges, .hero-actions { animation: none; opacity: 1; filter: none; transform: none; }
   .hero-screen iframe, .screen iframe { display: none; transition: none; }
   .moving-frame .screen img { animation: none; transform: none; will-change: auto; }
+  .moving-frame .screen-camera { animation: none; transform: none; will-change: auto; }
+  .moving-frame .workflow-cursor { display: none; animation: none; }
+  .moving-frame .workflow-cursor circle { animation: none; }
 }

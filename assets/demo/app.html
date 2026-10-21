@@ -85,12 +85,17 @@ button:focus-visible,select:focus-visible{outline-color:#d9776f}.connection{colo
 .hero-embed,.hero-embed body{width:1440px;height:832px;overflow:hidden;scrollbar-width:none;color-scheme:light}
 .hero-embed #stage{height:832px;transform:none!important;left:0!important;top:0!important}
 .hero-embed body{pointer-events:none;user-select:none}
-.hero-embed .controls,.hero-embed .progress,.hero-embed .cursor,.hero-embed .stats{display:none!important}
+.hero-embed .controls,.hero-embed .progress,.hero-embed .stats{display:none!important}
+.hero-embed .cursor{display:block!important;overflow:visible;filter:none;left:0;top:0;transition:transform .65s ease}
+.hero-embed .cursor.click{filter:none}
+.hero-embed .cursor circle{fill:none;stroke:#a84a1c;stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center}
+.hero-embed .cursor.click circle{animation:embed-click .35s ease-out}
+@keyframes embed-click{from{opacity:.9;transform:scale(.25)}to{opacity:0;transform:scale(1.5)}}
 .hero-embed .tool-option:not(.chosen) .tool-ready{visibility:hidden}
 .hero-embed *{scrollbar-width:none}
 .hero-embed ::-webkit-scrollbar{display:none}
 .hero-embed.embed-paused *{animation-play-state:paused!important}
-</style><!-- Logo assets embedded from product sites and Lobe Icons. Sources: {"ChatGPT": "https://cdn.oaistatic.com/assets/favicon-l4nq08hd.svg", "Claude": "https://assets.claude.com/95a868946ac8a31e5ff832e2899f294aa368b836.png?w=32&h=32", "Grok bot": "https://grok.com/images/favicon.svg", "Claude Code": "https://assets.claude.com/95a868946ac8a31e5ff832e2899f294aa368b836.png?w=32&h=32", "Cursor": "https://cursor.com/marketing-static/favicon-light.ico", "OpenCode": "https://opencode.ai/favicon-96x96-v3.png", "Codex": "https://learn.chatgpt.com/favicon.png", "OpenClaw": "https://openclaw.ai/favicon.svg", "Hermes": "https://web-assets.nousresearch.com/marketing/84009a20d1da686253550454af25beea957bbd1f/assets/hermes-agent/icon.png", "Muse Code": "https://dev.meta.ai/favicon.ico?favicon.0o~z3n2dfavrq.ico"} --></head><body><div id="stage"><div class="chrome"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div class="chrome-title" id="chromeTitle">Jin AI · Employee workspace</div></div><div class="shell"><aside class="sidebar"><div class="brand"><span class="mark"><img alt="Jin AI logo" src="app/jin-logo.webp"></span>Jin AI</div><div class="workspace"><span class="avatar">C</span><div>Contoso<div class="tiny">Company workspace</div></div><span style="margin-left:auto;color:#a0a0aa">⌄</span></div><div class="navlabel" id="navLabel">Your workspace</div><div id="nav"></div><div style="margin-top:28px;padding:15px 12px;color:#9999a4;font-size:11px;line-height:1.8">Your AI harnesses.<br><span style="color:#666672">Your company's context stays yours.</span></div><div class="sidebar-bottom"><span class="avatar" id="userAvatar">M</span><div id="userName">Maya<div class="tiny">Sales · Employee</div></div></div></aside><main class="main" id="main"></main></div><div class="progress" id="progress"></div><footer class="controls"><span class="tiny" style="width:120px">INTERACTIVE DEMO</span><div class="steps" id="steps"></div><div class="transport"><span class="tiny" id="time" style="width:65px">45s tour</span><button id="prev" aria-label="Previous step">←</button><button id="next" aria-label="Next step">→</button><button id="play" style="width:103px">▶ Play tour</button></div></footer><svg id="cursor" class="cursor" viewBox="0 0 24 32"><path d="M2 2L2 26L8 20L13 30L18 28L13 18L22 18Z" fill="#25252c" stroke="white" stroke-width="2"/></svg></div><script>
+</style><!-- Logo assets embedded from product sites and Lobe Icons. Sources: {"ChatGPT": "https://cdn.oaistatic.com/assets/favicon-l4nq08hd.svg", "Claude": "https://assets.claude.com/95a868946ac8a31e5ff832e2899f294aa368b836.png?w=32&h=32", "Grok bot": "https://grok.com/images/favicon.svg", "Claude Code": "https://assets.claude.com/95a868946ac8a31e5ff832e2899f294aa368b836.png?w=32&h=32", "Cursor": "https://cursor.com/marketing-static/favicon-light.ico", "OpenCode": "https://opencode.ai/favicon-96x96-v3.png", "Codex": "https://learn.chatgpt.com/favicon.png", "OpenClaw": "https://openclaw.ai/favicon.svg", "Hermes": "https://web-assets.nousresearch.com/marketing/84009a20d1da686253550454af25beea957bbd1f/assets/hermes-agent/icon.png", "Muse Code": "https://dev.meta.ai/favicon.ico?favicon.0o~z3n2dfavrq.ico"} --></head><body><div id="stage"><div class="chrome"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div class="chrome-title" id="chromeTitle">Jin AI · Employee workspace</div></div><div class="shell"><aside class="sidebar"><div class="brand"><span class="mark"><img alt="Jin AI logo" src="app/jin-logo.webp"></span>Jin AI</div><div class="workspace"><span class="avatar">C</span><div>Contoso<div class="tiny">Company workspace</div></div><span style="margin-left:auto;color:#a0a0aa">⌄</span></div><div class="navlabel" id="navLabel">Your workspace</div><div id="nav"></div><div style="margin-top:28px;padding:15px 12px;color:#9999a4;font-size:11px;line-height:1.8">Your AI harnesses.<br><span style="color:#666672">Your company's context stays yours.</span></div><div class="sidebar-bottom"><span class="avatar" id="userAvatar">M</span><div id="userName">Maya<div class="tiny">Sales · Employee</div></div></div></aside><main class="main" id="main"></main></div><div class="progress" id="progress"></div><footer class="controls"><span class="tiny" style="width:120px">INTERACTIVE DEMO</span><div class="steps" id="steps"></div><div class="transport"><span class="tiny" id="time" style="width:65px">45s tour</span><button id="prev" aria-label="Previous step">←</button><button id="next" aria-label="Next step">→</button><button id="play" style="width:103px">▶ Play tour</button></div></footer><svg id="cursor" class="cursor" viewBox="0 0 24 32"><circle cx="2" cy="2" r="14" style="opacity:0"/><path d="M2 2L2 26L8 20L13 30L18 28L13 18L22 18Z" fill="#25252c" stroke="white" stroke-width="2"/></svg></div><script>
 'use strict';
 const categories=['Instructions and preferences','Skills and procedures','Agent definitions','Tools and connections','Memory','Knowledge and documents','Automations','Permissions and settings','Company policies'];
 const items=[['Writing preferences',0,false,'Oct 17, 2026','Use plain language.\nLead with the decision.\nKeep follow-ups short and specific.'],['Renewal call prep',1,true,'Oct 18, 2026','# Renewal call prep\n1. Review account health and open risks.\n2. Summarize contract terms.\n3. Prepare a customer-specific agenda.\n\nAccount data: company confidential.'],['Weekly pipeline summary',1,false,'Oct 17, 2026','# Weekly pipeline summary\nGroup opportunities by stage.\nHighlight changes since last week.\nEnd with owners and next steps.'],['Account research agent',2,false,'Oct 16, 2026','role: account researcher\nUse public sources only.\nCite evidence for each finding.'],['CRM connection settings',3,true,'Oct 18, 2026','connection: Contoso CRM\nprotocol: MCP\naccess: employee-scoped\ncredentials: [hidden]'],['Customer relationship notes',4,true,'Oct 17, 2026','Account: Northwind Studio (fictional)\nSponsor prefers a monthly review.\nNext renewal: December 2026.'],['Discovery question library',5,false,'Oct 15, 2026','# Discovery questions\nWhat changed for your team?\nWhat does success look like?\nWho owns the next decision?'],['Monday pipeline digest',6,false,'Oct 12, 2026','schedule: Monday, 09:00\nCreate a draft pipeline summary.\nRequire review before sharing.'],['Workspace access rules',7,true,'Oct 18, 2026','access: company workspace\nsharing: approved tools only\nreview: required for external exports'],['Company data policy',8,true,'Oct 18, 2026','# Contoso data policy\nProtect customer and financial data.\nConfidential parts connect only\nto approved AI tools.']];
@@ -113,8 +118,8 @@ function bind(){document.querySelectorAll('[data-connect-tool]').forEach(b=>b.on
 function connect(){if(connecting||connected)return;connecting=true;render();connectionTimer=setTimeout(()=>{connected=true;connectedTools.add(selectedTool);connecting=false;render()},1400)}
 function check(){let i=+$('part').value;target=$('target').value;let blocked=policies[i]&&target==='Open Canvas';result=blocked?'<div class="alert"><strong>🔒 Connection stopped</strong><br>Confidential parts connect only to approved AI tools.</div>':`<div class="alert success"><strong>✓ Connection allowed</strong><br>${items[i][0]} can connect to ${target}.</div>`;$('result').innerHTML=result;}
 function go(n){step=Math.max(0,Math.min(heroEmbed?1:3,n));panel=null;result='';if(step===1){connected=true;connecting=false;clearTimeout(connectionTimer)}render()}
-function move(selector){let el=document.querySelector(selector);if(!el)return;el.scrollIntoView({block:'nearest'});let r=el.getBoundingClientRect(),s=$('stage').getBoundingClientRect();$('cursor').style.left=(r.left-s.left+r.width*.6)/(s.width/1440)+'px';$('cursor').style.top=(r.top-s.top+r.height*.55)/(s.height/900)+'px'}
-function click(selector){let el=document.querySelector(selector);if(el){el.click();$('cursor').classList.add('click');setTimeout(()=>$('cursor').classList.remove('click'),250)}}
+function move(selector){let el=document.querySelector(selector);if(!el)return;if(!heroEmbed)el.scrollIntoView({block:'nearest'});let r=el.getBoundingClientRect(),s=$('stage').getBoundingClientRect(),x=(r.left-s.left+r.width*.6)/(s.width/1440),y=(r.top-s.top+r.height*.55)/(s.height/$('stage').offsetHeight);if(heroEmbed)$('cursor').style.transform=`translate(${x}px,${y}px)`;else{$('cursor').style.left=x+'px';$('cursor').style.top=y+'px'}}
+function click(selector){let el=document.querySelector(selector);if(el){if(heroEmbed)el.onclick();else el.click();$('cursor').classList.add('click');if(!heroEmbed)setTimeout(()=>$('cursor').classList.remove('click'),250)}}
 const events=[[1,()=>move('#connect')],[2,()=>click('#connect')],[5,()=>move('#viewSetup')],[6,()=>click('#viewSetup')],[8,()=>move('[data-item="1"]')],[9,()=>click('[data-item="1"]')],[13,()=>move('#close')],[14,()=>click('#close')],[15,()=>move('[data-item="2"]')],[16,()=>click('[data-item="2"]')],[19,()=>{go(2);move('[data-role="Sales"]')}],[23,()=>move('[data-role="Engineering"]')],[24,()=>click('[data-role="Engineering"]')],[27,()=>move('[data-role="Customer Success"]')],[28,()=>click('[data-role="Customer Success"]')],[31,()=>{go(3);move('#target')}],[34,()=>move('#test')],[35,()=>click('#test')],[40,()=>{target='Atlas AI';$('target').value=target;move('#target')}],[42,()=>{move('#test');click('#test')}]];
 function stop(){playing=false;clearInterval(timer);$('cursor').style.display='none';$('play').textContent='▶ Play tour';$('time').textContent='45s tour';$('progress').style.width='0'}
 function play(){if(playing){stop();return}clearTimeout(connectionTimer);selectedTool='Claude Code';connectedTools.clear();connected=false;connecting=false;policies=items.map(x=>x[2]);target='Open Canvas';role='Sales';go(0);playing=true;eventIndex=0;start=performance.now();$('cursor').style.display='block';$('cursor').style.left='1080px';$('cursor').style.top='650px';$('play').textContent='Ⅱ Stop tour';timer=setInterval(()=>{let t=(performance.now()-start)/1000;$('progress').style.width=Math.min(t/45,1)*1440+'px';$('time').textContent=`${Math.min(45,Math.floor(t))} / 45s`;while(eventIndex<events.length&&t>=events[eventIndex][0])events[eventIndex++][1]();if(t>=45){stop();$('time').textContent='Tour complete'}},100)}
@@ -124,29 +129,32 @@ $('play').onclick=play;$('prev').onclick=()=>{stop();go(step-1)};$('next').oncli
 if (heroEmbed) {
   document.body.inert = true;
   const phases = [
-    { scene: 0, tool: "ChatGPT", duration: 4000 },
-    { scene: 0, tool: "Claude Code", duration: 1200 },
-    { scene: 1, tool: "Claude Code", duration: 5000 }
+    { scene: 0, target: '[data-step="0"]', duration: 650 },
+    { scene: 0, target: '[data-connect-tool="ChatGPT"]', duration: 4000 },
+    { scene: 0, target: '[data-connect-tool="Claude Code"]', duration: 1200 },
+    { scene: 1, target: '[data-step="1"]', duration: 5000 }
   ];
-  let phase = 0;
-  let remaining = phases[0].duration;
+  const travel = 650;
+  let phase = 1;
+  let approaching = false;
+  let remaining = phases[phase].duration - travel;
   let deadline = 0;
   let timeout = null;
   let requestedPlay = false;
-  function showPhase() {
-    const current = phases[phase];
-    selectedTool = current.tool;
-    connected = current.scene === 1;
-    connecting = false;
-    go(current.scene);
-  }
+  $('cursor').addEventListener("animationend", () => $('cursor').classList.remove("click"));
   function schedule() {
     deadline = performance.now() + remaining;
     timeout = setTimeout(() => {
       timeout = null;
-      phase = (phase + 1) % phases.length;
-      remaining = phases[phase].duration;
-      showPhase();
+      if (approaching) {
+        click(phases[phase].target);
+        remaining = phases[phase].duration - travel;
+      } else {
+        phase = (phase + 1) % phases.length;
+        move(phases[phase].target);
+        remaining = travel;
+      }
+      approaching = !approaching;
       schedule();
     }, remaining);
   }
@@ -173,7 +181,9 @@ if (heroEmbed) {
     updatePlayback();
   });
   document.addEventListener("visibilitychange", updatePlayback);
-  showPhase();
+  selectedTool = "ChatGPT";
+  go(0);
+  move(phases[phase].target);
   addEventListener("load", () => {
     requestAnimationFrame(() => requestAnimationFrame(() => {
       parent.postMessage({ type: "jin-demo", action: "ready" }, location.origin);
