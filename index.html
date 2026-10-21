@@ -986,7 +986,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       </div>
       <button class="btn btn-p" type="submit" disabled>Join the waitlist</button>
       <p class="waitnote" id="waitlistNote">We'll email you when access is ready. You can request a demo after joining.</p>
-      <p class="waitnote" id="demoNote" hidden>We'll email you to find a time.</p>
+      <p class="waitnote" id="demoNote" hidden>Then you'll pick a time for your demo.</p>
       <p class="signup-privacy">We use these details for waitlist updates and, if you request one, to arrange your demo. See our <a href="privacy/">Privacy Policy</a>.</p>
     </form>
     <noscript><p class="waitalt">Please enable JavaScript to join the waitlist here. You can also email <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">Copy</button></span>.</p></noscript>
@@ -998,6 +998,10 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
         <div><dt>Confirmation email</dt><dd id="waitlistEmail"></dd></div>
       </dl>
       <p id="waitlistDetail"></p>
+      <div id="demoBooking" hidden>
+        <p>Pick a 20-minute time that works for you. Times show in your time zone.</p>
+        <a class="btn btn-p" id="demoBookingLink" href="https://cal.com/yu-jinai/jin-ai-demo" target="_blank" rel="noopener">Pick a time</a>
+      </div>
     </div>
     <div class="signup-offer" id="demoOffer" hidden>
       <h3 id="demoQuestion">Want a demo too?</h3>

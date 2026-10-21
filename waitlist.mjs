@@ -210,6 +210,10 @@ export function describeResult(result, language = "en", type = "demo", email = "
   return localizeResult({ saved: true, heading: "Your demo request is saved", registration: "Saved", ...messages[result.welcome] }, language);
 }
 
+export function buildDemoBookingUrl(bookingUrl, { firstName, lastName, email }) {
+  return `${bookingUrl}?name=${encodeURIComponent(`${firstName} ${lastName}`)}&email=${encodeURIComponent(email)}`;
+}
+
 async function postJson(endpoint, payload, {
   fetchImpl = globalThis.fetch.bind(globalThis),
   timeoutMs = REQUEST_TIMEOUT_MS
@@ -259,6 +263,9 @@ export function initializeWaitlist(document, dependencies = {}) {
   const openDemo = document.getElementById("openDemo");
   const waitlistNote = document.getElementById("waitlistNote");
   const demoNote = document.getElementById("demoNote");
+  const booking = document.getElementById("demoBooking");
+  const bookingLink = document.getElementById("demoBookingLink");
+  const bookingUrl = bookingLink?.getAttribute("href");
   if (waitlistFlow && (!extra || !offer || !openDemo || !waitlistNote || !demoNote)) {
     throw new Error("The waitlist form is missing its optional demo step.");
   }
@@ -430,6 +437,7 @@ export function initializeWaitlist(document, dependencies = {}) {
     status.dataset.kind = "pending";
     status.hidden = false;
     done.hidden = true;
+    if (booking) booking.hidden = true;
 
     try {
       const result = await submitSignup(endpoint, payload, dependencies);
@@ -438,6 +446,10 @@ export function initializeWaitlist(document, dependencies = {}) {
       document.getElementById("waitlistRegistration").textContent = presentation.registration;
       document.getElementById("waitlistEmail").textContent = presentation.welcome;
       document.getElementById("waitlistDetail").textContent = presentation.detail;
+      if (booking && bookingLink && step === "demo" && presentation.saved) {
+        bookingLink.href = buildDemoBookingUrl(bookingUrl, payload);
+        booking.hidden = false;
+      }
       done.dataset.kind = presentation.kind;
       done.hidden = false;
       status.hidden = true;

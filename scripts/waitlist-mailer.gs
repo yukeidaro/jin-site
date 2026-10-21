@@ -30,6 +30,9 @@ var WAITLIST_COLUMNS = [
 ];
 var DEMO_SHEET = 'Demo requests';
 var DEMO_CONSENT = 'demo-request-v1';
+// GENERATED:DEMO_BOOKING:START
+var DEMO_BOOKING_URL = "https://cal.com/yu-jinai/jin-ai-demo";
+// GENERATED:DEMO_BOOKING:END
 var DEMO_INDUSTRIES = [
   'Technology', 'Financial services', 'Professional services', 'Education',
   'Energy', 'Government', 'Healthcare', 'Manufacturing', 'Media', 'Nonprofit',
@@ -674,6 +677,12 @@ function emailValue_(value) {
   return value;
 }
 
+function demoBookingUrl_(record) {
+  var name = emailValue_(record.firstName) + ' ' + emailValue_(record.lastName);
+  return DEMO_BOOKING_URL + '?name=' + encodeURIComponent(name) +
+    '&email=' + encodeURIComponent(emailValue_(record.email));
+}
+
 function requestEmail_(record, type) {
   var ja = record.lang === 'ja';
   var demo = type === 'demo';
@@ -695,7 +704,7 @@ function requestEmail_(record, type) {
     salutation: ja ? (company ? [company, last + '様'] : [last + '様']) : ['Hi ' + first + ','],
     paragraphs: ja ? (demo ? [
       'Jin AI のデモにお申し込みいただき、ありがとうございます。',
-      '日程の調整のため、こちらからメールでご連絡します。デモで特に見たいことがあれば、このメールにそのまま返信してください。'
+      '下の「日時を選ぶ」ボタンから、デモの日時をお選びください。デモで特に見たいことがあれば、このメールにそのまま返信してください。'
     ] : [
       'Jin AI にご関心をお寄せいただき、ありがとうございます。',
       'Jin AIは、企業の大切な情報を守りながら、AIエージェントの知識やスキルを組織全体で共有・活用できるようにするプラットフォームです。',
@@ -704,17 +713,17 @@ function requestEmail_(record, type) {
       'また、' + last + '様のご利用環境に合わせたデモもご案内しています。ご興味がございましたら、ぜひお気軽にお申し込みください。'
     ]) : (demo ? [
       'Thanks for requesting a Jin AI demo for ' + company + '.',
-      "We'll email you to find a time. If there's anything you'd like us to cover, just reply to this email."
+      "Use the Pick a time button below to choose a time for your demo. If there's anything you'd like us to cover, just reply to this email."
     ] : [
       'Thanks for your interest in Jin AI!' + (company ? " We've added " + company + ' to our waitlist.' : ''),
       'Jin AI helps companies keep their AI agents, skills, and knowledge secure, shared across teams, and always up to date.',
       "We're getting ready to launch and will email you when early access becomes available.",
       "In the meantime, we'd love to show you how Jin AI could work for your team. If you're interested, feel free to book a demo."
     ]),
-    button: demo ? '' : (ja ? 'デモを申し込む' : 'Request a demo'),
+    button: demo ? (ja ? '日時を選ぶ' : 'Pick a time') : (ja ? 'デモを申し込む' : 'Request a demo'),
     closing: demo ? '' : (ja ? last + '様にJin AIをお試しいただける日を楽しみにしております。' :
       'We look forward to having you try Jin AI, ' + first + '!'),
-    demoUrl: home + '#request-demo',
+    demoUrl: demo ? demoBookingUrl_(record) : home + '#request-demo',
     home: home,
     privacy: ja ? 'プライバシーポリシー' : 'Privacy Policy',
     privacyUrl: home + 'privacy/',
@@ -752,7 +761,7 @@ function requestEmailHtml_(email) {
       return '<p style="' + paragraph + '">' + escapeEmailHtml_(text) + '</p>';
     }).join(''),
     email.button ? '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0;"><tr><td bgcolor="#A84A1C" style="border-radius:4px;background:#A84A1C;">' +
-      '<a href="' + email.demoUrl + '" style="display:inline-block;padding:14px 24px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;">' +
+      '<a href="' + escapeEmailHtml_(email.demoUrl) + '" style="display:inline-block;padding:14px 24px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;">' +
       escapeEmailHtml_(email.button) + '</a></td></tr></table>' : '',
     email.closing ? '<p style="' + paragraph + '">' + escapeEmailHtml_(email.closing) + '</p>' : '',
     '<p style="margin:28px 0 0;font-size:16px;line-height:1.8;">Yu Asano<br>Founder, Jin AI</p>',
