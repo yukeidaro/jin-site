@@ -894,7 +894,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       </div>
       <button class="btn btn-p" type="submit" disabled>ウェイトリストに登録</button>
       <p class="waitnote" id="waitlistNote">ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。</p>
-      <p class="waitnote" id="demoNote" hidden>日程の調整のため、こちらからメールでご連絡します。</p>
+      <p class="waitnote" id="demoNote" hidden>次に、デモの日時をお選びいただけます。</p>
       <p class="signup-privacy">いただいた情報は、ウェイトリストのご案内と、ご希望の場合はデモの日程調整に使います。詳しくは<a href="privacy/">プライバシーポリシー</a>をご覧ください。</p>
     </form>
     <noscript><p class="waitalt">ウェイトリストの登録には JavaScript を有効にしてください。メールでも受け付けています: <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span>。</p></noscript>
@@ -906,6 +906,10 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
         <div><dt>確認メール</dt><dd id="waitlistEmail"></dd></div>
       </dl>
       <p id="waitlistDetail"></p>
+      <div id="demoBooking" hidden>
+        <p>ご都合のよい時間を20分でお選びください。時間はお使いの地域の時刻で表示されます。</p>
+        <a class="btn btn-p" id="demoBookingLink" href="https://cal.com/yu-jinai/jin-ai-demo" target="_blank" rel="noopener">日時を選ぶ</a>
+      </div>
     </div>
     <div class="signup-offer" id="demoOffer" hidden>
       <h3 id="demoQuestion">デモも申し込みますか？</h3>

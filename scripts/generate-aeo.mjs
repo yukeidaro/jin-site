@@ -66,6 +66,10 @@ function validate(source) {
   assert(access.form.waitlist?.consent_version === WAITLIST_CONSENT_VERSION &&
     JSON.stringify(access.form.waitlist.fields) === JSON.stringify(WAITLIST_FIELDS),
   "The waitlist needs its existing consent and five required fields.");
+  assert(access.form.demo_note?.trim() && access.form.demo_booking?.note?.trim() &&
+    access.form.demo_booking.label?.trim() &&
+    /^https:\/\/cal\.com\/[a-z0-9-]+\/[a-z0-9-]+$/.test(access.form.demo_booking.url),
+  "Demo booking needs its note, label and a Cal.com event URL without query parameters.");
   assert(access.contact_email === "hello@jinai.md", "Demo confirmations must send from hello@jinai.md.");
   assert(access.form.privacy_url === "privacy/" && access.form.privacy_note?.trim(),
     "The demo form must explain its purpose and link to the Privacy Policy.");
@@ -139,9 +143,9 @@ function renderEmail(address, japanese) {
   return `<span class="email-contact"><span class="email-address">${escapeHtml(address)}</span> <button type="button" class="copy-email" data-copy="${escapeHtml(address)}">${japanese ? "コピー" : "Copy"}</button></span>`;
 }
 
-function replaceBlock(document, blockName, generated) {
-  const start = `<!-- GENERATED:${blockName}:START -->`;
-  const end = `<!-- GENERATED:${blockName}:END -->`;
+function replaceBlock(document, blockName, generated, script = false) {
+  const start = script ? `// GENERATED:${blockName}:START` : `<!-- GENERATED:${blockName}:START -->`;
+  const end = script ? `// GENERATED:${blockName}:END` : `<!-- GENERATED:${blockName}:END -->`;
   const startIndex = document.indexOf(start);
   const endIndex = document.indexOf(end);
   assert(startIndex >= 0 && endIndex > startIndex, `Missing generated block: ${blockName}`);
@@ -152,7 +156,9 @@ const japaneseForm = {
   label: "ウェイトリストに登録",
   demoLabel: "デモを申し込む",
   note: "ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。",
-  demoNote: "日程の調整のため、こちらからメールでご連絡します。",
+  demoNote: "次に、デモの日時をお選びいただけます。",
+  bookingNote: "ご都合のよい時間を20分でお選びください。時間はお使いの地域の時刻で表示されます。",
+  bookingLabel: "日時を選ぶ",
   labels: {
     email: "会社のメールアドレス", lastName: "姓", firstName: "名", jobTitle: "役職",
     phone: "電話番号", company: "会社名", industry: "業種", companySize: "従業員数", country: "国"
@@ -248,7 +254,7 @@ ${rows([fields.slice(5, 7), fields.slice(7, 9)])}
       </div>
       <button class="btn btn-p" type="submit" disabled>${escapeHtml(label)}</button>
       <p class="waitnote" id="waitlistNote">${escapeHtml(ja ? japaneseForm.note : access.note)}</p>
-      <p class="waitnote" id="demoNote" hidden>${escapeHtml(ja ? japaneseForm.demoNote : "We'll email you to find a time.")}</p>
+      <p class="waitnote" id="demoNote" hidden>${escapeHtml(ja ? japaneseForm.demoNote : access.form.demo_note)}</p>
       <p class="signup-privacy">${ja ?
     `いただいた情報は、ウェイトリストのご案内と、ご希望の場合はデモの日程調整に使います。詳しくは<a href="${escapeHtml(access.form.privacy_url)}">プライバシーポリシー</a>をご覧ください。` :
     `${escapeHtml(access.form.privacy_note)} See our <a href="${escapeHtml(access.form.privacy_url)}">Privacy Policy</a>.`}</p>
@@ -262,6 +268,10 @@ ${rows([fields.slice(5, 7), fields.slice(7, 9)])}
         <div><dt>${ja ? "確認メール" : "Confirmation email"}</dt><dd id="waitlistEmail"></dd></div>
       </dl>
       <p id="waitlistDetail"></p>
+      <div id="demoBooking" hidden>
+        <p>${escapeHtml(ja ? japaneseForm.bookingNote : access.form.demo_booking.note)}</p>
+        <a class="btn btn-p" id="demoBookingLink" href="${escapeHtml(access.form.demo_booking.url)}" target="_blank" rel="noopener">${escapeHtml(ja ? japaneseForm.bookingLabel : access.form.demo_booking.label)}</a>
+      </div>
     </div>
     <div class="signup-offer" id="demoOffer" hidden>
       <h3 id="demoQuestion">${ja ? "デモも申し込みますか？" : "Want a demo too?"}</h3>
@@ -573,10 +583,10 @@ async function writeText(filePath, text, eol) {
   await writeFile(filePath, text.replace(/\n/g, eol), "utf8");
 }
 
-async function updateGeneratedFile(filePath, transforms, title) {
+async function updateGeneratedFile(filePath, transforms, title, script = false) {
   const { text: current, eol } = await readText(filePath);
   const updated = transforms.reduce((document, [name, generated]) =>
-    replaceBlock(document, name, typeof generated === "function" ? generated(document) : generated), current);
+    replaceBlock(document, name, typeof generated === "function" ? generated(document) : generated, script), current);
   const expected = title ? updated.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`) : updated;
 
   if (checkOnly) {
@@ -588,6 +598,10 @@ async function updateGeneratedFile(filePath, transforms, title) {
 }
 
 validate(data);
+
+await updateGeneratedFile(path.join(root, "scripts", "waitlist-mailer.gs"), [
+  ["DEMO_BOOKING", `var DEMO_BOOKING_URL = ${JSON.stringify(data.early_access.form.demo_booking.url)};`]
+], null, true);
 
 await updateGeneratedFile(path.join(root, "index.html"), [
   ["JSON_LD", renderJsonLd(data)],

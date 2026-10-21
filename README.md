@@ -84,6 +84,7 @@ It updates:
 
 - the root JSON-LD graph;
 - the English and Japanese hero and final waitlist CTAs, including the optional company-details demo step;
+- the standalone mailer's booking URL constant, shared with the generated home links from `early_access.form.demo_booking.url`;
 - the content and title of `agent/index.html`;
 - `llms.txt`.
 
@@ -441,7 +442,7 @@ recorded in `.copilot-runs/notes/j1.md`.
   R13e applies all copy proposals approved by Yu on 2026-10-21 from
   `.copilot-runs/notes/r13b-copy-proposals.md`.
   Waitlist note: **We'll email you when access is ready. You can request a demo after joining.**
-  Demo note: **We'll email you to find a time.**
+  Demo note (demo-booking brief, approved by Yu on 2026-10-21): **Then you'll pick a time for your demo.**
   The two steps use their existing separate consent versions and link to the Privacy Policy.
   Keep the endpoint and the legacy backend routes working for cached pages.
 - No prices anywhere on the site, including machine-readable formats.
@@ -534,8 +535,8 @@ duplicated in JavaScript:
 | Form state | English note | Japanese note |
 | --- | --- | --- |
 | Initial waitlist, including `#demo` and `#waitlist` | We'll email you when access is ready. You can request a demo after joining. | ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。 |
-| Direct `#request-demo`, initial navigation or hash change | We'll email you to find a time. | 日程の調整のため、こちらからメールでご連絡します。 |
-| Optional demo opened after a saved waitlist signup | We'll email you to find a time. | 日程の調整のため、こちらからメールでご連絡します。 |
+| Direct `#request-demo`, initial navigation or hash change | Then you'll pick a time for your demo. | 次に、デモの日時をお選びいただけます。 |
+| Optional demo opened after a saved waitlist signup | Then you'll pick a time for your demo. | 次に、デモの日時をお選びいただけます。 |
 
 Validation and transport failures retain the active step's note. Saving a
 waitlist signup or demo request hides both notes with the form; the existing
@@ -544,6 +545,15 @@ remains the same in both editable steps:
 "We use these details for waitlist updates and, if you request one, to arrange your demo. See our Privacy Policy." /
 "いただいた情報は、ウェイトリストのご案内と、ご希望の場合はデモの日程調整に使います。詳しくはプライバシーポリシーをご覧ください。"
 There is no post-request survey.
+The demo-booking brief replaces only the demo scheduling notes above. After a
+server-confirmed saved demo request, all email-delivery states show a **Pick a
+time** / **日時を選ぶ** link to the separate Cal.com booking page. The visitor
+chooses a 20-minute slot in their time zone; submitting the request does not
+book a slot. The link opens a new tab with percent-encoded first/last name and
+email from the submitted payload. Unsaved or unconfirmed requests and waitlist
+signups never offer booking. No Cal.com script or iframe is loaded on jinai.md.
+Both privacy policies disclose the name/email transfer when opening the link,
+the chosen time when booking, and possible cookies on cal.com only.
 Waitlist errors use signup-specific busy/unavailable wording and neutral
 refresh guidance, never demo wording. Demo-step error messages are unchanged.
 The Japanese form uses the same facts, endpoint, field names, select values and
@@ -696,8 +706,9 @@ waitlist and demo emails. English opening paragraphs include the company.
 The waitlist headings are `You're on the waitlist!` and
 `ウェイトリストへのご登録ありがとうございます！`. The revised paragraphs
 describe preparing to launch, early-access updates and an optional demo,
-followed by the demo button and personalized closing. The demo text is otherwise
-unchanged. Japanese headings wrap only between inline-block phrases, with
+followed by the demo button and personalized closing. The demo-booking brief changes only the demo scheduling sentence and adds the
+prefilled Cal.com link to both email alternatives; the reply invitation and
+all waitlist email copy stay unchanged. Japanese headings wrap only between inline-block phrases, with
 `word-break: keep-all`, so words stay intact on phones.
 Legacy records without company omit the company salutation line in Japanese;
 their English first paragraph is exactly `Thanks for your interest in Jin AI!`,
@@ -709,9 +720,13 @@ Every subject is RFC 2047 encoded; inserted HTML values are escaped and text
 values are control-character-free.
 
 Both emails use a white card, grey background, black logo band and localized
-Privacy Policy link. Only the waitlist email has a vermilion demo button
+Privacy Policy link. The waitlist email has a vermilion demo button
 (`/#request-demo` or `/ja/#request-demo`) and reply-to-unsubscribe line.
-The demo email says we will email to find a time, not that a time is booked.
+The demo email has a vermilion **Pick a time** / **日時を選ぶ** button to the
+same prefilled Cal.com URL as the saved-request panel, not a claim that a time
+is already booked. Copy the updated self-contained `scripts/waitlist-mailer.gs`
+into the existing Apps Script project and redeploy the existing web app version
+to publish the email change; keep the endpoint, scopes and retry trigger unchanged.
 Neither contains a community invite or postal address block. No marketing
 consent is requested or recorded for demos. Someone registering and then
 requesting a demo receives both confirmations, each with its own queue/status.

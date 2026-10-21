@@ -4,10 +4,12 @@ import { test } from "node:test";
 import vm from "node:vm";
 import {
   CONSENT_VERSION, WAITLIST_CONSENT_VERSION, WAITLIST_FIELDS, SURVEY_ID, describeResult, isAppsScriptEndpoint, submitSignup, submitSurvey,
-  validateResponse, validateSurveyResponse, validateDemoFields, validateWaitlistFields, initializeWaitlist
+  validateResponse, validateSurveyResponse, validateDemoFields, validateWaitlistFields, initializeWaitlist, buildDemoBookingUrl
 } from "../waitlist.mjs";
 
 const source = await readFile(new URL("./waitlist-mailer.gs", import.meta.url), "utf8");
+const facts = JSON.parse(await readFile(new URL("../agent/content.json", import.meta.url), "utf8"));
+const bookingUrl = facts.early_access.form.demo_booking.url;
 const backend = vm.createContext({
   console: { error() {}, warn() {}, log() {} },
   Utilities: {
@@ -43,6 +45,27 @@ const surveyInput = (overrides = {}) => ({
 });
 const response = (registration = "saved", welcome = "sent", code = null) => ({
   version: 1, requestId, registration, welcome, code
+});
+
+test("booking builders share the fact URL and encode spaces, Japanese names and plus-addressed email", () => {
+  assert.equal(bookingUrl, "https://cal.com/yu-jinai/jin-ai-demo");
+  assert.equal(backend.DEMO_BOOKING_URL, bookingUrl);
+  for (const [firstName, lastName, email, query] of [
+    ["Maya Ann", "Chen", "maya+demo@example.com",
+      "name=Maya%20Ann%20Chen&email=maya%2Bdemo%40example.com"],
+    ["花子", "山田", "hanako+demo@example.com",
+      "name=%E8%8A%B1%E5%AD%90%20%E5%B1%B1%E7%94%B0&email=hanako%2Bdemo%40example.com"],
+    ['Maya & "Guest"', "Chen#?=+/'", "maya+demo@example.com",
+      "name=Maya%20%26%20%22Guest%22%20Chen%23%3F%3D%2B%2F'&email=maya%2Bdemo%40example.com"]
+  ]) {
+    const record = { firstName, lastName, email };
+    const expected = `${bookingUrl}?${query}`;
+    assert.equal(buildDemoBookingUrl(bookingUrl, record), expected);
+    assert.equal(backend.demoBookingUrl_(record), expected);
+    const url = new URL(expected);
+    assert.deepEqual([...url.searchParams], [["name", `${firstName} ${lastName}`], ["email", email]]);
+    assert.equal(url.hash, "");
+  }
 });
 
 function fixture() {
@@ -291,11 +314,11 @@ const approvedBodies = {
   demo: {
     en: [
       "Thanks for requesting a Jin AI demo for Contoso.",
-      "We'll email you to find a time. If there's anything you'd like us to cover, just reply to this email."
+      "Use the Pick a time button below to choose a time for your demo. If there's anything you'd like us to cover, just reply to this email."
     ],
     ja: [
       "Jin AI のデモにお申し込みいただき、ありがとうございます。",
-      "日程の調整のため、こちらからメールでご連絡します。デモで特に見たいことがあれば、このメールにそのまま返信してください。"
+      "下の「日時を選ぶ」ボタンから、デモの日時をお選びください。デモで特に見たいことがあれば、このメールにそのまま返信してください。"
     ]
   }
 };
@@ -313,14 +336,16 @@ for (const type of ["waitlist", "demo"]) {
         (demo ? "We're looking forward to meeting you" : "You're on the waitlist!");
       const salutation = ja ? "Contoso\r\nTanaka様" : "Hi Maya,";
       const home = `https://jinai.md/${ja ? "ja/" : ""}`;
-      const button = ja ? "デモを申し込む" : "Request a demo";
+      const button = demo ? (ja ? "日時を選ぶ" : "Pick a time") : (ja ? "デモを申し込む" : "Request a demo");
+      const buttonUrl = demo ? `${bookingUrl}?name=Maya%20Tanaka&email=example%40example.com` : `${home}#request-demo`;
       const privacy = ja ? "プライバシーポリシー" : "Privacy Policy";
       const unsubscribe = ja ? "配信停止をご希望の場合は、「unsubscribe」と返信してください。" :
         "To stop receiving emails, reply with 'unsubscribe'.";
       const closing = ja ? "Tanaka様にJin AIをお試しいただける日を楽しみにしております。" :
         "We look forward to having you try Jin AI, Maya!";
       const blocks = [heading, salutation, ...approvedBodies[type][lang]];
-      if (!demo) blocks.push(`${button}\r\n${home}#request-demo`, closing);
+      blocks.push(`${button}\r\n${buttonUrl}`);
+      if (!demo) blocks.push(closing);
       blocks.push("Yu Asano\r\nFounder, Jin AI", `jinai.md: ${home}\r\n${privacy}: ${home}privacy/`);
       if (!demo) blocks.push(unsubscribe);
       assert.equal(email.subject, subject);
@@ -334,6 +359,8 @@ for (const type of ["waitlist", "demo"]) {
         [heading, salutation, ...approvedBodies[type][lang]]);
       if (!demo) assert.deepEqual(htmlBlocks.slice(2 + approvedBodies[type][lang].length,
         5 + approvedBodies[type][lang].length), [button, closing, "Yu Asano\r\nFounder, Jin AI"]);
+      else assert.deepEqual(htmlBlocks.slice(2 + approvedBodies[type][lang].length,
+        4 + approvedBodies[type][lang].length), [button, "Yu Asano\r\nFounder, Jin AI"]);
       assert.match(email.html, new RegExp(`<html lang="${lang}">`));
       if (ja) {
         assert.ok(email.html.includes("Contoso<br>Tanaka様"));
@@ -352,8 +379,9 @@ for (const type of ["waitlist", "demo"]) {
       assert.ok(email.html.includes('<img src="https://jinai.md/brand/jin-mark-email.png" width="136" height="40" alt="Jin AI"'));
       assert.ok(email.html.includes(`<a href="${home}privacy/"`));
       assert.equal(email.html.includes(`href="${home}#request-demo"`), !demo);
+      assert.ok(email.html.includes(`href="${buttonUrl.replaceAll("&", "&amp;")}"`));
       assert.doesNotMatch(email.text + email.html, /#demo\b/);
-      assert.equal(email.html.includes("background:#A84A1C"), !demo);
+      assert.equal(email.html.includes("background:#A84A1C"), true);
       assert.equal(email.text.includes("unsubscribe"), !demo);
       assert.equal(email.html.includes("unsubscribe"), !demo);
       for (const body of [email.text, email.html]) {
@@ -404,6 +432,27 @@ for (const type of ["waitlist", "demo"]) {
       assert.equal((email.html.match(/<img\b/g) || []).length, 1);
     });
   }
+}
+
+for (const lang of ["en", "ja"]) {
+  test(`demo/${lang} text and HTML include the same encoded booking link and preserve the reply invitation`, () => {
+    const record = demoInput({
+      lang, firstName: "花子", lastName: "山田", email: "hanako+demo@example.com"
+    });
+    const expected = `${bookingUrl}?name=%E8%8A%B1%E5%AD%90%20%E5%B1%B1%E7%94%B0&email=hanako%2Bdemo%40example.com`;
+    const email = decodedMime(backend.demoMime_(record), "demo");
+    const button = lang === "ja" ? "日時を選ぶ" : "Pick a time";
+    assert.ok(email.text.includes(`${button}\r\n${expected}`));
+    assert.ok(email.html.includes(`href="${expected.replaceAll("&", "&amp;")}"`));
+    assert.ok(email.html.includes(`>${button}</a>`));
+    assert.doesNotMatch(email.text + email.html, /We'll email you to find a time|日程の調整のため、こちらからメールでご連絡します/);
+    const reply = lang === "ja" ? "デモで特に見たいことがあれば、このメールにそのまま返信してください。" :
+      "If there's anything you'd like us to cover, just reply to this email.";
+    assert.ok(email.text.includes(reply));
+    assert.ok(email.html.replaceAll("&#39;", "'").includes(reply));
+    const escaped = backend.demoHtml_(demoInput({ lang, firstName: "Maya", lastName: "O'Chen" }));
+    assert.ok(escaped.includes("name=Maya%20O&#39;Chen&amp;email=example%40example.com"));
+  });
 }
 
 for (const lang of ["en", "ja"]) {
@@ -1455,7 +1504,8 @@ test("a Japanese demo stores ja and sends one UTF-8 email with an encoded subjec
     "Example Company", "見本様", "",
     "Jin AI のデモにお申し込みいただき、ありがとうございます。",
     "",
-    "日程の調整のため、こちらからメールでご連絡します。デモで特に見たいことがあれば、このメールにそのまま返信してください。",
+    "下の「日時を選ぶ」ボタンから、デモの日時をお選びください。デモで特に見たいことがあれば、このメールにそのまま返信してください。",
+    "", "日時を選ぶ", `${bookingUrl}?name=Aoi%20%E8%A6%8B%E6%9C%AC&email=example%40example.com`,
     "", "Yu Asano", "Founder, Jin AI", "",
     "jinai.md: https://jinai.md/ja/",
     "プライバシーポリシー: https://jinai.md/ja/privacy/"
@@ -1467,7 +1517,8 @@ test("a Japanese demo stores ja and sends one UTF-8 email with an encoded subjec
   for (const url of ["https://jinai.md/ja/", "https://jinai.md/ja/privacy/"]) {
     assert.ok(html.includes(`<a href="${url}"`));
   }
-  for (const body of [text, html]) assert.doesNotMatch(body, /Aoi|Hi |Discord|marketing|waitlist/i);
+  for (const body of [text, html]) assert.doesNotMatch(body, /Hi |Discord|marketing|waitlist/i);
+  assert.doesNotMatch(html, />Aoi[,<]/);
   const escaped = backend.demoHtml_(demoInput({ lastName: '<img src=x> & "\'Sample', lang: "ja" }));
   assert.ok(escaped.includes("&lt;img src=x&gt; &amp; &quot;&#39;Sample様"));
   assert.equal((escaped.match(/<img\b/g) || []).length, 1);
@@ -1683,12 +1734,14 @@ test("demo MIME is a short transactional confirmation with the verified From and
     const body = Buffer.from(part[1].replace(/\s/g, ""), "base64").toString("utf8");
     assert.ok(body.includes("Hi Alex,"));
     assert.ok(body.includes("Thanks for requesting a Jin AI demo for Example Company."));
-    assert.ok(body.includes("email you to find a time."));
+    assert.ok(body.includes("button below to choose a time for your demo."));
     assert.ok(body.includes("just reply to this email."));
     assert.doesNotMatch(body, /Discord|marketing|product updates|waitlist/i);
     for (const url of body.match(/https:\/\/[^"<\s]+/g) || []) {
       assert.ok(["https://jinai.md/", "https://jinai.md/privacy/",
-        "https://jinai.md/brand/jin-mark-email.png"].includes(url));
+        "https://jinai.md/brand/jin-mark-email.png",
+        `${bookingUrl}?name=Alex%20Sample&email=example%40example.com`,
+        `${bookingUrl}?name=Alex%20Sample&amp;email=example%40example.com`].includes(url));
     }
   }
   const escaped = backend.demoHtml_(demoInput({ firstName: "<img src=x>" }));
@@ -1781,7 +1834,7 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
   }
 });
 
-async function clientFixture(t, fetchImpl, configured = true, language, flow = "demo", hash = "") {
+async function clientFixture(t, fetchImpl, configured = true, language, flow = "demo", hash = "", missingElements = []) {
   const html = await readFile(new URL(
     language?.startsWith("ja") ? "../ja/index.html" : "../index.html", import.meta.url), "utf8");
   const formHtml = html.match(/<form\b[^>]*\bid="waitlistForm"[^>]*>[\s\S]*?<\/form>/)[0];
@@ -1842,6 +1895,15 @@ async function clientFixture(t, fetchImpl, configured = true, language, flow = "
   }
   element("demoFields", { hidden: flow === "waitlist", disabled: flow === "waitlist" });
   element("demoOffer", { hidden: true });
+  const booking = html.match(/<div id="demoBooking" hidden>([\s\S]*?)<\/div>/);
+  assert.ok(booking);
+  const bookingLink = booking[1].match(/<a\b([^>]*)>([^<]+)<\/a>/);
+  assert.ok(bookingLink);
+  element("demoBooking", { hidden: true });
+  element("demoBookingLink", {
+    ...Object.fromEntries([...bookingLink[1].matchAll(/([\w-]+)="([^"]*)"/g)].map((match) => [match[1], match[2]])),
+    textContent: bookingLink[2]
+  });
   element("openDemo", { textContent: language === "ja" ? "デモを申し込む" : "Request a demo" });
   for (const id of ["waitlistNote", "demoNote"]) {
     const note = formHtml.match(new RegExp(`<p class="waitnote" id="${id}"( hidden)?>([^<]+)<\\/p>`));
@@ -1853,6 +1915,7 @@ async function clientFixture(t, fetchImpl, configured = true, language, flow = "
       ["phone", "industry", "companySize", "country"].includes(name) ? null : controls.get(name)?.value ?? null;
   });
   t.mock.method(console, "error", (...args) => errorLogs.push(args));
+  for (const id of missingElements) elements.delete(id);
   initializeWaitlist(document, { fetchImpl });
   return {
     document, form, button, controls, elements, errorLogs,
@@ -1870,6 +1933,106 @@ async function clientFixture(t, fetchImpl, configured = true, language, flow = "
   };
 }
 
+test("cached pages without either or both booking elements retain waitlist and demo submission", async (t) => {
+  for (const missing of [["demoBooking"], ["demoBookingLink"], ["demoBooking", "demoBookingLink"]]) {
+    await t.test(`missing ${missing.join(" and ")}`, async (t) => {
+      const requests = [];
+      const f = await clientFixture(t, async (_url, options) => {
+        const payload = JSON.parse(options.body);
+        requests.push(payload);
+        return { ok: true, json: async () => ({ ...response(), requestId: payload.requestId }) };
+      }, true, "en", "waitlist", "", missing);
+      f.fill();
+      await f.submit();
+      assert.equal(f.form.hidden, true);
+      assert.equal(f.elements.get("waitlistHeading").textContent, "You're on the waitlist");
+      assert.equal(f.elements.get("demoOffer").hidden, false);
+      f.openDemo();
+      assert.equal(f.form.hidden, false);
+      assert.equal(f.elements.get("demoFields").disabled, false);
+      await f.submit();
+      assert.deepEqual(requests.map(payload => payload.type), ["waitlist", "demo"]);
+      assert.equal(f.form.hidden, true);
+      assert.equal(f.elements.get("waitlistDone").hidden, false);
+      assert.equal(f.elements.get("waitlistHeading").textContent, "Your demo request is saved");
+      assert.equal(f.elements.get("waitlistEmail").textContent, "Sent");
+      assert.equal(f.document.activeElement.id, "waitlistDone");
+      if (f.elements.has("demoBooking")) assert.equal(f.elements.get("demoBooking").hidden, true);
+      if (f.elements.has("demoBookingLink")) assert.equal(f.elements.get("demoBookingLink").href, bookingUrl);
+      assert.equal(f.errorLogs.length, 0);
+    });
+  }
+});
+
+for (const language of ["en", "ja"]) {
+  for (const entry of ["direct", "after-signup"]) {
+    for (const welcome of ["sent", "pending", "failed", "unknown"]) {
+      test(`booking appears only after a saved ${entry} demo in ${language}, with ${welcome} email`, async (t) => {
+        let requests = 0;
+        const f = await clientFixture(t, async (_url, options) => {
+          requests++;
+          const payload = JSON.parse(options.body);
+          return { ok: true, json: async () => ({ ...response("saved", welcome), requestId: payload.requestId }) };
+        }, true, language, "waitlist", entry === "direct" ? "#request-demo" : "");
+        const booking = f.elements.get("demoBooking");
+        const link = f.elements.get("demoBookingLink");
+        assert.equal(booking.hidden, true);
+        assert.equal(link.href, bookingUrl);
+        assert.equal(link.target, "_blank");
+        assert.equal(link.rel, "noopener");
+        assert.equal(link.class, "btn btn-p");
+        assert.equal(link.textContent, language === "ja" ? "日時を選ぶ" : "Pick a time");
+        if (entry === "after-signup") {
+          f.fill();
+          await f.submit();
+          assert.equal(f.elements.get("waitlistDone").hidden, false);
+          assert.equal(booking.hidden, true, "A saved waitlist signup is not a saved demo request.");
+          f.openDemo();
+          assert.equal(booking.hidden, true);
+        }
+        const values = language === "ja" ?
+          { firstName: "花子", lastName: "山田", email: "hanako+demo@example.com" } :
+          { firstName: "Maya Ann", lastName: "Chen", email: "maya+demo@example.com" };
+        f.fill(values);
+        const submission = f.submit();
+        assert.equal(booking.hidden, true, "Pending storage must not offer booking.");
+        f.controls.get("firstName").value = "Changed while saving";
+        f.controls.get("email").value = "changed@example.com";
+        await submission;
+        assert.equal(requests, entry === "direct" ? 1 : 2);
+        assert.equal(booking.hidden, false);
+        assert.equal(f.elements.get("waitlistDone").hidden, false);
+        assert.equal(f.elements.get("waitlistHeading").textContent, describeResult(response(), language).heading);
+        assert.equal(f.elements.get("waitlistEmail").textContent, describeResult(response("saved", welcome), language).welcome);
+        assert.equal(link.href, buildDemoBookingUrl(bookingUrl, values), "Use the saved payload, not editable controls.");
+        f.setHash("#waitlist");
+        assert.equal(booking.hidden, false, "A completed demo survives hash navigation.");
+        assert.equal(f.errorLogs.length, 0);
+      });
+    }
+  }
+  for (const outcome of ["validation", "not_saved", "unknown", "transport", "mismatched"]) {
+    test(`booking stays hidden for a ${outcome} demo in ${language}`, async (t) => {
+      let requests = 0;
+      const f = await clientFixture(t, async (_url, options) => {
+        requests++;
+        const payload = JSON.parse(options.body);
+        if (outcome === "transport") throw new Error("Local transport failure");
+        return { ok: true, json: async () => ({
+          ...response(outcome === "not_saved" ? "not_saved" : "unknown", "not_attempted"),
+          requestId: outcome === "mismatched" ? "wrong" : payload.requestId
+        }) };
+      }, true, language, "waitlist", "#request-demo");
+      f.fill(outcome === "validation" ? { phone: "" } : {});
+      await f.submit();
+      assert.equal(requests, outcome === "validation" ? 0 : 1);
+      assert.equal(f.form.hidden, false);
+      assert.equal(f.elements.get("demoBooking").hidden, true);
+      assert.equal(f.elements.get("demoBookingLink").href, bookingUrl, "Never attach personal data to an unsaved request.");
+    });
+  }
+}
+
 for (const language of ["en", "ja"]) {
   for (const entry of ["initial", "hashchange", "after-signup"]) {
     test(`${entry} demo in ${language} replaces the waitlist note and retains it through validation and transport failure`, async (t) => {
@@ -1885,7 +2048,7 @@ for (const language of ["en", "ja"]) {
         "ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。" :
         "We'll email you when access is ready. You can request a demo after joining.");
       assert.equal(demoNote.textContent, language === "ja" ?
-        "日程の調整のため、こちらからメールでご連絡します。" : "We'll email you to find a time.");
+        "次に、デモの日時をお選びいただけます。" : "Then you'll pick a time for your demo.");
       if (entry !== "initial") {
         assert.equal(waitlistNote.hidden, false);
         assert.equal(demoNote.hidden, true);
