@@ -476,7 +476,7 @@ recorded in `.copilot-runs/notes/j1.md`.
 - Do not add `FAQPage` schema, active offers, ratings or reviews unless they
   become truthful and applicable.
 
-## Demo request and legacy waitlist backend
+## Demo request and waitlist backend
 
 The English hero CTA is generated from `early_access.hero_label` and
 `early_access.hero_note` in `agent/content.json`. The demo form uses
@@ -492,12 +492,20 @@ before the United States. Other country labels are generated from ISO region
 codes with Node's `Intl.DisplayNames`. Client messages follow the document
 language. Demo payloads include `lang` (`ja` for document languages starting with
 `ja`, otherwise `en`); the backend stores it and sends Japanese confirmations
-with a surname greeting for `ja`, or the unchanged English email for `en` or
-missing `lang`.
+with a company and surname greeting for `ja`, or the approved English email for
+`en` or missing `lang`.
 
-The `Demo requests` sheet has not been deployed yet, so its new `Language` column
-after `Country` is safe to include from the first deploy; run `setupWaitlist`
-once after merging, as documented below.
+R13a is backend-only: the deployed page still submits a demo request, without
+a new waitlist UI. The backend now also accepts waitlist payloads with required
+`firstName` (80 characters), `lastName` (80), `email` (254), `jobTitle` (120) and
+`company` (160), plus `lang` (`en` or `ja`, default `en`), the existing request ID,
+source, consent version and honeypot. Text is trimmed and control characters
+are rejected. A waitlist payload omits `type` or uses `type: "waitlist"`; demo
+requests keep `type: "demo"`. Waitlist consent stays
+`waitlist-product-updates-v1`; demo consent stays `demo-request-v1`.
+For one compatibility release, cached pages can still send `name` and `role`
+without any of the new waitlist fields. Only this legacy shape may omit company.
+The backend also writes combined `name` and job title as `role` for new signups.
 
 The custom website form submits JSON directly to an Apps Script web app.
 **Google Forms, response receipts, hidden iframes, and form-submit triggers are
@@ -522,7 +530,12 @@ as" identity. There is no fallback to a personal Gmail From address.
 3. Run `setupWaitlist`, authorize the listed permissions, then run
    `inspectWaitlistSender`. Both must succeed. This creates the `Demo requests`
    tab with its own header row, plus `Waitlist` and `Survey` if missing.
-   Existing tabs, columns and response history are not modified or deleted.
+   Existing columns and response history are never moved, cleared or deleted.
+   Missing headers are appended at the end of existing tabs. For an old
+   `Waitlist` tab, these are `First name`, `Last name`, `Company` and `Language`,
+   after the original fifteen columns. Existing rows remain unchanged, with
+   those new cells blank. All mailer reads and writes use header names;
+   unmanaged columns and their formulas are preserved.
 4. Deploy a **Web app**, **Execute as: Me**, **Who has access: Anyone**.
    Anonymous visitors must not have to sign in to Google. Use the full `/exec`
    URL, not an editor URL or a `/dev` test deployment.
@@ -539,14 +552,19 @@ as" identity. There is no fallback to a personal Gmail From address.
    address before calling confirmation-email delivery complete.
 
 Updating an Apps Script project does not update a versioned web app deployment.
-**After merging this migration, Yu must copy the updated mailer and daily report
-source into the same project, run `setupWaitlist` once, and redeploy the existing
+**After merging R13a, Yu must copy the entire updated, self-contained mailer and
+the updated daily report source into the same project, run `setupWaitlist` once,
+and redeploy the existing
 web app with Deploy > Manage deployments > Edit > New version > Deploy.**
 Keep the current deployment and `/exec` URL; do not create a replacement endpoint.
 Run `inspectWaitlistSender` and ensure `installWaitlistRetry` has been run.
-The source version is `2026-10-20.1`. Do this before publishing the new form:
-the old deployed backend cannot accept demo requests. Source changes alone do
-not deploy anything or send any real request.
+The source version is `2026-10-21.1` (replacing `2026-10-20.1`). Do this before
+publishing the R13b waitlist form. The existing frontend, endpoint, consent
+versions, manifest/scopes and retry trigger are unchanged. Publish the site
+artifact containing `brand/jin-mark-email.png` before sending branded emails,
+so the remote logo is available. Setup does not queue or email historical rows;
+the existing retry trigger still processes only eligible pending records.
+Source changes alone do not deploy anything or send any real request.
 
 ### Daily report
 
@@ -590,15 +608,29 @@ retries from duplicating a row or confirmation. A new request ID is a separate
 intentional demo request, even if the email is the same, so later company
 details are not silently discarded.
 
-The English confirmation subject is **We received your Jin AI demo request**.
-The short plain-text and HTML alternatives thank the buyer by first name, say we will
-email to arrange a time, and invite questions by reply to `hello@jinai.md`.
-They explain why the message was sent and link only to the website and Privacy
-Policy. No marketing consent is requested or recorded for demos.
+R13a sends the approved 2026-10-21 copy in matching plain-text and branded HTML
+alternatives. Subjects include the first name in English or surname in Japanese:
+`{First}, you're on the Jin AI waitlist` and
+`{First}, thanks for requesting a Jin AI demo`, or
+`{Last}様、Jin AI のウェイトリストにご登録いただきました` and
+`{Last}様、Jin AI のデモにお申し込みいただきありがとうございます`.
+Japanese salutations put company above `{Last} 様`; English opening paragraphs
+include the company. The signature is `Yu Asano` / `Founder, Jin AI`.
+Every subject is RFC 2047 encoded; inserted HTML values are escaped and text
+values are control-character-free.
 
-The private legacy `Waitlist` tab records the original registration, consent version,
+Both emails use a white card, grey background, black logo band and localized
+Privacy Policy link. Only the waitlist email has a vermilion demo button
+(`/#demo` or `/ja/#demo`) and reply-to-unsubscribe line.
+The demo email says we will email to find a time, not that a time is booked.
+Neither contains a community invite or postal address block. No marketing
+consent is requested or recorded for demos. Someone registering and then
+requesting a demo receives both confirmations, each with its own queue/status.
+
+The private `Waitlist` tab records the original registration, consent version,
 request ID, welcome-mail status, attempts, timestamps, Gmail message ID and last
-error code. Names and roles are validated and protected against sheet formulas.
+error code, followed by first name, last name, company and language. Names,
+roles and company are validated and protected against sheet formulas.
 Emails are normalized and deduplicated under a script lock. Retrying a request
 cannot insert another registration or resend an already-sent welcome.
 Its `waitlist-product-updates-v1` consent and old welcome-email path remain
@@ -628,6 +660,24 @@ The limit is shared by both mail queues. Requests remain saved when it is
 reached. Existing response history is not automatically emailed during migration.
 Keep the approved community invite in `early_access.community`; the generator
 publishes it in the LLM index, not the demo form or confirmation flow.
+
+### Email review previews (R13a)
+
+Run `node .copilot-runs\notes\r13-email-previews.mjs` with installed Chrome.
+It uses the same VM-loaded `.gs` templates as the tests, sample
+`Maya` / `Tanaka` / `Contoso`, and a dedicated headless Chrome debugging pipe.
+It installs nothing, uses no port, blocks HTTP/HTTPS requests in the preview
+page and does not send emails. The script renders the white source mark plus
+wordmark into `brand/jin-mark-email.png` at 272 x 80 pixels, displayed at
+136 x 40 in the emails, below 20 KB.
+
+Review `.copilot-runs/notes/r13-email-{waitlist,demo}-{en,ja}.html`;
+they load the logo via a relative local path before deployment.
+The corresponding `-600.png` and `-390.png` files show each email at desktop
+and phone widths. `r13-email-texts.md` contains all four subjects and text
+alternatives; `r13-email-metrics.json` records dimensions, logo loading and
+no-horizontal-overflow assertions at 600, 390 and 375 pixels. Implementation
+and check results are in `.copilot-runs/notes/r13a.md`.
 
 ## Deployment boundary
 

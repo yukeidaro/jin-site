@@ -25,6 +25,11 @@ const input = (overrides = {}) => ({
   requestId, name: "Example Tester", email: "example@example.com", role: "Founder",
   source: "https://jinai.md", consentVersion: backend.WAITLIST_CONSENT, website: "", ...overrides
 });
+const waitlistInput = (overrides = {}) => ({
+  requestId, firstName: "Maya", lastName: "Tanaka", email: "example@example.com",
+  jobTitle: "Head of IT", company: "Contoso", source: "https://jinai.md",
+  consentVersion: backend.WAITLIST_CONSENT, website: "", ...overrides
+});
 const demoInput = (overrides = {}) => ({
   type: "demo", requestId, email: "example@example.com", firstName: "Alex",
   lastName: "Sample", jobTitle: "Head of IT", phone: "+1 (202) 555-0142",
@@ -94,14 +99,21 @@ function fixture() {
 
 function sheetFixture(headers = null) {
   const rows = headers ? [headers] : [];
+  let maxColumns = headers?.length || 26;
   const sheet = {
     frozenRows: 0,
     headerWeight: null,
     getLastRow: () => rows.length,
+    getLastColumn: () => Math.max(0, ...rows.map((row) => row.length)),
+    getMaxColumns: () => maxColumns,
+    insertColumnsAfter: (after, count) => {
+      assert.equal(after, maxColumns);
+      maxColumns += count;
+    },
     getRange(start, column, height = 1, width = 1) {
       const range = {
         getValues: () => rows.slice(start - 1, start - 1 + height)
-          .map((row) => row.slice(column - 1, column - 1 + width)),
+          .map((row) => Array.from({ length: width }, (_, i) => row[column - 1 + i] ?? "")),
         setValues(values) {
           values.forEach((cells, offset) => {
             const index = start - 1 + offset;
@@ -132,6 +144,449 @@ function sheetFixture(headers = null) {
   };
   return { sheet, rows };
 }
+
+function decodedMime(encoded, type) {
+  const mime = Buffer.from(encoded, "base64url").toString("utf8");
+  const header = mime.match(/\r\nSubject: ([\s\S]*?)\r\nMessage-ID:/)?.[1];
+  assert.ok(header);
+  const words = [...header.matchAll(/=\?UTF-8\?B\?([A-Za-z0-9+/=]+)\?=/g)];
+  assert.ok(words.length);
+  assert.equal(header, words.map((word) => word[0]).join("\r\n "));
+  assert.ok(words.every((word) => word[0].length <= 75));
+  const subject = words.map((word) => Buffer.from(word[1], "base64").toString("utf8")).join("");
+  assert.doesNotMatch(subject, /[\r\n]/);
+  const parts = [...mime.matchAll(new RegExp(
+    `Content-Transfer-Encoding: base64\\r\\n\\r\\n([\\s\\S]*?)\\r\\n--jin-${type}-`, "g"))];
+  assert.equal(parts.length, 2);
+  const [text, html] = parts.map((part) => Buffer.from(part[1].replace(/\s/g, ""), "base64").toString("utf8"));
+  return { mime, subject, text, html };
+}
+
+test("the release version and consent versions are exact and the mailer contains no community invite", () => {
+  assert.equal(backend.WAITLIST_VERSION, "2026-10-21.1");
+  assert.equal(backend.WAITLIST_CONSENT, "waitlist-product-updates-v1");
+  assert.equal(backend.DEMO_CONSENT, "demo-request-v1");
+  assert.doesNotMatch(source, /discord/i);
+});
+
+test("new waitlist fields are required, trimmed and saved alongside the legacy name and role", () => {
+  const f = fixture();
+  const payload = waitlistInput({
+    firstName: "  Maya  ", lastName: " Tanaka ", jobTitle: " Head of IT ",
+    company: " Contoso ", email: " EXAMPLE@example.com ", lang: "ja"
+  });
+  assert.equal(backend.registerWaitlist_(payload, f.deps).welcome, "sent");
+  const saved = f.records[0];
+  for (const [key, value] of Object.entries({
+    firstName: "Maya", lastName: "Tanaka", name: "Maya Tanaka", role: "Head of IT",
+    company: "Contoso", lang: "ja", email: "example@example.com",
+    requestId, source: "https://jinai.md", consentVersion: "waitlist-product-updates-v1"
+  })) assert.equal(saved[key], value, key);
+  assert.equal(f.sends(), 1);
+  assert.equal(backend.registerWaitlist_(payload, f.deps).welcome, "sent");
+  assert.equal(f.records.length, 1);
+  assert.equal(f.sends(), 1);
+  assert.equal(backend.validateSignup_(waitlistInput()).lang, "en");
+});
+
+for (const [field, code, limit] of [
+  ["firstName", "invalid_first_name", 80], ["lastName", "invalid_last_name", 80],
+  ["jobTitle", "invalid_job_title", 120], ["company", "invalid_company", 160],
+  ["email", "invalid_email", 254]
+]) {
+  test(`new waitlist rejects invalid ${field} before storage or sending`, () => {
+    for (const value of ["", " ", undefined, null, 7, false, {}, [], "x".repeat(limit + 1),
+      "A\rB", "A\nB", "A\tB", "A\u0000B", "A\u007fB", "A\u0085B", "A\u2028B", "A\u2029B"]) {
+      const f = fixture();
+      f.deps.store.withLock = () => assert.fail("Validation must precede storage.");
+      const result = backend.registerWaitlist_(waitlistInput({ [field]: value }), f.deps);
+      assert.equal(result.code, code, `${field}: ${JSON.stringify(value)}`);
+      assert.equal(result.registration, "not_saved");
+      assert.equal(result.welcome, "not_attempted");
+      assert.equal(f.records.length, 0);
+      assert.equal(f.sends(), 0);
+      assert.deepEqual(f.log, [["validation", requestId, code]]);
+    }
+  });
+}
+
+test("new waitlist accepts boundary lengths and cannot bypass company validation with legacy aliases", () => {
+  const cleaned = backend.validateSignup_(waitlistInput({
+    firstName: "a".repeat(80), lastName: "b".repeat(80),
+    jobTitle: "c".repeat(120), company: "d".repeat(160)
+  }));
+  assert.equal(cleaned.name.length, 161);
+  assert.equal(cleaned.role.length, 120);
+  assert.equal(cleaned.company.length, 160);
+  for (const payload of [
+    input({ firstName: "Maya" }), input({ jobTitle: "Head of IT" }),
+    input({ company: "" }), { ...waitlistInput(), name: "Legacy", role: "CEO", company: "" }
+  ]) {
+    const f = fixture();
+    assert.equal(backend.registerWaitlist_(payload, f.deps).registration, "not_saved");
+    assert.equal(f.records.length, 0);
+    assert.equal(f.sends(), 0);
+  }
+});
+
+test("cached legacy signups retain their original name and role, with company empty and English default", () => {
+  const f = fixture();
+  assert.equal(backend.registerWaitlist_(input({ name: "  Example Tester ", role: " Founder " }), f.deps).welcome, "sent");
+  const saved = f.records[0];
+  assert.equal(saved.name, "Example Tester");
+  assert.equal(saved.role, "Founder");
+  assert.equal(saved.company, "");
+  assert.equal(saved.firstName, "");
+  assert.equal(saved.lastName, "");
+  assert.equal(saved.lang, "en");
+  const email = decodedMime(backend.welcomeMime_(saved), "waitlist");
+  assert.equal(email.subject, "Example, you're on the Jin AI waitlist");
+  assert.match(email.text, /Hi Example,/);
+  assert.match(email.text, /Thanks for joining the Jin AI waitlist\.\r\n/);
+  assert.doesNotMatch(email.text, /We've added|undefined|null/);
+  const oldRow = { ...input(), lang: "", firstName: "", lastName: "", company: "" };
+  assert.equal(backend.welcomeText_(oldRow), email.text);
+});
+
+test("waitlist rejects invalid language, stale consent, bots, sources and IDs without writes", () => {
+  for (const [changes, code] of [
+    ...["fr", "ja-JP", "JA", " en", "", null, false, [], {}, "en\r\nBcc:x"].map((lang) =>
+      [{ lang }, "invalid_input"]),
+    [{ consentVersion: "demo-request-v1" }, "invalid_consent"],
+    [{ source: "https://other.example" }, "invalid_source"],
+    [{ requestId: "invalid" }, "invalid_request_id"],
+    [{ website: "spam.example" }, "invalid_input"]
+  ]) {
+    const f = fixture();
+    const result = backend.registerWaitlist_(waitlistInput(changes), f.deps);
+    assert.equal(result.code, code);
+    assert.equal(result.registration, "not_saved");
+    assert.equal(f.records.length, 0);
+    assert.equal(f.sends(), 0);
+  }
+});
+
+const approvedBodies = {
+  waitlist: {
+    en: [
+      "Thanks for joining the Jin AI waitlist. We've added Contoso to the list.",
+      "Jin AI keeps your company's AI agents, skills, and knowledge secure, shared across teams, and always up to date.",
+      "We're opening access in small batches and will email you when it's your turn. Want to see it sooner? Request a demo, or just reply to this email."
+    ],
+    ja: [
+      "Jin AI のウェイトリストにご登録いただき、ありがとうございます。",
+      "Jin AI は、AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。",
+      "順番にご案内を始めています。準備ができしだい、メールでお知らせします。早めにご覧になりたい場合は、デモをお申し込みいただくか、このメールにそのまま返信してください。"
+    ]
+  },
+  demo: {
+    en: [
+      "Thanks for requesting a Jin AI demo for Contoso.",
+      "We'll email you to find a time. If there's anything you'd like us to cover, just reply to this email."
+    ],
+    ja: [
+      "Jin AI のデモにお申し込みいただき、ありがとうございます。",
+      "日程の調整のため、こちらからメールでご連絡します。デモで特に見たいことがあれば、このメールにそのまま返信してください。"
+    ]
+  }
+};
+
+for (const type of ["waitlist", "demo"]) {
+  for (const lang of ["en", "ja"]) {
+    test(`${type}/${lang} has the exact approved copy, name subject, company, branding and matching text order`, () => {
+      const record = waitlistInput({ lang });
+      const email = decodedMime(type === "demo" ? backend.demoMime_(record) : backend.welcomeMime_(record), type);
+      const ja = lang === "ja";
+      const demo = type === "demo";
+      const subject = ja ? `Tanaka様、Jin AI の${demo ? "デモにお申し込みいただきありがとうございます" : "ウェイトリストにご登録いただきました"}` :
+        `Maya, ${demo ? "thanks for requesting a Jin AI demo" : "you're on the Jin AI waitlist"}`;
+      const heading = ja ? (demo ? "お話しできるのを楽しみにしております" : "ウェイトリストへのご登録ありがとうございます") :
+        (demo ? "We're looking forward to meeting you" : "You're on the waitlist");
+      const salutation = ja ? "Contoso\r\nTanaka 様" : "Hi Maya,";
+      const home = `https://jinai.md/${ja ? "ja/" : ""}`;
+      const button = ja ? "デモを申し込む" : "Request a demo";
+      const privacy = ja ? "プライバシーポリシー" : "Privacy Policy";
+      const unsubscribe = ja ? "配信停止をご希望の場合は、「unsubscribe」と返信してください。" :
+        "To stop receiving emails, reply with 'unsubscribe'.";
+      const blocks = [heading, salutation, ...approvedBodies[type][lang]];
+      if (!demo) blocks.push(`${button}\r\n${home}#demo`);
+      blocks.push("Yu Asano\r\nFounder, Jin AI", `jinai.md: ${home}\r\n${privacy}: ${home}privacy/`);
+      if (!demo) blocks.push(unsubscribe);
+      assert.equal(email.subject, subject);
+      assert.equal(email.text, blocks.join("\r\n\r\n"));
+      const htmlText = email.html.replace(/<[^>]*>/g, " ").replace(/&#39;/g, "'").replace(/\s+/g, " ");
+      for (const paragraph of [heading, ...approvedBodies[type][lang]]) assert.ok(htmlText.includes(paragraph), paragraph);
+      assert.match(email.html, new RegExp(`<html lang="${lang}">`));
+      if (ja) assert.ok(email.html.includes("Contoso<br>Tanaka 様"));
+      assert.match(email.html, /max-width:600px/);
+      assert.match(email.html, /background:#f2f2f2/);
+      assert.match(email.html, /background:#ffffff/);
+      assert.match(email.html, /background:#000000/);
+      assert.ok(email.html.includes('<img src="https://jinai.md/brand/jin-mark-email.png" width="136" height="40" alt="Jin AI"'));
+      assert.ok(email.html.includes(`<a href="${home}privacy/"`));
+      assert.equal(email.html.includes(`href="${home}#demo"`), !demo);
+      assert.equal(email.html.includes("background:#A84A1C"), !demo);
+      assert.equal(email.text.includes("unsubscribe"), !demo);
+      assert.equal(email.html.includes("unsubscribe"), !demo);
+      for (const body of [email.text, email.html]) {
+        assert.doesNotMatch(body, /discord|Co-founder|chat history|<script|<style|tracking|postal/i);
+        assert.doesNotMatch(body, /[\u2013\u2014\u2018\u2019\u201c\u201d]/);
+      }
+      assert.match(email.mime, /^From: Jin AI <hello@jinai\.md>\r\nReply-To: hello@jinai\.md/);
+      assert.doesNotMatch(email.mime, /\r\n(?:Bcc|Cc):/i);
+    });
+
+    test(`${type}/${lang} HTML escapes all reserved characters in inserted names and company without altering text`, () => {
+      const special = '<Maya>&"\'';
+      const company = '<Contoso>&"\'';
+      const record = waitlistInput({ firstName: special, lastName: special, company, lang });
+      const email = decodedMime(type === "demo" ? backend.demoMime_(record) : backend.welcomeMime_(record), type);
+      assert.ok(email.html.includes("&lt;Maya&gt;&amp;&quot;&#39;"));
+      assert.ok(email.html.includes("&lt;Contoso&gt;&amp;&quot;&#39;"));
+      assert.ok(!email.html.includes(special));
+      assert.ok(!email.html.includes(company));
+      assert.ok(email.text.includes(special));
+      assert.ok(email.text.includes(company));
+      assert.ok(email.subject.startsWith(special));
+      assert.doesNotMatch(email.text, /&lt;|&gt;|&amp;|&quot;|&#39;/);
+      assert.equal((email.html.match(/<img\b/g) || []).length, 1);
+    });
+  }
+}
+
+test("subject encoding preserves long Unicode names and folds only at encoded-word boundaries", () => {
+  for (const type of ["waitlist", "demo"]) {
+    for (const lang of ["en", "ja"]) {
+      const name = "見本😀".repeat(20);
+      const record = waitlistInput({ firstName: name, lastName: name, lang });
+      const email = decodedMime(type === "demo" ? backend.demoMime_(record) : backend.welcomeMime_(record), type);
+      assert.ok(email.subject.startsWith(name));
+      assert.doesNotMatch(email.subject, /\ufffd|[\r\n]/);
+      const header = email.mime.match(/\r\nSubject: ([\s\S]*?)\r\nMessage-ID:/)[1];
+      assert.ok(header.split("\r\n").every((line) => line.length <= 75));
+    }
+  }
+});
+
+test("CR/LF injection in either name or company is rejected by both routes and mail rendering", () => {
+  for (const field of ["firstName", "lastName", "company"]) {
+    for (const value of ["Value\rBcc:other@example.com", "Value\nBcc:other@example.com"]) {
+      for (const lang of ["en", "ja"]) {
+        for (const type of ["waitlist", "demo"]) {
+          const f = fixture();
+          const payload = (type === "demo" ? demoInput : waitlistInput)({ [field]: value, lang });
+          const register = type === "demo" ? backend.registerDemo_ : backend.registerWaitlist_;
+          assert.equal(register(payload, f.deps).registration, "not_saved");
+          assert.equal(f.records.length, 0);
+          assert.equal(f.sends(), 0);
+          assert.throws(() => (type === "demo" ? backend.demoMime_ : backend.welcomeMime_)(payload),
+            /invalid_email_content/);
+        }
+      }
+    }
+  }
+  assert.throws(() => backend.emailMimeSubject_("Name\r\nBcc:other@example.com"), /invalid_email_subject/);
+  assert.throws(() => backend.demoMime_(demoInput({ email: "a@example.com\r\nBcc:b@example.com" })), /invalid_email/);
+  assert.throws(() => backend.welcomeMime_(input({ requestId: `${requestId}\r\nBcc:x` })), /invalid_request_id/);
+});
+
+test("setup appends the four new headers to an old sheet without moving, clearing or emailing any old row", () => {
+  const oldHeaders = ["Created at", "Name", "Email", "Role", "Request ID", "Source", "Consent version",
+    "Registration status", "Welcome email status", "Welcome attempts", "Last attempt at",
+    "Next attempt at", "Sent at", "Gmail message ID", "Last error code"];
+  assert.deepEqual(Array.from(backend.WAITLIST_COLUMNS, (column) => column[1]).slice(0, 15), oldHeaders);
+  const waitlist = sheetFixture(oldHeaders.slice());
+  for (const welcome of ["sent", "pending", "sending", "unknown", "failed"]) {
+    const record = {
+      ...input(), createdAt: "2026-09-12T02:00:00.000Z", registration: "saved", welcome,
+      attempts: welcome === "pending" ? 0 : 1, messageId: welcome === "sent" ? "old-message" : ""
+    };
+    waitlist.rows.push(Array.from(backend.WAITLIST_COLUMNS).slice(0, 15).map(([key]) => record[key] ?? ""));
+  }
+  const oldData = structuredClone(waitlist.rows.slice(1));
+  const tabs = new Map([["Waitlist", waitlist]]);
+  const spreadsheet = {
+    getSheetByName: (name) => tabs.get(name)?.sheet || null,
+    insertSheet: (name) => {
+      const entry = sheetFixture();
+      tabs.set(name, entry);
+      return entry.sheet;
+    },
+    getId: () => "sheet-id", getUrl: () => "https://docs.google.com/spreadsheets/d/sheet-id"
+  };
+  let releases = 0;
+  backend.PropertiesService = { getScriptProperties: () => ({
+    getProperty: () => "sheet-id", setProperty() {}
+  }) };
+  backend.SpreadsheetApp = { openById: () => spreadsheet, flush() {} };
+  backend.LockService = { getScriptLock: () => ({
+    tryLock: () => true, releaseLock: () => { releases++; }
+  }) };
+  backend.setupWaitlist();
+  backend.setupWaitlist();
+  assert.equal(releases, 2);
+  assert.deepEqual(waitlist.rows[0], [...oldHeaders, "First name", "Last name", "Company", "Language"]);
+  assert.deepEqual(waitlist.rows.slice(1), oldData);
+  assert.equal(waitlist.sheet.getMaxColumns(), 19);
+  const store = backend.sheetStore_();
+  const original = store.find("requestId", requestId);
+  assert.equal(original.name, "Example Tester");
+  assert.equal(original.role, "Founder");
+  assert.equal(original.welcome, "sent");
+  assert.equal(original.company, "");
+  assert.equal(store.pending(Date.now()).length, 1);
+  assert.equal(store.pending(Date.now())[0].welcome, "pending");
+  const email = decodedMime(backend.welcomeMime_(original), "waitlist");
+  assert.equal(email.subject, "Example, you're on the Jin AI waitlist");
+  const record = store.append({
+    ...backend.validateSignup_(waitlistInput({ email: "new@example.com" })),
+    welcome: "pending", registration: "saved"
+  });
+  record.welcome = "sent";
+  record.messageId = "new-message";
+  store.update(record);
+  assert.deepEqual(waitlist.rows.slice(1, 6), oldData);
+  assert.equal(waitlist.rows[6][1], "Maya Tanaka");
+  assert.equal(waitlist.rows[6][3], "Head of IT");
+  assert.deepEqual(waitlist.rows[6].slice(15), ["Maya", "Tanaka", "Contoso", "en"]);
+  assert.equal(store.find("email", "new@example.com").messageId, "new-message");
+});
+
+test("header-based reads, writes, retries and survey lookup preserve extra columns and formulas", () => {
+  for (const [name, columns] of [["Waitlist", backend.WAITLIST_COLUMNS], ["Survey", backend.SURVEY_COLUMNS]]) {
+    const headers = Array.from(columns, (column) => column[1]).reverse();
+    headers.splice(2, 0, "Private calculation");
+    const { sheet, rows } = sheetFixture(headers);
+    backend.PropertiesService = { getScriptProperties: () => ({ getProperty: () => "sheet-id" }) };
+    backend.SpreadsheetApp = { openById: () => ({ getSheetByName: () => sheet }), flush() {} };
+    const store = backend.sheetStore_(name, columns);
+    const record = store.append({
+      ...backend.validateSignup_(waitlistInput()), surveyId: SURVEY_ID, answer: "A",
+      registration: "saved", welcome: "pending", attempts: 0
+    });
+    rows[1][2] = "=1+1";
+    assert.equal(store.find("email", "example@example.com").row, 2);
+    if (name === "Survey") {
+      assert.equal(store.findBy("example@example.com", SURVEY_ID).answer, "A");
+      record.answer = "D";
+    } else {
+      assert.equal(store.pending(Date.now())[0].company, "Contoso");
+      record.company = "+Safe company";
+      record.welcome = "sent";
+    }
+    store.update(record);
+    assert.equal(rows[1][2], "=1+1");
+    if (name === "Survey") assert.equal(store.findBy("example@example.com", SURVEY_ID).answer, "D");
+    else {
+      assert.equal(rows[1][headers.indexOf("Company")], "'+Safe company");
+      assert.equal(store.find("requestId", requestId).welcome, "sent");
+      assert.equal(store.pending(Date.now()).length, 0);
+    }
+    assert.deepEqual(rows[0], headers);
+  }
+});
+
+test("missing or duplicate required headers fail explicitly rather than writing to the wrong column", () => {
+  for (const headers of [
+    ["Wrong header"], [...Array.from(backend.WAITLIST_COLUMNS, (column) => column[1]), "Company"]
+  ]) {
+    const { sheet, rows } = sheetFixture(headers);
+    const before = structuredClone(rows);
+    backend.PropertiesService = { getScriptProperties: () => ({ getProperty: () => "sheet-id" }) };
+    backend.SpreadsheetApp = { openById: () => ({ getSheetByName: () => sheet }) };
+    const store = backend.sheetStore_();
+    assert.throws(() => store.append(waitlistInput()), /storage_schema_mismatch/);
+    assert.throws(() => store.append(waitlistInput()), /storage_schema_mismatch/);
+    assert.deepEqual(rows, before);
+  }
+});
+
+test("Japanese waitlist retries keep the saved company, surname, language and one-mail guarantee", () => {
+  const f = fixture();
+  f.deps.reserveEmail = () => false;
+  assert.equal(backend.registerWaitlist_(waitlistInput({ lang: "ja" }), f.deps).welcome, "pending");
+  f.advance(15 * 60 * 1000);
+  f.deps.reserveEmail = () => true;
+  const send = f.deps.sender.send;
+  f.deps.sender.send = (record) => {
+    const email = decodedMime(backend.welcomeMime_(record), "waitlist");
+    assert.match(email.text, /Contoso\r\nTanaka 様/);
+    assert.equal(email.subject, "Tanaka様、Jin AI のウェイトリストにご登録いただきました");
+    return send(record);
+  };
+  backend.retryPendingEmails_(f.deps);
+  backend.retryPendingEmails_(f.deps);
+  assert.equal(f.sends(), 1);
+  assert.equal(f.records[0].welcome, "sent");
+  assert.equal(f.records[0].lang, "ja");
+});
+
+test("production waitlist then demo stores separate intents and sends both branded emails exactly once", () => {
+  const tabs = new Map([
+    ["Waitlist", sheetFixture(Array.from(backend.WAITLIST_COLUMNS, (column) => column[1]))],
+    ["Demo requests", sheetFixture(Array.from(backend.DEMO_COLUMNS, (column) => column[1]))]
+  ]);
+  const properties = {};
+  const messages = [];
+  backend.PropertiesService = { getScriptProperties: () => ({
+    getProperty: (key) => key === "SPREADSHEET_ID" ? "sheet-id" : properties[key],
+    setProperties: (values) => Object.assign(properties, values)
+  }) };
+  backend.LockService = { getScriptLock: () => ({ tryLock: () => true, releaseLock() {} }) };
+  backend.SpreadsheetApp = {
+    openById: () => ({ getSheetByName: (name) => {
+      assert.ok(tabs.has(name), "Waitlist and demo must not create survey rows.");
+      return tabs.get(name).sheet;
+    } }),
+    flush() {}
+  };
+  backend.Gmail = { Users: {
+    Settings: { SendAs: { list: () => ({ sendAs: [
+      { sendAsEmail: "hello@jinai.md", verificationStatus: "accepted" }
+    ] }) } },
+    Messages: { send: ({ raw }) => {
+      messages.push(raw);
+      return { id: `mock-message-${messages.length}` };
+    } }
+  } };
+  backend.ContentService = {
+    MimeType: { JSON: "json" },
+    createTextOutput: (body) => ({ setMimeType: () => ({ body }) })
+  };
+  try {
+    const waitlist = waitlistInput({
+      type: "waitlist", firstName: "=Maya", lastName: "+Tanaka", jobTitle: "-Head of IT",
+      company: "@Contoso", lang: "ja"
+    });
+    const demo = demoInput({
+      requestId: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      firstName: "Maya", lastName: "Tanaka", company: "Contoso", lang: "ja"
+    });
+    const post = (payload) => JSON.parse(backend.doPost({
+      postData: { contents: JSON.stringify(payload) }
+    }).body);
+    for (const payload of [waitlist, waitlist, demo, demo]) assert.equal(post(payload).welcome, "sent");
+    assert.equal(tabs.get("Waitlist").rows.length, 2);
+    assert.equal(tabs.get("Demo requests").rows.length, 2);
+    assert.equal(messages.length, 2);
+    assert.equal(decodedMime(messages[0], "waitlist").subject,
+      "+Tanaka様、Jin AI のウェイトリストにご登録いただきました");
+    assert.equal(decodedMime(messages[1], "demo").subject,
+      "Tanaka様、Jin AI のデモにお申し込みいただきありがとうございます");
+    assert.equal(properties.EMAIL_COUNT, "2", "Both queues share the existing attempt limit.");
+    const headers = tabs.get("Waitlist").rows[0];
+    const saved = tabs.get("Waitlist").rows[1];
+    for (const [header, value] of [
+      ["Name", "'=Maya +Tanaka"], ["Role", "'-Head of IT"], ["First name", "'=Maya"],
+      ["Last name", "'+Tanaka"], ["Company", "'@Contoso"], ["Language", "ja"],
+      ["Welcome email status", "sent"], ["Welcome attempts", 1], ["Gmail message ID", "mock-message-1"]
+    ]) assert.equal(saved[headers.indexOf(header)], value, header);
+  } finally {
+    for (const key of ["PropertiesService", "LockService", "SpreadsheetApp", "Gmail", "ContentService"]) {
+      delete backend[key];
+    }
+  }
+});
 
 test("stores before sending, records Gmail confirmation, and preserves the request ID", () => {
   const f = fixture();
@@ -395,12 +850,12 @@ test("sheet cells are escaped and HTML names cannot inject markup", () => {
   }
   assert.equal(backend.safeCell_("Normal name"), "Normal name");
   assert.equal(backend.safeCell_(3), 3);
-  const html = backend.welcomeHtml_("<img/src=x/onerror=alert(1)>");
+  const html = backend.welcomeHtml_(waitlistInput({ firstName: "<img/src=x/onerror=alert(1)>" }));
   assert.ok(html.includes("&lt;img/src=x/onerror=alert(1)&gt;"));
-  assert.ok(!html.includes("<img"));
+  assert.equal((html.match(/<img\b/g) || []).length, 1, "Only the fixed brand image is permitted.");
 });
 
-test("the welcome MIME has the real From, plain text, readable HTML and exact Discord invite", () => {
+test("the legacy welcome MIME has the real From, approved copy and no community promotion", () => {
   const encoded = backend.welcomeMime_(input({ name: "Yu Asano" }));
   const mime = Buffer.from(encoded, "base64url").toString("utf8");
   assert.ok(mime.startsWith("From: Jin AI <hello@jinai.md>\r\n"));
@@ -410,12 +865,12 @@ test("the welcome MIME has the real From, plain text, readable HTML and exact Di
   assert.equal(parts.length, 2);
   for (const part of parts) {
     const body = Buffer.from(part[1].replace(/\s/g, ""), "base64").toString("utf8");
-    assert.ok(body.includes("https://discord.gg/hn8eG4d9f"));
+    assert.doesNotMatch(body, /discord/i);
     assert.ok(body.includes("Hi Yu,"));
-    assert.ok(body.includes("product updates"));
+    assert.ok(body.includes("Jin AI keeps your company"));
     assert.ok(!body.includes("No newsletter"));
-    assert.ok(body.includes("gives that context to the AI tools you use"));
-    assert.ok(!/visual workspace|created by AI agents/.test(body), "The retired positioning must not reach new signups.");
+    assert.ok(!/visual workspace|created by AI agents|chat history|Co-founder/.test(body),
+      "Retired positioning and signature must not reach new signups.");
   }
 });
 
@@ -447,6 +902,7 @@ test("future queue entries cannot starve due email later in the sheet", () => {
   let reads = 0;
   const sheet = {
     getLastRow: () => 23,
+    getLastColumn: () => headers.length,
     getRange: (start) => ({ getValues: () => { reads++; return start === 1 ? [headers] : rows; } })
   };
   backend.PropertiesService = { getScriptProperties: () => ({ getProperty: () => "sheet-id" }) };
@@ -504,6 +960,7 @@ test("setupWaitlist creates Survey and Demo requests without changing existing s
     })
   };
   backend.SpreadsheetApp = { getActiveSpreadsheet: () => spreadsheet, openById: () => spreadsheet };
+  backend.LockService = { getScriptLock: () => ({ tryLock: () => true, releaseLock() {} }) };
   backend.setupWaitlist();
   backend.setupWaitlist();
   const survey = tabs.get("Survey");
@@ -664,36 +1121,37 @@ test("a Japanese demo stores ja and sends one UTF-8 email with an encoded subjec
   assert.ok(words.every((word) => word[0].length <= 75));
   assert.equal(subject, words.map((word) => word[0]).join("\r\n "));
   assert.equal(words.map((word) => Buffer.from(word[1], "base64").toString("utf8")).join(""),
-    "Jin AI のデモのお申し込みを受け付けました");
+    "見本様、Jin AI のデモにお申し込みいただきありがとうございます");
   assert.equal((mime.match(/Content-Type: text\/(?:plain|html); charset=UTF-8/g) || []).length, 2);
   const parts = [...mime.matchAll(/Content-Transfer-Encoding: base64\r\n\r\n([\s\S]*?)\r\n--jin-demo-/g)];
   assert.equal(parts.length, 2);
   const [text, html] = parts.map((part) =>
     Buffer.from(part[1].replace(/\s/g, ""), "base64").toString("utf8"));
   assert.equal(text, [
-    "見本 様", "",
+    "お話しできるのを楽しみにしております", "",
+    "Example Company", "見本 様", "",
     "Jin AI のデモにお申し込みいただき、ありがとうございます。",
-    "日程の調整のため、こちらからメールでご連絡します。ご質問があれば、このメールにそのまま返信してください。",
     "",
-    "このメールは、jinai.md でデモにお申し込みいただいたためにお送りしています。",
-    "https://jinai.md/ja/",
+    "日程の調整のため、こちらからメールでご連絡します。デモで特に見たいことがあれば、このメールにそのまま返信してください。",
+    "", "Yu Asano", "Founder, Jin AI", "",
+    "jinai.md: https://jinai.md/ja/",
     "プライバシーポリシー: https://jinai.md/ja/privacy/"
   ].join("\r\n"));
   assert.match(html, /<html lang="ja">/);
-  for (const line of text.split("\r\n").filter(Boolean)) {
+  for (const line of text.split("\r\n").filter((line) => line && !line.includes("https://"))) {
     assert.ok(html.replace(/<[^>]+>/g, "").includes(line), line);
   }
   for (const url of ["https://jinai.md/ja/", "https://jinai.md/ja/privacy/"]) {
-    assert.ok(html.includes(`<a href="${url}">${url}</a>`));
+    assert.ok(html.includes(`<a href="${url}"`));
   }
   for (const body of [text, html]) assert.doesNotMatch(body, /Aoi|Hi |Discord|marketing|waitlist/i);
-  const escaped = backend.demoHtml_('<img src=x> & "\'Sample', "ja");
+  const escaped = backend.demoHtml_(demoInput({ lastName: '<img src=x> & "\'Sample', lang: "ja" }));
   assert.ok(escaped.includes("&lt;img src=x&gt; &amp; &quot;&#39;Sample 様"));
-  assert.doesNotMatch(escaped, /<img/);
+  assert.equal((escaped.match(/<img\b/g) || []).length, 1);
 });
 
 for (const lang of ["en", undefined]) {
-  test(`a demo with ${lang === undefined ? "missing" : "en"} lang stores en and sends the unchanged English email`, () => {
+  test(`a demo with ${lang === undefined ? "missing" : "en"} lang stores en and sends the approved English email`, () => {
     const f = fixture();
     const payload = demoInput(lang === undefined ? {} : { lang });
     const send = f.deps.sender.send;
@@ -706,8 +1164,7 @@ for (const lang of ["en", undefined]) {
     assert.equal(f.records[0].lang, "en");
     assert.equal(f.sends(), 1);
     assert.equal(mime, backend.demoMime_(demoInput()));
-    assert.match(Buffer.from(mime, "base64url").toString("utf8"),
-      /\r\nSubject: We received your Jin AI demo request\r\n/);
+    assert.equal(decodedMime(mime, "demo").subject, "Alex, thanks for requesting a Jin AI demo");
   });
 }
 
@@ -895,22 +1352,25 @@ test("the scheduled retry processes both queues and never resends sent or ambigu
 test("demo MIME is a short transactional confirmation with the verified From and safe greeting", () => {
   const mime = Buffer.from(backend.demoMime_(demoInput()), "base64url").toString("utf8");
   assert.match(mime, /^From: Jin AI <hello@jinai\.md>\r\nReply-To: hello@jinai\.md/);
-  assert.match(mime, /\r\nSubject: We received your Jin AI demo request\r\n/);
+  assert.equal(decodedMime(backend.demoMime_(demoInput()), "demo").subject,
+    "Alex, thanks for requesting a Jin AI demo");
   const parts = [...mime.matchAll(/Content-Transfer-Encoding: base64\r\n\r\n([\s\S]*?)\r\n--jin-demo-/g)];
   assert.equal(parts.length, 2);
   for (const part of parts) {
     const body = Buffer.from(part[1].replace(/\s/g, ""), "base64").toString("utf8");
     assert.ok(body.includes("Hi Alex,"));
-    assert.ok(body.includes("We will email you to set up a time."));
-    assert.ok(body.includes("reply to this email with questions"));
-    assert.ok(body.includes("because you requested a demo on"));
+    assert.ok(body.includes("Thanks for requesting a Jin AI demo for Example Company."));
+    assert.ok(body.includes("email you to find a time."));
+    assert.ok(body.includes("just reply to this email."));
     assert.doesNotMatch(body, /Discord|marketing|product updates|waitlist/i);
     for (const url of body.match(/https:\/\/[^"<\s]+/g) || []) {
-      assert.ok(["https://jinai.md/", "https://jinai.md/privacy/"].includes(url));
+      assert.ok(["https://jinai.md/", "https://jinai.md/privacy/",
+        "https://jinai.md/brand/jin-mark-email.png"].includes(url));
     }
   }
-  assert.match(backend.demoHtml_("<img src=x>"), /Hi &lt;img src=x&gt;,/);
-  assert.doesNotMatch(backend.demoHtml_("<img src=x>"), /<img/);
+  const escaped = backend.demoHtml_(demoInput({ firstName: "<img src=x>" }));
+  assert.match(escaped, /Hi &lt;img src=x&gt;,/);
+  assert.equal((escaped.match(/<img\b/g) || []).length, 1);
 });
 
 test("production demo routing uses only Demo requests and the demo MIME", () => {
@@ -962,7 +1422,8 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
     assert.equal(sends, 1);
     assert.equal(locks, 2);
     assert.equal(releases, 2);
-    assert.match(messages[0], /Subject: We received your Jin AI demo request/);
+    assert.equal(decodedMime(backend.demoMime_(payload), "demo").subject,
+      "=1+1, thanks for requesting a Jin AI demo");
     for (const field of ["firstName", "lastName", "jobTitle", "phone", "company", "country"]) {
       const index = columns.findIndex(([key]) => key === field);
       assert.equal(rows[1][index], "'" + payload[field], field);
@@ -989,7 +1450,7 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
     assert.equal(locks, 4);
     assert.equal(releases, 4);
     assert.equal(messages[1], Buffer.from(backend.demoMime_(japanesePayload), "base64url").toString("utf8"));
-    assert.equal(backend.WAITLIST_VERSION, "2026-10-20.1");
+    assert.equal(backend.WAITLIST_VERSION, "2026-10-21.1");
   } finally {
     for (const key of ["PropertiesService", "LockService", "SpreadsheetApp", "Gmail", "ContentService"]) {
       delete backend[key];

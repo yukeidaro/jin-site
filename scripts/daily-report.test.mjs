@@ -285,6 +285,39 @@ test("the MIME uses one fixed To, the default sender, UTF-8 alternatives and fol
     /daily_report_sender_must_be_default/);
 });
 
+test("report reads appended waitlist fields by header and keeps legacy names and roles", () => {
+  const columns = Array.from(backend.WAITLIST_COLUMNS, (column) => Array.from(column));
+  const oldRecord = signup("alice@example.com", "2026-10-05T01:00:00Z", { name: "Alice", role: "CEO" });
+  const newRecord = signup("maya@example.com", "2026-10-05T02:00:00Z", {
+    name: "Maya Tanaka", role: "Head of IT", firstName: "Maya", lastName: "Tanaka",
+    company: "Contoso", lang: "ja"
+  });
+  const headers = columns.map((column) => column[1]).reverse();
+  headers.splice(3, 0, "Private notes");
+  const rows = [headers, ...[oldRecord, newRecord].map((record) => headers.map((header) => {
+    const column = columns.find((column) => column[1] === header);
+    return column ? record[column[0]] ?? "" : "=1+1";
+  }))];
+  const spreadsheet = { getSheetByName: () => ({
+    getLastRow: () => rows.length, getLastColumn: () => headers.length,
+    getRange: (start, column, height, width) => ({
+      getValues: () => rows.slice(start - 1, start - 1 + height)
+        .map((row) => row.slice(column - 1, column - 1 + width))
+    })
+  }) };
+  const before = structuredClone(rows);
+  const records = backend.reportSheetRecords_(spreadsheet, "Waitlist", backend.WAITLIST_COLUMNS);
+  assert.equal(records[0].name, "Alice");
+  assert.equal(records[0].company, "");
+  assert.equal(records[1].company, "Contoso");
+  assert.equal(records[1].lang, "ja");
+  const summary = backend.summarizeWaitlist_(records, window);
+  assert.equal(summary.newCount, 2);
+  assert.deepEqual(plain(summary.newRows.map(({ name, role }) => ({ name, role }))),
+    [{ name: "Alice", role: "CEO" }, { name: "Maya Tanaka", role: "Head of IT" }]);
+  assert.deepEqual(rows, before);
+});
+
 test("collection validates all three sheet schemas; only sendDailyReport sends", () => {
   const rowsFor = (columns, records) => [
     Array.from(columns, (column) => column[1]),
@@ -292,6 +325,7 @@ test("collection validates all three sheet schemas; only sendDailyReport sends",
   ];
   const makeSheet = (rows) => ({
     getLastRow: () => rows.length,
+    getLastColumn: () => Math.max(0, ...rows.map((row) => row.length)),
     getRange(start, column, height, width) {
       return { getValues: () => rows.slice(start - 1, start - 1 + height)
         .map((row) => row.slice(column - 1, column - 1 + width)) };

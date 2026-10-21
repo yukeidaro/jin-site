@@ -44,6 +44,7 @@ const files = [
   "agent/content.json",
   "brand/jin-mark.svg",
   "brand/jin-mark-white.svg",
+  "brand/jin-mark-email.png",
   "assets/demo/app.html",
   "assets/demo/app/jin-logo.webp",
   "assets/demo/app/cursor.webp",

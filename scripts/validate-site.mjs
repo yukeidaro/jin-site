@@ -66,6 +66,7 @@ const expectedFiles = [
   "base.css",
   "brand/jin-mark.svg",
   "brand/jin-mark-white.svg",
+  "brand/jin-mark-email.png",
   "company/index.html",
   "copy.js",
   "en/index.html",
@@ -99,6 +100,13 @@ const expectedFiles = [
 
 const deployedFiles = await listFiles(site);
 check(JSON.stringify(deployedFiles) === JSON.stringify(expectedFiles), `Unexpected Pages artifact: ${deployedFiles.join(", ")}`);
+
+const emailLogo = await readFile(path.join(site, "brand", "jin-mark-email.png"));
+check(emailLogo.length < 20 * 1024 &&
+  emailLogo.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])) &&
+  emailLogo.toString("ascii", 12, 16) === "IHDR" &&
+  emailLogo.readUInt32BE(16) === 272 && emailLogo.readUInt32BE(20) === 80,
+  "The email logo must be a 272 x 80 PNG (2x its 136 x 40 email size) below 20 KB.");
 
 const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson, privacy, accessibility, japanesePrivacy, japaneseAccessibility, security, company, harness, japaneseSecurity, japaneseCompany, japaneseHarness] = await Promise.all([
   text("index.html"),
