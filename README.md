@@ -507,6 +507,15 @@ reuse their ID. Validation/transport failures keep that step's data and do
 not show success. The existing demo success and delivery states are retained.
 Both `#demo` (section) and `#waitlist` (inner wrapper) remain valid entry links;
 neither bypasses the waitlist. No survey was added or removed.
+R13d adds `/#request-demo` and `/ja/#request-demo` for the waitlist email's
+demo button. Opening either link, or changing the hash to `#request-demo`,
+reveals all nine required fields together and submits only a demo request
+with the existing demo consent. Initial navigation keeps native fragment
+focus; Tab reaches the first name control (surname first in Japanese).
+Hash changes focus that control directly. This path does not create a
+waitlist signup or send a waitlist email.
+The optional demo after signup still focuses Phone; retries, delivery states
+and completed-demo handling remain unchanged.
 The existing demo-only purpose notice is retained pending Yu's copy approval;
 the form still links to `privacy/`.
 There is no post-request survey.
@@ -631,6 +640,10 @@ Text cells are protected against formulas. A script lock prevents simultaneous
 retries from duplicating a row or confirmation. A new request ID is a separate
 intentional demo request, even if the email is the same, so later company
 details are not silently discarded.
+All managed text columns in Waitlist, Demo requests and Survey are converted
+to strings when read, including numbers and booleans coerced by Sheets.
+Date handling and numeric attempt counts are unchanged. This applies to
+lookups and retry scans without moving or rewriting existing rows.
 
 R13c uses Yu's revised 2026-10-21 waitlist copy in matching plain-text and branded
 HTML alternatives. Subjects are unchanged and include the first name in English
@@ -658,7 +671,7 @@ values are control-character-free.
 
 Both emails use a white card, grey background, black logo band and localized
 Privacy Policy link. Only the waitlist email has a vermilion demo button
-(`/#demo` or `/ja/#demo`) and reply-to-unsubscribe line.
+(`/#request-demo` or `/ja/#request-demo`) and reply-to-unsubscribe line.
 The demo email says we will email to find a time, not that a time is booked.
 Neither contains a community invite or postal address block. No marketing
 consent is requested or recorded for demos. Someone registering and then
@@ -739,6 +752,13 @@ The runner closes only its own Chrome instance and removes its profile.
 Stop the local server after review. See `r13b.md` for commands, exact results
 and the screenshot inventory. No package install, commit, push or deployment
 is part of this local review.
+
+For R13d direct-demo coverage, run
+`node .copilot-runs\notes\r13d-browser.mjs` against the same local port.
+It validates intercepted demo payloads with the actual backend validator,
+checks direct/hash-change entry and failure retries, and saves bilingual
+1440px/390px screenshots plus 375px overflow evidence under `r13d-*`.
+The email preview command above also refreshes the new button links.
 
 ## Deployment boundary
 

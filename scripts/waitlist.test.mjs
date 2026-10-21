@@ -126,7 +126,7 @@ function sheetFixture(headers = null) {
         setFontWeight(weight) { sheet.headerWeight = weight; return range; },
         createTextFinder(value) {
           const matches = rows.slice(start - 1, start - 1 + height)
-            .flatMap((row, i) => row[column - 1] === value ? [{ getRow: () => start + i }] : []);
+            .flatMap((row, i) => String(row[column - 1]) === value ? [{ getRow: () => start + i }] : []);
           const finder = {
             matchEntireCell: () => finder,
             useRegularExpression: () => finder,
@@ -315,7 +315,7 @@ for (const type of ["waitlist", "demo"]) {
       const closing = ja ? "Tanaka様にJin AIをお試しいただける日を楽しみにしております。" :
         "We look forward to having you try Jin AI, Maya!";
       const blocks = [heading, salutation, ...approvedBodies[type][lang]];
-      if (!demo) blocks.push(`${button}\r\n${home}#demo`, closing);
+      if (!demo) blocks.push(`${button}\r\n${home}#request-demo`, closing);
       blocks.push("Yu Asano\r\nFounder, Jin AI", `jinai.md: ${home}\r\n${privacy}: ${home}privacy/`);
       if (!demo) blocks.push(unsubscribe);
       assert.equal(email.subject, subject);
@@ -346,7 +346,8 @@ for (const type of ["waitlist", "demo"]) {
       assert.match(email.html, /background:#000000/);
       assert.ok(email.html.includes('<img src="https://jinai.md/brand/jin-mark-email.png" width="136" height="40" alt="Jin AI"'));
       assert.ok(email.html.includes(`<a href="${home}privacy/"`));
-      assert.equal(email.html.includes(`href="${home}#demo"`), !demo);
+      assert.equal(email.html.includes(`href="${home}#request-demo"`), !demo);
+      assert.doesNotMatch(email.text + email.html, /#demo\b/);
       assert.equal(email.html.includes("background:#A84A1C"), !demo);
       assert.equal(email.text.includes("unsubscribe"), !demo);
       assert.equal(email.html.includes("unsubscribe"), !demo);
@@ -406,14 +407,14 @@ for (const lang of ["en", "ja"]) {
     const expected = lang === "ja" ? [
       "ウェイトリストへのご登録ありがとうございます！", "Example Tester様",
       ...approvedBodies.waitlist.ja.map((paragraph) => paragraph.replaceAll("Tanaka様", "Example Tester様")),
-      "デモを申し込む\r\nhttps://jinai.md/ja/#demo",
+      "デモを申し込む\r\nhttps://jinai.md/ja/#request-demo",
       "Example Tester様にJin AIをお試しいただける日を楽しみにしております。",
       "Yu Asano\r\nFounder, Jin AI",
       "jinai.md: https://jinai.md/ja/\r\nプライバシーポリシー: https://jinai.md/ja/privacy/",
       "配信停止をご希望の場合は、「unsubscribe」と返信してください。"
     ] : [
       "You're on the waitlist!", "Hi Example,", "Thanks for your interest in Jin AI!",
-      ...approvedBodies.waitlist.en.slice(1), "Request a demo\r\nhttps://jinai.md/#demo",
+      ...approvedBodies.waitlist.en.slice(1), "Request a demo\r\nhttps://jinai.md/#request-demo",
       "We look forward to having you try Jin AI, Example!", "Yu Asano\r\nFounder, Jin AI",
       "jinai.md: https://jinai.md/\r\nPrivacy Policy: https://jinai.md/privacy/",
       "To stop receiving emails, reply with 'unsubscribe'."
@@ -583,6 +584,97 @@ test("missing or duplicate required headers fail explicitly rather than writing 
     assert.deepEqual(rows, before);
   }
 });
+
+for (const [name, columns] of [
+  ["Waitlist", backend.WAITLIST_COLUMNS], ["Demo requests", backend.DEMO_COLUMNS], ["Survey", backend.SURVEY_COLUMNS]
+]) {
+  test(`${name} reads every text column as a string, preserving dates and attempt counts`, () => {
+    const headers = Array.from(columns, column => column[1]).reverse();
+    headers.splice(2, 0, "Private calculation");
+    const { sheet, rows } = sheetFixture(headers);
+    backend.PropertiesService = { getScriptProperties: () => ({ getProperty: () => "sheet-id" }) };
+    backend.SpreadsheetApp = { openById: () => ({ getSheetByName: () => sheet }), flush() {} };
+    const store = backend.sheetStore_(name, columns);
+    const date = vm.runInContext('new Date("2026-10-21T02:00:00Z")', backend);
+    const dateKeys = ["createdAt", "answeredAt", "updatedAt", "lastAttemptAt", "nextAttemptAt", "sentAt"];
+    for (const value of [1688, true, false, 0, "", null, undefined]) {
+      const row = headers.map(header => {
+        const key = columns.find(column => column[1] === header)?.[0];
+        return dateKeys.includes(key) ? date : key === "attempts" ? 2 : value;
+      });
+      row[headers.indexOf("Request ID")] = "1688";
+      rows[1] = row;
+      const before = rows.map(cells => cells.slice());
+      const record = store.find("requestId", "1688");
+      for (const [key] of columns) {
+        if (dateKeys.includes(key)) assert.equal(record[key], date.toISOString(), key);
+        else if (key === "attempts") assert.equal(record[key], 2);
+        else assert.equal(record[key], key === "requestId" ? "1688" : String(value ?? ""), key);
+      }
+      assert.deepEqual(rows, before, "Reading must not rewrite existing cells.");
+    }
+    rows[1][headers.indexOf("Request ID")] = 1688;
+    assert.equal(store.find("requestId", "1688").requestId, "1688");
+    rows[1][headers.indexOf("Email")] = 5551234;
+    assert.equal(store.find("email", "5551234").email, "5551234");
+    if (name === "Survey") {
+      rows[1][headers.indexOf("Survey ID")] = 1688;
+      assert.equal(store.findBy("5551234", "1688").requestId, "1688");
+    }
+  });
+}
+
+for (const type of ["waitlist", "demo"]) {
+  for (const lang of ["en", "ja"]) {
+    test(`${type}/${lang} retries coerced sheet text, composes mail and deduplicates by ID and email`, () => {
+      const columns = type === "demo" ? backend.DEMO_COLUMNS : backend.WAITLIST_COLUMNS;
+      const headers = Array.from(columns, column => column[1]);
+      const { sheet, rows } = sheetFixture(headers);
+      backend.PropertiesService = { getScriptProperties: () => ({ getProperty: () => "sheet-id" }) };
+      backend.SpreadsheetApp = { openById: () => ({ getSheetByName: () => sheet }), flush() {} };
+      backend.LockService = { getScriptLock: () => ({ tryLock: () => true, releaseLock() {} }) };
+      const f = fixture();
+      f.deps.store = backend.sheetStore_(type === "demo" ? "Demo requests" : "Waitlist", columns);
+      f.deps.reserveEmail = () => false;
+      const payload = (type === "demo" ? demoInput : waitlistInput)({
+        firstName: "1688", lastName: "0", company: "TRUE", jobTitle: "FALSE", phone: "5551234", lang
+      });
+      const register = type === "demo" ? backend.registerDemo_ : backend.registerWaitlist_;
+      assert.equal(register(payload, f.deps).welcome, "pending");
+      for (const [key, value] of [
+        ["firstName", 1688], ["lastName", 0], ["company", true],
+        [type === "demo" ? "jobTitle" : "role", false], ...(type === "demo" ? [["phone", 5551234]] : [])
+      ]) {
+        rows[1][headers.indexOf(columns.find(column => column[0] === key)[1])] = value;
+      }
+      assert.equal(register(payload, f.deps).welcome, "pending");
+      assert.equal(rows.length, 2, "A request-ID retry must not append a duplicate.");
+      if (type === "waitlist") {
+        assert.equal(register({ ...payload, requestId: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb" }, f.deps).welcome, "pending");
+        assert.equal(rows.length, 2, "The same waitlist email must not append a duplicate.");
+      }
+      let sends = 0;
+      f.deps.sender.send = record => {
+        sends++;
+        const email = decodedMime(type === "demo" ? backend.demoMime_(record) : backend.welcomeMime_(record), type);
+        assert.ok(email.subject.startsWith(lang === "ja" ? "0様" : "1688,"));
+        assert.ok(email.text.includes(lang === "ja" ? "true\r\n0様" : "Hi 1688,"));
+        assert.ok(email.html.includes(lang === "ja" ? "true<br>0様" : "Hi 1688,"));
+        assert.equal(record[type === "demo" ? "jobTitle" : "role"], "false");
+        if (type === "demo") assert.equal(record.phone, "5551234");
+        return "coerced-text-message";
+      };
+      f.advance(15 * 60 * 1000);
+      f.deps.reserveEmail = () => true;
+      backend.retryPendingEmails_(f.deps);
+      assert.equal(sends, 1);
+      assert.equal(register(payload, f.deps).welcome, "sent");
+      backend.retryPendingEmails_(f.deps);
+      assert.equal(sends, 1);
+      assert.equal(rows.length, 2);
+    });
+  }
+}
 
 test("Japanese waitlist retries keep the saved company, surname, language and one-mail guarantee", () => {
   const f = fixture();
@@ -1542,7 +1634,7 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
   }
 });
 
-async function clientFixture(t, fetchImpl, configured = true, language, flow = "demo") {
+async function clientFixture(t, fetchImpl, configured = true, language, flow = "demo", hash = "") {
   const html = await readFile(new URL(
     language?.startsWith("ja") ? "../ja/index.html" : "../index.html", import.meta.url), "utf8");
   const formHtml = html.match(/<form\b[^>]*\bid="waitlistForm"[^>]*>[\s\S]*?<\/form>/)[0];
@@ -1552,6 +1644,10 @@ async function clientFixture(t, fetchImpl, configured = true, language, flow = "
   const errorLogs = [];
   const document = {
     documentElement: { lang: language },
+    defaultView: {
+      location: { hash },
+      addEventListener: (name, listener) => listeners.set(`window:${name}`, listener)
+    },
     getElementById: (id) => elements.get(id), activeElement: null
   };
   function element(id, attributes = {}) {
@@ -1596,11 +1692,12 @@ async function clientFixture(t, fetchImpl, configured = true, language, flow = "
     assert.ok(html.includes(`id="${id}"`));
     element(id, { hidden: id === "waitlistStatus" || id === "waitlistDone" });
   }
-  element("demoFields", { hidden: true, disabled: true });
+  element("demoFields", { hidden: flow === "waitlist", disabled: flow === "waitlist" });
   element("demoOffer", { hidden: true });
   element("openDemo", { textContent: "Request a demo" });
   t.mock.method(globalThis, "FormData", function MockFormData() {
-    this.get = (name) => controls.get(name)?.value ?? null;
+    this.get = (name) => elements.get("demoFields").disabled &&
+      ["phone", "industry", "companySize", "country"].includes(name) ? null : controls.get(name)?.value ?? null;
   });
   t.mock.method(console, "error", (...args) => errorLogs.push(args));
   initializeWaitlist(document, { fetchImpl });
@@ -1612,8 +1709,144 @@ async function clientFixture(t, fetchImpl, configured = true, language, flow = "
     },
     submit: () => listeners.get("submit")({ preventDefault() {} }),
     openDemo: () => listeners.get("openDemo:click")(),
+    setHash(value) {
+      document.defaultView.location.hash = value;
+      listeners.get("window:hashchange")?.();
+    },
     input: (name) => listeners.get("input")({ target: controls.get(name) })
   };
+}
+
+for (const language of ["en", "ja"]) {
+  for (const entry of ["initial", "hashchange"]) {
+    test(`direct demo ${entry} in ${language} shows all fields and sends only one validated demo and confirmation`, async (t) => {
+      const fBackend = fixture();
+      let requests = 0;
+      const f = await clientFixture(t, async (_url, options) => {
+        const payload = JSON.parse(options.body);
+        requests++;
+        assert.equal(payload.type, "demo");
+        assert.equal(payload.lang, language);
+        assert.equal(payload.consentVersion, CONSENT_VERSION);
+        assert.equal(Object.keys(backend.validateDemo_(payload)).length, 13);
+        return { ok: true, json: async () => backend.registerDemo_(payload, fBackend.deps) };
+      }, true, language, "waitlist", entry === "initial" ? "#request-demo" : "#demo");
+      if (entry === "hashchange") {
+        assert.equal(f.elements.get("demoFields").hidden, true);
+        f.controls.get("company").value = "Already entered";
+        f.setHash("#request-demo");
+        assert.equal(f.controls.get("company").value, "Already entered");
+        f.controls.get("company").value = "";
+      }
+      assert.equal(f.elements.get("demoFields").hidden, false);
+      assert.equal(f.elements.get("demoFields").disabled, false);
+      assert.equal(f.elements.get("demoOffer").hidden, true);
+      assert.equal(f.button.textContent, f.elements.get("openDemo").textContent);
+      if (entry === "hashchange") {
+        assert.equal(f.document.activeElement.id, language === "ja" ? "demo-lastName" : "demo-firstName");
+      } else assert.equal(f.document.activeElement, null, "Initial navigation retains native fragment focus.");
+      await f.submit();
+      assert.equal(requests, 0);
+      for (const [name, control] of f.controls) {
+        if (name !== "website") assert.equal(control.getAttribute("aria-invalid"), "true", name);
+      }
+      f.fill();
+      await f.submit();
+      assert.equal(requests, 1);
+      assert.equal(fBackend.records.length, 1);
+      assert.equal(fBackend.sends(), 1);
+      assert.equal(f.form.hidden, true);
+      assert.equal(f.elements.get("demoOffer").hidden, true);
+      assert.equal(f.elements.get("waitlistHeading").textContent, describeResult(response(), language).heading);
+      assert.equal(f.document.activeElement.id, "waitlistDone");
+      f.setHash("#demo");
+      f.setHash("#request-demo");
+      assert.equal(f.form.hidden, true, "Hash navigation must not reopen a completed demo.");
+      assert.equal(requests, 1);
+    });
+  }
+}
+
+for (const hash of ["", "#demo", "#waitlist"]) {
+  test(`${JSON.stringify(hash)} still enters the waitlist step`, async (t) => {
+    const f = await clientFixture(t, async (_url, options) => {
+      const payload = JSON.parse(options.body);
+      assert.equal(payload.type, "waitlist");
+      assert.equal(payload.consentVersion, WAITLIST_CONSENT_VERSION);
+      return { ok: true, json: async () => ({ ...response(), requestId: payload.requestId }) };
+    }, true, "en", "waitlist", hash);
+    assert.equal(f.elements.get("demoFields").disabled, true);
+    assert.equal(f.elements.get("demoFields").hidden, true);
+    f.fill();
+    await f.submit();
+    assert.equal(f.elements.get("demoOffer").hidden, false);
+  });
+}
+
+test("a direct-demo hash change waits for an in-flight waitlist request before switching steps", async (t) => {
+  let resolve;
+  const f = await clientFixture(t, (_url, options) => new Promise(done => {
+    const payload = JSON.parse(options.body);
+    assert.equal(payload.type, "waitlist");
+    resolve = () => done({ ok: true, json: async () => ({ ...response(), requestId: payload.requestId }) });
+  }), true, "en", "waitlist");
+  f.fill();
+  const submission = f.submit();
+  f.setHash("#request-demo");
+  assert.equal(f.elements.get("demoFields").hidden, true);
+  assert.equal(f.button.disabled, true);
+  resolve();
+  await submission;
+  assert.equal(f.elements.get("demoFields").hidden, false);
+  assert.equal(f.elements.get("demoOffer").hidden, true);
+  assert.equal(f.form.hidden, false);
+  assert.equal(f.controls.get("company").value, "Example Company");
+  assert.equal(f.button.textContent, "Request a demo");
+  assert.equal(f.document.activeElement.id, "demo-firstName");
+});
+
+for (const entry of ["initial", "hashchange"]) {
+  test(`direct demo ${entry} keeps an unconfigured endpoint explicitly unavailable`, async (t) => {
+    const f = await clientFixture(t, async () => assert.fail("Unavailable forms must not submit"),
+      false, "en", "waitlist", entry === "initial" ? "#request-demo" : "#demo");
+    if (entry === "hashchange") f.setHash("#request-demo");
+    assert.equal(f.elements.get("demoFields").hidden, false);
+    assert.equal(f.button.disabled, true);
+    assert.equal(f.elements.get("waitlistStatus").hidden, false);
+    assert.equal(f.elements.get("waitlistStatus").textContent,
+      "Demo requests are temporarily unavailable. Please email hello@jinai.md.");
+  });
+}
+
+for (const failure of ["not_saved", "unknown", "transport", "mismatched"]) {
+  test(`direct demo ${failure} retains data, honest status and the request ID on retry`, async (t) => {
+    const payloads = [];
+    const f = await clientFixture(t, async (_url, options) => {
+      const payload = JSON.parse(options.body);
+      payloads.push(payload);
+      if (payloads.length === 1) {
+        if (failure === "transport") throw new Error("Offline");
+        return { ok: true, json: async () => ({
+          ...response(failure === "not_saved" ? "not_saved" : "unknown", "not_attempted", "busy"),
+          requestId: failure === "mismatched" ? "wrong" : payload.requestId
+        }) };
+      }
+      return { ok: true, json: async () => ({ ...response(), requestId: payload.requestId }) };
+    }, true, "en", "waitlist", "#request-demo");
+    f.fill();
+    await f.submit();
+    assert.equal(f.form.hidden, false);
+    assert.equal(f.elements.get("demoFields").disabled, false);
+    assert.equal(f.elements.get("demoOffer").hidden, true);
+    assert.equal(f.controls.get("company").value, "Example Company");
+    if (!f.elements.get("waitlistDone").hidden) {
+      assert.notEqual(f.elements.get("waitlistRegistration").textContent, "Saved");
+    } else assert.equal(f.elements.get("waitlistStatus").dataset.kind, "error");
+    await f.submit();
+    assert.equal(payloads[0].type, "demo");
+    assert.equal(payloads[1].requestId, payloads[0].requestId);
+    assert.equal(f.form.hidden, true);
+  });
 }
 
 test("client validation rejects every invalid field and accepts a valid phone with listed choices", async () => {

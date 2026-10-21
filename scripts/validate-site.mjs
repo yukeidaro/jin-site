@@ -1482,6 +1482,8 @@ check(home.includes('id="waitlist"') && home.includes('id="demoOffer" hidden') &
   home.includes('<h3 id="demoQuestion">Want a demo too?</h3>') &&
   home.includes('id="openDemo" type="button" aria-controls="waitlistForm" aria-expanded="false">Request a demo</button>'),
   "Both form anchors and the initially hidden optional demo offer must remain available.");
+check([home, japanese].every(page => page.includes('<div class="demo-form" id="request-demo">')),
+  "Both home pages must retain the direct-demo anchor on the shared form wrapper.");
 check(hero.includes(`<a class="btn btn-p" href="#demo">${access.hero_label}</a>`),
   "The hero CTA must jump to the demo form.");
 check(demoSection.includes(`<p class="waitnote">${access.note}</p>`), "The demo form must retain its generated note.");

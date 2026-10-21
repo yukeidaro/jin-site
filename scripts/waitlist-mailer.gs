@@ -502,7 +502,10 @@ function sheetStore_(sheetName, columns) {
     var record = { row: number };
     columns.forEach(function (column, i) {
       var value = cells[indexes[i]];
-      record[column[0]] = value instanceof Date ? value.toISOString() : value;
+      // Sheets can coerce text such as 1688 and TRUE into numbers and booleans.
+      record[column[0]] = column[0] === 'attempts' || /At$/.test(column[0]) ?
+        (value instanceof Date ? value.toISOString() : value) :
+        String(value === undefined || value === null ? '' : value);
     });
     return record;
   }
@@ -707,7 +710,7 @@ function requestEmail_(record, type) {
     button: demo ? '' : (ja ? 'デモを申し込む' : 'Request a demo'),
     closing: demo ? '' : (ja ? last + '様にJin AIをお試しいただける日を楽しみにしております。' :
       'We look forward to having you try Jin AI, ' + first + '!'),
-    demoUrl: home + '#demo',
+    demoUrl: home + '#request-demo',
     home: home,
     privacy: ja ? 'プライバシーポリシー' : 'Privacy Policy',
     privacyUrl: home + 'privacy/',

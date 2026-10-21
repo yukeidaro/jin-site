@@ -275,22 +275,38 @@ export function initializeWaitlist(document, dependencies = {}) {
   let fingerprint = null;
   let savedValues = null;
 
-  if (waitlistFlow) openDemo.addEventListener("click", () => {
-    if (!savedValues || pending || step !== "waitlist") return;
+  function showDemo(values, focusName) {
+    if (pending || step !== "waitlist") return;
     step = "demo";
-    for (const name of WAITLIST_FIELDS) fields[name].control.value = savedValues[name];
+    if (values) {
+      for (const name of WAITLIST_FIELDS) fields[name].control.value = values[name];
+    }
     extra.disabled = false;
     extra.hidden = false;
     done.hidden = true;
     offer.hidden = true;
-    status.hidden = true;
+    if (isAppsScriptEndpoint(endpoint)) status.hidden = true;
     form.hidden = false;
     originalLabel = openDemo.textContent;
     button.textContent = originalLabel;
     openDemo.setAttribute("aria-expanded", "true");
     showFieldErrors({});
-    fields.phone.control.focus();
-  });
+    if (focusName) fields[focusName].control.focus();
+  }
+
+  function openDirectDemo(focus = true) {
+    if (waitlistFlow && document.defaultView?.location.hash === "#request-demo") {
+      showDemo(null, focus ? fieldNames[0] : null);
+    }
+  }
+
+  if (waitlistFlow) {
+    openDemo.addEventListener("click", () => {
+      if (savedValues) showDemo(savedValues, "phone");
+    });
+    document.defaultView?.addEventListener("hashchange", () => openDirectDemo());
+    openDirectDemo(false);
+  }
 
   function showFieldErrors(errors) {
     let firstInvalid = null;
@@ -402,6 +418,7 @@ export function initializeWaitlist(document, dependencies = {}) {
       button.disabled = false;
       button.textContent = originalLabel;
       form.removeAttribute("aria-busy");
+      openDirectDemo();
       if (!form.hidden && document.activeElement === document.body) button.focus();
     }
   });
