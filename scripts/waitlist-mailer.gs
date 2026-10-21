@@ -493,7 +493,9 @@ function sheetStore_(sheetName, columns) {
     // Write only managed columns, leaving any extra cells and formulas untouched.
     writeGroups.forEach(function (group) {
       target.getRange(record.row, group[0].index + 1, 1, group.length)
-        .setValues([group.map(function (column) { return safeCell_(record[column.key]); })]);
+        .setValues([group.map(function (column) {
+          return safeCell_(record[column.key], column.key !== 'attempts' && !/At$/.test(column.key));
+        })]);
     });
     SpreadsheetApp.flush();
   }
@@ -564,7 +566,9 @@ function sheetStore_(sheetName, columns) {
   };
 }
 
-function safeCell_(value) {
+function safeCell_(value, textColumn) {
+  // Sheets consumes this escape on write, preserving text without coercion or formulas.
+  if (textColumn) return "'" + String(value === undefined || value === null ? '' : value);
   if (typeof value === 'number') return value;
   var text = String(value === undefined || value === null ? '' : value);
   return /^[=+\-@]/.test(text) ? "'" + text : text;

@@ -99,6 +99,7 @@ function fixture() {
 
 function sheetFixture(headers = null) {
   const rows = headers ? [headers] : [];
+  const writes = [];
   let maxColumns = headers?.length || 26;
   const sheet = {
     frozenRows: 0,
@@ -118,7 +119,11 @@ function sheetFixture(headers = null) {
           values.forEach((cells, offset) => {
             const index = start - 1 + offset;
             const row = rows[index] || [];
-            cells.forEach((cell, i) => { row[column - 1 + i] = cell; });
+            cells.forEach((cell, i) => {
+              writes.push({ row: index + 1, column: column + i, value: cell });
+              // Model Sheets' text escape, not its locale-dependent coercion.
+              row[column - 1 + i] = typeof cell === "string" && cell.startsWith("'") ? cell.slice(1) : cell;
+            });
             rows[index] = row;
           });
           return range;
@@ -142,7 +147,7 @@ function sheetFixture(headers = null) {
     setColumnWidths() {},
     setColumnWidth() {}
   };
-  return { sheet, rows };
+  return { sheet, rows, writes };
 }
 
 function decodedMime(encoded, type) {
@@ -565,7 +570,7 @@ test("header-based reads, writes, retries and survey lookup preserve extra colum
     assert.equal(rows[1][2], "=1+1");
     if (name === "Survey") assert.equal(store.findBy("example@example.com", SURVEY_ID).answer, "D");
     else {
-      assert.equal(rows[1][headers.indexOf("Company")], "'+Safe company");
+      assert.equal(rows[1][headers.indexOf("Company")], "+Safe company");
       assert.equal(store.find("requestId", requestId).welcome, "sent");
       assert.equal(store.pending(Date.now()).length, 0);
     }
@@ -679,6 +684,96 @@ for (const type of ["waitlist", "demo"]) {
   }
 }
 
+for (const [name, columns] of [
+  ["Waitlist", backend.WAITLIST_COLUMNS], ["Demo requests", backend.DEMO_COLUMNS], ["Survey", backend.SURVEY_COLUMNS]
+]) {
+  test(`${name} escapes every text column on write without changing dates, counts or unmanaged cells`, () => {
+    const headers = Array.from(columns, column => column[1]).reverse();
+    headers.splice(2, 0, "Private calculation");
+    const { sheet, rows, writes } = sheetFixture(headers);
+    backend.PropertiesService = { getScriptProperties: () => ({ getProperty: () => "sheet-id" }) };
+    backend.SpreadsheetApp = { openById: () => ({ getSheetByName: () => sheet }), flush() {} };
+    const store = backend.sheetStore_(name, columns);
+    const historical = headers.map(() => "Historical value");
+    rows.push(historical.slice());
+    for (const value of ["09012345678", "007", "10-4", "3/4", "TRUE", "=1+1", "+123456", "-1", "@name", "'literal", "", 7, false]) {
+      const record = Object.fromEntries(Array.from(columns, ([key]) => [
+        key, key === "attempts" ? 2 : /At$/.test(key) ? "2026-10-21T02:00:00.000Z" : value
+      ]));
+      record.requestId = requestId;
+      store.append(record);
+      rows[record.row - 1][2] = "=1+1";
+      writes.length = 0;
+      store.update(record);
+      const saved = store.find("requestId", requestId);
+      for (const [key, header] of columns) {
+        const written = writes.find(cell => cell.column === headers.indexOf(header) + 1);
+        const text = key !== "attempts" && !/At$/.test(key);
+        assert.equal(written.value, text ? "'" + String(record[key]) : record[key], key);
+        assert.equal(saved[key], text ? String(record[key]) : record[key], key);
+      }
+      assert.equal(rows[record.row - 1][2], "=1+1");
+      assert.ok(writes.every(cell => cell.column !== 3 && cell.row === record.row));
+      assert.deepEqual(rows[1], historical, "No historical row may be rewritten.");
+      rows.pop();
+    }
+  });
+}
+
+for (const type of ["waitlist", "demo"]) {
+  for (const lang of ["en", "ja"]) {
+    test(`${type}/${lang} reads exact text back for retries and both email alternatives and subject`, () => {
+      const columns = type === "demo" ? backend.DEMO_COLUMNS : backend.WAITLIST_COLUMNS;
+      const headers = Array.from(columns, column => column[1]);
+      const { sheet, rows, writes } = sheetFixture(headers);
+      backend.PropertiesService = { getScriptProperties: () => ({ getProperty: () => "sheet-id" }) };
+      backend.SpreadsheetApp = { openById: () => ({ getSheetByName: () => sheet }), flush() {} };
+      backend.LockService = { getScriptLock: () => ({ tryLock: () => true, releaseLock() {} }) };
+      const f = fixture();
+      f.deps.store = backend.sheetStore_(type === "demo" ? "Demo requests" : "Waitlist", columns);
+      const register = type === "demo" ? backend.registerDemo_ : backend.registerWaitlist_;
+      for (const company of ["007", "TRUE", "<007 & TRUE>", "'literal", "=1+1"]) {
+        rows.splice(1);
+        writes.length = 0;
+        f.deps.reserveEmail = () => false;
+        const payload = (type === "demo" ? demoInput : waitlistInput)({
+          firstName: "10-4", lastName: "3/4", company, phone: "09012345678", lang
+        });
+        assert.equal(register(payload, f.deps).welcome, "pending");
+        const saved = f.deps.store.find("requestId", requestId);
+        for (const key of ["firstName", "lastName", "company", ...(type === "demo" ? ["phone"] : [])]) {
+          const column = columns.findIndex(([name]) => name === key) + 1;
+          assert.equal(writes.find(cell => cell.column === column).value, "'" + payload[key], key);
+          assert.equal(saved[key], payload[key], key);
+        }
+        let sends = 0;
+        f.deps.sender.send = record => {
+          sends++;
+          if (type === "demo") assert.equal(record.phone, "09012345678");
+          const mail = decodedMime(type === "demo" ? backend.demoMime_(record) : backend.welcomeMime_(record), type);
+          assert.equal(mail.subject, lang === "ja" ?
+            "3/4" + (type === "demo" ? "様、Jin AI のデモにお申し込みいただきありがとうございます" :
+              "様、Jin AI のウェイトリストにご登録いただきました") :
+            "10-4" + (type === "demo" ? ", thanks for requesting a Jin AI demo" : ", you're on the Jin AI waitlist"));
+          for (const [content, escaped] of [[mail.text, false], [mail.html, true]]) {
+            assert.ok(content.includes(lang === "ja" ? "3/4様" : "Hi 10-4,"));
+            assert.ok(content.includes(escaped ? backend.escapeEmailHtml_(company) : company));
+          }
+          assert.doesNotMatch(mail.html, /<007/);
+          return "text-preserved-message";
+        };
+        f.advance(15 * 60 * 1000);
+        f.deps.reserveEmail = () => true;
+        backend.retryPendingEmails_(f.deps);
+        assert.equal(register(payload, f.deps).welcome, "sent");
+        backend.retryPendingEmails_(f.deps);
+        assert.equal(sends, 1);
+        assert.equal(f.deps.store.find("requestId", requestId).company, company);
+      }
+    });
+  }
+}
+
 test("Japanese waitlist retries keep the saved company, surname, language and one-mail guarantee", () => {
   const f = fixture();
   f.deps.reserveEmail = () => false;
@@ -755,8 +850,8 @@ test("production waitlist then demo stores separate intents and sends both brand
     const headers = tabs.get("Waitlist").rows[0];
     const saved = tabs.get("Waitlist").rows[1];
     for (const [header, value] of [
-      ["Name", "'=Maya +Tanaka"], ["Role", "'-Head of IT"], ["First name", "'=Maya"],
-      ["Last name", "'+Tanaka"], ["Company", "'@Contoso"], ["Language", "ja"],
+      ["Name", "=Maya +Tanaka"], ["Role", "-Head of IT"], ["First name", "=Maya"],
+      ["Last name", "+Tanaka"], ["Company", "@Contoso"], ["Language", "ja"],
       ["Welcome email status", "sent"], ["Welcome attempts", 1], ["Gmail message ID", "mock-message-1"]
     ]) assert.equal(saved[headers.indexOf(header)], value, header);
   } finally {
@@ -1105,17 +1200,17 @@ test("Survey sheet lookups filter by survey ID and every written cell is formula
     answeredAt: "+today", email: "example@example.com", requestId: "=formula",
     surveyId: SURVEY_ID, answer: "A", answerLabel: "@formula", updatedAt: "-today"
   });
-  assert.equal(rows[1][0], "'+today");
-  assert.equal(rows[1][2], "'=formula");
-  assert.equal(rows[1][5], "'@formula");
-  assert.equal(rows[1][6], "'-today");
+  assert.equal(rows[1][0], "+today");
+  assert.equal(rows[1][2], "=formula");
+  assert.equal(rows[1][5], "@formula");
+  assert.equal(rows[1][6], "-today");
   store.append({ ...record, surveyId: "second-survey" });
   assert.equal(store.findBy("example@example.com", SURVEY_ID).row, 2);
   assert.equal(store.findBy("example@example.com", "second-survey").row, 3);
   assert.equal(store.findBy("someone@example.com", SURVEY_ID), null);
   record.answerLabel = "=updated";
   store.update(record);
-  assert.equal(rows[1][5], "'=updated");
+  assert.equal(rows[1][5], "=updated");
 });
 
 test("setupWaitlist creates Survey and Demo requests without changing existing sheets", () => {
@@ -1206,6 +1301,50 @@ test("client copy never conflates saving with sending", () => {
     assert.ok(describeResult(response(state, "not_attempted"), "ja").heading.endsWith("\u3002"));
   }
   assert.equal(describeResult(response("unknown", "not_attempted")).registration, "Not confirmed");
+});
+
+for (const language of ["en", "ja"]) {
+  test(`every waitlist-step error is demo-free in ${language} with approved busy and refresh wording`, () => {
+    const codes = [
+      "invalid_name", "invalid_email", "invalid_role", "invalid_first_name", "invalid_last_name",
+      "invalid_job_title", "invalid_phone", "invalid_company", "invalid_industry", "invalid_company_size",
+      "invalid_country", "invalid_consent", "invalid_input", "invalid_source", "invalid_request",
+      "invalid_request_id", "request_conflict", "busy", "storage_error", "storage_not_configured",
+      "storage_schema_mismatch", null, "unexpected_code"
+    ];
+    for (const code of codes) {
+      for (const state of ["not_saved", "unknown"]) {
+        const result = describeResult(response(state, "not_attempted", code), language, "waitlist");
+        assert.equal(result.saved, false);
+        for (const value of Object.values(result)) {
+          if (typeof value === "string") assert.doesNotMatch(value, /demo|デモ/i, String(code));
+        }
+        if (["busy", "storage_error", "storage_not_configured", "storage_schema_mismatch"].includes(code)) {
+          assert.equal(result.detail, language === "ja" ?
+            "ただいまご登録を保存できませんでした。少し待ってから、もう一度お試しください。" :
+            "We couldn't save your signup right now. Please try again in a moment.");
+        }
+        if (["invalid_consent", "invalid_source", "invalid_request", "invalid_request_id", "request_conflict"].includes(code)) {
+          assert.equal(result.detail, language === "ja" ?
+            "ページを再読み込みして、もう一度お試しください。" : "Please refresh the page and try again.");
+        }
+      }
+    }
+  });
+}
+
+test("demo-step busy, consent and source errors keep their original bilingual wording", () => {
+  for (const [code, english, japanese] of [
+    ["busy", "Demo requests are busy right now. Please try again in a moment.",
+      "ただいまお申し込みが混み合っています。少し待ってから、もう一度お試しください。"],
+    ["invalid_consent", "Please refresh the page before requesting a demo.",
+      "ページを再読み込みしてから、デモをお申し込みください。"],
+    ["invalid_source", "Please request a demo from jinai.md or email hello@jinai.md.",
+      "jinai.md からお申し込みいただくか、hello@jinai.md までご連絡ください。"]
+  ]) {
+    assert.equal(describeResult(response("not_saved", "not_attempted", code)).detail, english);
+    assert.equal(describeResult(response("not_saved", "not_attempted", code), "ja").detail, japanese);
+  }
 });
 
 test("POST uses readable CORS and no cookies, never no-cors or iframe load", async () => {
@@ -1605,7 +1744,7 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
       "=1+1, thanks for requesting a Jin AI demo");
     for (const field of ["firstName", "lastName", "jobTitle", "phone", "company", "country"]) {
       const index = columns.findIndex(([key]) => key === field);
-      assert.equal(rows[1][index], "'" + payload[field], field);
+      assert.equal(rows[1][index], payload[field], field);
     }
     assert.equal(rows[1][columns.findIndex(([key]) => key === "welcome")], "sent");
     const languageIndex = columns.findIndex(([key]) => key === "lang");
@@ -1682,7 +1821,8 @@ async function clientFixture(t, fetchImpl, configured = true, language, flow = "
     }
   }
   const button = element("submit", {
-    textContent: flow === "waitlist" ? "Join the waitlist" : "Request a demo", disabled: true
+    textContent: flow === "waitlist" ? (language === "ja" ? "ウェイトリストに登録" : "Join the waitlist") :
+      (language === "ja" ? "デモを申し込む" : "Request a demo"), disabled: true
   });
   const form = element("waitlistForm", {
     dataset: { endpoint: configured ? endpoint : "", flow },
@@ -1697,7 +1837,7 @@ async function clientFixture(t, fetchImpl, configured = true, language, flow = "
   }
   element("demoFields", { hidden: flow === "waitlist", disabled: flow === "waitlist" });
   element("demoOffer", { hidden: true });
-  element("openDemo", { textContent: "Request a demo" });
+  element("openDemo", { textContent: language === "ja" ? "デモを申し込む" : "Request a demo" });
   for (const id of ["waitlistNote", "demoNote"]) {
     const note = formHtml.match(new RegExp(`<p class="waitnote" id="${id}"( hidden)?>([^<]+)<\\/p>`));
     assert.ok(note, `Missing generated ${id}.`);
@@ -1832,6 +1972,76 @@ for (const hash of ["", "#demo", "#waitlist"]) {
     f.fill();
     await f.submit();
     assert.equal(f.elements.get("demoOffer").hidden, false);
+  });
+}
+
+for (const language of ["en", "ja"]) {
+  for (const hash of ["#demo", "#waitlist"]) {
+    test(`unsaved direct demo returns to ${hash} in ${language}, preserves values and reopens as a demo`, async (t) => {
+      const requests = [];
+      const f = await clientFixture(t, async (_url, options) => {
+        const payload = JSON.parse(options.body);
+        requests.push(payload);
+        return { ok: true, json: async () => ({ ...response(), requestId: payload.requestId }) };
+      }, true, language, "waitlist", "#request-demo");
+      f.fill();
+      f.controls.get("phone").value = "";
+      await f.submit();
+      assert.equal(f.controls.get("phone").getAttribute("aria-invalid"), "true");
+      f.setHash(hash);
+      assert.equal(f.elements.get("demoFields").hidden, true);
+      assert.equal(f.elements.get("demoFields").disabled, true);
+      assert.equal(f.elements.get("waitlistNote").hidden, false);
+      assert.equal(f.elements.get("demoNote").hidden, true);
+      assert.equal(f.elements.get("waitlistDone").hidden, true);
+      assert.equal(f.elements.get("waitlistStatus").hidden, true);
+      assert.equal(f.controls.get("phone").getAttribute("aria-invalid"), null);
+      assert.equal(f.button.textContent, language === "ja" ? "ウェイトリストに登録" : "Join the waitlist");
+      for (const name of WAITLIST_FIELDS) assert.equal(f.controls.get(name).value, demoInput()[name]);
+      f.setHash("#request-demo");
+      assert.equal(f.elements.get("demoFields").disabled, false);
+      assert.equal(f.elements.get("demoNote").hidden, false);
+      f.setHash(hash);
+      await f.submit();
+      assert.equal(requests.length, 1);
+      assert.equal(requests[0].type, "waitlist");
+      assert.equal(requests[0].consentVersion, WAITLIST_CONSENT_VERSION);
+      const heading = f.elements.get("waitlistHeading").textContent;
+      f.setHash(hash === "#demo" ? "#waitlist" : "#demo");
+      assert.equal(f.form.hidden, true);
+      assert.equal(f.elements.get("waitlistHeading").textContent, heading);
+    });
+  }
+  for (const type of ["waitlist", "demo"]) {
+    test(`a saved ${type} result survives waitlist anchors in ${language}`, async (t) => {
+      const f = await clientFixture(t, async (_url, options) => ({
+        ok: true, json: async () => ({ ...response(), requestId: JSON.parse(options.body).requestId })
+      }), true, language, "waitlist", type === "demo" ? "#request-demo" : "#waitlist");
+      f.fill();
+      await f.submit();
+      const heading = f.elements.get("waitlistHeading").textContent;
+      for (const hash of ["#demo", "#waitlist", ...(type === "demo" ? ["#request-demo"] : [])]) {
+        f.setHash(hash);
+        assert.equal(f.form.hidden, true);
+        assert.equal(f.elements.get("waitlistDone").hidden, false);
+        assert.equal(f.elements.get("waitlistHeading").textContent, heading);
+      }
+    });
+  }
+  test(`an unavailable waitlist uses the approved signup notice when switching steps in ${language}`, async (t) => {
+    const f = await clientFixture(t, async () => assert.fail("No live request"), false, language, "waitlist");
+    const notice = language === "ja" ?
+      "ただいまフォームからのご登録を受け付けていません。hello@jinai.md までご連絡ください。" :
+      "Signups are temporarily unavailable. Please email hello@jinai.md.";
+    assert.equal(f.elements.get("waitlistStatus").textContent, notice);
+    f.setHash("#request-demo");
+    assert.equal(f.elements.get("waitlistStatus").textContent, language === "ja" ?
+      "ただいまフォームからのお申し込みを受け付けていません。hello@jinai.md までご連絡ください。" :
+      "Demo requests are temporarily unavailable. Please email hello@jinai.md.");
+    f.setHash("#waitlist");
+    assert.equal(f.elements.get("waitlistStatus").textContent, notice);
+    assert.equal(f.button.disabled, true);
+    assert.equal(f.elements.get("waitlistStatus").hidden, false);
   });
 }
 

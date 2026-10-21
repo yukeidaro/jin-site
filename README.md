@@ -520,6 +520,10 @@ with the existing demo consent. Initial navigation keeps native fragment
 focus; Tab reaches the first name control (surname first in Japanese).
 Hash changes focus that control directly. This path does not create a
 waitlist signup or send a waitlist email.
+Before either step has been saved, changing from `#request-demo` to `#demo`
+or `#waitlist` restores the five-field waitlist step, its button and note.
+Entered values are retained, while the additional demo controls are hidden
+and disabled again. Waitlist anchors never reset a saved signup or demo result.
 The optional demo after signup still focuses Phone; retries, delivery states
 and completed-demo handling remain unchanged.
 R13e uses the approved waitlist-and-demo privacy notice in both form steps;
@@ -540,6 +544,8 @@ remains the same in both editable steps:
 "We use these details for waitlist updates and, if you request one, to arrange your demo. See our Privacy Policy." /
 "いただいた情報は、ウェイトリストのご案内と、ご希望の場合はデモの日程調整に使います。詳しくはプライバシーポリシーをご覧ください。"
 There is no post-request survey.
+Waitlist errors use signup-specific busy/unavailable wording and neutral
+refresh guidance, never demo wording. Demo-step error messages are unchanged.
 The Japanese form uses the same facts, endpoint, field names, select values and
 consent. It displays surname before given name, Japanese labels, and Japan
 before the United States. Other country labels are generated from ISO region
@@ -657,7 +663,13 @@ scope change does require re-authorization.
 The private `Demo requests` tab records created time, request ID, source,
 `demo-request-v1` consent, all nine form fields, language, confirmation status,
 attempts, last and next attempt time, sent time, Gmail message ID and last error code.
-Text cells are protected against formulas. A script lock prevents simultaneous
+Every managed text value is written with a leading apostrophe, which Sheets
+consumes as a text escape rather than including in read-back values. This
+prevents formula execution and preserves zero-leading phones, numeric-looking
+names/companies, date-like text and boolean-looking text on new writes and
+normal status updates. Date and numeric attempt columns retain their existing
+handling. No historical rows are migrated, reformatted or rewritten.
+A script lock prevents simultaneous
 retries from duplicating a row or confirmation. A new request ID is a separate
 intentional demo request, even if the email is the same, so later company
 details are not silently discarded.
@@ -665,6 +677,12 @@ All managed text columns in Waitlist, Demo requests and Survey are converted
 to strings when read, including numbers and booleans coerced by Sheets.
 Date handling and numeric attempt counts are unchanged. This applies to
 lookups and retry scans without moving or rewriting existing rows.
+The sheet mock verifies escaped writes and unchanged read-back/email values,
+but cannot prove real Google Sheets coercion. After deploying the mailer, a
+person should submit one test demo with phone `09012345678`, names `10-4`
+and `3/4`, and company `007` (then `TRUE` if checking both), and verify the
+sheet's exact text, retry read-back and confirmation values without a visible
+escape apostrophe. Existing confirmations intentionally do not include phones.
 
 R13c uses Yu's revised 2026-10-21 waitlist copy in matching plain-text and branded
 HTML alternatives. Subjects are unchanged and include the first name in English
@@ -788,6 +806,13 @@ and captures the waitlist form, direct demo, Security band, Company Contact and
 changed Privacy sections in both languages at 1440px and 390px. It also checks
 375px overflow and the no-JavaScript fallback. The screenshot inventory,
 commands and outcomes are recorded in `.copilot-runs/notes/r13e.md`.
+
+For R13f regression evidence, run `node .copilot-runs\notes\r13f-browser.mjs`
+against the built site on port 8793. It intercepts all form POSTs locally,
+checks bilingual direct-demo/return-to-waitlist navigation at 1440px and a
+waitlist busy error at 390px, and records screenshots and results under
+`.copilot-runs/notes/r13f-*`. Decisions and the post-deployment Sheets check
+are recorded in `r13f.md`.
 
 ## Deployment boundary
 

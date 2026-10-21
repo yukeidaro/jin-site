@@ -25,7 +25,19 @@ const validationMessages = {
   request_conflict: "This request ID belongs to a different request. Please refresh the page and try again.",
   busy: "Demo requests are busy right now. Please try again in a moment."
 };
+const waitlistValidationMessages = {
+  invalid_consent: "Please refresh the page and try again.",
+  invalid_source: "Please refresh the page and try again.",
+  invalid_request: "Please refresh the page and try again.",
+  request_conflict: "Please refresh the page and try again.",
+  busy: "We couldn't save your signup right now. Please try again in a moment.",
+  storage_error: "We couldn't save your signup right now. Please try again in a moment.",
+  storage_not_configured: "We couldn't save your signup right now. Please try again in a moment.",
+  storage_schema_mismatch: "We couldn't save your signup right now. Please try again in a moment."
+};
 const japaneseMessages = {
+  "We couldn't save your signup right now. Please try again in a moment.": "\u305f\u3060\u3044\u307e\u3054\u767b\u9332\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u5c11\u3057\u5f85\u3063\u3066\u304b\u3089\u3001\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002",
+  "Signups are temporarily unavailable. Please email hello@jinai.md.": "\u305f\u3060\u3044\u307e\u30d5\u30a9\u30fc\u30e0\u304b\u3089\u306e\u3054\u767b\u9332\u3092\u53d7\u3051\u4ed8\u3051\u3066\u3044\u307e\u305b\u3093\u3002hello@jinai.md \u307e\u3067\u3054\u9023\u7d61\u304f\u3060\u3055\u3044\u3002",
   "Please enter your name (up to 120 characters).": "\u304a\u540d\u524d\u3092 120 \u6587\u5b57\u4ee5\u5185\u3067\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
   "Please enter a valid email address.": "\u6b63\u3057\u3044\u30e1\u30fc\u30eb\u30a2\u30c9\u30ec\u30b9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
   "Please enter what you do (up to 160 characters).": "\u304a\u4ed5\u4e8b\u306e\u5185\u5bb9\u3092 160 \u6587\u5b57\u4ee5\u5185\u3067\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
@@ -154,7 +166,7 @@ export function describeResult(result, language = "en", type = "demo", email = "
       heading: result.registration === "not_saved" ? "Your request was not saved" : "Your request is not confirmed",
       registration: result.registration === "not_saved" ? "Not saved" : "Not confirmed",
       welcome: "Not sent",
-      detail: validationMessages[result.code] ||
+      detail: (type === "waitlist" && waitlistValidationMessages[result.code]) || validationMessages[result.code] ||
         "We could not confirm that your request was saved. Please try again; retries will not create duplicate requests.",
       kind: "error"
     }, language);
@@ -271,11 +283,21 @@ export function initializeWaitlist(document, dependencies = {}) {
   const choices = Object.fromEntries(["industry", "companySize", "country"].map((name) =>
     [name, [...fields[name].control.options].map((option) => option.value).filter(Boolean)]));
   const endpoint = form.dataset.endpoint;
+  const waitlistLabel = button.textContent;
   let originalLabel = button.textContent;
   let pending = false;
   let requestId = null;
   let fingerprint = null;
   let savedValues = null;
+
+  function showUnavailable() {
+    status.textContent = message(step === "waitlist" ?
+      "Signups are temporarily unavailable. Please email hello@jinai.md." :
+      "Demo requests are temporarily unavailable. Please email hello@jinai.md.");
+    status.dataset.kind = "pending";
+    status.hidden = false;
+    button.disabled = true;
+  }
 
   function showDemo(values, focusName) {
     if (pending || step !== "waitlist") return;
@@ -290,6 +312,7 @@ export function initializeWaitlist(document, dependencies = {}) {
     done.hidden = true;
     offer.hidden = true;
     if (isAppsScriptEndpoint(endpoint)) status.hidden = true;
+    else showUnavailable();
     form.hidden = false;
     originalLabel = openDemo.textContent;
     button.textContent = originalLabel;
@@ -298,9 +321,31 @@ export function initializeWaitlist(document, dependencies = {}) {
     if (focusName) fields[focusName].control.focus();
   }
 
-  function openDirectDemo(focus = true) {
-    if (waitlistFlow && document.defaultView?.location.hash === "#request-demo") {
+  function showWaitlist(focus) {
+    if (pending || step !== "demo" || savedValues || form.hidden) return;
+    step = "waitlist";
+    extra.disabled = true;
+    extra.hidden = true;
+    waitlistNote.hidden = false;
+    demoNote.hidden = true;
+    done.hidden = true;
+    offer.hidden = true;
+    if (isAppsScriptEndpoint(endpoint)) status.hidden = true;
+    else showUnavailable();
+    originalLabel = waitlistLabel;
+    button.textContent = originalLabel;
+    openDemo.setAttribute("aria-expanded", "false");
+    showFieldErrors({});
+    if (focus) fields[fieldNames[0]].control.focus();
+  }
+
+  function syncHash(focus = true) {
+    if (!waitlistFlow) return;
+    const hash = document.defaultView?.location.hash;
+    if (hash === "#request-demo") {
       showDemo(null, focus ? fieldNames[0] : null);
+    } else if (hash === "#demo" || hash === "#waitlist") {
+      showWaitlist(focus);
     }
   }
 
@@ -308,8 +353,8 @@ export function initializeWaitlist(document, dependencies = {}) {
     openDemo.addEventListener("click", () => {
       if (savedValues) showDemo(savedValues, "phone");
     });
-    document.defaultView?.addEventListener("hashchange", () => openDirectDemo());
-    openDirectDemo(false);
+    document.defaultView?.addEventListener("hashchange", () => syncHash());
+    syncHash(false);
   }
 
   function showFieldErrors(errors) {
@@ -329,10 +374,7 @@ export function initializeWaitlist(document, dependencies = {}) {
   }
 
   if (!isAppsScriptEndpoint(endpoint)) {
-    status.textContent = message("Demo requests are temporarily unavailable. Please email hello@jinai.md.");
-    status.dataset.kind = "pending";
-    status.hidden = false;
-    button.disabled = true;
+    showUnavailable();
     return;
   }
   button.disabled = false;
@@ -422,7 +464,7 @@ export function initializeWaitlist(document, dependencies = {}) {
       button.disabled = false;
       button.textContent = originalLabel;
       form.removeAttribute("aria-busy");
-      openDirectDemo();
+      syncHash();
       if (!form.hidden && document.activeElement === document.body) button.focus();
     }
   });
