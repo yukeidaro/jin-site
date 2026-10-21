@@ -346,6 +346,44 @@ ${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2)
 </script>`;
 }
 
+function renderFaqJsonLd(source) {
+  return `<script type="application/ld+json">
+${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${source.resources.agent_page}#webpage`,
+    url: source.resources.agent_page,
+    inLanguage: source.language,
+    isPartOf: { "@id": `${source.canonical_url}#website` },
+    publisher: { "@id": `${source.canonical_url}#organization` },
+    mainEntity: source.direct_answers.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  }, null, 2).replaceAll("<", "\\u003c")}
+</script>`;
+}
+
+function renderJapanesePageJsonLd(source, document) {
+  const url = document.match(/<link rel="canonical" href="([^"]+)">/)?.[1];
+  const name = document.match(/<title>([^<]+)<\/title>/)?.[1];
+  assert(url && name, "Japanese WebPage JSON-LD needs the page's canonical URL and title.");
+  return `<script type="application/ld+json">
+${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${url}#webpage`,
+    url,
+    name,
+    inLanguage: "ja",
+    isPartOf: { "@id": `${source.canonical_url}#website` },
+    about: { "@id": `${source.canonical_url}#organization` },
+    publisher: { "@id": `${source.canonical_url}#organization` }
+  }, null, 2).replaceAll("<", "\\u003c")}
+</script>`;
+}
+
 function renderAgent(source) {
   const problemPoints = source.problem.points.map((point) => `
     <li><strong>${escapeHtml(point.name)}:</strong> ${escapeHtml(point.description)}</li>`).join("");
@@ -547,7 +585,8 @@ async function writeText(filePath, text, eol) {
 
 async function updateGeneratedFile(filePath, transforms, title, script = false) {
   const { text: current, eol } = await readText(filePath);
-  const updated = transforms.reduce((document, [name, generated]) => replaceBlock(document, name, generated, script), current);
+  const updated = transforms.reduce((document, [name, generated]) =>
+    replaceBlock(document, name, typeof generated === "function" ? generated(document) : generated, script), current);
   const expected = title ? updated.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`) : updated;
 
   if (checkOnly) {
@@ -571,11 +610,13 @@ await updateGeneratedFile(path.join(root, "index.html"), [
 ]);
 
 await updateGeneratedFile(path.join(root, "ja", "index.html"), [
+  ["JSON_LD", document => renderJapanesePageJsonLd(data, document)],
   ["CTA_HERO", renderCta(data, { centred: false, language: "ja" })],
   ["CTA_FINAL", renderCta(data, { centred: true, language: "ja" })]
 ]);
 
 await updateGeneratedFile(path.join(root, "agent", "index.html"), [
+  ["JSON_LD", renderFaqJsonLd(data)],
   ["AGENT_CONTENT", renderAgent(data)]
 ], "Jin AI for agents | Product facts and status");
 
