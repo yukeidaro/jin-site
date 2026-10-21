@@ -245,7 +245,9 @@ export function initializeWaitlist(document, dependencies = {}) {
   const extra = document.getElementById("demoFields");
   const offer = document.getElementById("demoOffer");
   const openDemo = document.getElementById("openDemo");
-  if (waitlistFlow && (!extra || !offer || !openDemo)) {
+  const waitlistNote = document.getElementById("waitlistNote");
+  const demoNote = document.getElementById("demoNote");
+  if (waitlistFlow && (!extra || !offer || !openDemo || !waitlistNote || !demoNote)) {
     throw new Error("The waitlist form is missing its optional demo step.");
   }
   let step = waitlistFlow ? "waitlist" : "demo";
@@ -283,6 +285,8 @@ export function initializeWaitlist(document, dependencies = {}) {
     }
     extra.disabled = false;
     extra.hidden = false;
+    waitlistNote.hidden = true;
+    demoNote.hidden = false;
     done.hidden = true;
     offer.hidden = true;
     if (isAppsScriptEndpoint(endpoint)) status.hidden = true;

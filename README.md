@@ -49,8 +49,8 @@ Japanese copy (Yu, 2026-10-20); English pages remain English except for the
 Japanese footer language link. Japanese footer language links open the matching
 English twin and remember the choice using the shared handler. Each language links to its own Privacy and
 Accessibility pages from the footer.
-The approved legal text describes the demo request form and how its details
-are used to reply about the request.
+The approved legal text describes waitlist signups, access updates and optional
+demo requests, with phone numbers used only to arrange a demo.
 
 Every visible contact email uses the same selectable plain-text address and
 small Copy button, including legal pages, form notes and noscript fallbacks.
@@ -261,15 +261,20 @@ Both home and How it works closing headings read
 Company has one top H1, no repeated label, and the approved mission:
 "Our mission is to turn every company's AI into an asset it owns: secure,
 shared, and always up to date." / "私たちの使命は、会社のAIを、その会社の資産にすることです。安全に、みんなで使えて、いつも最新の状態で。".
-Matching Company descriptions use the same mission. The privacy policies
-state that phone is collected and used only to arrange the demo, matching
-the required form field. All other policy text is unchanged.
+Matching Company descriptions use the same mission. The privacy policies distinguish the five waitlist fields from the four
+additional demo fields. They cover confirmation and access updates, demo
+follow-up, processors and retention, and keep phone use limited to arranging
+the demo. Their update date is October 21, 2026.
 
 The closing home intro has a Getting started heading and two
-waitlist/private-beta notes supplied by Yu for E5. They are draft copy, not
-new product facts. R8 removes the trailing smiley from English item 2.
-The generated form note, privacy link, payload and consent
-remain unchanged. E5 component values and browser evidence are recorded in
+waitlist/private-beta notes supplied by Yu for E5. R13e applies the approved
+first item in both languages, explaining signup before the optional demo.
+R8 removes the trailing smiley from English item 2.
+R13e also applies the approved form, privacy, noscript, Security contact and
+LLM index copy. The Company Contact email and community line remain unchanged,
+with only the approved waitlist button and no additional sentence.
+Payloads, the privacy link, endpoint and consent are unchanged.
+E5 component values and browser evidence are recorded in
 `.copilot-runs/notes/e5.md`. Japanese pages share these components and
 the supplied Japanese notes. No page displays approval tags. The complete
 unapproved-copy register is `.copilot-runs/notes/e6c-unapproved-copy.md`;
@@ -433,9 +438,10 @@ recorded in `.copilot-runs/notes/j1.md`.
   your data. Do not claim that Jin AI does not read conversation histories.
 - R13b CTA (Yu, 2026-10-21): **Join the waitlist** / **ウェイトリストに登録**.
   After signup, **Request a demo** / **デモを申し込む** opens the optional demo.
-  Note: **We will email you to set up a demo.** This and the existing
-  demo-only prose/privacy notices remain unchanged pending Yu's copy approval;
-  all proposed bilingual changes are in `.copilot-runs/notes/r13b-copy-proposals.md`.
+  R13e applies all copy proposals approved by Yu on 2026-10-21 from
+  `.copilot-runs/notes/r13b-copy-proposals.md`.
+  Waitlist note: **We'll email you when access is ready. You can request a demo after joining.**
+  Demo note: **We'll email you to find a time.**
   The two steps use their existing separate consent versions and link to the Privacy Policy.
   Keep the endpoint and the legacy backend routes working for cached pages.
 - No prices anywhere on the site, including machine-readable formats.
@@ -516,8 +522,23 @@ Hash changes focus that control directly. This path does not create a
 waitlist signup or send a waitlist email.
 The optional demo after signup still focuses Phone; retries, delivery states
 and completed-demo handling remain unchanged.
-The existing demo-only purpose notice is retained pending Yu's copy approval;
+R13e uses the approved waitlist-and-demo privacy notice in both form steps;
 the form still links to `privacy/`.
+The generated notes are switched by the shared demo-opening handler, not
+duplicated in JavaScript:
+
+| Form state | English note | Japanese note |
+| --- | --- | --- |
+| Initial waitlist, including `#demo` and `#waitlist` | We'll email you when access is ready. You can request a demo after joining. | ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。 |
+| Direct `#request-demo`, initial navigation or hash change | We'll email you to find a time. | 日程の調整のため、こちらからメールでご連絡します。 |
+| Optional demo opened after a saved waitlist signup | We'll email you to find a time. | 日程の調整のため、こちらからメールでご連絡します。 |
+
+Validation and transport failures retain the active step's note. Saving a
+waitlist signup or demo request hides both notes with the form; the existing
+saved-request and email-delivery messages show instead. The privacy notice
+remains the same in both editable steps:
+"We use these details for waitlist updates and, if you request one, to arrange your demo. See our Privacy Policy." /
+"いただいた情報は、ウェイトリストのご案内と、ご希望の場合はデモの日程調整に使います。詳しくはプライバシーポリシーをご覧ください。"
 There is no post-request survey.
 The Japanese form uses the same facts, endpoint, field names, select values and
 consent. It displays surname before given name, Japanese labels, and Japan
@@ -729,8 +750,8 @@ alternatives; `r13-email-metrics.json` records dimensions, logo loading and
 no-horizontal-overflow and Japanese heading phrase assertions at 600, 390 and
 375 pixels. Original implementation results are in `.copilot-runs/notes/r13a.md`;
 the revised copy, checks and preview inventory are in `.copilot-runs/notes/r13c.md`.
-Sentence-ending contact Copy components have no detached trailing period,
-including the generated form notes and noscript fallbacks.
+Contact Copy components retain selectable email addresses. R13e's approved
+noscript fallbacks include their exact sentence-ending punctuation.
 After building `_site`, add `--contact` to the preview command to capture
 `r13c-contact-{en,ja}-{1440,390}.png` and `r13c-contact-metrics.json`.
 This optional mode starts and closes its own localhost server on an assigned
@@ -759,6 +780,14 @@ It validates intercepted demo payloads with the actual backend validator,
 checks direct/hash-change entry and failure retries, and saves bilingual
 1440px/390px screenshots plus 375px overflow evidence under `r13d-*`.
 The email preview command above also refreshes the new button links.
+
+For R13e copy evidence, run `node .copilot-runs\notes\r13e-browser.mjs`
+against port 8793 after building. The installed-Chrome runner intercepts all
+form POSTs locally, checks both note states and the optional demo transition,
+and captures the waitlist form, direct demo, Security band, Company Contact and
+changed Privacy sections in both languages at 1440px and 390px. It also checks
+375px overflow and the no-JavaScript fallback. The screenshot inventory,
+commands and outcomes are recorded in `.copilot-runs/notes/r13e.md`.
 
 ## Deployment boundary
 

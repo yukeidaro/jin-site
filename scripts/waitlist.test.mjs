@@ -427,12 +427,15 @@ for (const lang of ["en", "ja"]) {
   });
 }
 
-test("sentence-ending email copy controls have no detached trailing punctuation", async () => {
+test("email copy controls retain only the R13e-approved trailing punctuation", async () => {
   for (const page of ["index.html", "how-it-works/index.html", "security/index.html", "company/index.html",
     "privacy/index.html", "accessibility/index.html"]) {
     for (const prefix of ["../", "../ja/"]) {
       const html = await readFile(new URL(prefix + page, import.meta.url), "utf8");
-      assert.doesNotMatch(html, /class="email-contact"[\s\S]*?<\/button><\/span>\s*[.。]/,
+      const otherCopy = html.replace(/<noscript>[\s\S]*?<\/noscript>/g, "")
+        .replace("</button></span>. You can also join the waitlist and then request a demo.",
+          "</button></span> You can also join the waitlist and then request a demo.");
+      assert.doesNotMatch(otherCopy, /class="email-contact"[\s\S]*?<\/button><\/span>\s*[.。]/,
         prefix + page);
     }
   }
@@ -1695,6 +1698,11 @@ async function clientFixture(t, fetchImpl, configured = true, language, flow = "
   element("demoFields", { hidden: flow === "waitlist", disabled: flow === "waitlist" });
   element("demoOffer", { hidden: true });
   element("openDemo", { textContent: "Request a demo" });
+  for (const id of ["waitlistNote", "demoNote"]) {
+    const note = formHtml.match(new RegExp(`<p class="waitnote" id="${id}"( hidden)?>([^<]+)<\\/p>`));
+    assert.ok(note, `Missing generated ${id}.`);
+    element(id, { hidden: Boolean(note[1]), textContent: note[2] });
+  }
   t.mock.method(globalThis, "FormData", function MockFormData() {
     this.get = (name) => elements.get("demoFields").disabled &&
       ["phone", "industry", "companySize", "country"].includes(name) ? null : controls.get(name)?.value ?? null;
@@ -1718,6 +1726,50 @@ async function clientFixture(t, fetchImpl, configured = true, language, flow = "
 }
 
 for (const language of ["en", "ja"]) {
+  for (const entry of ["initial", "hashchange", "after-signup"]) {
+    test(`${entry} demo in ${language} replaces the waitlist note and retains it through validation and transport failure`, async (t) => {
+      let rejectDemo = true;
+      const f = await clientFixture(t, async (_url, options) => {
+        const payload = JSON.parse(options.body);
+        if (payload.type === "demo" && rejectDemo) throw new Error("Local transport failure");
+        return { ok: true, json: async () => ({ ...response(), requestId: payload.requestId }) };
+      }, true, language, "waitlist", entry === "initial" ? "#request-demo" : "#waitlist");
+      const waitlistNote = f.elements.get("waitlistNote");
+      const demoNote = f.elements.get("demoNote");
+      assert.equal(waitlistNote.textContent, language === "ja" ?
+        "ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。" :
+        "We'll email you when access is ready. You can request a demo after joining.");
+      assert.equal(demoNote.textContent, language === "ja" ?
+        "日程の調整のため、こちらからメールでご連絡します。" : "We'll email you to find a time.");
+      if (entry !== "initial") {
+        assert.equal(waitlistNote.hidden, false);
+        assert.equal(demoNote.hidden, true);
+        await f.submit();
+        assert.equal(waitlistNote.hidden, false, "Waitlist validation keeps the access-update note.");
+        if (entry === "after-signup") {
+          f.fill();
+          await f.submit();
+          assert.equal(f.form.hidden, true);
+          f.openDemo();
+        } else f.setHash("#request-demo");
+      }
+      assert.equal(waitlistNote.hidden, true);
+      assert.equal(demoNote.hidden, false);
+      f.controls.get("phone").value = "";
+      await f.submit();
+      assert.equal(f.controls.get("phone").getAttribute("aria-invalid"), "true");
+      assert.equal(demoNote.hidden, false);
+      f.fill();
+      await f.submit();
+      assert.equal(f.form.hidden, false);
+      assert.equal(f.elements.get("waitlistStatus").dataset.kind, "error");
+      assert.equal(waitlistNote.hidden, true);
+      assert.equal(demoNote.hidden, false);
+      rejectDemo = false;
+      await f.submit();
+      assert.equal(f.form.hidden, true, "Demo success hides both notes with the form.");
+    });
+  }
   for (const entry of ["initial", "hashchange"]) {
     test(`direct demo ${entry} in ${language} shows all fields and sends only one validated demo and confirmation`, async (t) => {
       const fBackend = fixture();

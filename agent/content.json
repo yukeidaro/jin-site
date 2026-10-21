@@ -175,9 +175,9 @@
   "early_access": {
     "status": "open",
     "label": "Join the waitlist",
-    "note": "We will email you to set up a demo.",
+    "note": "We'll email you when access is ready. You can request a demo after joining.",
     "hero_label": "Join the waitlist",
-    "hero_note": "We will email you to set up a demo.",
+    "hero_note": "We'll email you when access is ready. You can request a demo after joining.",
     "form": {
       "provider": "apps_script",
       "endpoint": "https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec",
@@ -188,7 +188,7 @@
         "fields": ["firstName", "lastName", "email", "jobTitle", "company"]
       },
       "privacy_url": "privacy/",
-      "privacy_note": "We use these details only to reply about your demo.",
+      "privacy_note": "We use these details for waitlist updates and, if you request one, to arrange your demo.",
       "fields": [
         { "name": "email", "label": "Work email", "type": "email", "required": true, "autocomplete": "email", "max_length": 254 },
         { "name": "firstName", "label": "First name", "type": "text", "required": true, "autocomplete": "given-name", "max_length": 80 },

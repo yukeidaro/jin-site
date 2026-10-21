@@ -526,7 +526,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       <div class="getting-started">
         <h3>はじめるには</h3>
         <ul>
-          <li>現在、ウェイトリストの方から順にご案内しています。お待たせしてすみません。会社で試したい方は、下のフォームからデモをお申し込みください。</li>
+          <li>ウェイトリストの方から順にご案内しています。下のフォームからご登録ください。登録後、ご希望の方は会社向けのデモもお申し込みいただけます。</li>
           <li>いちばんの近道は、すでに Jin AI のプライベートベータを使っている方からの紹介です。</li>
         </ul>
       </div>
@@ -871,10 +871,11 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
         <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
       </div>
       <button class="btn btn-p" type="submit" disabled>ウェイトリストに登録</button>
-      <p class="waitnote">デモの日程を、メールでご相談します。</p>
-      <p class="signup-privacy">いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="privacy/">プライバシーポリシー</a>をご覧ください。</p>
+      <p class="waitnote" id="waitlistNote">ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。</p>
+      <p class="waitnote" id="demoNote" hidden>日程の調整のため、こちらからメールでご連絡します。</p>
+      <p class="signup-privacy">いただいた情報は、ウェイトリストのご案内と、ご希望の場合はデモの日程調整に使います。詳しくは<a href="privacy/">プライバシーポリシー</a>をご覧ください。</p>
     </form>
-    <noscript><p class="waitalt">デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span></p></noscript>
+    <noscript><p class="waitalt">ウェイトリストの登録には JavaScript を有効にしてください。メールでも受け付けています: <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span>。</p></noscript>
     <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
       <h3 id="waitlistHeading"></h3>

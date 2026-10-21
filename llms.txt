@@ -15,7 +15,7 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 
 ## Primary resources
 
-- [Canonical Human page](https://jinai.md/): Company and employee value, how it works, data and demo request.
+- [Canonical Human page](https://jinai.md/): Company and employee value, how it works, data and waitlist signup, with an optional demo request.
 - [Agent reference](https://jinai.md/agent/): Status-aware HTML with direct answers, capabilities, data principles and founders.
 - [Structured fact source](https://jinai.md/agent/content.json): Public JSON used to generate agent-facing derivatives.
 - [Sitemap](https://jinai.md/sitemap.xml): Canonical indexable URL.
@@ -75,7 +75,7 @@ Connect once, see every part, and Jin AI keeps each team's shared harness up to 
 
 ## Join the waitlist
 
-[Join the waitlist](https://jinai.md/#waitlist). We will email you to set up a demo.
+[Join the waitlist](https://jinai.md/#waitlist). We'll email you when access is ready. You can request a demo after joining.
 
 ## Community
 

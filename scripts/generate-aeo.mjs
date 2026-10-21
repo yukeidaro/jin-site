@@ -151,7 +151,8 @@ function replaceBlock(document, blockName, generated) {
 const japaneseForm = {
   label: "ウェイトリストに登録",
   demoLabel: "デモを申し込む",
-  note: "デモの日程を、メールでご相談します。",
+  note: "ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。",
+  demoNote: "日程の調整のため、こちらからメールでご連絡します。",
   labels: {
     email: "会社のメールアドレス", lastName: "姓", firstName: "名", jobTitle: "役職",
     phone: "電話番号", company: "会社名", industry: "業種", companySize: "従業員数", country: "国"
@@ -246,12 +247,13 @@ ${rows([fields.slice(5, 7), fields.slice(7, 9)])}
         <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
       </div>
       <button class="btn btn-p" type="submit" disabled>${escapeHtml(label)}</button>
-      <p class="waitnote">${escapeHtml(ja ? japaneseForm.note : access.note)}</p>
+      <p class="waitnote" id="waitlistNote">${escapeHtml(ja ? japaneseForm.note : access.note)}</p>
+      <p class="waitnote" id="demoNote" hidden>${escapeHtml(ja ? japaneseForm.demoNote : "We'll email you to find a time.")}</p>
       <p class="signup-privacy">${ja ?
-    `いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="${escapeHtml(access.form.privacy_url)}">プライバシーポリシー</a>をご覧ください。` :
+    `いただいた情報は、ウェイトリストのご案内と、ご希望の場合はデモの日程調整に使います。詳しくは<a href="${escapeHtml(access.form.privacy_url)}">プライバシーポリシー</a>をご覧ください。` :
     `${escapeHtml(access.form.privacy_note)} See our <a href="${escapeHtml(access.form.privacy_url)}">Privacy Policy</a>.`}</p>
     </form>
-    <noscript><p class="waitalt">${ja ? "デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: " : "Please enable JavaScript to request a demo here. You can also email "}${renderEmail(access.contact_email, ja)}</p></noscript>
+    <noscript><p class="waitalt">${ja ? "ウェイトリストの登録には JavaScript を有効にしてください。メールでも受け付けています: " : "Please enable JavaScript to join the waitlist here. You can also email "}${renderEmail(access.contact_email, ja)}${ja ? "。" : "."}</p></noscript>
     <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
       <h3 id="waitlistHeading"></h3>
@@ -474,7 +476,7 @@ ${source.product.harness_definition}
 
 ## Primary resources
 
-- [Canonical Human page](${source.resources.human_page}): Company and employee value, how it works, data and demo request.
+- [Canonical Human page](${source.resources.human_page}): Company and employee value, how it works, data and waitlist signup, with an optional demo request.
 - [Agent reference](${source.resources.agent_page}): Status-aware HTML with direct answers, capabilities, data principles and founders.
 - [Structured fact source](${source.resources.structured_data}): Public JSON used to generate agent-facing derivatives.
 - [Sitemap](${source.resources.sitemap}): Canonical indexable URL.

@@ -27,7 +27,7 @@ The old consumer and visual-workspace positioning is retired. Do not reintroduce
 
 The home page (`index.html`) contains only the hero, problem, solution, how it works, data and demo request. Do not show pricing or founders on the home page. Founders and direct answers belong in the Agent reference.
 
-CTA: **Request a demo**. Note: **We will email you to set up a demo.** Keep the existing form fields, endpoint, consent version and survey until the form migration.
+R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイトリストに登録**, then optional **Request a demo** / **デモを申し込む**. Waitlist note: **We'll email you when access is ready. You can request a demo after joining.** / **ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。** Direct `#request-demo` and the optional demo show **We'll email you to find a time.** / **日程の調整のため、こちらからメールでご連絡します。** Keep the existing fields, endpoint and each step's consent version. No post-request survey.
 
 ## Facts and status
 
