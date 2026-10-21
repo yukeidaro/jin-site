@@ -8,12 +8,13 @@ const checkOnly = process.argv.includes("--check");
 const dataPath = path.join(root, "agent", "content.json");
 const data = JSON.parse(await readFile(dataPath, "utf8"));
 
-const allowedStatuses = new Set(["in_build", "planned", "later"]);
+const allowedStatuses = new Set(["live", "building", "next"]);
 const statusLabels = {
-  in_build: "In build",
-  planned: "Planned",
-  later: "Later"
+  live: "Live",
+  building: "Building",
+  next: "Next"
 };
+const statusGuidance = "Live means available now. Building means active development. Next means intended next work. Never present Building or Next as shipped.";
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -24,40 +25,71 @@ function validate(source) {
   assert(source.canonical_url === "https://jinai.md/", "Canonical URL must be the root URL.");
   assert(/^\d{4}-\d{2}-\d{2}$/.test(source.last_updated), "last_updated must use YYYY-MM-DD.");
   assert(allowedStatuses.has(source.product.status), "Product status is invalid.");
-  assert(source.direct_answers?.length >= 7, "At least seven direct answers are required.");
+  assert(allowedStatuses.has(source.solution?.status), "Solution status is invalid.");
+  assert(Array.isArray(source.direct_answers) && source.direct_answers.length >= 5,
+    "At least five direct answers are required.");
   assert(source.identity?.legal_name === "Jin AI", "Identity legal name must be Jin AI.");
   assert(Array.isArray(source.identity.same_as) && source.identity.same_as.length >= 1, "Identity must declare a sameAs list for entity disambiguation.");
+  assert(typeof source.product.harness_definition === "string" && source.product.harness_definition.trim(),
+    "The product needs an AI harness definition.");
+  assert(typeof source.problem?.headline === "string" && source.problem.headline.trim(),
+    "The problem needs a headline.");
+  for (const [name, items] of [["Problem points", source.problem.points], ["Solution steps", source.solution.steps],
+    ["How it works features", source.how_it_works?.features]]) {
+    assert(Array.isArray(items) && items.length > 0, `${name} must not be empty.`);
+    for (const item of items) {
+      assert(typeof item.name === "string" && item.name.trim() &&
+        typeof item.description === "string" && item.description.trim(),
+      `${name} need names and descriptions.`);
+    }
+  }
+  assert(typeof source.data_principles?.headline === "string" && source.data_principles.headline.trim(),
+    "Data principles need a headline.");
+  assert(Array.isArray(source.data_principles.items) && source.data_principles.items.length > 0 &&
+    source.data_principles.items.every((item) => typeof item === "string" && item.trim()),
+  "Data principles need non-empty facts.");
+  assert(source.product.headline === "Turn AI into a company asset",
+    "The product headline must match the approved English H1 without a final period.");
+  assert(source.solution.headline === "How Jin AI keeps your AI" && source.solution.closing?.trim() &&
+    source.how_it_works.introduction?.trim(), "Solution and How it works need their approved Keep copy.");
 
   const access = source.early_access;
   assert(access?.label && access?.note && access?.hero_label && access?.hero_note,
     "Early access needs form and hero labels and notes.");
-  assert(access.form?.provider === "apps_script", "The waitlist must use Apps Script directly.");
+  assert(access.form?.provider === "apps_script", "The demo form must use Apps Script directly.");
   assert(isAppsScriptEndpoint(access.form.endpoint) ||
     (access.form.endpoint === null && access.status === "setup_pending"),
-  "The waitlist needs a deployed Apps Script /exec endpoint, or an explicit setup_pending state.");
-  assert(access.form.consent_version === CONSENT_VERSION, "The waitlist consent version has drifted.");
-  assert(access.contact_email === "hello@jinai.md", "The waitlist must send from hello@jinai.md.");
-  const survey = access.survey;
-  assert(typeof survey?.id === "string" && survey.id.trim(), "The survey needs an id.");
-  assert(typeof survey.question === "string" && survey.question.trim(), "The survey needs a question.");
-  assert(typeof survey.hint === "string" && survey.hint.trim(), "The survey needs a hint.");
-  assert(Array.isArray(survey.options) && survey.options.length >= 2 && survey.options.length <= 6,
-    "The survey needs two to six options.");
-  const values = new Set();
-  for (const option of survey.options) {
-    assert(typeof option?.value === "string" && /^[A-Z]$/.test(option.value) && !values.has(option.value),
-      "Survey values must be unique uppercase letters.");
-    assert(typeof option.label === "string" && option.label.trim(), "Each survey option needs a label.");
-    values.add(option.value);
+  "The demo form needs a deployed Apps Script /exec endpoint, or an explicit setup_pending state.");
+  assert(access.form.consent_version === CONSENT_VERSION, "The demo consent version has drifted.");
+  assert(access.contact_email === "hello@jinai.md", "Demo confirmations must send from hello@jinai.md.");
+  assert(access.form.privacy_url === "privacy/" && access.form.privacy_note?.trim(),
+    "The demo form must explain its purpose and link to the Privacy Policy.");
+  assert(!access.survey, "Demo requests must not include a survey.");
+  const fields = access.form.fields;
+  assert(Array.isArray(fields) && fields.map((field) => field.name).join() ===
+    "email,firstName,lastName,jobTitle,phone,company,industry,companySize,country",
+  "The demo form fields must follow the approved order.");
+  for (const field of fields) {
+    assert(typeof field.label === "string" && field.label.trim(), "Each form field needs a label.");
+    assert(field.required === true, "Every demo field must be required.");
+    if (field.type === "select") {
+      assert(field.placeholder?.trim() && Array.isArray(field.options) && field.options.length > 0 &&
+        field.options.every((option) => typeof option === "string" && option.trim()) &&
+        new Set(field.options).size === field.options.length,
+      `The ${field.name} select needs a placeholder and unique choices.`);
+    } else {
+      assert(["text", "email", "tel"].includes(field.type) && field.autocomplete?.trim() &&
+        Number.isInteger(field.max_length) && field.max_length > 0,
+      `The ${field.name} input needs its type, autocomplete and length limit.`);
+    }
   }
-  const community = access.community;
-  if (community && community.url !== null && community.url !== undefined) {
-    assert(
-      /^https:\/\/(discord\.gg|discord\.com\/invite)\/[A-Za-z0-9-]+$/.test(community.url),
-      "Community URL must be a real Discord invite such as https://discord.gg/xxxxxxx."
-    );
-    assert(community.label && community.note, "A published community link needs a label and a note.");
-  }
+  const countries = fields.find((field) => field.name === "country").options;
+  assert(countries[0] === "United States" && countries[1] === "Japan" &&
+    countries.length === 249 && countries.every((country) => country.length <= 80) &&
+    JSON.stringify(countries.slice(2)) === JSON.stringify([...countries.slice(2)].sort()),
+  "Country choices must cover ISO countries and territories, with United States and Japan first, then alphabetical English names.");
+  assert(access.community?.name === "Discord" && access.community.label === "Discord" &&
+    access.community.url === "https://discord.gg/C5m4jGgKXD", "Community must use the approved Discord invite.");
 
   const ids = new Set();
   for (const answer of source.direct_answers) {
@@ -66,11 +98,25 @@ function validate(source) {
     ids.add(answer.id);
   }
 
+  assert(Array.isArray(source.capabilities) && source.capabilities.length > 0, "Capabilities must not be empty.");
+  const capabilityIds = new Set();
   for (const capability of source.capabilities) {
+    assert(capability.id && capability.name, "Each capability needs an id and name.");
+    assert(!capabilityIds.has(capability.id), `Duplicate capability id: ${capability.id}`);
+    capabilityIds.add(capability.id);
     assert(allowedStatuses.has(capability.status), `Invalid capability status: ${capability.id}`);
+    assert(capability.status === "live" ||
+      (typeof capability.description === "string" && capability.description.trim()),
+    `A capability in development needs a description: ${capability.id}`);
   }
-  assert(source.privacy?.on_device?.length === 5, "On-device privacy needs five facts.");
-  assert(source.privacy?.cloud_sync?.status === "planned", "Cloud Sync must remain planned.");
+
+  for (const heading of [source.problem.headline, source.solution.headline, source.data_principles.headline,
+    ...source.problem.points.map(item => item.name), ...source.solution.steps.map(item => item.name),
+    ...source.how_it_works.features.map(item => item.name),
+    ...source.capabilities.map(item => item.name)]) {
+    assert(typeof heading === "string" && !heading.trim().endsWith("."),
+      `English fact headings must not end with a period: ${heading}`);
+  }
 
   const serialized = JSON.stringify(source);
   assert(!serialized.includes("JinAI"), "Customer-facing data must spell the product name Jin AI.");
@@ -84,8 +130,8 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
-function lowerFirst(value) {
-  return value.charAt(0).toLowerCase() + value.slice(1);
+function renderEmail(address, japanese) {
+  return `<span class="email-contact"><span class="email-address">${escapeHtml(address)}</span> <button type="button" class="copy-email" data-copy="${escapeHtml(address)}">${japanese ? "コピー" : "Copy"}</button></span>`;
 }
 
 function replaceBlock(document, blockName, generated) {
@@ -97,66 +143,113 @@ function replaceBlock(document, blockName, generated) {
   return `${document.slice(0, startIndex)}${start}\n${generated.trim()}\n${end}${document.slice(endIndex + end.length)}`;
 }
 
-function renderCta(source, { centred }) {
+const japaneseForm = {
+  label: "デモを申し込む",
+  note: "デモの日程を、メールでご相談します。",
+  labels: {
+    email: "会社のメールアドレス", lastName: "姓", firstName: "名", jobTitle: "役職",
+    phone: "電話番号", company: "会社名", industry: "業種", companySize: "従業員数", country: "国"
+  },
+  placeholders: { industry: "業種を選んでください", companySize: "範囲を選んでください", country: "国を選んでください" },
+  industries: ["テクノロジー", "金融", "専門サービス", "教育", "エネルギー", "官公庁", "医療", "製造", "メディア", "非営利", "不動産", "小売", "通信", "運輸", "その他"],
+  companySizes: ["1〜49 人", "50〜199 人", "200〜999 人", "1,000 人以上"]
+};
+
+function japaneseCountries(countries) {
+  const english = new Intl.DisplayNames(["en"], { type: "region" });
+  const japanese = new Intl.DisplayNames(["ja"], { type: "region" });
+  const normalize = (name) => name.normalize("NFD").replace(/\p{M}/gu, "")
+    .replaceAll("&", "and").replaceAll("\u2019", "'");
+  const codes = new Map();
+  for (let first = 65; first <= 90; first++) {
+    for (let second = 65; second <= 90; second++) {
+      const code = String.fromCharCode(first, second);
+      const name = english.of(code);
+      if (name !== code) codes.set(normalize(name), code);
+    }
+  }
+  const aliases = {
+    "Bonaire, Sint Eustatius and Saba": "BQ", "Cabo Verde": "CV", "Congo": "CG",
+    "Democratic Republic of the Congo": "CD", "Heard Island and McDonald Islands": "HM",
+    "Hong Kong": "HK", "Macao": "MO", "Myanmar": "MM", "Palestine": "PS",
+    "Saint Barthelemy": "BL", "Saint Helena, Ascension and Tristan da Cunha": "SH",
+    "Saint Kitts and Nevis": "KN", "Saint Lucia": "LC", "Saint Martin": "MF",
+    "Saint Pierre and Miquelon": "PM", "Saint Vincent and the Grenadines": "VC",
+    "South Georgia and the South Sandwich Islands": "GS", "Turkey": "TR",
+    "United States Minor Outlying Islands": "UM", "United States Virgin Islands": "VI"
+  };
+  return new Map(countries.map((country) => {
+    const code = aliases[country] || codes.get(normalize(country));
+    assert(code, `Missing ISO region code for ${country}.`);
+    return [country, japanese.of(code)];
+  }));
+}
+
+function renderCta(source, { centred, language = "en" }) {
   const access = source.early_access;
-  const community = access.community;
+  const ja = language === "ja";
+  const label = ja ? japaneseForm.label : access.label;
 
   if (!centred) {
     return `<div class="wait">
-      <a class="btn btn-p" href="#waitlist">${escapeHtml(access.hero_label)}</a>
-    </div>
-    <div class="waitnote">${escapeHtml(access.hero_note)}</div>`;
+      <a class="btn btn-p" href="#demo">${escapeHtml(ja ? label : access.hero_label)}</a>
+    </div>`;
   }
 
   const endpoint = access.form.endpoint || "";
   const action = endpoint ? ` action="${escapeHtml(endpoint)}"` : "";
-  const survey = access.survey;
-  const options = survey.options.map((option) =>
-    `            <label class="signup-survey-option"><input type="radio" name="answer" value="${escapeHtml(option.value)}" required><span>${escapeHtml(option.label)}</span></label>`
-  ).join("\n");
-  return `<form class="signup" id="waitlistForm"${action} data-endpoint="${escapeHtml(endpoint)}" method="post">
-      <div class="signup-row">
-        <label for="wl-name">Name</label>
-        <input id="wl-name" name="name" type="text" autocomplete="name" maxlength="120" required>
-      </div>
-      <div class="signup-row">
-        <label for="wl-email">Email</label>
-        <input id="wl-email" name="email" type="email" autocomplete="email" maxlength="254" required>
-      </div>
-      <div class="signup-row">
-        <label for="wl-role">What do you do?</label>
-        <input id="wl-role" name="role" type="text" autocomplete="organization-title" maxlength="160" placeholder="Founder, PM, consultant, researcher&hellip;" required>
-      </div>
+  const specifications = [...access.form.fields];
+  if (ja) [specifications[1], specifications[2]] = [specifications[2], specifications[1]];
+  const countries = ja ? japaneseCountries(specifications.find((field) => field.name === "country").options) : null;
+  const fields = specifications.map((field) => {
+    const id = `demo-${field.name}`;
+    const attributes = `id="${id}" name="${field.name}"` +
+      (field.autocomplete ? ` autocomplete="${escapeHtml(field.autocomplete)}"` : "") +
+      ` aria-describedby="${id}-error"` + (field.required ? ' required aria-required="true"' : "");
+    const options = field.type === "select" ? [...field.options] : [];
+    if (ja && field.name === "country") [options[0], options[1]] = [options[1], options[0]];
+    const optionLabel = (option) => {
+      if (!ja) return option;
+      if (field.name === "country") return countries.get(option);
+      return (field.name === "industry" ? japaneseForm.industries : japaneseForm.companySizes)[field.options.indexOf(option)];
+    };
+    const control = field.type === "select" ?
+      `<select ${attributes}>
+            <option value="">${escapeHtml(ja ? japaneseForm.placeholders[field.name] : field.placeholder)}</option>
+${options.map((option) => `            <option value="${escapeHtml(option)}">${escapeHtml(optionLabel(option))}</option>`).join("\n")}
+          </select>` :
+      `<input ${attributes} type="${field.type}" maxlength="${field.max_length}">`;
+    return `        <div class="signup-field">
+          <label for="${id}">${escapeHtml(ja ? japaneseForm.labels[field.name] : field.label)}</label>
+          ${control}
+          <p class="signup-error" id="${id}-error" hidden></p>
+        </div>`;
+  });
+  const rows = [fields.slice(0, 1), fields.slice(1, 3), fields.slice(3, 5), fields.slice(5, 7), fields.slice(7, 9)]
+    .map((row) => `      <div class="signup-row">\n${row.join("\n")}\n      </div>`).join("\n");
+  return `<form class="signup" id="waitlistForm"${action} data-endpoint="${escapeHtml(endpoint)}" method="post" novalidate>
+${rows}
       <div class="signup-trap" aria-hidden="true">
-        <label for="wl-website">Leave this field empty</label>
+        <label for="wl-website">${ja ? "この欄は空のままにしてください" : "Leave this field empty"}</label>
         <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
       </div>
-      <button class="btn btn-p" type="submit" disabled>${escapeHtml(access.label)}</button>
-      <p class="waitnote">${escapeHtml(access.note)}</p>
+      <button class="btn btn-p" type="submit" disabled>${escapeHtml(label)}</button>
+      <p class="waitnote">${escapeHtml(ja ? japaneseForm.note : access.note)}</p>
+      <p class="signup-privacy">${ja ?
+    `いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="${escapeHtml(access.form.privacy_url)}">プライバシーポリシー</a>をご覧ください。` :
+    `${escapeHtml(access.form.privacy_note)} See our <a href="${escapeHtml(access.form.privacy_url)}">Privacy Policy</a>.`}</p>
     </form>
-    <noscript><p class="waitalt">Please enable JavaScript to register here. You can also join our Discord below.</p></noscript>
+    <noscript><p class="waitalt">${ja ? "デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: " : "Please enable JavaScript to request a demo here. You can also email "}${renderEmail(access.contact_email, ja)}${ja ? "。" : "."}</p></noscript>
     <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
       <h3 id="waitlistHeading"></h3>
       <dl class="signup-results">
-        <div><dt>Registration</dt><dd id="waitlistRegistration"></dd></div>
-        <div><dt>Welcome email</dt><dd id="waitlistEmail"></dd></div>
+        <div><dt>${ja ? "お申し込み" : "Request"}</dt><dd id="waitlistRegistration"></dd></div>
+        <div><dt>${ja ? "確認メール" : "Confirmation email"}</dt><dd id="waitlistEmail"></dd></div>
       </dl>
       <p id="waitlistDetail"></p>
-      <form class="signup-survey" id="waitlistSurvey" data-survey-id="${escapeHtml(survey.id)}" hidden>
-        <fieldset aria-describedby="waitlistSurveyHint">
-          <legend>${escapeHtml(survey.question)}</legend>
-          <p class="waitnote" id="waitlistSurveyHint">${escapeHtml(survey.hint)}</p>
-          <div class="signup-survey-options">
-${options}
-          </div>
-        </fieldset>
-        <button class="btn btn-p" type="submit">Send answer</button>
-      </form>
-      <p class="signup-survey-status" id="waitlistSurveyStatus" role="status" aria-live="polite" hidden></p>
-      <a class="btn btn-p" href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a>
     </div>
-    <p class="waitalt">Questions or feedback? <a href="${escapeHtml(community.url)}" target="_blank" rel="noopener">${escapeHtml(community.label)}</a>.</p>`;
+    <p class="waitalt">${ja ? "ご質問・ご意見: " : "Questions or feedback? "}${renderEmail(access.contact_email, ja)}${ja ? "。" : "."}</p>`;
 }
 
 function renderJsonLd(source) {
@@ -197,9 +290,8 @@ function renderJsonLd(source) {
       url: source.canonical_url,
       applicationCategory: "BusinessApplication",
       applicationSubCategory: source.product.category,
-      operatingSystem: source.product.planned_platforms.join(", "),
       description: source.product.description,
-      softwareVersion: "In build",
+      softwareVersion: statusLabels[source.product.status],
       audience: {
         "@type": "Audience",
         audienceType: source.audience.primary
@@ -210,7 +302,7 @@ function renderJsonLd(source) {
       "@type": "WebPage",
       "@id": `${source.canonical_url}#webpage`,
       url: source.canonical_url,
-      name: `${source.product.name} — ${source.product.category}`,
+      name: `${source.product.name} - ${source.product.category}`,
       description: source.product.description,
       dateModified: source.last_updated,
       inLanguage: source.language,
@@ -227,24 +319,29 @@ ${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2)
 }
 
 function renderAgent(source) {
-  const solutionCards = source.solution.steps.map((step) => `
-      <section class="card">
-        <h3>${escapeHtml(step.name)}</h3>
-        <p>${escapeHtml(step.description)}</p>
-      </section>`).join("");
+  const problemPoints = source.problem.points.map((point) => `
+    <li><strong>${escapeHtml(point.name)}:</strong> ${escapeHtml(point.description)}</li>`).join("");
+
+  const solutionSteps = source.solution.steps.map((step) => `
+    <h3>${escapeHtml(step.name)}</h3>
+    <p>${escapeHtml(step.description)}</p>`).join("");
+  const howFeatures = source.how_it_works.features.map(feature => `
+    <h3>${escapeHtml(feature.name)}</h3>
+    <p>${escapeHtml(feature.description)}</p>`).join("");
 
   const capabilities = source.capabilities.map((capability) => `
-      <section class="card">
+      <section>
         <span class="badge" data-status="${capability.status}">${statusLabels[capability.status]}</span>
-        <h3>${escapeHtml(capability.name)}</h3>
-        <p>Target stage: ${escapeHtml(capability.target_stage)}.</p>
+        <h3>${escapeHtml(capability.name)}</h3>${capability.description ? `
+        <p>${escapeHtml(capability.description)}</p>` : ""}${capability.note ? `
+        <p>${escapeHtml(capability.note)}</p>` : ""}
       </section>`).join("");
 
   const answers = source.direct_answers.map((item) => `
-      <div class="card" id="${escapeHtml(item.id)}">
+      <section id="${escapeHtml(item.id)}">
         <h3>${escapeHtml(item.question)}</h3>
         <p>${escapeHtml(item.answer)}</p>
-      </div>`).join("");
+      </section>`).join("");
 
   const evidence = source.evidence.map((item) => `<section id="${escapeHtml(item.claim_id)}">
       <h3>${escapeHtml(item.finding)}</h3>
@@ -253,56 +350,57 @@ function renderAgent(source) {
     </section>`).join("\n    ");
 
   const founderList = source.founders.map((founder) => `
-      <dt><a href="${escapeHtml(founder.profile_url)}">${escapeHtml(founder.name)}</a> — ${escapeHtml(founder.role)}</dt>
+      <dt><a href="${escapeHtml(founder.profile_url)}">${escapeHtml(founder.name)}</a> - ${escapeHtml(founder.role)}</dt>
       <dd>${escapeHtml(founder.bio)}</dd>`).join("");
 
-  const privacyItems = source.privacy.on_device.map((item) => `
-    <li><strong>${escapeHtml(item.name)}</strong> — ${escapeHtml(item.description)}</li>`).join("");
+  const dataPrinciples = source.data_principles.items.map((item) => `
+    <li>${escapeHtml(item)}</li>`).join("");
 
   return `<article data-content-version="${escapeHtml(source.content_version)}">
   <h1>${escapeHtml(source.product.name)} for agents</h1>
   <p class="dek">${escapeHtml(source.product.description)}</p>
   <div class="statusline">
     <span class="badge" data-status="${source.product.status}">${statusLabels[source.product.status]}</span>
-    <span class="badge">Availability: ${escapeHtml(source.product.availability.replaceAll("_", " "))}</span>
     <span class="badge">Updated: ${escapeHtml(source.last_updated)}</span>
   </div>
+  <p>${escapeHtml(source.product.availability)}</p>
 
-  <h2>Direct answer</h2>
-  <p class="answer"><strong>${escapeHtml(source.product.name)}</strong> is a ${escapeHtml(lowerFirst(source.product.category))}. It is for ${escapeHtml(lowerFirst(source.audience.primary))} and is currently <strong>${statusLabels[source.product.status].toLowerCase()}</strong>.</p>
+  <h2>AI harness</h2>
+  <p class="answer">${escapeHtml(source.product.harness_definition)}</p>
+  <p>For ${escapeHtml(source.audience.primary)}.</p>
 
   <h2>Problem</h2>
-  <p class="answer"><strong>${escapeHtml(source.problem.headline)}.</strong> ${escapeHtml(source.problem.short_answer)}</p>
-  <p>${escapeHtml(source.problem.description)}</p>
+  <p class="answer"><strong>${escapeHtml(source.problem.headline)}</strong></p>
+  <ul>${problemPoints}
+  </ul>
 
 ${source.evidence.length ? `  <h2>Evidence and limits</h2>\n  ${evidence}\n` : ""}
 
-  <h2>After you use Jin AI</h2>
-  <p>${escapeHtml(source.solution.headline)}. ${escapeHtml(source.solution.principle)}</p>
-  <div class="steps">${solutionCards}
-  </div>
+  <h2>${escapeHtml(source.solution.headline)}</h2>
+  <p><span class="badge" data-status="${source.solution.status}">${statusLabels[source.solution.status]}</span></p>
+${solutionSteps}
+  <p>${escapeHtml(source.solution.closing)}</p>
 
-  <h2>Private by design</h2>
-  <ul>${privacyItems}
+  <h2>${escapeHtml(source.data_principles.headline)}</h2>
+  <ul>${dataPrinciples}
   </ul>
-  <p><strong>Cloud Sync — ${escapeHtml(source.privacy.cloud_sync.label)} (Planned):</strong> ${escapeHtml(source.privacy.cloud_sync.description)}</p>
 
-  <h2>Capability status</h2>
-  <p>Status vocabulary is explicit: <strong>In build</strong> means active development, <strong>Planned</strong> means intended next work, and <strong>Later</strong> is not committed for the first release.</p>
-  <div class="capabilities">${capabilities}
-  </div>
+  <h2>How it works and status</h2>
+  <p>${escapeHtml(source.how_it_works.introduction)}</p>
+${howFeatures}
+  <p>${statusGuidance}</p>
+${capabilities}
 
   <h2>Direct questions and answers</h2>
-  <div class="answers">${answers}
-  </div>
-
-  <h2>Business model</h2>
-  <p><strong>${escapeHtml(source.business_model.headline)}</strong> ${escapeHtml(source.business_model.individual_local)} ${escapeHtml(source.business_model.individual_collaboration)} ${escapeHtml(source.business_model.companies)}</p>
-  <p class="caveat">${escapeHtml(source.business_model.company_pricing_status)}</p>
+${answers}
 
   <h2>Founders</h2>
   <dl>${founderList}
   </dl>
+
+  <h2>${escapeHtml(source.early_access.label)}</h2>
+  <p>${escapeHtml(source.early_access.note)}</p>
+  <p><a href="${escapeHtml(source.resources.human_page)}#waitlist">${escapeHtml(source.early_access.label)}</a></p>
 
   <h2>Primary machine resources</h2>
   <ul>
@@ -310,7 +408,7 @@ ${source.evidence.length ? `  <h2>Evidence and limits</h2>\n  ${evidence}\n` : "
     <li><a href="${escapeHtml(source.resources.llm_index)}">LLM index (text)</a></li>
     <li><a href="${escapeHtml(source.resources.human_page)}">Canonical Human page</a></li>
   </ul>
-  <p class="meta">Generated from agent/content.json · content version ${escapeHtml(source.content_version)} · updated ${escapeHtml(source.last_updated)}</p>
+  <p class="meta">Generated from agent/content.json | content version ${escapeHtml(source.content_version)} | updated ${escapeHtml(source.last_updated)}</p>
 </article>`;
 }
 
@@ -324,22 +422,44 @@ function renderLlms(source) {
     return `- [Structured evidence record](${source.resources.structured_data}): ${item.finding} Scope: ${item.scope}. ${item.caveat}`;
   }).join("\n");
 
-  const privacy = source.privacy.on_device.map((item) =>
-    `- ${item.name}: ${item.description}`
+  const problemPoints = source.problem.points.map((point) =>
+    `- ${point.name}: ${point.description}`
+  ).join("\n");
+
+  const solutionSteps = source.solution.steps.map((step) =>
+    `- ${step.name}: ${step.description}`
+  ).join("\n");
+  const howFeatures = source.how_it_works.features.map(feature =>
+    `- ${feature.name}: ${feature.description}`
+  ).join("\n");
+
+  const capabilities = source.capabilities.map((capability) =>
+    `- ${capability.name} (${statusLabels[capability.status]})${capability.description ? `: ${capability.description}` : ""}${capability.note ? ` ${capability.note}.` : ""}`
+  ).join("\n");
+
+  const dataPrinciples = source.data_principles.items.map((item) =>
+    `- ${item}`
   ).join("\n");
 
   return `# ${source.product.name}
 
 > ${source.product.description}
 
-Status: ${statusLabels[source.product.status]}. Availability: ${source.product.availability.replaceAll("_", " ")}. Last updated: ${source.last_updated}.
+Status: ${statusLabels[source.product.status]}. Last updated: ${source.last_updated}.
+${source.product.availability}
 
-Interpret status words literally. "In build" is not shipped, "planned" is intended next work, and "later" is not committed for the first release. The Human page at ${source.canonical_url} is the sole canonical product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
+${statusGuidance} The Human page at ${source.canonical_url} is the sole canonical product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
+
+For ${source.audience.primary}.
+
+## AI harness
+
+${source.product.harness_definition}
 
 ## Primary resources
 
-- [Canonical Human page](${source.resources.human_page}): One-click AI setup, its benefits and privacy.
-- [Agent reference](${source.resources.agent_page}): Concise status-aware HTML for automated research, including direct answers, capability status, pricing status, roadmap and founders.
+- [Canonical Human page](${source.resources.human_page}): Company and employee value, how it works, data and demo request.
+- [Agent reference](${source.resources.agent_page}): Status-aware HTML with direct answers, capabilities, data principles and founders.
 - [Structured fact source](${source.resources.structured_data}): Public JSON used to generate agent-facing derivatives.
 - [Sitemap](${source.resources.sitemap}): Canonical indexable URL.
 
@@ -347,14 +467,43 @@ Interpret status words literally. "In build" is not shipped, "planned" is intend
 
 ${answerLinks}
 
-## Private by design
+## Problem
 
-${privacy}
-- Cloud Sync (${source.privacy.cloud_sync.label}; planned): ${source.privacy.cloud_sync.description}
+${source.problem.headline}
+
+${problemPoints}
+
+## Solution (${statusLabels[source.solution.status]})
+
+${source.solution.headline}
+
+${solutionSteps}
+
+${source.solution.closing}
+
+## How it works and status
+
+${source.how_it_works.introduction}
+
+${howFeatures}
+
+${capabilities}
+
+## ${source.data_principles.headline}
+
+${dataPrinciples}
 
 ${source.evidence.length ? `## Evidence and sources\n\n${evidenceLinks}\n\n` : ""}## Founders
 
 ${source.founders.map((founder) => `- [${founder.name}](${founder.profile_url}): ${founder.role}. ${founder.bio}`).join("\n")}
+
+## ${source.early_access.label}
+
+[${source.early_access.label}](${source.resources.human_page}#waitlist). ${source.early_access.note}
+
+## Community
+
+[${source.early_access.community.label}](${source.early_access.community.url})
 `;
 }
 
@@ -368,9 +517,10 @@ async function writeText(filePath, text, eol) {
   await writeFile(filePath, text.replace(/\n/g, eol), "utf8");
 }
 
-async function updateGeneratedFile(filePath, transforms) {
+async function updateGeneratedFile(filePath, transforms, title) {
   const { text: current, eol } = await readText(filePath);
-  const expected = transforms.reduce((document, [name, generated]) => replaceBlock(document, name, generated), current);
+  const updated = transforms.reduce((document, [name, generated]) => replaceBlock(document, name, generated), current);
+  const expected = title ? updated.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`) : updated;
 
   if (checkOnly) {
     assert(current === expected, `${path.relative(root, filePath)} is out of date. Run node scripts/generate-aeo.mjs.`);
@@ -388,9 +538,14 @@ await updateGeneratedFile(path.join(root, "index.html"), [
   ["CTA_FINAL", renderCta(data, { centred: true })]
 ]);
 
+await updateGeneratedFile(path.join(root, "ja", "index.html"), [
+  ["CTA_HERO", renderCta(data, { centred: false, language: "ja" })],
+  ["CTA_FINAL", renderCta(data, { centred: true, language: "ja" })]
+]);
+
 await updateGeneratedFile(path.join(root, "agent", "index.html"), [
   ["AGENT_CONTENT", renderAgent(data)]
-]);
+], "Jin AI for agents | Product facts and status");
 
 const llmsPath = path.join(root, "llms.txt");
 const expectedLlms = renderLlms(data);

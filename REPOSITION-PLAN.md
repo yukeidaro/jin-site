@@ -1,3 +1,4 @@
+Superseded on 2026-10-19 by the B2B rewrite (branch feat/b2b-site-copy).
 # jinai.md リポジショニング計画（2026-10-01）
 
 SkyDeck 3分ピッチ（16枚）で変えた方向性に、サイトを合わせるための計画。

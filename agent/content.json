@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "content_version": "2.0",
-  "last_updated": "2026-10-04",
+  "last_updated": "2026-10-21",
   "language": "en",
   "canonical_url": "https://jinai.md/",
   "resources": {
@@ -19,225 +19,254 @@
   },
   "product": {
     "name": "Jin AI",
-    "headline": "Turn the AI you already use into an assistant that actually knows you.",
-    "category": "One-click AI setup for business professionals",
-    "description": "Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build, with a beta opening in small batches.",
-    "status": "in_build",
-    "availability": "first_beta_opening_in_small_batches",
-    "planned_platforms": [
-      "macOS",
-      "Windows"
-    ],
-    "industry": "Productivity software"
+    "headline": "Turn AI into a company asset",
+    "category": "AI harnesses for companies",
+    "description": "Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.",
+    "harness_definition": "An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.",
+    "status": "building",
+    "availability": "The workspace beta is live. Company features are being built, starting with Claude Code.",
+    "industry": "B2B"
   },
   "audience": {
-    "primary": "Business professionals who use AI at work",
-    "designed_for_workflows_using": [
-      "Claude Code",
-      "ChatGPT",
-      "GitHub Copilot"
-    ]
+    "primary": "AI-forward companies"
   },
   "problem": {
-    "headline": "AI does not start with the context it needs",
-    "short_answer": "Your files, slides and chats contain the details that make an answer useful, but each AI starts without them.",
-    "description": "Introducing yourself again, writing long prompts and finding the right files for every request take time. Jin AI is building a setup that brings the relevant context to your AI."
+    "headline": "Is your company in control of its AI?",
+    "points": [
+      {
+        "name": "Shadow AI",
+        "description": "Confidential company information could end up in personal AI tools, outside the company's control."
+      },
+      {
+        "name": "Agents that depend on one person",
+        "description": "Agents and workflows stay with the people who built them. When they leave, everything starts over."
+      },
+      {
+        "name": "Skills stuck in one team",
+        "description": "Teams build useful AI workflows, but they rarely get shared across the company."
+      }
+    ]
   },
   "evidence": [],
   "solution": {
-    "headline": "After you use Jin AI",
-    "status": "in_build",
+    "status": "building",
+    "headline": "How Jin AI keeps your AI",
     "steps": [
       {
-        "name": "You don't need to write long prompts.",
-        "description": "Jin AI learns from your files, slides and chats, and fills in your context."
+        "name": "Keep it safe",
+        "description": "Separate confidential information from reusable context, skills, and workflows. Share each part only with the AI tools you approve."
       },
       {
-        "name": "You only tell AI once.",
-        "description": "Who you are and how you work, available across every AI you use."
+        "name": "Keep it in the company",
+        "description": "Context, instructions, tools, and workflows stay with the company, not with one person. Even when someone leaves, the setup keeps working and the next person can continue from there."
       },
       {
-        "name": "The right files come to the right chats.",
-        "description": "Jin AI brings in what each request needs from the files on your PC."
+        "name": "Keep it shared",
+        "description": "Useful workflows and skills can be shared across teams and recommended where they fit, so good AI practices spread instead of staying in one team."
       }
     ],
-    "principle": "You choose what it reads, and what it shares."
+    "closing": "As people improve the way they work with AI, Jin AI keeps those improvements available to the whole company."
   },
-  "privacy": {
-    "on_device": [
-      { "name": "Never records your screen", "description": "Jin AI never records your screen." },
-      { "name": "Learns on your computer", "description": "The free version learns from files and chat history on your own computer." },
-      { "name": "Your files stay where they are", "description": "Jin AI doesn't move your files." },
-      { "name": "Never trained on your data", "description": "Jin AI itself never trains on your data." },
-      { "name": "You choose", "description": "You choose what it reads, and what it shares." }
-    ],
-    "cloud_sync": {
-      "status": "planned",
-      "label": "Coming with Pro",
-      "description": "Google Drive and Notion connections, sync between your PC and phone."
-    }
+  "how_it_works": {
+    "introduction": "Connect once, see every part, and Jin AI keeps each team's shared harness up to date.",
+    "features": [
+      {
+        "name": "Connect once",
+        "description": "Connect your usual AI tools once, through MCP."
+      },
+      {
+        "name": "See every part by type",
+        "description": "Skills, prompts, memory and MCP settings, sorted by type."
+      },
+      {
+        "name": "See what each team uses most",
+        "description": "See which harnesses each department uses most."
+      },
+      {
+        "name": "Separate personal from company",
+        "description": "Keep what came from personal AI apart from parts that hold confidential company context."
+      },
+      {
+        "name": "Control approved AI tools",
+        "description": "Let people use only the tools you approve. For example: Claude Code for developers only, your company policy in Copilot, and only non-confidential parts in ChatGPT."
+      }
+    ]
+  },
+  "data_principles": {
+    "headline": "Your company's context stays yours",
+    "items": [
+      "Each company's context is kept separate.",
+      "Jin AI never records your screen.",
+      "Jin AI itself never trains on your data."
+    ]
   },
   "capabilities": [
     {
-      "id": "learn-from-files-and-chats",
-      "name": "Learn from files, slides and chats on your computer",
-      "status": "in_build",
-      "target_stage": "The first beta"
+      "id": "workspace-beta",
+      "name": "Workspace beta",
+      "status": "live"
     },
     {
-      "id": "one-click-setup",
-      "name": "Set up your AI context with one click",
-      "status": "in_build",
-      "target_stage": "The first beta"
+      "id": "connect-once",
+      "name": "Connect once",
+      "description": "Jin AI connects to your AI tools through MCP.",
+      "status": "building",
+      "note": "Claude Code first"
     },
     {
-      "id": "right-files",
-      "name": "Bring the right files on your PC into the right chats",
-      "status": "in_build",
-      "target_stage": "The first beta"
+      "id": "harnesses-by-category",
+      "name": "See every harness by category",
+      "description": "Skills, instructions, memory and MCP settings, sorted for each person.",
+      "status": "building"
     },
     {
-      "id": "claude-code",
-      "name": "Make your context available in Claude Code",
-      "status": "in_build",
-      "target_stage": "The first beta"
+      "id": "harnesses-by-role",
+      "name": "See it by role",
+      "description": "Which harnesses each role uses, and how often.",
+      "status": "next"
     },
     {
-      "id": "plugins-for-other-ais",
-      "name": "Make your context available in ChatGPT and GitHub Copilot",
-      "status": "planned",
-      "target_stage": "Additional AI integrations"
-    },
-    {
-      "id": "access-controls",
-      "name": "Choose what Jin AI reads and shares",
-      "status": "planned",
-      "target_stage": "After the first beta"
-    },
-    {
-      "id": "cloud-sources",
-      "name": "Google Drive and Notion connections",
-      "status": "planned",
-      "target_stage": "Pro"
-    },
-    {
-      "id": "cross-device-sync",
-      "name": "Sync between your PC and phone",
-      "status": "planned",
-      "target_stage": "Pro"
+      "id": "approved-portability",
+      "name": "Decide what can move",
+      "description": "Parts marked confidential connect only to the AI tools you approve.",
+      "status": "next"
     }
   ],
-  "business_model": {
-    "headline": "Free on your computer. Cloud Sync is planned for Pro.",
-    "status": "planned",
-    "individual_local": "The free version learns from files and chat history on your own computer.",
-    "individual_collaboration": "Pro, proposed at $10 per month, would add Google Drive and Notion connections and sync between your PC and phone.",
-    "companies": "Team plans are under consideration.",
-    "company_pricing_status": "All prices are a proposal we are testing in the beta. Nothing is charged today."
-  },
   "founders": [
     {
       "name": "Yu Asano",
       "role": "Founder",
-      "bio": "Builder of Jin AI and Baby Voice Recorder. Previously launched Microsoft's first official TikTok account in Asia.",
+      "bio": "Four years of B2B SaaS go-to-market for Microsoft 365 and Azure. Built Jin AI's beta solo.",
       "profile_url": "https://www.linkedin.com/in/yu-asano-6878571a6/"
-    }
-  ],
-  "roadmap": [
-    {
-      "stage": "in_build",
-      "name": "The first beta",
-      "items": [
-        "One-click AI setup from files, slides and chats on your computer",
-        "Relevant context and files available in Claude Code",
-        "Beta opening in small batches"
-      ]
-    },
-    {
-      "stage": "planned",
-      "name": "Additional integrations",
-      "items": [
-        "Context available in ChatGPT and GitHub Copilot",
-        "Controls for what Jin AI reads and shares",
-        "Pro: Google Drive and Notion connections",
-        "Pro: sync between your PC and phone"
-      ]
     }
   ],
   "direct_answers": [
     {
       "id": "what-is-jin-ai",
       "question": "What is Jin AI?",
-      "answer": "Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build; support for more AI tools is planned."
+      "answer": "Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
     },
     {
-      "id": "who-is-jin-ai-for",
-      "question": "Who is Jin AI for?",
-      "answer": "Business professionals who want their AI tools to know who they are, how they work and which files matter."
-    },
-    {
-      "id": "how-is-this-different-from-chatgpt-or-claude-memory",
-      "question": "How is this different from ChatGPT or Claude memory?",
-      "answer": "Each AI's built-in memory stays in its own product. Jin AI is building one setup from your files, slides and chats that can work across AI tools. ChatGPT and Copilot integrations are planned."
-    },
-    {
-      "id": "what-happens-after-setup",
-      "question": "What happens after setup?",
-      "answer": "Jin AI learns from your files, slides and chats, and fills in your context. The right files come to the right chats. These features are being built for the beta."
-    },
-    {
-      "id": "does-jin-ai-record-my-screen-or-upload-files",
-      "question": "Does Jin AI record my screen or upload my files?",
-      "answer": "Jin AI never records your screen. The free version learns from files and chat history on your own computer. Jin AI doesn't move your files. Cloud Sync is planned for Pro."
-    },
-    {
-      "id": "does-jin-ai-train-on-my-data",
-      "question": "Does Jin AI train on my data?",
-      "answer": "Jin AI itself never trains on your data. You choose what it reads, and what it shares; access controls are planned as the beta develops."
-    },
-    {
-      "id": "which-ai-tools-does-it-work-with",
-      "question": "Which AI tools does it work with?",
-      "answer": "Claude Code is the first integration being built. ChatGPT and GitHub Copilot integrations are planned, not shipped."
+      "id": "what-is-an-ai-harness",
+      "question": "What is an AI harness?",
+      "answer": "An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role."
     },
     {
       "id": "is-jin-ai-available",
       "question": "Is Jin AI available now?",
-      "answer": "The app is in build and a beta is opening in small batches. Join the waitlist to show your interest."
+      "answer": "The workspace beta is live. Company features are being built, starting with Claude Code."
     },
     {
-      "id": "how-much-will-jin-ai-cost",
-      "question": "How much will Jin AI cost?",
-      "answer": "The version that learns on your computer is free. Pro is proposed at $10 per month for planned Google Drive and Notion connections and sync between your PC and phone. The price is being tested in the beta."
+      "id": "which-ai-tools-does-it-work-with",
+      "question": "Which AI tools does it work with?",
+      "answer": "Claude Code first. Other AI tools are next."
+    },
+    {
+      "id": "where-does-the-data-live",
+      "question": "Where does the data live?",
+      "answer": "Jin AI keeps each company's context separate."
+    },
+    {
+      "id": "how-is-this-different-from-banning-ai-tools",
+      "question": "How is this different from banning AI tools?",
+      "answer": "Banning AI tools also removes the harnesses that work. Jin AI keeps confidential data in and lets the company reuse what works."
     }
   ],
   "early_access": {
     "status": "open",
-    "label": "Join the waitlist",
-    "note": "We will email you when your invite is ready, plus occasional product updates.",
-    "hero_label": "Join →",
-    "hero_note": "Show your interest in joining the beta",
+    "label": "Request a demo",
+    "note": "We will email you to set up a demo.",
+    "hero_label": "Request a demo",
+    "hero_note": "We will email you to set up a demo.",
     "form": {
       "provider": "apps_script",
       "endpoint": "https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec",
-      "consent_version": "waitlist-product-updates-v1"
-    },
-    "survey": {
-      "id": "ai-friction-v1",
-      "question": "What should AI make easier for you?",
-      "hint": "Optional. One question, pick one.",
-      "options": [
-        { "value": "A", "label": "Correcting small things over and over" },
-        { "value": "B", "label": "Updating the settings that teach AI my preferences and rules (Skills and similar)" },
-        { "value": "C", "label": "Finding the right documents and files to hand to AI" },
-        { "value": "D", "label": "Re-explaining my requirements and background every time I switch between ChatGPT, Claude and others" }
+      "consent_version": "demo-request-v1",
+      "privacy_url": "privacy/",
+      "privacy_note": "We use these details only to reply about your demo.",
+      "fields": [
+        { "name": "email", "label": "Work email", "type": "email", "required": true, "autocomplete": "email", "max_length": 254 },
+        { "name": "firstName", "label": "First name", "type": "text", "required": true, "autocomplete": "given-name", "max_length": 80 },
+        { "name": "lastName", "label": "Last name", "type": "text", "required": true, "autocomplete": "family-name", "max_length": 80 },
+        { "name": "jobTitle", "label": "Job title", "type": "text", "required": true, "autocomplete": "organization-title", "max_length": 120 },
+        { "name": "phone", "label": "Phone", "type": "tel", "required": true, "autocomplete": "tel", "max_length": 40 },
+        { "name": "company", "label": "Company", "type": "text", "required": true, "autocomplete": "organization", "max_length": 160 },
+        {
+          "name": "industry", "label": "Industry", "type": "select", "required": true,
+          "placeholder": "Select an industry",
+          "options": [
+            "Technology", "Financial services", "Professional services", "Education",
+            "Energy", "Government", "Healthcare", "Manufacturing", "Media", "Nonprofit",
+            "Real estate", "Retail", "Telecommunications", "Transportation", "Other"
+          ]
+        },
+        {
+          "name": "companySize", "label": "Company size", "type": "select", "required": true,
+          "placeholder": "Select a range",
+          "options": ["1-49", "50-199", "200-999", "1,000+"]
+        },
+        {
+          "name": "country", "label": "Country", "type": "select", "required": true,
+          "autocomplete": "country-name", "placeholder": "Select a country",
+          "options": [
+            "United States", "Japan",
+            "Afghanistan", "Aland Islands", "Albania", "Algeria", "American Samoa",
+            "Andorra", "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda",
+            "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan",
+            "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium",
+            "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia",
+            "Bonaire, Sint Eustatius and Saba", "Bosnia and Herzegovina", "Botswana",
+            "Bouvet Island", "Brazil", "British Indian Ocean Territory",
+            "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+            "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Cayman Islands",
+            "Central African Republic", "Chad", "Chile", "China", "Christmas Island",
+            "Cocos (Keeling) Islands", "Colombia", "Comoros", "Congo", "Cook Islands",
+            "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Curacao", "Cyprus", "Czechia",
+            "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica",
+            "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea",
+            "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Falkland Islands",
+            "Faroe Islands", "Fiji", "Finland", "France", "French Guiana",
+            "French Polynesia", "French Southern Territories", "Gabon", "Gambia",
+            "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada",
+            "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea-Bissau",
+            "Guyana", "Haiti", "Heard Island and McDonald Islands", "Honduras",
+            "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
+            "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Jersey", "Jordan",
+            "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos",
+            "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein",
+            "Lithuania", "Luxembourg", "Macao", "Madagascar", "Malawi", "Malaysia",
+            "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania",
+            "Mauritius", "Mayotte", "Mexico", "Micronesia", "Moldova", "Monaco",
+            "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar",
+            "Namibia", "Nauru", "Nepal", "Netherlands", "New Caledonia", "New Zealand",
+            "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", "North Korea",
+            "North Macedonia", "Northern Mariana Islands", "Norway", "Oman",
+            "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay",
+            "Peru", "Philippines", "Pitcairn Islands", "Poland", "Portugal", "Puerto Rico",
+            "Qatar", "Reunion", "Romania", "Russia", "Rwanda", "Saint Barthelemy",
+            "Saint Helena, Ascension and Tristan da Cunha", "Saint Kitts and Nevis",
+            "Saint Lucia", "Saint Martin", "Saint Pierre and Miquelon",
+            "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+            "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles",
+            "Sierra Leone", "Singapore", "Sint Maarten", "Slovakia", "Slovenia",
+            "Solomon Islands", "Somalia", "South Africa",
+            "South Georgia and the South Sandwich Islands", "South Korea", "South Sudan",
+            "Spain", "Sri Lanka", "Sudan", "Suriname", "Svalbard and Jan Mayen",
+            "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania",
+            "Thailand", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago",
+            "Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands", "Tuvalu",
+            "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
+            "United States Minor Outlying Islands", "United States Virgin Islands",
+            "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam",
+            "Wallis and Futuna", "Western Sahara", "Yemen", "Zambia", "Zimbabwe"
+          ]
+        }
       ]
     },
     "community": {
       "name": "Discord",
-      "label": "Join the Discord",
-      "url": "https://discord.gg/hn8eG4d9f",
-      "note": "See the build in progress, ask questions and report bugs."
+      "label": "Discord",
+      "url": "https://discord.gg/C5m4jGgKXD"
     },
     "contact_email": "hello@jinai.md"
   }

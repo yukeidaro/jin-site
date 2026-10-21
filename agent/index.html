@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src="/language.js" defer></script>
+<script src="/copy.js" defer></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Jin AI for agents — Product facts and status</title>
+<title>Jin AI for agents | Product facts and status</title>
 <meta name="description" content="A concise, status-aware reference for agents researching Jin AI, generated from the public Jin AI fact source.">
 <meta name="robots" content="index,follow,max-snippet:-1">
 <link rel="canonical" href="https://jinai.md/">
 <link rel="alternate" type="application/json" href="https://jinai.md/agent/content.json">
 <link rel="describedby" href="https://jinai.md/llms.txt">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 390 326'%3E%3Crect width='390' height='326' fill='%23f5f3ef'/%3E%3Cpath fill='%23252525' d='M234 0h71L71 326H0Z'/%3E%3Cpath fill='%23252525' d='M248 129 211 180 317 326 389 326Z'/%3E%3C/svg%3E">
 <style>
 :root{--paper:#f5f3ef;--surface:#fff;--ink:#252525;--muted:#5d5d5d;--line:#d8d4cd;--blue:#1659e9;--green:#2a5e46;--amber:#9a5d00;--later:#6b7280;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--sans:Inter,system-ui,-apple-system,sans-serif}
@@ -20,7 +25,7 @@ a{color:var(--blue)}
 header{border-bottom:1px solid var(--line);background:rgba(245,243,239,.95);position:sticky;top:0;z-index:5}
 .nav{min-height:62px;display:flex;align-items:center;justify-content:space-between;gap:18px}
 .brand{font-weight:800;color:var(--ink);text-decoration:none;letter-spacing:-.02em}
-.navlinks{display:flex;gap:14px;align-items:center;font:12px var(--mono)}
+.navlinks{display:flex;gap:14px;align-items:center;font:500 13px/1.4 var(--sans)}
 .navlinks a{color:var(--muted)}
 .navlinks a:first-child{color:var(--ink);font-weight:700}
 main{padding:64px 0 80px}
@@ -31,7 +36,7 @@ h2{font-size:25px;line-height:1.25;letter-spacing:-.025em;margin-top:48px;paddin
 h3{font-size:17px;margin:24px 0 8px}
 .dek{font-size:19px;color:var(--muted);max-width:45em}
 .statusline{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 32px}
-.badge{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font:11px var(--mono);text-transform:uppercase;letter-spacing:.08em}
+.badge{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font:500 13px/1.4 var(--sans);letter-spacing:0;color:var(--muted)}
 .badge[data-status=in_build]{border-color:#9eb2e5;color:#234a9b;background:#eef3ff}
 .badge[data-status=planned]{border-color:#d9b56d;color:#794700;background:#fff7e5}
 .badge[data-status=later]{color:#505660;background:#f3f4f6}
@@ -44,8 +49,9 @@ h3{font-size:17px;margin:24px 0 8px}
 dt{font-weight:700;margin-top:16px}
 dd{margin:4px 0 0;color:var(--muted)}
 code{font:13px var(--mono);background:#ece9e4;padding:2px 5px}
-.meta{font:12px var(--mono);color:var(--muted);margin-top:46px}
-footer{border-top:1px solid var(--line);padding:24px 0 40px;font:12px var(--mono);color:var(--muted)}
+.meta{font:500 13px/1.4 var(--sans);color:var(--muted);margin-top:46px}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;font:500 13px/1.4 var(--sans);color:var(--muted)}
+.footer-column{margin-top:16px}.footer-column h2{font:500 13px/1.4 var(--sans);letter-spacing:0;margin:0 0 8px;padding:0;border:0}
 @media(max-width:640px){.nav{align-items:flex-start;padding:14px 0;flex-direction:column}.navlinks{flex-wrap:wrap}main{padding-top:28px}article{padding:24px 20px}}
 </style>
 </head>
@@ -65,143 +71,122 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font:12px var(--mono
 <!-- GENERATED:AGENT_CONTENT:START -->
 <article data-content-version="2.0">
   <h1>Jin AI for agents</h1>
-  <p class="dek">Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build, with a beta opening in small batches.</p>
+  <p class="dek">Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.</p>
   <div class="statusline">
-    <span class="badge" data-status="in_build">In build</span>
-    <span class="badge">Availability: first beta opening in small batches</span>
-    <span class="badge">Updated: 2026-10-04</span>
+    <span class="badge" data-status="building">Building</span>
+    <span class="badge">Updated: 2026-10-21</span>
   </div>
+  <p>The workspace beta is live. Company features are being built, starting with Claude Code.</p>
 
-  <h2>Direct answer</h2>
-  <p class="answer"><strong>Jin AI</strong> is a one-click AI setup for business professionals. It is for business professionals who use AI at work and is currently <strong>in build</strong>.</p>
+  <h2>AI harness</h2>
+  <p class="answer">An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.</p>
+  <p>For AI-forward companies.</p>
 
   <h2>Problem</h2>
-  <p class="answer"><strong>AI does not start with the context it needs.</strong> Your files, slides and chats contain the details that make an answer useful, but each AI starts without them.</p>
-  <p>Introducing yourself again, writing long prompts and finding the right files for every request take time. Jin AI is building a setup that brings the relevant context to your AI.</p>
-
-
-
-  <h2>After you use Jin AI</h2>
-  <p>After you use Jin AI. You choose what it reads, and what it shares.</p>
-  <div class="steps">
-      <section class="card">
-        <h3>You don't need to write long prompts.</h3>
-        <p>Jin AI learns from your files, slides and chats, and fills in your context.</p>
-      </section>
-      <section class="card">
-        <h3>You only tell AI once.</h3>
-        <p>Who you are and how you work, available across every AI you use.</p>
-      </section>
-      <section class="card">
-        <h3>The right files come to the right chats.</h3>
-        <p>Jin AI brings in what each request needs from the files on your PC.</p>
-      </section>
-  </div>
-
-  <h2>Private by design</h2>
+  <p class="answer"><strong>Is your company in control of its AI?</strong></p>
   <ul>
-    <li><strong>Never records your screen</strong> — Jin AI never records your screen.</li>
-    <li><strong>Learns on your computer</strong> — The free version learns from files and chat history on your own computer.</li>
-    <li><strong>Your files stay where they are</strong> — Jin AI doesn't move your files.</li>
-    <li><strong>Never trained on your data</strong> — Jin AI itself never trains on your data.</li>
-    <li><strong>You choose</strong> — You choose what it reads, and what it shares.</li>
+    <li><strong>Shadow AI:</strong> Confidential company information could end up in personal AI tools, outside the company's control.</li>
+    <li><strong>Agents that depend on one person:</strong> Agents and workflows stay with the people who built them. When they leave, everything starts over.</li>
+    <li><strong>Skills stuck in one team:</strong> Teams build useful AI workflows, but they rarely get shared across the company.</li>
   </ul>
-  <p><strong>Cloud Sync — Coming with Pro (Planned):</strong> Google Drive and Notion connections, sync between your PC and phone.</p>
 
-  <h2>Capability status</h2>
-  <p>Status vocabulary is explicit: <strong>In build</strong> means active development, <strong>Planned</strong> means intended next work, and <strong>Later</strong> is not committed for the first release.</p>
-  <div class="capabilities">
-      <section class="card">
-        <span class="badge" data-status="in_build">In build</span>
-        <h3>Learn from files, slides and chats on your computer</h3>
-        <p>Target stage: The first beta.</p>
+
+
+  <h2>How Jin AI keeps your AI</h2>
+  <p><span class="badge" data-status="building">Building</span></p>
+
+    <h3>Keep it safe</h3>
+    <p>Separate confidential information from reusable context, skills, and workflows. Share each part only with the AI tools you approve.</p>
+    <h3>Keep it in the company</h3>
+    <p>Context, instructions, tools, and workflows stay with the company, not with one person. Even when someone leaves, the setup keeps working and the next person can continue from there.</p>
+    <h3>Keep it shared</h3>
+    <p>Useful workflows and skills can be shared across teams and recommended where they fit, so good AI practices spread instead of staying in one team.</p>
+  <p>As people improve the way they work with AI, Jin AI keeps those improvements available to the whole company.</p>
+
+  <h2>Your company's context stays yours</h2>
+  <ul>
+    <li>Each company's context is kept separate.</li>
+    <li>Jin AI never records your screen.</li>
+    <li>Jin AI itself never trains on your data.</li>
+  </ul>
+
+  <h2>How it works and status</h2>
+  <p>Connect once, see every part, and Jin AI keeps each team's shared harness up to date.</p>
+
+    <h3>Connect once</h3>
+    <p>Connect your usual AI tools once, through MCP.</p>
+    <h3>See every part by type</h3>
+    <p>Skills, prompts, memory and MCP settings, sorted by type.</p>
+    <h3>See what each team uses most</h3>
+    <p>See which harnesses each department uses most.</p>
+    <h3>Separate personal from company</h3>
+    <p>Keep what came from personal AI apart from parts that hold confidential company context.</p>
+    <h3>Control approved AI tools</h3>
+    <p>Let people use only the tools you approve. For example: Claude Code for developers only, your company policy in Copilot, and only non-confidential parts in ChatGPT.</p>
+  <p>Live means available now. Building means active development. Next means intended next work. Never present Building or Next as shipped.</p>
+
+      <section>
+        <span class="badge" data-status="live">Live</span>
+        <h3>Workspace beta</h3>
       </section>
-      <section class="card">
-        <span class="badge" data-status="in_build">In build</span>
-        <h3>Set up your AI context with one click</h3>
-        <p>Target stage: The first beta.</p>
+      <section>
+        <span class="badge" data-status="building">Building</span>
+        <h3>Connect once</h3>
+        <p>Jin AI connects to your AI tools through MCP.</p>
+        <p>Claude Code first</p>
       </section>
-      <section class="card">
-        <span class="badge" data-status="in_build">In build</span>
-        <h3>Bring the right files on your PC into the right chats</h3>
-        <p>Target stage: The first beta.</p>
+      <section>
+        <span class="badge" data-status="building">Building</span>
+        <h3>See every harness by category</h3>
+        <p>Skills, instructions, memory and MCP settings, sorted for each person.</p>
       </section>
-      <section class="card">
-        <span class="badge" data-status="in_build">In build</span>
-        <h3>Make your context available in Claude Code</h3>
-        <p>Target stage: The first beta.</p>
+      <section>
+        <span class="badge" data-status="next">Next</span>
+        <h3>See it by role</h3>
+        <p>Which harnesses each role uses, and how often.</p>
       </section>
-      <section class="card">
-        <span class="badge" data-status="planned">Planned</span>
-        <h3>Make your context available in ChatGPT and GitHub Copilot</h3>
-        <p>Target stage: Additional AI integrations.</p>
+      <section>
+        <span class="badge" data-status="next">Next</span>
+        <h3>Decide what can move</h3>
+        <p>Parts marked confidential connect only to the AI tools you approve.</p>
       </section>
-      <section class="card">
-        <span class="badge" data-status="planned">Planned</span>
-        <h3>Choose what Jin AI reads and shares</h3>
-        <p>Target stage: After the first beta.</p>
-      </section>
-      <section class="card">
-        <span class="badge" data-status="planned">Planned</span>
-        <h3>Google Drive and Notion connections</h3>
-        <p>Target stage: Pro.</p>
-      </section>
-      <section class="card">
-        <span class="badge" data-status="planned">Planned</span>
-        <h3>Sync between your PC and phone</h3>
-        <p>Target stage: Pro.</p>
-      </section>
-  </div>
 
   <h2>Direct questions and answers</h2>
-  <div class="answers">
-      <div class="card" id="what-is-jin-ai">
-        <h3>What is Jin AI?</h3>
-        <p>Jin AI gives you the AI setup engineers have. One click, and every AI learns about you. It is in build; support for more AI tools is planned.</p>
-      </div>
-      <div class="card" id="who-is-jin-ai-for">
-        <h3>Who is Jin AI for?</h3>
-        <p>Business professionals who want their AI tools to know who they are, how they work and which files matter.</p>
-      </div>
-      <div class="card" id="how-is-this-different-from-chatgpt-or-claude-memory">
-        <h3>How is this different from ChatGPT or Claude memory?</h3>
-        <p>Each AI's built-in memory stays in its own product. Jin AI is building one setup from your files, slides and chats that can work across AI tools. ChatGPT and Copilot integrations are planned.</p>
-      </div>
-      <div class="card" id="what-happens-after-setup">
-        <h3>What happens after setup?</h3>
-        <p>Jin AI learns from your files, slides and chats, and fills in your context. The right files come to the right chats. These features are being built for the beta.</p>
-      </div>
-      <div class="card" id="does-jin-ai-record-my-screen-or-upload-files">
-        <h3>Does Jin AI record my screen or upload my files?</h3>
-        <p>Jin AI never records your screen. The free version learns from files and chat history on your own computer. Jin AI doesn't move your files. Cloud Sync is planned for Pro.</p>
-      </div>
-      <div class="card" id="does-jin-ai-train-on-my-data">
-        <h3>Does Jin AI train on my data?</h3>
-        <p>Jin AI itself never trains on your data. You choose what it reads, and what it shares; access controls are planned as the beta develops.</p>
-      </div>
-      <div class="card" id="which-ai-tools-does-it-work-with">
-        <h3>Which AI tools does it work with?</h3>
-        <p>Claude Code is the first integration being built. ChatGPT and GitHub Copilot integrations are planned, not shipped.</p>
-      </div>
-      <div class="card" id="is-jin-ai-available">
-        <h3>Is Jin AI available now?</h3>
-        <p>The app is in build and a beta is opening in small batches. Join the waitlist to show your interest.</p>
-      </div>
-      <div class="card" id="how-much-will-jin-ai-cost">
-        <h3>How much will Jin AI cost?</h3>
-        <p>The version that learns on your computer is free. Pro is proposed at $10 per month for planned Google Drive and Notion connections and sync between your PC and phone. The price is being tested in the beta.</p>
-      </div>
-  </div>
 
-  <h2>Business model</h2>
-  <p><strong>Free on your computer. Cloud Sync is planned for Pro.</strong> The free version learns from files and chat history on your own computer. Pro, proposed at $10 per month, would add Google Drive and Notion connections and sync between your PC and phone. Team plans are under consideration.</p>
-  <p class="caveat">All prices are a proposal we are testing in the beta. Nothing is charged today.</p>
+      <section id="what-is-jin-ai">
+        <h3>What is Jin AI?</h3>
+        <p>Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.</p>
+      </section>
+      <section id="what-is-an-ai-harness">
+        <h3>What is an AI harness?</h3>
+        <p>An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.</p>
+      </section>
+      <section id="is-jin-ai-available">
+        <h3>Is Jin AI available now?</h3>
+        <p>The workspace beta is live. Company features are being built, starting with Claude Code.</p>
+      </section>
+      <section id="which-ai-tools-does-it-work-with">
+        <h3>Which AI tools does it work with?</h3>
+        <p>Claude Code first. Other AI tools are next.</p>
+      </section>
+      <section id="where-does-the-data-live">
+        <h3>Where does the data live?</h3>
+        <p>Jin AI keeps each company's context separate.</p>
+      </section>
+      <section id="how-is-this-different-from-banning-ai-tools">
+        <h3>How is this different from banning AI tools?</h3>
+        <p>Banning AI tools also removes the harnesses that work. Jin AI keeps confidential data in and lets the company reuse what works.</p>
+      </section>
 
   <h2>Founders</h2>
   <dl>
-      <dt><a href="https://www.linkedin.com/in/yu-asano-6878571a6/">Yu Asano</a> — Founder</dt>
-      <dd>Builder of Jin AI and Baby Voice Recorder. Previously launched Microsoft's first official TikTok account in Asia.</dd>
+      <dt><a href="https://www.linkedin.com/in/yu-asano-6878571a6/">Yu Asano</a> - Founder</dt>
+      <dd>Four years of B2B SaaS go-to-market for Microsoft 365 and Azure. Built Jin AI's beta solo.</dd>
   </dl>
+
+  <h2>Request a demo</h2>
+  <p>We will email you to set up a demo.</p>
+  <p><a href="https://jinai.md/#waitlist">Request a demo</a></p>
 
   <h2>Primary machine resources</h2>
   <ul>
@@ -209,12 +194,14 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font:12px var(--mono
     <li><a href="https://jinai.md/llms.txt">LLM index (text)</a></li>
     <li><a href="https://jinai.md/">Canonical Human page</a></li>
   </ul>
-  <p class="meta">Generated from agent/content.json · content version 2.0 · updated 2026-10-04</p>
+  <p class="meta">Generated from agent/content.json | content version 2.0 | updated 2026-10-21</p>
 </article>
 <!-- GENERATED:AGENT_CONTENT:END -->
 </main>
 <footer>
   <div class="shell">Generated from <a href="/agent/content.json">agent/content.json</a>. The Human page at <a href="/">https://jinai.md/</a> is the canonical product page.</div>
+  <div class="shell"><a href="/privacy/">Privacy</a> | <a href="/accessibility/">Accessibility</a></div>
+  <div class="shell footer-column"><h2>Connect</h2><a href="https://discord.gg/C5m4jGgKXD" target="_blank" rel="noopener">Discord</a></div>
 </footer>
 </body>
 </html>

@@ -29,6 +29,11 @@ const signup = (email, createdAt, overrides = {}) => ({
 const answer = (email, answeredAt, code, overrides = {}) => ({
   email, answeredAt, surveyId: "ai-friction-v1", answer: code, ...overrides
 });
+const demoRequest = (createdAt, overrides = {}) => ({
+  createdAt, email: "buyer@example.com", phone: "+1 (202) 555-0142",
+  company: "Example Company", companySize: "50-199", industry: "Technology",
+  country: "United States", lang: "en", jobTitle: "Head of IT", ...overrides
+});
 const plain = (value) => JSON.parse(JSON.stringify(value));
 
 function cloudflareResponse() {
@@ -50,7 +55,8 @@ function cloudflareResponse() {
   return { data: { viewer: { accounts: [account] } } };
 }
 
-function sampleReport(analytics = null, analyticsError = null) {
+function sampleReport(analytics = null, analyticsError = null,
+  demoRows = [demoRequest("2026-10-05T03:00:00Z")]) {
   const waitlist = backend.summarizeWaitlist_([
     signup("alice@example.com", "2026-10-05T01:12:00Z", {
       name: "<b>x</b> alice@example.com", role: "Designer"
@@ -62,6 +68,7 @@ function sampleReport(analytics = null, analyticsError = null) {
   ], window);
   return backend.buildDailyReport_({
     window, waitlist, survey, analytics, analyticsError,
+    demo: backend.summarizeDemoRequests_(demoRows, window),
     sheetUrl: "https://docs.google.com/spreadsheets/d/sample-id"
   });
 }
@@ -278,7 +285,7 @@ test("the MIME uses one fixed To, the default sender, UTF-8 alternatives and fol
     /daily_report_sender_must_be_default/);
 });
 
-test("collection reads and validates both sheet schemas; only sendDailyReport sends", () => {
+test("collection validates all three sheet schemas; only sendDailyReport sends", () => {
   const rowsFor = (columns, records) => [
     Array.from(columns, (column) => column[1]),
     ...records.map((record) => Array.from(columns, (column) => record[column[0]] || ""))
@@ -296,6 +303,9 @@ test("collection reads and validates both sheet schemas; only sendDailyReport se
     ])),
     Survey: makeSheet(rowsFor(backend.SURVEY_COLUMNS, [
       answer("alice@example.com", "2026-10-05T02:00:00Z", "C")
+    ])),
+    "Demo requests": makeSheet(rowsFor(backend.DEMO_COLUMNS, [
+      demoRequest("2026-10-05T03:00:00Z")
     ]))
   };
   const spreadsheet = {
@@ -327,6 +337,13 @@ test("collection reads and validates both sheet schemas; only sendDailyReport se
   } };
   try {
     assert.match(backend.collectDailyReport_().text, /昨日の新規登録（社外）: 1 人/);
+    assert.match(backend.collectDailyReport_().text, /Yesterday's requests \(external\): 1/);
+    const originalDemo = sheets["Demo requests"];
+    sheets["Demo requests"] = makeSheet([["Wrong header"]]);
+    assert.throws(() => backend.collectDailyReport_(), /storage_schema_mismatch: Demo requests/);
+    delete sheets["Demo requests"];
+    assert.throws(() => backend.collectDailyReport_(), /storage_not_configured: Demo requests/);
+    sheets["Demo requests"] = originalDemo;
     const logged = logs.length;
     backend.inspectDailyReport();
     assert.equal(sends, 0);
@@ -386,4 +403,91 @@ test("installDailyReport creates only one approximate 08:00 JST daily trigger", 
   } finally {
     delete backend.ScriptApp;
   }
+});
+
+test("demo summary counts the previous half-open JST day and includes company details only", () => {
+  const internal = backend.REPORT_INTERNAL_EMAILS;
+  backend.REPORT_INTERNAL_EMAILS = ["internal@example.com"];
+  let summary;
+  try {
+    summary = backend.summarizeDemoRequests_([
+      demoRequest("2026-10-04T14:59:59Z", { company: "Earlier" }),
+      demoRequest("2026-10-05T14:59:59.999Z", { company: "Last" }),
+      demoRequest("2026-10-04T15:00:00Z", { company: "First" }),
+      demoRequest("2026-10-05T15:00:00Z", { company: "Later" }),
+      demoRequest("2026-10-05T01:00:00Z", { email: "internal+demo@example.com", company: "Internal" })
+    ], window);
+  } finally {
+    backend.REPORT_INTERNAL_EMAILS = internal;
+  }
+  assert.equal(summary.newCount, 2);
+  assert.deepEqual(Array.from(summary.newRows, (row) => row.company), ["First", "Last"]);
+  assert.deepEqual(Array.from(summary.newRows, (row) => row.time), ["00:00", "23:59"]);
+  assert.deepEqual(plain(summary.newRows[0]), {
+    createdAtMs: Date.parse("2026-10-04T15:00:00Z"), time: "00:00",
+    company: "First", companySize: "50-199", industry: "Technology",
+    country: "United States", lang: "en", jobTitle: "Head of IT"
+  });
+  assert.doesNotMatch(JSON.stringify(summary), /buyer@example.com|\+1 \(202\) 555-0142/);
+  assert.throws(() => backend.summarizeDemoRequests_([demoRequest("not-a-time")], window),
+    /invalid_demo_timestamp/);
+});
+
+test("demo requests appear in both report bodies without emails or phone numbers", () => {
+  const report = sampleReport();
+  for (const body of [report.text, report.html]) {
+    for (const detail of ["Demo requests", "Example Company", "50-199", "Technology",
+      "United States", "Head of IT"]) assert.ok(body.includes(detail), detail);
+    assert.doesNotMatch(body, /buyer@example.com|\+1 \(202\) 555-0142/);
+  }
+  assert.match(report.text, /Yesterday's requests \(external\): 1/);
+  assert.match(report.html, /Yesterday&#39;s requests \(external\): 1/);
+});
+
+test("each demo line includes its stored en or ja language in both report bodies", () => {
+  const report = sampleReport(null, null, [
+    demoRequest("2026-10-05T03:00:00Z"),
+    demoRequest("2026-10-05T04:00:00Z", {
+      company: "Example Japan", country: "Japan", lang: "ja"
+    })
+  ]);
+  assert.match(report.text, /Country  Language  Job title/);
+  assert.match(report.html, /<th scope="col"[^>]*>Language<\/th>/);
+  for (const [time, company, country, lang] of [
+    ["12:00", "Example Company", "United States", "en"],
+    ["13:00", "Example Japan", "Japan", "ja"]
+  ]) {
+    const line = `${time}  ${company}  50-199  Technology  ${country}  ${lang}  Head of IT`;
+    assert.ok(report.text.split("\n").includes(line), line);
+    const row = report.html.match(new RegExp(`<tr><td[^>]*>${time}<[\\s\\S]*?<\\/tr>`))?.[0];
+    assert.ok(row);
+    const cells = [...row.matchAll(/<td[^>]*>([^<]*)<\/td>/g)].map((match) => match[1]);
+    assert.deepEqual(cells, [time, company, "50-199", "Technology", country, lang, "Head of IT"]);
+  }
+  for (const body of [report.text, report.html]) {
+    assert.doesNotMatch(body, /buyer@example.com|\+1 \(202\) 555-0142/);
+  }
+});
+
+test("demo report rejects missing or invalid stored languages instead of publishing arbitrary content", () => {
+  for (const lang of [undefined, "", null, "fr", "ja-JP", "buyer@example.com", "+1 (202) 555-0142"]) {
+    assert.throws(() => backend.summarizeDemoRequests_([
+      demoRequest("2026-10-05T03:00:00Z", { lang })
+    ], window), /invalid_demo_language/);
+  }
+});
+
+test("demo details redact contact information pasted into other fields and escape HTML", () => {
+  const summary = backend.summarizeDemoRequests_([
+    demoRequest("2026-10-05T03:00:00Z", {
+      company: "<b>Example</b> buyer@example.com +1 (202) 555-0142",
+      jobTitle: "Director 202.555.0142", country: "Japan\r\n"
+    })
+  ], window);
+  assert.doesNotMatch(JSON.stringify(summary), /buyer@example.com|202|555|0142/);
+  assert.match(summary.newRows[0].company, /\[phone omitted\]/);
+  const html = backend.reportHtmlTable_(["Company"], [[summary.newRows[0].company]]);
+  assert.match(html, /&lt;b&gt;Example&lt;\/b&gt;/);
+  assert.doesNotMatch(html, /<b>/);
+  assert.equal(backend.summarizeDemoRequests_([], window).newCount, 0);
 });

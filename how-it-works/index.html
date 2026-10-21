@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script id="jin-nav-paint">document.documentElement.classList.add("js-nav");</script>
+<script src="/language.js" defer></script>
+<script src="/copy.js" defer></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>How it works — Jin AI</title>
-<meta name="description" content="Jin AI is your own memory, plugged into every AI. Install it as a plugin; it writes your instructions, builds your skills, and you choose what AI can access.">
+<title>How it works | Jin AI</title>
+<meta name="description" content="How Jin AI connects to your AI tools, sorts each AI harness by category, and lets the company decide what can move.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://jinai.md/how-it-works/">
 <link rel="alternate" hreflang="en" href="https://jinai.md/how-it-works/">
@@ -12,70 +15,185 @@
 <link rel="alternate" hreflang="x-default" href="https://jinai.md/how-it-works/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Jin AI">
-<meta property="og:title" content="How it works — Jin AI">
-<meta property="og:description" content="Jin AI is your own memory, plugged into every AI. Install it as a plugin; it writes your instructions, builds your skills, and you choose what AI can access.">
+<meta property="og:title" content="How it works | Jin AI">
+<meta property="og:description" content="How Jin AI connects to your AI tools, sorts each AI harness by category, and lets the company decide what can move.">
 <meta property="og:url" content="https://jinai.md/how-it-works/">
-<meta property="og:image" content="https://jinai.md/shots/og-en-2.png">
+<meta property="og:image" content="https://jinai.md/shots/og-b2b.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Jin AI: Turn AI into a company asset">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="How it works — Jin AI">
-<meta name="twitter:description" content="Jin AI is your own memory, plugged into every AI. Install it as a plugin; it writes your instructions, builds your skills, and you choose what AI can access.">
-<meta name="twitter:image" content="https://jinai.md/shots/og-en-2.png">
+<meta name="twitter:title" content="How it works | Jin AI">
+<meta name="twitter:description" content="How Jin AI connects to your AI tools, sorts each AI harness by category, and lets the company decide what can move.">
+<meta name="twitter:image" content="https://jinai.md/shots/og-b2b.png">
+<meta name="twitter:image:alt" content="Jin AI: Turn AI into a company asset">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../site.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="../theme-en.css">
 </head>
-<body>
+<body class="home-page">
 
 <header>
   <div class="wrap nav">
-    <a class="brand" href="../"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
-    <nav class="navlinks" aria-label="Pages">
-      <a href="../#benefits">Benefits</a>
-      <a href="../#privacy">Privacy</a>
-      <a href="./" aria-current="page">How it works</a>
+    <a class="brand" href="/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
+    <nav class="header-menu" id="primary-menu" aria-label="Main navigation">
+      <ul class="navlinks">
+        <li class="nav-group">
+          <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="product-panel">Product</button>
+          <span class="mobile-group-label">Product</span>
+          <ul class="nav-panel" id="product-panel">
+            <li><a href="/"><span class="nav-item-title">Overview</span><span class="nav-description">What Jin AI does for your company.</span></a></li>
+            <li><a href="/how-it-works/" aria-current="page"><span class="nav-item-title">How it works</span><span class="nav-description">Connect, sort, see by role, decide what can move.</span></a></li>
+            <li><a href="/how-it-works/#employee"><span class="nav-item-title">For employees</span><span class="nav-description">Bring your context in and out safely.</span></a></li>
+            <li><a href="/how-it-works/#admin"><span class="nav-item-title">For admins</span><span class="nav-description">See how each role uses AI.</span></a></li>
+          </ul>
+        </li>
+        <li><a href="/security/">Security</a></li>
+        <li><a href="/company/">Company</a></li>
+        <li><a href="/#demo">Contact</a></li>
+      </ul>
     </nav>
-    <div class="navright"><a class="btn btn-p" href="../#waitlist">Join &rarr;</a></div>
+    <a class="btn btn-p" href="/#demo">Request a demo</a>
+    <button class="menu-toggle" type="button" aria-label="Menu" aria-controls="primary-menu" aria-expanded="false" hidden><span></span><span></span><span></span></button>
   </div>
 </header>
 
 <main>
-<div class="hero">
+<section class="hero how-hero">
   <div class="wrap">
-    <div class="eyebrow">How it works</div>
-    <h1>How it works: your own memory, plugged into every AI.</h1>
-    <p class="lede">You install Jin AI as a plugin.</p>
-    <figure class="shot">
-      <img src="../shots/plugin-screen.png" width="1440" height="1260" alt="Jin AI plugin screen with example requests to make a pitch slide, draft an email and find the files a request needs.">
-    </figure>
-  </div>
-</div>
-
-<section id="steps">
-  <div class="wrap">
-    <ol class="steps">
-      <li><span class="step-n">01</span><div><h3>Personalize AI to work your way</h3><p>Automatically create and update your instructions from past chats.</p></div></li>
-      <li><span class="step-n">02</span><div><h3>Create your skills</h3><p>Turn your files, workflows and best practices into skills.</p></div></li>
-      <li><span class="step-n">03</span><div><h3>You control the context</h3><p>Choose what AI can access, use, and remember.</p></div></li>
-    </ol>
-    <p class="tech-note">For technical people: it&rsquo;s your personal MCP, built and maintained for you.</p>
-    <p class="status-note">Jin AI is in build. The first beta opens in small batches, and features arrive in stages.</p>
-    <div class="wait"><a class="btn btn-p" href="../#waitlist">Join &rarr;</a></div>
-    <div class="waitnote">Show your interest in joining the beta</div>
+    <h1>How it works</h1>
+    <p class="hero-intro">Connect once, see every part, and Jin AI keeps each team's shared harness up to date.</p>
   </div>
 </section>
+
+<div id="steps">
+<section class="section workflow" id="employee" aria-labelledby="employee-heading">
+  <div class="wrap">
+    <h2 class="how-audience" id="employee-heading">Employees</h2>
+    <ul class="feature-rows">
+      <li class="feature-row" data-demo-scene="connect" data-demo-src="">
+        <div class="feature-copy"><h3>Connect once</h3><p>Connect your usual AI tools once, through MCP.</p></div>
+        <figure class="demo-stage">
+          <figcaption class="screen-caption">Connect in one click</figcaption>
+          <div class="demo-window moving-frame">
+            <div class="screen" role="img" aria-label="Connect in one click">
+              <div class="screen-camera screen-connect">
+                <img class="screen-connect" src="/assets/demo/demo-1-connect.webp" width="2880" height="1664" alt="" decoding="async" loading="lazy">
+                <svg class="workflow-cursor" aria-hidden="true" viewBox="0 0 24 32"><circle cx="2" cy="2" r="14"/><path d="M2 2L2 26L8 20L13 30L18 28L13 18L22 18Z"/></svg>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </li>
+      <li class="feature-row" data-demo-scene="categories" data-demo-src="">
+        <div class="feature-copy"><h3>See every part by type</h3><p>Skills, prompts, memory and MCP settings, sorted by type.</p></div>
+        <figure class="demo-stage">
+          <figcaption class="screen-caption">See every part by type</figcaption>
+          <div class="demo-window moving-frame">
+            <div class="screen" role="img" aria-label="See every part by type">
+              <div class="screen-camera screen-categories">
+                <img class="screen-categories" src="/assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="" decoding="async" loading="lazy">
+                <svg class="workflow-cursor" aria-hidden="true" viewBox="0 0 24 32"><circle cx="2" cy="2" r="14"/><path d="M2 2L2 26L8 20L13 30L18 28L13 18L22 18Z"/></svg>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="section workflow" id="admin" aria-labelledby="admin-heading">
+  <div class="wrap">
+    <h2 class="how-audience" id="admin-heading">Admins</h2>
+    <ul class="feature-rows">
+      <li class="feature-row" data-demo-scene="departments" data-demo-src="">
+        <div class="feature-copy"><h3>See what each team uses most</h3><p>See which harnesses each department uses most.</p></div>
+        <figure class="demo-stage">
+          <figcaption class="screen-caption">See what each team uses most</figcaption>
+          <div class="demo-window moving-frame">
+            <div class="screen" role="img" aria-label="See what each team uses most">
+              <div class="screen-camera screen-by-role">
+                <img class="screen-by-role" src="/assets/demo/demo-3-by-role.webp" width="2880" height="1664" alt="" decoding="async" loading="lazy">
+                <svg class="workflow-cursor" aria-hidden="true" viewBox="0 0 24 32"><circle cx="2" cy="2" r="14"/><path d="M2 2L2 26L8 20L13 30L18 28L13 18L22 18Z"/></svg>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </li>
+      <li class="feature-row" data-demo-scene="classify" data-demo-src="">
+        <div class="feature-copy"><h3>Separate personal from company</h3><p>Keep what came from personal AI apart from parts that hold confidential company context.</p></div>
+        <figure class="demo-stage">
+          <figcaption class="screen-caption">Separate personal from company</figcaption>
+          <div class="demo-window moving-frame">
+            <div class="screen" role="img" aria-label="Separate personal from company">
+              <div class="screen-camera screen-what-can-move">
+                <img class="screen-what-can-move" src="/assets/demo/demo-4-what-can-move.webp" width="2880" height="1664" alt="" decoding="async" loading="lazy">
+                <svg class="workflow-cursor" aria-hidden="true" viewBox="0 0 24 32"><circle cx="2" cy="2" r="14"/><path d="M2 2L2 26L8 20L13 30L18 28L13 18L22 18Z"/></svg>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </li>
+      <li class="feature-row" data-demo-scene="tools" data-demo-src="">
+        <div class="feature-copy"><h3>Control approved AI tools</h3><p>Let people use only the tools you approve. For example: Claude Code for developers only, your company policy in Copilot, and only non-confidential parts in ChatGPT.</p></div>
+        <figure class="demo-stage" hidden>
+          <figcaption class="screen-caption">Control approved AI tools</figcaption>
+          <div class="demo-window moving-frame">
+            <div class="screen screen-placeholder" role="img" aria-label="Control approved AI tools">
+              <span class="placeholder-mark" aria-hidden="true"></span>
+            </div>
+          </div>
+        </figure>
+      </li>
+    </ul>
+  </div>
+</section>
+</div>
+
+<section class="section" id="data">
+  <div class="wrap">
+    <h2 class="h2">Your company's context stays yours</h2>
+    <ul class="data-promises">
+      <li>Each company's context is kept separate.</li>
+      <li>Jin AI never records your screen.</li>
+      <li>Jin AI itself never trains on your data.</li>
+    </ul>
+    <a class="text-link read-more" href="../security/">Security &amp; data &rarr;</a>
+  </div>
+</section>
+
+<section class="closing-cta" aria-labelledby="closing-heading">
+  <div class="wrap">
+    <h2 id="closing-heading">Turn your team's AI into a company asset</h2>
+    <a class="btn btn-p" href="../#demo">Request a demo</a>
+  </div>
+</section>
+<aside class="harness-note wrap" id="harness">
+  <p>An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.</p>
+</aside>
 </main>
 
 <footer>
-  <div class="wrap footer-bar">
-    <a class="brand" href="../"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
-    <nav aria-label="Language"><a href="./" lang="en" aria-current="page">EN</a><span>/</span><a href="../ja/how-it-works/" lang="ja">日本語</a></nav>
-    <span>Visits are counted with Cloudflare Web Analytics. No cookies.</span>
-    <span>&copy; 2026 Jin AI</span>
+  <div class="wrap">
+    <div class="footer-main">
+      <a class="brand" href="/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
+      <div class="footer-column"><h2>Product</h2><a href="/">Overview</a><a href="/how-it-works/" aria-current="page">How it works</a><a href="/how-it-works/#employee">For employees</a><a href="/how-it-works/#admin">For admins</a></div>
+      <div class="footer-column"><h2>Legal</h2><a href="/privacy/">Privacy</a><a href="/accessibility/">Accessibility</a></div>
+      <div class="footer-column"><h2>Company</h2><a href="/company/">Company</a><a href="/#demo">Contact</a><span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">Copy</button></span></div>
+      <div class="footer-column"><h2>Connect</h2><a href="https://discord.gg/C5m4jGgKXD" target="_blank" rel="noopener">Discord</a></div>
+    </div>
+    <div class="footer-bottom">
+      <p>Visits are counted with Cloudflare Web Analytics. No cookies.</p>
+      <span>&copy; 2026 Jin AI</span>
+      <nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en" aria-current="page" data-jin-lang="en">English</a> / <a href="/ja/" lang="ja" hreflang="ja" data-jin-lang="ja">日本語</a></nav>
+    </div>
   </div>
 </footer>
+<script type="module" src="/nav.js"></script>
+<script type="module" src="/workflow.js"></script>
 <!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1b6168cc50c644e4bd8071508286852d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

@@ -3,189 +3,911 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Jin AI — いつものAIを、あなたを本当に理解するアシスタントに。</title>
-<meta name="description" content="エンジニアが使っているAI環境を、あなたにも。ワンクリックで、すべてのAIがあなたのことを学びます。">
+<script id="jin-page-paint">
+document.documentElement.classList.add("js-nav");
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("js-reveal");
+</script>
+<script src="/language.js" defer></script>
+<script src="/copy.js" defer></script>
+<title>Jin AI | AIを、会社の資産に</title>
+<meta name="description" content="AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。">
 <meta name="author" content="Jin AI">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link rel="canonical" href="https://jinai.md/ja/">
 <link rel="alternate" hreflang="en" href="https://jinai.md/">
 <link rel="alternate" hreflang="ja" href="https://jinai.md/ja/">
 <link rel="alternate" hreflang="x-default" href="https://jinai.md/">
+<link rel="alternate" type="text/html" href="https://jinai.md/agent/" title="AI エージェント向けの Jin AI">
+<link rel="describedby" href="https://jinai.md/llms.txt">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-55 -87 500 500'%3E%3Crect x='-55' y='-87' width='500' height='500' fill='%23f5f3ef'/%3E%3Cg fill='%23252525'%3E%3Cpath d='M234 0h71L71 326H0Z'/%3E%3Cpath d='M248 129 211 180 317 326 389 326Z'/%3E%3C/g%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Jin AI">
-<meta property="og:locale" content="ja_JP">
-<meta property="og:locale:alternate" content="en_US">
-<meta property="og:title" content="Jin AI — いつものAIを、あなたを本当に理解するアシスタントに。">
-<meta property="og:description" content="エンジニアが使っているAI環境を、あなたにも。ワンクリックで、すべてのAIがあなたのことを学びます。">
+<meta property="og:title" content="Jin AI | AIを、会社の資産に">
+<meta property="og:description" content="AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。">
 <meta property="og:url" content="https://jinai.md/ja/">
-<meta property="og:image" content="https://jinai.md/shots/og-ja-2.png">
+<meta property="og:image" content="https://jinai.md/shots/og-b2b.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Jin AI：いつものAIを、あなたを本当に理解するアシスタントに。">
+<meta property="og:image:alt" content="Jin AI: AIを、会社の資産に">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Jin AI — いつものAIを、あなたを本当に理解するアシスタントに。">
-<meta name="twitter:description" content="エンジニアが使っているAI環境を、あなたにも。ワンクリックで、すべてのAIがあなたのことを学びます。">
-<meta name="twitter:image" content="https://jinai.md/shots/og-ja-2.png">
-<meta name="twitter:image:alt" content="Jin AI：いつものAIを、あなたを本当に理解するアシスタントに。">
+<meta name="twitter:title" content="Jin AI | AIを、会社の資産に">
+<meta name="twitter:description" content="AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。">
+<meta name="twitter:image" content="https://jinai.md/shots/og-b2b.png">
+<meta name="twitter:image:alt" content="Jin AI: AIを、会社の資産に">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../site.css">
-<style>
-:root{--serif:"Noto Serif JP","Source Serif 4",Georgia,serif;--sans:"Noto Sans JP","Inter",ui-sans-serif,system-ui,sans-serif}
-html[lang="ja"]{word-break:keep-all;overflow-wrap:anywhere}
-.hero h1{max-width:15em;line-height:1.22}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@400&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/base.css">
+<link rel="stylesheet" href="/theme-en.css">
+<link rel="stylesheet" href="/theme-ja.css">
 </head>
-<body>
+<body class="home-page">
 
 <header>
   <div class="wrap nav">
-    <a class="brand" href="../"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
-    <nav class="navlinks" aria-label="ページ内リンク">
-      <a href="#benefits">Jin AI を使うと</a>
-      <a href="#privacy">プライバシー</a>
-      <a href="how-it-works/">仕組み</a>
+    <a class="brand" href="/ja/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
+    <nav class="header-menu" id="primary-menu" aria-label="メインナビゲーション">
+      <ul class="navlinks">
+        <li class="nav-group">
+          <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="product-panel">製品</button>
+          <span class="mobile-group-label">製品</span>
+          <ul class="nav-panel" id="product-panel">
+            <li><a href="/ja/" aria-current="page"><span class="nav-item-title">概要</span><span class="nav-description">Jin AI が会社にもたらすこと。</span></a></li>
+            <li><a href="/ja/how-it-works/"><span class="nav-item-title">仕組み</span><span class="nav-description">つなぐ、整理する、役割ごとに見る、持ち出せるものを決める。</span></a></li>
+            <li><a href="/ja/how-it-works/#employee"><span class="nav-item-title">社員向け</span><span class="nav-description">個人のコンテクストを安全に預け、取り出せる。</span></a></li>
+            <li><a href="/ja/how-it-works/#admin"><span class="nav-item-title">管理者向け</span><span class="nav-description">役割ごとの AI の使い方が見える。</span></a></li>
+          </ul>
+        </li>
+        <li><a href="/ja/security/">セキュリティ</a></li>
+        <li><a href="/ja/company/">会社情報</a></li>
+        <li><a href="/ja/#demo">お問い合わせ</a></li>
+      </ul>
     </nav>
-    <div class="navright"><a class="btn btn-p" href="#waitlist">参加する &rarr;</a></div>
+    <a class="btn btn-p" href="#demo">デモを申し込む</a>
+    <button class="menu-toggle" type="button" aria-label="メニュー" aria-controls="primary-menu" aria-expanded="false" hidden><span></span><span></span><span></span></button>
   </div>
 </header>
 
 <main>
-<div class="hero">
+<section class="hero">
   <div class="wrap">
-    <div class="eyebrow">開発中 &middot; ベータ版</div>
-    <h1>いつものAIを、<wbr>あなたを本当に理解する<wbr>アシスタントに。</h1>
-    <p class="lede">エンジニアが使っているAI環境を、あなたにも。ワンクリックで、すべてのAIがあなたのことを学びます。</p>
-    <div class="wait">
-      <a class="btn btn-p" href="#waitlist">参加する &rarr;</a>
+    <span class="mono-label hero-eyebrow">Jin AI</span>
+    <!-- Hero headline: edit the reveal spans here; see README. -->
+    <h1 class="hero-reveal" aria-label="AIを、会社の資産に。"><span style="--word:0">AIを、</span><span style="--word:1">会社の資産に。</span></h1>
+    <p class="hero-intro">AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。</p>
+    <div class="hero-actions">
+    <!-- GENERATED:CTA_HERO:START -->
+<div class="wait">
+      <a class="btn btn-p" href="#demo">デモを申し込む</a>
     </div>
-    <div class="waitnote">ベータ版への参加希望を送る</div>
-    <figure class="shot">
-      <figcaption>使い方は、お使いのAIにプラグインとして追加するだけです。</figcaption>
-      <img src="../shots/plugin-screen.png" width="1440" height="1260" alt="Jin AI のプラグイン画面。プレゼン資料の作成、メールの下書き、必要なファイルの検索を依頼する例。">
-    </figure>
-  </div>
-</div>
-
-<section id="what">
-  <div class="wrap what">
-    <h2 class="h2">Jin AI とは</h2>
-    <p class="what-body">Jin AI は、すべてのAIにつながる「あなた専用の記憶」です。ファイル、スライド、過去のチャットからあなたの働き方を学び、あなたが誰で、何を大事にしているか、そして必要なファイルを、依頼のたびにAIへ渡します。</p>
-    <a class="what-link" href="how-it-works/">仕組みを見る &rarr;</a>
-  </div>
-</section>
-
-<section id="benefits">
-  <div class="wrap">
-    <h2 class="h2">Jin AI を使うと</h2>
-    <ul class="benefits">
-      <li class="benefit">
-        <div><h3>長いプロンプトを書かなくていい</h3><p>Jin AI があなたのファイル、スライド、チャットから学び、文脈を補ってくれます。</p></div>
-        <div class="benefit-visual benefit-ill"><img src="../shots/ill-prompts.png" width="786" height="484" alt="" loading="lazy" decoding="async"></div>
-      </li>
-      <li class="benefit">
-        <div><h3>自己紹介は一度だけ</h3><p>あなたが誰で、どう働くかが、使うすべてのAIに届きます。</p></div>
-        <div class="benefit-visual benefit-ill"><img src="../shots/ill-once.png" width="757" height="634" alt="" loading="lazy" decoding="async"><p class="cap">Claude Code は開発中。ChatGPT と Copilot は提供予定。</p></div>
-      </li>
-      <li class="benefit">
-        <div><h3>必要なファイルが、必要な会話に</h3><p>依頼ごとに必要なファイルを、PCの中から Jin AI が持ってきます。</p></div>
-        <div class="benefit-visual benefit-ill"><img src="../shots/ill-files.png" width="834" height="410" alt="" loading="lazy" decoding="async"></div>
-      </li>
+<!-- GENERATED:CTA_HERO:END -->
+      <a class="text-link" href="/ja/how-it-works/">仕組みを見る &rarr;</a>
+    </div>
+    <ul class="hero-badges" role="list">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 4-4 7-8 9-4-2-8-5-8-9V6Z"/><path d="m8 12 3 3 5-6"/></svg><span>安全</span></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V3h14v18M3 21h18M10 21v-5h4v5M9 7h1m4 0h1M9 11h1m4 0h1"/></svg><span>会社のもの</span></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 4a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 4v3"/></svg><span>共有</span></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4v5h-5M4 20v-5h5M20 9a8 8 0 0 0-14-3M4 15a8 8 0 0 0 14 3"/></svg><span>いつも最新</span></li>
     </ul>
   </div>
 </section>
 
-<section id="privacy">
-  <div class="wrap">
-    <h2 class="h2">設計からプライベート</h2>
-    <div class="privacy-tabs" role="tablist" aria-label="プライバシーの選択肢">
-      <button type="button" role="tab" id="tab-device" aria-controls="panel-device" aria-selected="true" tabindex="0">デバイス上</button>
-      <button type="button" role="tab" id="tab-cloud" aria-controls="panel-cloud" aria-selected="false" tabindex="-1">Cloud Sync</button>
+<div class="product-viewport">
+  <figure class="demo-stage">
+    <div class="demo-window">
+      <div class="hero-screen">
+        <img src="/assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="Jin AI の社員向けの画面。ハーネスの部品が種類ごとに並び、それぞれに Can move か Confidential の表示がある。" decoding="async" loading="eager" fetchpriority="high" elementtiming="hero-still">
+        <template id="hero-demo-template"><iframe src="/assets/demo/app.html?embed=hero" title="Jin AI の社員向け画面のデモ" width="1440" height="832" tabindex="-1" inert aria-hidden="true" scrolling="no" referrerpolicy="no-referrer"></iframe></template>
+      </div>
     </div>
-    <div class="privacy-panel" id="panel-device" role="tabpanel" aria-labelledby="tab-device" tabindex="0">
-      <ul class="privacy-list">
-        <li><strong>画面を録画しません</strong><span>Jin AI は画面を録画しません。</span></li>
-        <li><strong>あなたのPCの中で学ぶ</strong><span>無料版は、あなたのPCにあるファイルとチャット履歴から学びます。</span></li>
-        <li><strong>ファイルはそのまま</strong><span>Jin AI はファイルを動かしません。</span></li>
-        <li><strong>あなたのデータで学習しない</strong><span>Jin AI 自身があなたのデータを学習に使うことはありません。</span></li>
-        <li><strong>選ぶのはあなた</strong><span>何を読ませ、何を共有するかはあなたが決めます。</span></li>
-      </ul>
+  </figure>
+</div>
+<script id="jin-hero-demo">
+(() => {
+  const screen = document.querySelector(".hero-screen");
+  const still = screen.querySelector("img");
+  const template = document.getElementById("hero-demo-template");
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  let iframe = null;
+  let visible = false;
+  let painted = false;
+  let fallback = null;
+  const playback = () => {
+    iframe?.contentWindow.postMessage({
+      type: "jin-demo",
+      action: visible && !document.hidden && !reduced.matches ? "play" : "pause"
+    }, location.origin);
+  };
+  const reveal = frame => {
+    if (iframe !== frame) return;
+    screen.classList.add("hero-demo-ready");
+    playback();
+  };
+  const mount = () => {
+    if (!painted || reduced.matches || iframe) return;
+    const frame = template.content.firstElementChild.cloneNode(true);
+    iframe = frame;
+    frame.addEventListener("load", () => {
+      if (!frame.contentDocument?.documentElement.classList.contains("hero-embed")) {
+        console.error("The live hero demo could not be loaded. Keeping the still image.");
+        return;
+      }
+      playback();
+      fallback = setTimeout(() => reveal(frame), 500);
+    }, { once: true });
+    screen.appendChild(frame);
+    frame.style.transform = "scale(" + screen.clientWidth / 1440 + ")";
+  };
+  new ResizeObserver(([entry]) => {
+    if (iframe) iframe.style.transform = "scale(" + entry.contentRect.width / 1440 + ")";
+  }).observe(screen);
+  const observer = new IntersectionObserver(entries => {
+    visible = entries[0].isIntersecting;
+    playback();
+  });
+  observer.observe(screen);
+  addEventListener("message", event => {
+    if (!iframe || event.source !== iframe.contentWindow || event.origin !== location.origin ||
+        event.data?.type !== "jin-demo" || event.data.action !== "ready") return;
+    clearTimeout(fallback);
+    reveal(iframe);
+  });
+  document.addEventListener("visibilitychange", playback);
+  reduced.addEventListener("change", () => {
+    if (reduced.matches) {
+      playback();
+      clearTimeout(fallback);
+      iframe?.remove();
+      iframe = null;
+      screen.classList.remove("hero-demo-ready");
+    } else {
+      mount();
+    }
+  });
+  const afterPaint = () => requestAnimationFrame(() => requestAnimationFrame(() => {
+    painted = true;
+    mount();
+  }));
+  if (still.complete && still.naturalWidth) afterPaint();
+  else {
+    still.addEventListener("load", afterPaint, { once: true });
+    still.addEventListener("error", () => console.error("The hero demo still image could not be loaded."), { once: true });
+  }
+})();
+</script>
+
+<section class="section" id="problem">
+  <div class="wrap" id="benefits">
+    <div class="section-head">
+      <span class="mono-label">課題</span>
+      <h2 class="h2"><span class="ja-phrase">御社のAIは、</span><span class="ja-phrase">会社の管理下に</span><span class="ja-phrase">ありますか？</span></h2>
     </div>
-    <div class="privacy-panel" id="panel-cloud" role="tabpanel" aria-labelledby="tab-cloud" tabindex="0" hidden>
-      <div class="privacy-cloud"><strong>Pro で提供予定</strong><p>Google Drive・Notion 連携、PC とスマホの同期。</p></div>
+    <div class="problem-grid">
+      <figure class="problem-column" data-problem="shadow" data-state="idle" tabindex="0" aria-label="図: 会社の仕事が個人のAIに流れていく">
+        <div class="problem-art">
+          <svg viewBox="0 0 420 320" role="img" aria-label="社員が会社の土台の内側で机に向かっています。個人のAIは外側に分かれて置かれています。書類には小さな鍵の印があります。" data-label-idle="社員が会社の土台の内側で机に向かっています。個人のAIは外側に分かれて置かれています。書類には小さな鍵の印があります。" data-label-playing="機密の書類が社員のもとを離れ、会社の境界を越えて個人のAIに向かいます。境界に警告の印が現れます。" data-label-changed="機密の書類は会社の外の個人のAIにあります。越えた境界に警告の印が付き、個人のAIが朱色の線で囲まれています。">
+            <g class="shadow-company">
+              <path class="iso-base" d="M22 156 145 85 268 156V174L145 245 22 174Z"/>
+              <path class="shadow-boundary" d="M22 156 145 85 268 156 145 227ZM145 227V245"/>
+              <g class="shadow-employee iso-highlight">
+                <circle cx="117" cy="90" r="8"/>
+                <path class="iso-face" d="M105 120V110C105 96 129 96 129 110V120"/>
+                <path d="M108 119 123 133 142 123M126 117 137 124"/>
+              </g>
+              <path class="iso-face" d="M87 150 131 125 175 150V171L131 196 87 171Z"/>
+              <path d="M87 150 131 175 175 150M131 175V196"/>
+              <path class="iso-face" d="M132 126V104L157 118V140ZM132 126 118 134 143 148 157 140"/>
+              <path d="M124 134 143 145 152 140"/>
+            </g>
+            <path class="iso-base" d="M286 225 340 194 394 225V240L340 271 286 240Z"/>
+            <path d="M286 225 340 256 394 225M340 256V271"/>
+            <g class="shadow-ai">
+              <path class="iso-face" d="M312 203 340 187 368 203V224L340 240 312 224Z"/>
+              <path d="M312 203 340 219 368 203M340 219V240"/>
+              <path class="iso-face" d="M325 143H355A4 4 0 0 1 359 147V165A4 4 0 0 1 355 169H340L330 177V169H325A4 4 0 0 1 321 165V147A4 4 0 0 1 325 143Z"/>
+              <path d="M330 153H350M330 160H343"/>
+              <path class="shadow-ai-outline" d="M312 203 340 187 368 203V224L340 240 312 224ZM312 203 340 219 368 203M340 219V240"/>
+            </g>
+            <path class="shadow-route" d="M176 130C211 130 244 165 267 181S320 210 340 212"/>
+            <g transform="translate(245 168)">
+              <circle class="shadow-warning-pulse" r="18"/>
+              <g class="shadow-warning">
+                <path class="iso-face" d="M0-13 13 10H-13Z"/>
+                <path d="M0-5V1M0 5V6"/>
+              </g>
+            </g>
+            <g transform="translate(176 130)">
+              <g class="shadow-document">
+                <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1Z"/>
+                <path d="M-24-1 0 13 24-1M0 13V18"/>
+                <g class="shadow-confidential" transform="translate(0 -4)">
+                  <path class="iso-face" d="M-5-2H5V6H-5ZM-3-2V-5A3 3 0 0 1 3-5V-2"/>
+                  <path d="M0 1V3"/>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <figcaption><h3><span class="ja-phrase">シャドーAIによる</span><span class="ja-phrase">情報漏洩リスク</span></h3><p>会社の機密情報が個人のAIツールに共有され、企業が把握・管理できない状態になっているかもしれません。</p></figcaption>
+        <p class="problem-status" id="problem-shadow-status" aria-live="polite" aria-atomic="true" data-status-idle="機密の書類は会社の内側にあり、個人のAIは外側にあります。" data-status-playing="機密の書類が、会社の境界を越えて個人のAIに向かっています。" data-status-changed="機密の書類が、会社の外の個人のAIに渡りました。">機密の書類は会社の内側にあり、個人のAIは外側にあります。</p>
+      </figure>
+      <figure class="problem-column" data-problem="dependency" data-state="idle" tabindex="0" aria-label="図: 担当者が辞めると、後任者が文脈・指示・ツール・ワークフローを一から作り直す">
+        <div class="problem-art">
+          <svg viewBox="0 0 420 320" role="img" aria-label="担当者が文脈・指示・ツール・ワークフローの層につながっています。" data-label-idle="担当者が文脈・指示・ツール・ワークフローの層につながっています。" data-label-playing="担当者が辞めます。人と接続が破線になり、接続に×が付き、積み重ねた層が薄くなります。" data-label-rebuilding="後任者がワークフロー・ツール・指示・文脈を下から一つずつ作り直しています。" data-label-changed="3つの段階です。担当者が層を持ち、担当者が辞めて層が薄くなり、後任者が文脈・指示・ツール・ワークフローを一から作り直しました。">
+            <defs>
+              <g id="dependency-person">
+                <circle cy="40" r="12"/>
+                <path d="M-21 89V78C-21 54 21 54 21 78V89Z"/>
+              </g>
+              <g id="dependency-layer">
+                <path d="M-56 0 0-9 56 0V24L0 33-56 24ZM-56 0 0 9 56 0"/>
+              </g>
+              <mask id="dependency-context" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
+                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
+              </mask>
+              <mask id="dependency-instructions" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
+                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
+              </mask>
+              <mask id="dependency-tools" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
+                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
+              </mask>
+              <mask id="dependency-workflows" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
+                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
+              </mask>
+            </defs>
+            <g class="dependency-stage" data-stage="owner" transform="translate(66 0)">
+              <use class="dependency-person" href="#dependency-person"/>
+              <path class="dependency-link" d="M0 89V117"/>
+              <g class="dependency-stack">
+                <use href="#dependency-layer" y="258"/><use href="#dependency-layer" y="214"/>
+                <use href="#dependency-layer" y="170"/><use href="#dependency-layer" y="126"/>
+                <text y="151">Context</text><text y="195">Instructions</text>
+                <text y="239">Tools</text><text y="283">Workflows</text>
+              </g>
+            </g>
+            <path class="dependency-transition" style="--step:0" d="M129 214H145M139 208 145 214 139 220"/>
+            <g class="dependency-stage dependency-departure" data-stage="departure" transform="translate(210 0)">
+              <use class="dependency-person dependency-owner-solid" href="#dependency-person"/>
+              <use class="dependency-owner-gone" href="#dependency-person"/>
+              <path class="dependency-link dependency-broken-link" d="M0 89V117"/>
+              <path class="dependency-break" d="M-5 95 5 105M5 95-5 105"/>
+              <g class="dependency-stack dependency-faded-stack">
+                <use href="#dependency-layer" y="258"/><use href="#dependency-layer" y="214"/>
+                <use href="#dependency-layer" y="170"/><use href="#dependency-layer" y="126"/>
+                <text y="151">Context</text><text y="195">Instructions</text>
+                <text y="239">Tools</text><text y="283">Workflows</text>
+              </g>
+            </g>
+            <path class="dependency-transition" style="--step:1" d="M273 214H289M283 208 289 214 283 220"/>
+            <g class="dependency-stage dependency-successor" data-stage="successor" transform="translate(354 0)">
+              <use class="dependency-person" href="#dependency-person"/>
+              <path class="dependency-link dependency-new-link" d="M0 89V117"/>
+              <g class="dependency-rebuild" data-layer="context" style="--step:3" transform="translate(0 126)">
+                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-context)"/><text y="25">Context</text>
+              </g>
+              <g class="dependency-rebuild" data-layer="instructions" style="--step:2" transform="translate(0 170)">
+                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-instructions)"/><text y="25">Instructions</text>
+              </g>
+              <g class="dependency-rebuild" data-layer="tools" style="--step:1" transform="translate(0 214)">
+                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-tools)"/><text y="25">Tools</text>
+              </g>
+              <g class="dependency-rebuild" data-layer="workflows" style="--step:0" transform="translate(0 258)">
+                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-workflows)"/><text y="25">Workflows</text>
+              </g>
+              <g transform="translate(39 104)"><path class="dependency-redo" d="M12-5A13 13 0 1 0 13 3M12-13V-5H4"/></g>
+            </g>
+          </svg>
+        </div>
+        <figcaption><h3><span class="ja-phrase">AIエージェントの</span><span class="ja-phrase">属人化</span></h3><p>AIエージェントやワークフローが作成者個人に依存。担当者が異動・退職すると、後任者は一から作り直さなければなりません。</p></figcaption>
+        <p class="problem-status" id="problem-dependency-status" aria-live="polite" aria-atomic="true" data-status-idle="担当者が文脈・指示・ツール・ワークフローを持っています。" data-status-playing="担当者が辞め、接続が切れ、積み重ねた層が薄くなります。" data-status-rebuilding="後任者がワークフロー・ツール・指示・文脈を下から一つずつ作り直しています。" data-status-changed="担当者が辞めました。後任者が文脈・指示・ツール・ワークフローを一から作り直しました。">担当者が文脈・指示・ツール・ワークフローを持っています。</p>
+      </figure>
+      <figure class="problem-column" data-problem="teams" data-state="idle" tabindex="0" aria-label="図: 離れたチームの手順は隠れたままです。">
+        <div class="problem-art">
+          <svg viewBox="0 0 420 320" role="img" aria-label="離れた 3 つのチームの手順は、一部が隠れています。1 つのチームだけに、かすかな朱色の印があります。" data-label-idle="離れた 3 つのチームの手順は、一部が隠れています。1 つのチームだけに、かすかな朱色の印があります。">
+            <defs>
+              <g id="problem-team-base">
+                <path class="iso-base" d="M0-35 60 0 60 17 0 52-60 17-60 0Z"/>
+                <path d="M-60 0 0 35 60 0M0 35V52"/>
+              </g>
+              <g id="problem-team-person">
+                <circle cx="0" cy="-45" r="6"/>
+                <path d="M-9-24V-29C-9-39 9-39 9-29V-24Z"/>
+              </g>
+              <g id="problem-team-lid">
+                <path class="team-lid-face" d="M0-74 60-39 0-4-60-39Z"/>
+                <path class="team-wall" d="M-60-39V0M60-39V0M0-4V35"/>
+              </g>
+              <g id="problem-plain-workflow">
+                <path d="M-26 0 0 15 26 0"/>
+                <path class="iso-face" d="M-36 0-26-6-16 0-26 6ZM-10 15 0 9 10 15 0 21ZM16 0 26-6 36 0 26 6Z"/>
+              </g>
+            </defs>
+            <g transform="translate(90 112)" class="problem-team" data-team-art="a">
+              <use href="#problem-team-base"/>
+              <g class="team-workflow"><use href="#problem-team-person"/><use href="#problem-plain-workflow"/></g>
+              <g class="team-lid"><use href="#problem-team-lid"/></g>
+            </g>
+            <g transform="translate(330 112)" class="problem-team" data-team-art="b">
+              <use href="#problem-team-base"/>
+              <g class="team-workflow"><use href="#problem-team-person"/><use href="#problem-plain-workflow"/></g>
+              <g class="team-lid"><use href="#problem-team-lid"/></g>
+            </g>
+            <g transform="translate(210 246)" class="problem-team team-best" data-team-art="c">
+              <use href="#problem-team-base"/>
+              <g class="team-workflow">
+                <use href="#problem-team-person"/>
+                <path d="M-26 0 0 15 26 0ZM-4 8 0 15-9 15M14 2 26 0 22 7"/>
+                <path class="iso-face" d="M-36 0-26-6-16 0-26 6ZM-10 15 0 9 10 15 0 21ZM16 0 26-6 36 0 26 6Z"/>
+              </g>
+              <g class="team-lid"><use href="#problem-team-lid"/><path class="team-hint" d="M-9-39 0-34 9-39"/></g>
+            </g>
+          </svg>
+          <div class="team-controls" hidden>
+            <button type="button" class="team-control" data-team="a" aria-pressed="false" aria-controls="problem-teams-status" data-label="チーム A を開いています。灰色の手順は、ほかのチームとは分かれたままです。" data-status="チーム A を開きました。灰色の手順は、ほかのチームとは分かれたままです。"><span class="problem-status">チーム A を開く</span></button>
+            <button type="button" class="team-control" data-team="b" aria-pressed="false" aria-controls="problem-teams-status" data-label="チーム B を開いています。灰色の手順は、ほかのチームとは分かれたままです。" data-status="チーム B を開きました。灰色の手順は、ほかのチームとは分かれたままです。"><span class="problem-status">チーム B を開く</span></button>
+            <button type="button" class="team-control" data-team="c" aria-pressed="false" aria-controls="problem-teams-status" data-label="チーム C を開いています。朱色の手順には、ほかのチームにはない接続が 1 つあります。" data-status="チーム C を開きました。よい手順ですが、ほかのチームには共有されていません。"><span class="problem-status">チーム C を開く</span></button>
+          </div>
+        </div>
+        <figcaption><h3><span class="ja-phrase">AI活用ノウハウの</span><span class="ja-phrase">共有不足</span></h3><p>各チームで生まれた便利なAI活用方法やワークフローが、ほかのチームに共有されず、組織全体に広がっていません。</p></figcaption>
+        <p class="problem-status" id="problem-teams-status" aria-live="polite" aria-atomic="true" data-status-idle="3 つのチームがあります。それぞれの手順は一部が隠れています。">3 つのチームがあります。それぞれの手順は一部が隠れています。</p>
+      </figure>
     </div>
   </div>
 </section>
 
-<section class="final" id="waitlist">
+<section class="section" id="solution">
   <div class="wrap">
-    <div class="eyebrow">ベータ版</div>
-    <h2>参加する &rarr;</h2>
-    <p>ベータ版への参加希望を送る</p>
-    <form class="signup" id="waitlistForm" action="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" data-endpoint="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" method="post">
+    <h2 class="h2 solution-heading"><span class="ja-phrase">Jin AIが実現する、</span><span class="ja-phrase">安心して</span><span class="ja-phrase">使い続けられる</span><span class="ja-phrase">AI環境</span></h2>
+    <ul class="solution-copy">
+      <li>
+        <figure class="solution-figure" data-solution="safe" data-state="idle" tabindex="0" aria-label="図: 機密は社内に残り、再利用できる部分だけが承認したAIツールに届く">
+          <div class="problem-art">
+            <svg viewBox="0 0 420 320" role="img" aria-label="会社の台の内側に、ひとつの束があります。承認したAIツールと個人のAIは外側にあります。" data-label-idle="会社の台の内側に、ひとつの束があります。承認したAIツールと個人のAIは外側にあります。" data-label-playing="束が分かれます。鍵の付いた部分は社内に残り、再利用できる部分はチェックの付いたAIツールへ進みます。個人のAIへの経路は、ばつ印で止まります。" data-label-changed="鍵の付いた機密情報は社内に残りました。再利用できる部分だけが承認したAIツールに届き、個人のAIへの経路は、ばつ印で止まりました。">
+              <g class="safe-company">
+                <path class="iso-base" d="M20 174 145 102 270 174V194L145 266 20 194Z"/>
+                <path class="safe-boundary" d="M20 174 145 246 270 174M145 246V266"/>
+              </g>
+              <g class="safe-approved">
+                <path class="iso-base" d="M292 123 345 93 398 123V139L345 170 292 139Z"/>
+                <path d="M292 123 345 154 398 123M345 154V170"/>
+                <path class="iso-face" d="M317 104 345 88 373 104V125L345 141 317 125Z"/>
+                <path d="M317 104 345 120 373 104M345 120V141"/>
+                <path class="safe-check" d="M332 67 341 76 359 57"/>
+              </g>
+              <g class="safe-personal">
+                <path class="iso-base" d="M292 264 345 234 398 264V280L345 311 292 280Z"/>
+                <path d="M292 264 345 295 398 264M345 295V311"/>
+                <path class="iso-face" d="M317 245 345 229 373 245V266L345 282 317 266Z"/>
+                <path d="M317 245 345 261 373 245M345 261V282"/>
+                <path class="iso-face" d="M330 190H360V215H345L335 223V215H330ZM337 198H353M337 205H348"/>
+              </g>
+              <path class="safe-approved-route" pathLength="1" d="M118 154 174 171 260 121 329 106"/>
+              <path class="safe-blocked-route" pathLength="1" d="M159 186 218 220 263 246"/>
+              <path class="safe-block" d="M256 239 270 253M270 239 256 253"/>
+              <g transform="translate(118 154)">
+                <g class="safe-confidential">
+                  <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1ZM-24-1 0 13 24-1M0 13V18"/>
+                  <g class="safe-lock" transform="translate(0 -4)">
+                    <path class="iso-face" d="M-5-2H5V6H-5ZM-3-2V-5A3 3 0 0 1 3-5V-2"/>
+                    <path d="M0 1V3"/>
+                  </g>
+                </g>
+                <g class="safe-reusable solution-finish">
+                  <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1ZM-24-1 0 13 24-1M0 13V18"/>
+                  <path d="M-12-1 0 6 12-1M-6-5 6 2"/>
+                </g>
+              </g>
+            </svg>
+          </div>
+          <span class="problem-status" id="solution-safe-status" aria-live="polite" aria-atomic="true" data-status-idle="会社の内側に、分ける前のひとつの束があります。" data-status-playing="機密情報と再利用できる部分が分かれ、承認したAIへの経路だけに情報が流れます。" data-status-changed="機密は社内に残りました。再利用できる部分だけが承認したAIツールに届き、個人のAIへの経路は止まりました。">会社の内側に、分ける前のひとつの束があります。</span>
+        </figure>
+        <h3><span class="ja-phrase">機密情報を</span><span class="ja-phrase">安全に管理する</span></h3><p>機密情報と共有可能な知識・スキル・ワークフローを自動で分類。情報に応じて適切なAIツールだけに共有することで、安全なAI活用を実現します。</p>
+      </li>
+      <li>
+        <figure class="solution-figure" data-solution="company" data-state="idle" tabindex="0" aria-label="図: 設定は会社に残り、次の担当者がそのままつながる">
+          <div class="problem-art">
+            <svg viewBox="0 0 420 320" role="img" aria-label="文脈・指示・ツール・ワークフローの四層が、会社の台の内側に実線で描かれ、一人の担当者につながっています。" data-label-idle="文脈・指示・ツール・ワークフローの四層が、会社の台の内側に実線で描かれ、一人の担当者につながっています。" data-label-playing="最初の担当者が破線の輪郭になって離れます。会社の四層は実線のまま残り、次の担当者がつながります。" data-label-changed="最初の担当者が離れた後も、同じ四層が会社に残っています。次の担当者が実線でつながり、作り直す必要はありません。">
+              <defs>
+                <g id="solution-company-person">
+                  <circle r="10"/><path d="M-17 46V34C-17 12 17 12 17 34V46Z"/>
+                </g>
+                <g id="solution-company-layer">
+                  <path class="iso-face" d="M-56 0 0-9 56 0V24L0 33-56 24ZM-56 0 0 9 56 0"/>
+                </g>
+              </defs>
+              <g class="company-platform">
+                <path class="iso-base" d="M40 204 210 106 380 204V214L210 312 40 214Z"/>
+                <path d="M40 204 210 302 380 204M210 302V312"/>
+              </g>
+              <path class="company-old-link" d="M100 185 154 217"/>
+              <path class="company-new-link solution-finish" pathLength="1" d="M328 185 266 217"/>
+              <g transform="translate(83 139)">
+                <use class="company-owner" href="#solution-company-person"/>
+                <use class="company-departed" href="#solution-company-person"/>
+              </g>
+              <g class="company-successor" transform="translate(345 139)">
+                <use href="#solution-company-person"/>
+              </g>
+              <g class="company-stack" transform="translate(210 0)">
+                <use href="#solution-company-layer" y="226"/><use href="#solution-company-layer" y="182"/>
+                <use href="#solution-company-layer" y="138"/><use href="#solution-company-layer" y="94"/>
+                <text y="119">Context</text><text y="163">Instructions</text>
+                <text y="207">Tools</text><text y="251">Workflows</text>
+              </g>
+            </svg>
+          </div>
+          <span class="problem-status" id="solution-company-status" aria-live="polite" aria-atomic="true" data-status-idle="一人の担当者が、会社の四層につながっています。" data-status-playing="最初の担当者が離れても、四層は会社に残り、次の担当者がつながります。" data-status-changed="文脈・指示・ツール・ワークフローは会社に残りました。次の担当者が、作り直さずにそのままつながりました。">一人の担当者が、会社の四層につながっています。</span>
+        </figure>
+        <h3><span class="ja-phrase">AIを会社の</span><span class="ja-phrase">資産として残す</span></h3><p>AIエージェントを構成する知識・ルール・ツール・ワークフローを組織に蓄積。担当者が異動・退職しても、AIエージェントをそのまま使い続けられます。</p>
+      </li>
+      <li>
+        <figure class="solution-figure" data-solution="shared" data-state="idle" tabindex="0" aria-label="図: ひとつのチームのワークフローが、ほかのチームに広がる">
+          <div class="problem-art">
+            <svg viewBox="0 0 420 320" role="img" aria-label="三つのチームの台があります。ひとつのチームだけに、アクセント色のワークフローカードがあります。" data-label-idle="三つのチームの台があります。ひとつのチームだけに、アクセント色のワークフローカードがあります。" data-label-playing="元のワークフローはチームに残り、コピーがアクセント色の線に沿って、ほかの二つのチームへ進みます。" data-label-changed="三つのチームすべてに、同じアクセント色のワークフローがあります。元のチームにも残り、ほかのチームはそれぞれコピーを持っています。">
+              <defs>
+                <g id="solution-team-base">
+                  <path class="iso-base" d="M0-35 60 0 60 17 0 52-60 17-60 0Z"/>
+                  <path d="M-60 0 0 35 60 0M0 35V52"/>
+                </g>
+                <g id="solution-team-person">
+                  <circle cy="-45" r="6"/><path d="M-9-24V-29C-9-39 9-39 9-29V-24Z"/>
+                </g>
+                <g id="solution-workflow">
+                  <path class="iso-face" d="M-40-12 0-35 40-12V-4L0 19-40-4ZM-40-12 0 11 40-12M0 11V19"/>
+                  <path d="M-23-12 0 1 23-12ZM-5-6 0 1-8 1M12-10 23-12 19-5"/>
+                  <path class="iso-face" d="M-31-12-23-17-15-12-23-7ZM-8 1 0-4 8 1 0 6ZM15-12 23-17 31-12 23-7Z"/>
+                </g>
+              </defs>
+              <g transform="translate(90 112)"><use href="#solution-team-base"/><use href="#solution-team-person" x="-35" y="-9"/></g>
+              <g transform="translate(330 112)"><use href="#solution-team-base"/><use href="#solution-team-person" x="-35" y="-9"/></g>
+              <g transform="translate(210 246)"><use href="#solution-team-base"/><use href="#solution-team-person" x="-35" y="-9"/></g>
+              <path class="shared-route shared-route-a" pathLength="1" d="M188 219C156 189 124 150 100 127"/>
+              <path class="shared-route shared-route-b" pathLength="1" d="M232 219C264 189 296 150 320 127"/>
+              <g class="shared-source" transform="translate(210 234)"><use href="#solution-workflow"/></g>
+              <g transform="translate(90 100)"><use class="shared-target-a" href="#solution-workflow"/></g>
+              <g transform="translate(330 100)"><use class="shared-target-b" href="#solution-workflow"/></g>
+              <g transform="translate(210 234)">
+                <g class="shared-moving-a"><use href="#solution-workflow"/></g>
+                <g class="shared-moving-b solution-finish"><use href="#solution-workflow"/></g>
+              </g>
+            </svg>
+          </div>
+          <span class="problem-status" id="solution-shared-status" aria-live="polite" aria-atomic="true" data-status-idle="ひとつのチームにワークフローカードがあり、ほかの二つのチームにはまだありません。" data-status-playing="ワークフローのコピーが、ほかの二つのチームへ進みます。元のワークフローは残ります。" data-status-changed="同じワークフローが三つのチームに広がりました。それぞれのチームがコピーを持っています。">ひとつのチームにワークフローカードがあり、ほかの二つのチームにはまだありません。</span>
+        </figure>
+        <h3><span class="ja-phrase">AI活用のノウハウを</span><span class="ja-phrase">組織全体に広げる</span></h3><p>各チームで生まれた優れたAI活用方法やワークフローを共有。ほかのチームにも最適な活用方法を自動でおすすめし、組織全体の生産性向上につなげます。</p>
+      </li>
+    </ul>
+    <div class="solution-closing">
+      <p><strong>一人ひとりのAI活用が、会社全体の資産になる。</strong></p>
+      <p>Jin AIは、日々進化するAIの活用方法を組織に蓄積し、誰もが活用できる環境をつくります。</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="section-head"><h2 class="h2">仕組み</h2></div>
+    <div class="how-excerpt">
+      <div>
+        <h3 class="how-audience">社員</h3>
+        <ul class="feature-titles">
+          <li>一度つなぐだけ</li>
+          <li>種類ごとに見る</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="how-audience">管理者</h3>
+        <ul class="feature-titles">
+          <li>部署ごとの使われ方を見る</li>
+          <li>個人と会社を分ける</li>
+          <li>承認したツールだけに</li>
+        </ul>
+      </div>
+    </div>
+    <a class="text-link read-more" href="/ja/how-it-works/">仕組みを見る &rarr;</a>
+  </div>
+</section>
+
+<section class="section" id="data">
+  <div class="wrap" id="privacy">
+    <h2 class="h2"><span class="ja-phrase">会社の</span><span class="ja-phrase">コンテクストは、</span><span class="ja-phrase">会社のもの。</span></h2>
+    <ul class="data-promises">
+      <li>会社ごとにコンテクストを分けて保管します。</li>
+      <li>Jin AI は画面を録画しません。</li>
+      <li>Jin AI 自体が、お客様のデータで学習することはありません。</li>
+    </ul>
+  </div>
+</section>
+
+<section class="demo" id="demo">
+  <div class="wrap home-columns" id="waitlist">
+    <div class="demo-intro">
+      <h2><span class="ja-phrase">御社のAIを、</span><span class="ja-phrase">会社の資産に。</span></h2>
+      <div class="getting-started">
+        <h3>はじめるには</h3>
+        <ul>
+          <li>現在、ウェイトリストの方から順にご案内しています。お待たせしてすみません。会社で試したい方は、下のフォームからデモをお申し込みください。</li>
+          <li>いちばんの近道は、すでに Jin AI のプライベートベータを使っている方からの紹介です。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="demo-form">
+    <!-- GENERATED:CTA_FINAL:START -->
+<form class="signup" id="waitlistForm" action="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" data-endpoint="https://script.google.com/macros/s/AKfycbyW4kyGIpm44RN-mgj1QgatyGtOvI9sAlSySv1ohD3ifSYbgE0qdwvp8FrHjuK0nk6r/exec" method="post" novalidate>
       <div class="signup-row">
-        <label for="wl-name">お名前</label>
-        <input id="wl-name" name="name" type="text" autocomplete="name" maxlength="120" required>
+        <div class="signup-field">
+          <label for="demo-email">会社のメールアドレス</label>
+          <input id="demo-email" name="email" autocomplete="email" aria-describedby="demo-email-error" required aria-required="true" type="email" maxlength="254">
+          <p class="signup-error" id="demo-email-error" hidden></p>
+        </div>
       </div>
       <div class="signup-row">
-        <label for="wl-email">メールアドレス</label>
-        <input id="wl-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+        <div class="signup-field">
+          <label for="demo-lastName">姓</label>
+          <input id="demo-lastName" name="lastName" autocomplete="family-name" aria-describedby="demo-lastName-error" required aria-required="true" type="text" maxlength="80">
+          <p class="signup-error" id="demo-lastName-error" hidden></p>
+        </div>
+        <div class="signup-field">
+          <label for="demo-firstName">名</label>
+          <input id="demo-firstName" name="firstName" autocomplete="given-name" aria-describedby="demo-firstName-error" required aria-required="true" type="text" maxlength="80">
+          <p class="signup-error" id="demo-firstName-error" hidden></p>
+        </div>
       </div>
       <div class="signup-row">
-        <label for="wl-role">お仕事は？</label>
-        <input id="wl-role" name="role" type="text" autocomplete="organization-title" maxlength="160" placeholder="創業者、PM、コンサルタント、研究者など" required>
+        <div class="signup-field">
+          <label for="demo-jobTitle">役職</label>
+          <input id="demo-jobTitle" name="jobTitle" autocomplete="organization-title" aria-describedby="demo-jobTitle-error" required aria-required="true" type="text" maxlength="120">
+          <p class="signup-error" id="demo-jobTitle-error" hidden></p>
+        </div>
+        <div class="signup-field">
+          <label for="demo-phone">電話番号</label>
+          <input id="demo-phone" name="phone" autocomplete="tel" aria-describedby="demo-phone-error" required aria-required="true" type="tel" maxlength="40">
+          <p class="signup-error" id="demo-phone-error" hidden></p>
+        </div>
+      </div>
+      <div class="signup-row">
+        <div class="signup-field">
+          <label for="demo-company">会社名</label>
+          <input id="demo-company" name="company" autocomplete="organization" aria-describedby="demo-company-error" required aria-required="true" type="text" maxlength="160">
+          <p class="signup-error" id="demo-company-error" hidden></p>
+        </div>
+        <div class="signup-field">
+          <label for="demo-industry">業種</label>
+          <select id="demo-industry" name="industry" aria-describedby="demo-industry-error" required aria-required="true">
+            <option value="">業種を選んでください</option>
+            <option value="Technology">テクノロジー</option>
+            <option value="Financial services">金融</option>
+            <option value="Professional services">専門サービス</option>
+            <option value="Education">教育</option>
+            <option value="Energy">エネルギー</option>
+            <option value="Government">官公庁</option>
+            <option value="Healthcare">医療</option>
+            <option value="Manufacturing">製造</option>
+            <option value="Media">メディア</option>
+            <option value="Nonprofit">非営利</option>
+            <option value="Real estate">不動産</option>
+            <option value="Retail">小売</option>
+            <option value="Telecommunications">通信</option>
+            <option value="Transportation">運輸</option>
+            <option value="Other">その他</option>
+          </select>
+          <p class="signup-error" id="demo-industry-error" hidden></p>
+        </div>
+      </div>
+      <div class="signup-row">
+        <div class="signup-field">
+          <label for="demo-companySize">従業員数</label>
+          <select id="demo-companySize" name="companySize" aria-describedby="demo-companySize-error" required aria-required="true">
+            <option value="">範囲を選んでください</option>
+            <option value="1-49">1〜49 人</option>
+            <option value="50-199">50〜199 人</option>
+            <option value="200-999">200〜999 人</option>
+            <option value="1,000+">1,000 人以上</option>
+          </select>
+          <p class="signup-error" id="demo-companySize-error" hidden></p>
+        </div>
+        <div class="signup-field">
+          <label for="demo-country">国</label>
+          <select id="demo-country" name="country" autocomplete="country-name" aria-describedby="demo-country-error" required aria-required="true">
+            <option value="">国を選んでください</option>
+            <option value="Japan">日本</option>
+            <option value="United States">アメリカ合衆国</option>
+            <option value="Afghanistan">アフガニスタン</option>
+            <option value="Aland Islands">オーランド諸島</option>
+            <option value="Albania">アルバニア</option>
+            <option value="Algeria">アルジェリア</option>
+            <option value="American Samoa">米領サモア</option>
+            <option value="Andorra">アンドラ</option>
+            <option value="Angola">アンゴラ</option>
+            <option value="Anguilla">アンギラ</option>
+            <option value="Antarctica">南極</option>
+            <option value="Antigua and Barbuda">アンティグア・バーブーダ</option>
+            <option value="Argentina">アルゼンチン</option>
+            <option value="Armenia">アルメニア</option>
+            <option value="Aruba">アルバ</option>
+            <option value="Australia">オーストラリア</option>
+            <option value="Austria">オーストリア</option>
+            <option value="Azerbaijan">アゼルバイジャン</option>
+            <option value="Bahamas">バハマ</option>
+            <option value="Bahrain">バーレーン</option>
+            <option value="Bangladesh">バングラデシュ</option>
+            <option value="Barbados">バルバドス</option>
+            <option value="Belarus">ベラルーシ</option>
+            <option value="Belgium">ベルギー</option>
+            <option value="Belize">ベリーズ</option>
+            <option value="Benin">ベナン</option>
+            <option value="Bermuda">バミューダ</option>
+            <option value="Bhutan">ブータン</option>
+            <option value="Bolivia">ボリビア</option>
+            <option value="Bonaire, Sint Eustatius and Saba">オランダ領カリブ</option>
+            <option value="Bosnia and Herzegovina">ボスニア・ヘルツェゴビナ</option>
+            <option value="Botswana">ボツワナ</option>
+            <option value="Bouvet Island">ブーベ島</option>
+            <option value="Brazil">ブラジル</option>
+            <option value="British Indian Ocean Territory">英領インド洋地域</option>
+            <option value="British Virgin Islands">英領ヴァージン諸島</option>
+            <option value="Brunei">ブルネイ</option>
+            <option value="Bulgaria">ブルガリア</option>
+            <option value="Burkina Faso">ブルキナファソ</option>
+            <option value="Burundi">ブルンジ</option>
+            <option value="Cabo Verde">カーボベルデ</option>
+            <option value="Cambodia">カンボジア</option>
+            <option value="Cameroon">カメルーン</option>
+            <option value="Canada">カナダ</option>
+            <option value="Cayman Islands">ケイマン諸島</option>
+            <option value="Central African Republic">中央アフリカ共和国</option>
+            <option value="Chad">チャド</option>
+            <option value="Chile">チリ</option>
+            <option value="China">中国</option>
+            <option value="Christmas Island">クリスマス島</option>
+            <option value="Cocos (Keeling) Islands">ココス(キーリング)諸島</option>
+            <option value="Colombia">コロンビア</option>
+            <option value="Comoros">コモロ</option>
+            <option value="Congo">コンゴ共和国(ブラザビル)</option>
+            <option value="Cook Islands">クック諸島</option>
+            <option value="Costa Rica">コスタリカ</option>
+            <option value="Cote d'Ivoire">コートジボワール</option>
+            <option value="Croatia">クロアチア</option>
+            <option value="Cuba">キューバ</option>
+            <option value="Curacao">キュラソー</option>
+            <option value="Cyprus">キプロス</option>
+            <option value="Czechia">チェコ</option>
+            <option value="Democratic Republic of the Congo">コンゴ民主共和国(キンシャサ)</option>
+            <option value="Denmark">デンマーク</option>
+            <option value="Djibouti">ジブチ</option>
+            <option value="Dominica">ドミニカ国</option>
+            <option value="Dominican Republic">ドミニカ共和国</option>
+            <option value="Ecuador">エクアドル</option>
+            <option value="Egypt">エジプト</option>
+            <option value="El Salvador">エルサルバドル</option>
+            <option value="Equatorial Guinea">赤道ギニア</option>
+            <option value="Eritrea">エリトリア</option>
+            <option value="Estonia">エストニア</option>
+            <option value="Eswatini">エスワティニ</option>
+            <option value="Ethiopia">エチオピア</option>
+            <option value="Falkland Islands">フォークランド諸島</option>
+            <option value="Faroe Islands">フェロー諸島</option>
+            <option value="Fiji">フィジー</option>
+            <option value="Finland">フィンランド</option>
+            <option value="France">フランス</option>
+            <option value="French Guiana">仏領ギアナ</option>
+            <option value="French Polynesia">仏領ポリネシア</option>
+            <option value="French Southern Territories">仏領極南諸島</option>
+            <option value="Gabon">ガボン</option>
+            <option value="Gambia">ガンビア</option>
+            <option value="Georgia">ジョージア</option>
+            <option value="Germany">ドイツ</option>
+            <option value="Ghana">ガーナ</option>
+            <option value="Gibraltar">ジブラルタル</option>
+            <option value="Greece">ギリシャ</option>
+            <option value="Greenland">グリーンランド</option>
+            <option value="Grenada">グレナダ</option>
+            <option value="Guadeloupe">グアドループ</option>
+            <option value="Guam">グアム</option>
+            <option value="Guatemala">グアテマラ</option>
+            <option value="Guernsey">ガーンジー</option>
+            <option value="Guinea">ギニア</option>
+            <option value="Guinea-Bissau">ギニアビサウ</option>
+            <option value="Guyana">ガイアナ</option>
+            <option value="Haiti">ハイチ</option>
+            <option value="Heard Island and McDonald Islands">ハード島・マクドナルド諸島</option>
+            <option value="Honduras">ホンジュラス</option>
+            <option value="Hong Kong">中華人民共和国香港特別行政区</option>
+            <option value="Hungary">ハンガリー</option>
+            <option value="Iceland">アイスランド</option>
+            <option value="India">インド</option>
+            <option value="Indonesia">インドネシア</option>
+            <option value="Iran">イラン</option>
+            <option value="Iraq">イラク</option>
+            <option value="Ireland">アイルランド</option>
+            <option value="Isle of Man">マン島</option>
+            <option value="Israel">イスラエル</option>
+            <option value="Italy">イタリア</option>
+            <option value="Jamaica">ジャマイカ</option>
+            <option value="Jersey">ジャージー</option>
+            <option value="Jordan">ヨルダン</option>
+            <option value="Kazakhstan">カザフスタン</option>
+            <option value="Kenya">ケニア</option>
+            <option value="Kiribati">キリバス</option>
+            <option value="Kuwait">クウェート</option>
+            <option value="Kyrgyzstan">キルギス</option>
+            <option value="Laos">ラオス</option>
+            <option value="Latvia">ラトビア</option>
+            <option value="Lebanon">レバノン</option>
+            <option value="Lesotho">レソト</option>
+            <option value="Liberia">リベリア</option>
+            <option value="Libya">リビア</option>
+            <option value="Liechtenstein">リヒテンシュタイン</option>
+            <option value="Lithuania">リトアニア</option>
+            <option value="Luxembourg">ルクセンブルク</option>
+            <option value="Macao">中華人民共和国マカオ特別行政区</option>
+            <option value="Madagascar">マダガスカル</option>
+            <option value="Malawi">マラウイ</option>
+            <option value="Malaysia">マレーシア</option>
+            <option value="Maldives">モルディブ</option>
+            <option value="Mali">マリ</option>
+            <option value="Malta">マルタ</option>
+            <option value="Marshall Islands">マーシャル諸島</option>
+            <option value="Martinique">マルティニーク</option>
+            <option value="Mauritania">モーリタニア</option>
+            <option value="Mauritius">モーリシャス</option>
+            <option value="Mayotte">マヨット</option>
+            <option value="Mexico">メキシコ</option>
+            <option value="Micronesia">ミクロネシア連邦</option>
+            <option value="Moldova">モルドバ</option>
+            <option value="Monaco">モナコ</option>
+            <option value="Mongolia">モンゴル</option>
+            <option value="Montenegro">モンテネグロ</option>
+            <option value="Montserrat">モントセラト</option>
+            <option value="Morocco">モロッコ</option>
+            <option value="Mozambique">モザンビーク</option>
+            <option value="Myanmar">ミャンマー (ビルマ)</option>
+            <option value="Namibia">ナミビア</option>
+            <option value="Nauru">ナウル</option>
+            <option value="Nepal">ネパール</option>
+            <option value="Netherlands">オランダ</option>
+            <option value="New Caledonia">ニューカレドニア</option>
+            <option value="New Zealand">ニュージーランド</option>
+            <option value="Nicaragua">ニカラグア</option>
+            <option value="Niger">ニジェール</option>
+            <option value="Nigeria">ナイジェリア</option>
+            <option value="Niue">ニウエ</option>
+            <option value="Norfolk Island">ノーフォーク島</option>
+            <option value="North Korea">北朝鮮</option>
+            <option value="North Macedonia">北マケドニア</option>
+            <option value="Northern Mariana Islands">北マリアナ諸島</option>
+            <option value="Norway">ノルウェー</option>
+            <option value="Oman">オマーン</option>
+            <option value="Pakistan">パキスタン</option>
+            <option value="Palau">パラオ</option>
+            <option value="Palestine">パレスチナ自治区</option>
+            <option value="Panama">パナマ</option>
+            <option value="Papua New Guinea">パプアニューギニア</option>
+            <option value="Paraguay">パラグアイ</option>
+            <option value="Peru">ペルー</option>
+            <option value="Philippines">フィリピン</option>
+            <option value="Pitcairn Islands">ピトケアン諸島</option>
+            <option value="Poland">ポーランド</option>
+            <option value="Portugal">ポルトガル</option>
+            <option value="Puerto Rico">プエルトリコ</option>
+            <option value="Qatar">カタール</option>
+            <option value="Reunion">レユニオン</option>
+            <option value="Romania">ルーマニア</option>
+            <option value="Russia">ロシア</option>
+            <option value="Rwanda">ルワンダ</option>
+            <option value="Saint Barthelemy">サン・バルテルミー</option>
+            <option value="Saint Helena, Ascension and Tristan da Cunha">セントヘレナ</option>
+            <option value="Saint Kitts and Nevis">セントクリストファー・ネーヴィス</option>
+            <option value="Saint Lucia">セントルシア</option>
+            <option value="Saint Martin">サン・マルタン</option>
+            <option value="Saint Pierre and Miquelon">サンピエール島・ミクロン島</option>
+            <option value="Saint Vincent and the Grenadines">セントビンセント及びグレナディーン諸島</option>
+            <option value="Samoa">サモア</option>
+            <option value="San Marino">サンマリノ</option>
+            <option value="Sao Tome and Principe">サントメ・プリンシペ</option>
+            <option value="Saudi Arabia">サウジアラビア</option>
+            <option value="Senegal">セネガル</option>
+            <option value="Serbia">セルビア</option>
+            <option value="Seychelles">セーシェル</option>
+            <option value="Sierra Leone">シエラレオネ</option>
+            <option value="Singapore">シンガポール</option>
+            <option value="Sint Maarten">シント・マールテン</option>
+            <option value="Slovakia">スロバキア</option>
+            <option value="Slovenia">スロベニア</option>
+            <option value="Solomon Islands">ソロモン諸島</option>
+            <option value="Somalia">ソマリア</option>
+            <option value="South Africa">南アフリカ</option>
+            <option value="South Georgia and the South Sandwich Islands">サウスジョージア・サウスサンドウィッチ諸島</option>
+            <option value="South Korea">韓国</option>
+            <option value="South Sudan">南スーダン</option>
+            <option value="Spain">スペイン</option>
+            <option value="Sri Lanka">スリランカ</option>
+            <option value="Sudan">スーダン</option>
+            <option value="Suriname">スリナム</option>
+            <option value="Svalbard and Jan Mayen">スバールバル諸島・ヤンマイエン島</option>
+            <option value="Sweden">スウェーデン</option>
+            <option value="Switzerland">スイス</option>
+            <option value="Syria">シリア</option>
+            <option value="Taiwan">台湾</option>
+            <option value="Tajikistan">タジキスタン</option>
+            <option value="Tanzania">タンザニア</option>
+            <option value="Thailand">タイ</option>
+            <option value="Timor-Leste">東ティモール</option>
+            <option value="Togo">トーゴ</option>
+            <option value="Tokelau">トケラウ</option>
+            <option value="Tonga">トンガ</option>
+            <option value="Trinidad and Tobago">トリニダード・トバゴ</option>
+            <option value="Tunisia">チュニジア</option>
+            <option value="Turkey">トルコ</option>
+            <option value="Turkmenistan">トルクメニスタン</option>
+            <option value="Turks and Caicos Islands">タークス・カイコス諸島</option>
+            <option value="Tuvalu">ツバル</option>
+            <option value="Uganda">ウガンダ</option>
+            <option value="Ukraine">ウクライナ</option>
+            <option value="United Arab Emirates">アラブ首長国連邦</option>
+            <option value="United Kingdom">イギリス</option>
+            <option value="United States Minor Outlying Islands">合衆国領有小離島</option>
+            <option value="United States Virgin Islands">米領ヴァージン諸島</option>
+            <option value="Uruguay">ウルグアイ</option>
+            <option value="Uzbekistan">ウズベキスタン</option>
+            <option value="Vanuatu">バヌアツ</option>
+            <option value="Vatican City">バチカン市国</option>
+            <option value="Venezuela">ベネズエラ</option>
+            <option value="Vietnam">ベトナム</option>
+            <option value="Wallis and Futuna">ウォリス・フツナ</option>
+            <option value="Western Sahara">西サハラ</option>
+            <option value="Yemen">イエメン</option>
+            <option value="Zambia">ザンビア</option>
+            <option value="Zimbabwe">ジンバブエ</option>
+          </select>
+          <p class="signup-error" id="demo-country-error" hidden></p>
+        </div>
       </div>
       <div class="signup-trap" aria-hidden="true">
-        <label for="wl-website">この欄は空欄にしてください</label>
+        <label for="wl-website">この欄は空のままにしてください</label>
         <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
       </div>
-      <button class="btn btn-p" type="submit" disabled>参加する &rarr;</button>
-      <p class="waitnote">ご招待の準備ができたら、メールでご連絡します。製品の最新情報も時々お届けします。</p>
+      <button class="btn btn-p" type="submit" disabled>デモを申し込む</button>
+      <p class="waitnote">デモの日程を、メールでご相談します。</p>
+      <p class="signup-privacy">いただいた情報は、デモについてのご連絡にだけ使います。詳しくは<a href="privacy/">プライバシーポリシー</a>をご覧ください。</p>
     </form>
-    <noscript><p class="waitalt">登録するには JavaScript を有効にしてください。Discord にも参加できます。</p></noscript>
+    <noscript><p class="waitalt">デモのお申し込みには JavaScript を有効にしてください。メールでも受け付けています: <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span>。</p></noscript>
     <p class="signup-status" id="waitlistStatus" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     <div class="signup-done" id="waitlistDone" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
       <h3 id="waitlistHeading"></h3>
       <dl class="signup-results">
-        <div><dt>登録</dt><dd id="waitlistRegistration"></dd></div>
-        <div><dt>ウェルカムメール</dt><dd id="waitlistEmail"></dd></div>
+        <div><dt>お申し込み</dt><dd id="waitlistRegistration"></dd></div>
+        <div><dt>確認メール</dt><dd id="waitlistEmail"></dd></div>
       </dl>
       <p id="waitlistDetail"></p>
-      <form class="signup-survey" id="waitlistSurvey" data-survey-id="ai-friction-v1" hidden>
-        <fieldset aria-describedby="waitlistSurveyHint">
-          <legend>AIに何をもっと簡単にしてほしいですか？</legend>
-          <p class="waitnote" id="waitlistSurveyHint">任意です。ひとつ選んでください。</p>
-          <div class="signup-survey-options">
-            <label class="signup-survey-option"><input type="radio" name="answer" value="A" required><span>細かい修正を何度も繰り返すこと</span></label>
-            <label class="signup-survey-option"><input type="radio" name="answer" value="B" required><span>AIに好みやルールを伝える設定（Skillsなど）を更新すること</span></label>
-            <label class="signup-survey-option"><input type="radio" name="answer" value="C" required><span>AIに渡す適切な資料やファイルを見つけること</span></label>
-            <label class="signup-survey-option"><input type="radio" name="answer" value="D" required><span>ChatGPT、Claudeなどを切り替えるたびに、要件や背景を説明し直すこと</span></label>
-          </div>
-        </fieldset>
-        <button class="btn btn-p" type="submit">回答を送る</button>
-      </form>
-      <p class="signup-survey-status" id="waitlistSurveyStatus" role="status" aria-live="polite" hidden></p>
-      <a class="btn btn-p" href="https://discord.gg/hn8eG4d9f" target="_blank" rel="noopener">Discord に参加する</a>
     </div>
-    <p class="waitalt">ご質問やご意見は <a href="https://discord.gg/hn8eG4d9f" target="_blank" rel="noopener">Discord</a> まで。</p>
+    <p class="waitalt">ご質問・ご意見: <span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span>。</p>
+<!-- GENERATED:CTA_FINAL:END -->
+    </div>
   </div>
 </section>
 </main>
 
 <footer>
-  <div class="wrap footer-bar">
-    <a class="brand" href="../"><span class="mark"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg></span>Jin AI</a>
-    <a class="footer-link" href="how-it-works/">仕組み</a>
-    <nav aria-label="言語"><a href="../" lang="en">EN</a><span>/</span><a href="./" lang="ja" aria-current="page">日本語</a></nav>
-    <span>訪問数は Cloudflare Web Analytics で計測しています。Cookie は使いません。</span>
-    <span>&copy; 2026 Jin AI</span>
+  <div class="wrap">
+    <div class="footer-main">
+      <a class="brand" href="/ja/"><img src="/brand/jin-mark-white.svg" width="24" height="24" alt="">Jin AI</a>
+      <div class="footer-column"><h2>製品</h2><a href="/ja/" aria-current="page">概要</a><a href="/ja/how-it-works/">仕組み</a><a href="/ja/how-it-works/#employee">社員向け</a><a href="/ja/how-it-works/#admin">管理者向け</a></div>
+      <div class="footer-column"><h2>規約・方針</h2><a href="/ja/privacy/">プライバシーポリシー</a><a href="/ja/accessibility/">アクセシビリティ</a></div>
+      <div class="footer-column"><h2>会社</h2><a href="/ja/company/">会社情報</a><a href="/ja/#demo">お問い合わせ</a><span class="email-contact"><span class="email-address">hello@jinai.md</span> <button type="button" class="copy-email" data-copy="hello@jinai.md">コピー</button></span></div>
+      <div class="footer-column"><h2>つながる</h2><a href="https://discord.gg/C5m4jGgKXD" target="_blank" rel="noopener">Discord</a></div>
+    </div>
+    <div class="footer-bottom">
+      <p>アクセスは Cloudflare Web Analytics で数えています。Cookie は使っていません。</p>
+      <span>&copy; 2026 Jin AI</span>
+      <nav class="language-switch" aria-label="言語"><a href="/" lang="en" hreflang="en" data-jin-lang="en">English</a> / <a href="/ja/" lang="ja" hreflang="ja" aria-current="page" data-jin-lang="ja">日本語</a></nav>
+    </div>
   </div>
 </footer>
 
-<script type="module" src="../waitlist.mjs"></script>
-<script type="module" src="../privacy-tabs.mjs"></script>
+<script type="module" src="/waitlist.mjs"></script>
+<script type="module" src="/nav.js"></script>
+<script type="module" src="/problem.js"></script>
 <!-- Cloudflare Web Analytics --><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1b6168cc50c644e4bd8071508286852d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
