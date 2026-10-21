@@ -150,7 +150,7 @@ check([...demoClient.matchAll(/\bheading:\s*(?:[^?\n]+\?\s*)?"([^"]+)"/g)]
   "Demo success and error headings must not end with periods.");
 
 const pagePairs = [
-  ["", home, japanese, "会社のAI活用に必要な設定を、いつも最新にキープします。", "Jin AI | 会社のAI活用に必要な設定を、いつも最新にキープします",
+  ["", home, japanese, "AIを、会社の資産に。", "Jin AI | AIを、会社の資産に",
     "Jin AI は、優れた社員がつくった AI ハーネスを、すべての社員にとって安全に、会社にとって再利用できる形にします。"],
   ["how-it-works/", howPage, japaneseHow, "仕組み", "仕組み | Jin AI",
     "Jin AI が AI ツールにつながり、AI ハーネスを種類ごとに整理し、持ち出せるものを会社が決める仕組みです。"],
@@ -277,7 +277,7 @@ for (const [page, source] of pagePairs.flatMap(([route, english, japanesePage]) 
       `${page} must declare the share image ${dimension}.`);
   }
   for (const [attribute, name] of [["property", "og:image:alt"], ["name", "twitter:image:alt"]]) {
-    const imageAlt = page.startsWith("/ja/") ? "Jin AI: 会社のAI活用に必要な設定を、いつも最新にキープします" : "Jin AI: We keep your agent harness up to date";
+    const imageAlt = page.startsWith("/ja/") ? "Jin AI: AIを、会社の資産に" : "Jin AI: Turn AI into a company asset";
     check(source.includes(`<meta ${attribute}="${name}" content="${imageAlt}">`),
       `${page} must use the approved ${name}.`);
   }
@@ -294,9 +294,9 @@ check(homeSections.length === 6 && homeSections[0]?.[1].includes('class="hero"')
   homeSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() ===
   "problem,solution,how,data,demo", "Root must contain only hero, problem, solution, how, data and demo sections, in order.");
 check(count(home, /<h1\b/g) === 1 &&
-  home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "We keep your agent harness up to date",
+  home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "Turn AI into a company asset",
   "Root must use the approved H1 once.");
-const homeTitle = "Jin AI | We keep your agent harness up to date";
+const homeTitle = "Jin AI | Turn AI into a company asset";
 check(home.includes(`<title>${homeTitle}</title>`), "Root must use the approved title.");
 for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:title"]]) {
   check(home.includes(`<meta ${attribute}="${name}" content="${homeTitle}">`), `Root must use the approved ${name}.`);
@@ -308,7 +308,7 @@ for (const [attribute, name] of [["name", "description"], ["property", "og:descr
 const hero = homeSections[0]?.[2] || "";
 check(count(hero, /<p\b/g) === 1 && hero.includes('<p class="hero-intro">') &&
   !/<img\b|class="(?:eyebrow|lede|waitnote)"/.test(hero),
-  "The hero must contain only the Keep body paragraph, without a status tag, note or product image.");
+  "The hero must contain only the R7 intro paragraph, without a status tag, note or product image.");
 check(hero.includes('href="how-it-works/">How it works &rarr;</a>'), "The hero must link to the How it works page.");
 check(home.includes('<link rel="stylesheet" href="base.css">') &&
   home.includes('<link rel="stylesheet" href="theme-en.css">') &&
@@ -718,8 +718,8 @@ for (const [attribute, name, value] of [
   ["property", "og:image", "https://jinai.md/shots/og-b2b.png"],
   ["name", "twitter:image", "https://jinai.md/shots/og-b2b.png"],
   ["property", "og:image:width", "1200"], ["property", "og:image:height", "630"],
-  ["property", "og:image:alt", "Jin AI: We keep your agent harness up to date"],
-  ["name", "twitter:image:alt", "Jin AI: We keep your agent harness up to date"]
+  ["property", "og:image:alt", "Jin AI: Turn AI into a company asset"],
+  ["name", "twitter:image:alt", "Jin AI: Turn AI into a company asset"]
 ]) {
   check(security.includes(`<meta ${attribute}="${name}" content="${value}">`),
     `Security must have the approved ${name}.`);
@@ -918,8 +918,8 @@ for (const [route, source, title, heading, label, description, expectedCopy] of 
     ["property", "og:image", "https://jinai.md/shots/og-b2b.png"],
     ["name", "twitter:image", "https://jinai.md/shots/og-b2b.png"],
     ["property", "og:image:width", "1200"], ["property", "og:image:height", "630"],
-    ["property", "og:image:alt", "Jin AI: We keep your agent harness up to date"],
-    ["name", "twitter:image:alt", "Jin AI: We keep your agent harness up to date"],
+    ["property", "og:image:alt", "Jin AI: Turn AI into a company asset"],
+    ["name", "twitter:image:alt", "Jin AI: Turn AI into a company asset"],
     ["name", "twitter:card", "summary_large_image"]
   ]) {
     check(source.includes(`<meta ${attribute}="${name}" content="${value}">`),
@@ -1046,23 +1046,24 @@ check(paintScript.includes('document.documentElement.classList.add("js-nav")') &
   /if\s*\(!matchMedia\("\(prefers-reduced-motion: reduce\)"\)\.matches\)\s*document\.documentElement\.classList\.add\("js-reveal"\)/.test(paintScript),
   "Home reveal must opt in through a reduced-motion-guarded inline head script.");
 const revealHeading = home.match(/<h1 class="hero-reveal">([\s\S]*?)<\/h1>/)?.[1] || "";
-check(count(revealHeading, /<span style="--word:[0-7]">[^<]+<\/span>/g) === 8 &&
+check(count(revealHeading, /<span style="--word:[0-5]">[^<]+<\/span>/g) === 6 &&
   !/aria-hidden|aria-label/.test(revealHeading) &&
-  [...revealHeading.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "01234567",
-  "Home H1 must contain eight ordered readable word spans with its exact accessible name.");
+  [...revealHeading.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "012345" &&
+  [...revealHeading.matchAll(/<span[^>]*>([^<]+)<\/span>/g)].map(match => match[1]).join(" ") === "Turn AI into a company asset",
+  "Home H1 must contain six ordered readable word spans with its exact accessible name.");
 const revealCss = cssBlock(englishCss, "@media (prefers-reduced-motion: no-preference)");
 check(cssBlock(englishCss, ".hero-intro {").includes("max-width: 720px"),
   "The hero body must use a font-independent line measure so font swapping cannot change its line count on tablets.");
 check(revealCss.includes(".js-reveal .hero-reveal > span") &&
-  revealCss.includes(".js-reveal .hero-intro + .hero-actions") &&
+  revealCss.includes(".js-reveal .hero-badges, .js-reveal .hero-actions") &&
   cssBlock(revealCss, ".js-reveal .hero-intro {").includes("hero-actions-in .2s var(--ease) .72s both") &&
-  cssBlock(revealCss, ".js-reveal .hero-intro + .hero-actions").includes("hero-actions-in .25s var(--ease) .92s both") &&
+  cssBlock(revealCss, ".js-reveal .hero-badges, .js-reveal .hero-actions").includes("hero-actions-in .25s var(--ease) .92s both") &&
   /animation:\s*hero-word-in[^;]*var\(--ease\)/.test(revealCss) &&
   /animation:\s*hero-actions-in[^;]*var\(--ease\)/.test(revealCss) &&
   /opacity:\s*\.001/.test(revealCss) && /filter:\s*blur\(8px\)/.test(revealCss) &&
   /transform:\s*translateY\(\.3em\)/.test(revealCss) &&
   cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(
-    ".hero-reveal > span, .hero-intro, .hero-intro + .hero-actions { animation: none; opacity: 1; filter: none; transform: none; }"),
+    ".hero-reveal > span, .hero-intro, .hero-badges, .hero-actions { animation: none; opacity: 1; filter: none; transform: none; }"),
   "Hero reveal must be JS-class and motion-media guarded, with immediate reduced-motion final states.");
 for (const animation of ["hero-word-in", "hero-actions-in"]) {
   const keyframes = cssBlock(revealCss, `@keyframes ${animation}`);
@@ -1097,7 +1098,8 @@ for (const [filename, css] of [
 }
 for (const [route, source] of englishPages) {
   for (const [, label] of source.matchAll(/<(?:span|p|h[23])\b[^>]*class="(?:mono-label[^"]*|how-audience|mobile-group-label)"[^>]*>([^<]+)</g)) {
-    check(!/[A-Z]{2}/.test(label), `/${route}: label must use sentence case: ${label}`);
+    check(!/[A-Z]{2}/.test(label) || (route === "" && label === "Jin AI"),
+      `/${route}: label must use sentence case, except the hero product name: ${label}`);
   }
 }
 for (const [route, source] of [["privacy", privacy], ["accessibility", accessibility]]) {
@@ -1151,12 +1153,21 @@ const retiredKeepTexts = [
   "See what is inside your company's AI harnesses", "See it on your team's AI harnesses",
   "社内の AI ハーネスの中身を、見てみませんか。", "チームの AI ハーネスで、確かめてみませんか。"
 ];
-for (const filename of deployedFiles.filter(filename => /\.(?:html|json|txt|css)$/.test(filename))) {
+const retiredHeroTexts = [
+  "We keep your agent harness up to date",
+  "会社のAI活用に必要な設定を、いつも最新にキープします",
+  "Jin AI keeps the instructions, skills, memory and tools your company's AI agents run on: safe, inside the company, shared across teams, and always current.",
+  "AIエージェントが動くための指示・スキル・記憶・ツールを、安全に、会社の中に、チームをまたいで、いつも最新の状態で保ちます。"
+];
+for (const filename of deployedFiles.filter(filename => /\.(?:html|json|txt|css|m?js)$/.test(filename))) {
   const source = await text(filename);
   const plainText = source.replace(/<[^>]*>/g, "").replace(/\s+/g, " ");
-  check(!/\bpilot(?:-card|-head|-heading|-steps)?\b|accent-surface-(?:from|to)/.test(
-    source.replaceAll("Companies start with a paid pilot.", "")),
+  check(!/\bpilot(?:-card|-head|-heading|-steps)?\b|accent-surface-(?:from|to)/.test(source),
     `${filename} must not contain retired pilot markup, facts, styles or gradient tokens.`);
+  for (const retired of retiredHeroTexts) {
+    check(!plainText.includes(retired) && !source.includes(retired),
+      `${filename} must not contain retired hero copy: ${retired}`);
+  }
   for (const retired of retiredPilotTexts) {
     check(!plainText.includes(retired), `${filename} must not contain retired pilot copy: ${retired}`);
   }
@@ -1321,14 +1332,46 @@ check(exactElement(japaneseSolution, "h2", "Jin AIが、キープします。") 
   japaneseSolutionCopy.every(([title, body]) => exactElement(japaneseSolution, "h3", title) && exactElement(japaneseSolution, "p", body)) &&
   exactElement(japaneseSolution, "p", "社員が使い方を磨くたびに、共有されている設定も最新に保ちます。"),
   "Japanese Solution needs the exact Keep heading, three title/body pairs and closing line, each once.");
-for (const [language, source, introduction] of [
-  ["English", home, "Jin AI keeps the instructions, skills, memory and tools your company's AI agents run on: safe, inside the company, shared across teams, and always current."],
-  ["Japanese", japanese, "AIエージェントが動くための指示・スキル・記憶・ツールを、安全に、会社の中に、チームをまたいで、いつも最新の状態で保ちます。"]
+for (const [language, source, introduction, badges] of [
+  ["English", home, "Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.",
+    ["Secure", "Company-owned", "Shared", "Up to date"]],
+  ["Japanese", japanese, "AIエージェント、スキル、ナレッジを、安全に、再利用できる形で、組織全体で使えるように保ちます。",
+    ["安全", "会社のもの", "共有", "いつも最新"]]
 ]) {
+  const section = source.match(/<section class="hero">([\s\S]*?)<\/section>/)?.[1] || "";
+  check(count(section, /class="mono-label hero-eyebrow"/g) === 1 &&
+    /<span class="mono-label hero-eyebrow">Jin AI<\/span>\s*<!--[^>]*-->\s*<h1 class="hero-reveal"/.test(section),
+    `${language} hero needs the exact Jin AI label above the H1.`);
   check(count(source, /class="hero-intro"/g) === 1 &&
-    source.match(/<h1 class="hero-reveal"[^>]*>[\s\S]*?<\/h1>\s*<p class="hero-intro">([^<]*)<\/p>\s*<div class="hero-actions">/)?.[1] === introduction,
-    `${language} hero must keep the exact Keep body after the H1 and before the buttons.`);
+    section.match(/<h1 class="hero-reveal"[^>]*>[\s\S]*?<\/h1>\s*<p class="hero-intro">([^<]*)<\/p>\s*<div class="hero-actions">/)?.[1] === introduction &&
+    /<div class="hero-actions">[\s\S]*?<\/div>\s*<ul class="hero-badges"/.test(section),
+    `${language} hero must use the exact R7 introduction directly after the H1.`);
+  const list = section.match(/<ul class="hero-badges" role="list">([\s\S]*?)<\/ul>/)?.[1] || "";
+  const items = [...list.matchAll(/<li>([\s\S]*?)<\/li>/g)].map(match => match[1]);
+  check(count(section, /class="hero-badges"/g) === 1 && items.length === 4 &&
+    items.every((item, index) => /^<svg viewBox="0 0 24 24" aria-hidden="true">(?:<(?:path|circle)\b[^>]*\/>)+<\/svg><span>[^<]+<\/span>$/.test(item) &&
+      item.endsWith(`<span>${badges[index]}</span>`)) &&
+    !/\b(?:button|tabindex|aria-label|title|fill)=|<(?:a|button)\b/.test(list),
+    `${language} hero badges must be one four-item list with exact ordered labels and decorative inline line icons, not controls.`);
 }
+const heroBadges = source => source.match(/<ul class="hero-badges"[^>]*>([\s\S]*?)<\/ul>/)?.[1] || "";
+check(heroBadges(home).replace(/<span>[^<]*<\/span>/g, "<span>TEXT</span>") ===
+  heroBadges(japanese).replace(/<span>[^<]*<\/span>/g, "<span>TEXT</span>"),
+  "Hero badges must have identical English/Japanese markup and icon geometry apart from text.");
+check(cssBlock(englishCss, ".hero-eyebrow {").includes("display: block") &&
+  cssBlock(englishCss, ".hero-badges {").includes("display: flex") &&
+  cssBlock(englishCss, ".hero-badges {").includes("flex-wrap: wrap") &&
+  cssBlock(englishCss, ".hero-badges {").includes("color: var(--text-3)") &&
+  cssBlock(englishCss, ".hero-badges svg {").includes("fill: none") &&
+  cssBlock(englishCss, ".hero-badges svg {").includes("stroke: currentColor") &&
+  cssBlock(englishCss, ".hero-badges svg {").includes("stroke-width: 1.25"),
+  "Hero label and muted, wrapping, unfilled thin-line badges must use the shared theme.");
+check(content.product.headline === "Turn AI into a company asset" &&
+  content.product.description === "Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors." &&
+  content.direct_answers.find(answer => answer.id === "what-is-jin-ai")?.answer === content.product.description &&
+  content.product.availability === "The workspace beta is live. Company features are being built, starting with Claude Code." &&
+  content.direct_answers.find(answer => answer.id === "is-jin-ai-available")?.answer === content.product.availability,
+  "R7 facts must use the new headline and preserve the description tail and availability without a pilot sentence.");
 
 const bodyStructure = source => {
   const body = source.match(/<body\b[^>]*>([\s\S]*?)<\/body>/)?.[1] || "";
@@ -1396,12 +1439,12 @@ for (const [route, english, translated] of pagePairs) {
   }
 }
 const japaneseReveal = japanese.match(/<h1 class="hero-reveal"[^>]*>([\s\S]*?)<\/h1>/)?.[1] || "";
-check(count(japaneseReveal, /<span style="--word:[0-4]">[^<]+<\/span>/g) === 5 &&
-  [...japaneseReveal.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "01234" &&
-  japaneseReveal.replace(/<[^>]+>/g, "") === "会社のAI活用に必要な設定を、いつも最新にキープします。" &&
-  japanese.includes('aria-label="会社のAI活用に必要な設定を、いつも最新にキープします。"') &&
+check(count(japaneseReveal, /<span style="--word:[0-1]">[^<]+<\/span>/g) === 2 &&
+  [...japaneseReveal.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "01" &&
+  japaneseReveal.replace(/<[^>]+>/g, "") === "AIを、会社の資産に。" &&
+  japanese.includes('aria-label="AIを、会社の資産に。"') &&
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
-  "Japanese hero must preserve its five-phrase reveal, exact approved text, accessible name and motion opt-in.");
+  "Japanese hero must preserve its two-phrase reveal, exact R7 text, accessible name and motion opt-in.");
 for (const [page, source, phrases] of [
   ["/ja/", japanese, ["AIは全社に広がった。", "でも、本当に", "使いこなせていますか？", "エージェントの", "属人化", "シャドーAI", "スキルの共有不足", "Jin AIが、", "キープします。", "安全にキープ", "会社にキープ", "みんなでキープ", "御社の", "設定で、", "Jin AIを", "試して", "みませんか。"]],
   ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "御社の", "エージェントの", "設定で、", "Jin AIを", "試して", "みませんか。"]],

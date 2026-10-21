@@ -6,10 +6,12 @@ This repo is the public site for Jin AI. Read `README.md` and the supersession n
 
 Jin AI is a B2B product for AI-forward companies. Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
 
-Headline: **We keep your agent harness up to date**
+Headline: **Turn AI into a company asset**
 
-Japanese home headline: **会社のAI活用に必要な設定を、いつも最新にキープします。**
+Japanese home headline: **AIを、会社の資産に。**
 Its page and social titles omit the final Japanese full stop.
+
+R7 hero (Yu, 2026-10-21): small **Jin AI** eyebrow; line **Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.** / **AIエージェント、スキル、ナレッジを、安全に、再利用できる形で、組織全体で使えるように保ちます。**; four muted list badges **Secure**, **Company-owned**, **Shared**, **Up to date** / **安全**, **会社のもの**, **共有**, **いつも最新**, with decorative thin-line icons. Preserve the reveal, CTAs and demo. R7 replaces only R6's hero copy; the remaining R6 copy stays approved.
 
 Use **agent harness**, **AI harness** or **harnesses** for this concept. An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role. R6's approved copy uses "set up" in the Problem heading and "setups" in the Solution closing line; preserve those exact exceptions.
 
@@ -32,6 +34,7 @@ CTA: **Request a demo**. Note: **We will email you to set up a demo.** Keep the 
 - `agent/content.json` is the single fact source. Change facts there, then run `node scripts/generate-aeo.mjs`. Never edit inside `GENERATED:*` markers by hand.
 - Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19). `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`. Never claim a Building or Next item is available today in any copy.
 - No prices anywhere on the site, including machine-readable formats.
+- Availability: **The workspace beta is live. Company features are being built, starting with Claude Code.** Do not add a pilot requirement.
 - Do not publish currency amounts, Pro, Team or free-version offers, Cloud Sync, Google Drive or Notion connections, PC and phone sync, Baby Voice Recorder, TikTok, market size, competitor names, pilot candidate counts, Nov 13, know-how or DelightX. These are exclusions, not product facts.
 - E7 exception (Yu, 2026-10-20): the approved Discord invite is `https://discord.gg/C5m4jGgKXD`, recorded in `early_access.community`. Show it only in footer Connect columns (Japanese: つながる), Company Contact lines and machine-readable community facts. Never add it to headers, heroes or menus.
 - Display `hello@jinai.md` as selectable plain text with the shared Copy button (Japanese: コピー), never as a mailto link. Hide inactive buttons without JavaScript.

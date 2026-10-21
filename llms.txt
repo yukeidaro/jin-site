@@ -1,9 +1,9 @@
 # Jin AI
 
-> We keep your agent harness up to date. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
+> Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
 
 Status: Building. Last updated: 2026-10-21.
-The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.
+The workspace beta is live. Company features are being built, starting with Claude Code.
 
 Live means available now. Building means active development. Next means intended next work. Never present Building or Next as shipped. The Human page at https://jinai.md/ is the sole canonical product page. Agent-facing formats are derivatives generated from the structured JSON fact source.
 
@@ -22,9 +22,9 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 
 ## Direct answers
 
-- [What is Jin AI?](https://jinai.md/agent/#what-is-jin-ai): We keep your agent harness up to date. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
+- [What is Jin AI?](https://jinai.md/agent/#what-is-jin-ai): Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.
 - [What is an AI harness?](https://jinai.md/agent/#what-is-an-ai-harness): An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.
-- [Is Jin AI available now?](https://jinai.md/agent/#is-jin-ai-available): The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.
+- [Is Jin AI available now?](https://jinai.md/agent/#is-jin-ai-available): The workspace beta is live. Company features are being built, starting with Claude Code.
 - [Which AI tools does it work with?](https://jinai.md/agent/#which-ai-tools-does-it-work-with): Claude Code first. Other AI tools are next.
 - [Where does the data live?](https://jinai.md/agent/#where-does-the-data-live): Jin AI keeps each company's context separate.
 - [How is this different from banning AI tools?](https://jinai.md/agent/#how-is-this-different-from-banning-ai-tools): Banning AI tools also removes the harnesses that work. Jin AI keeps confidential data in and lets the company reuse what works.

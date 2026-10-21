@@ -31,8 +31,8 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 The public content pages are self-canonical, with `en`, `ja` and `x-default`
 hreflang alternates. Every Japanese page has the same body structure, section
 IDs, component classes, images and controllers as its English twin. The
-Japanese home heading uses the approved text `会社のAI活用に必要な設定を、いつも最新にキープします。`
-in five reveal phrases; the generated form preserves surname-first order and Japanese country
+Japanese home heading uses the approved text `AIを、会社の資産に。`
+in two reveal phrases; the generated form preserves surname-first order and Japanese country
 labels without changing payload values. The English-only language-choice
 redirect and root fact graph are not duplicated on Japanese pages.
 Headers have the Product dropdown, Security, Company,
@@ -171,13 +171,13 @@ form/endpoint/consent are unchanged. R3 evidence, measurements and
 decisions are in `.copilot-runs/notes/r3.md`.
 
 The home heading reveals once, word by word (phrases in Japanese), followed
-by the approved Keep body line and then its action row. The body uses the existing
-opacity/transform reveal at 720ms, after the eighth English word finishes at
-675ms; the buttons follow at 920ms.
+by the approved R7 body line, action row and four badges. The body uses the existing
+opacity/transform reveal at 720ms, after the sixth English word finishes at
+585ms; the buttons and badges follow at 920ms.
 Its 720px maximum line measure does not change when Inter replaces the
 system font, avoiding a tablet line-count shift before the demo still.
 The theme reserves a stable scrollbar gutter from first paint. This keeps
-the longer Japanese Keep intro at its final width while the rest of the page
+the Japanese intro at its final width while the rest of the page
 parses, rather than adding a line when the vertical scrollbar appears.
 Default HTML/CSS is fully visible; an inline head script opts into the
 reveal only without reduced motion. Only opacity, blur and transform animate.
@@ -195,7 +195,7 @@ are in `.copilot-runs/notes/e4.md`.
 ### Swapping the home headline
 
 Each language has one visible headline, the `h1.hero-reveal` immediately
-after the `Hero headline` comment in `index.html` or `ja/index.html`.
+after the `Hero headline` comment and small Jin AI eyebrow in `index.html` or `ja/index.html`.
 Edit the text inside its reveal spans in place, keeping sequential `--word`
 values starting at zero and English spaces between words. Keep Japanese
 phrases unbroken and update that H1's matching accessible name. Do not copy
@@ -207,9 +207,19 @@ When Yu chooses a new tagline, also update `product.headline` in
 text, the share-image source/render, and the exact-headline/reveal assertions
 in the generator and validator. Regenerate with `node scripts\generate-aeo.mjs`;
 never edit generated blocks. If the span count changes, keep the body reveal
-after the last word finishes and the buttons after the body. R6 uses eight
-English words and five unbroken Japanese phrases. Titles and social titles
+after the last word finishes and the buttons after the body. R7 uses six
+English words and two unbroken Japanese phrases. Titles and social titles
 omit only the Japanese headline's final full stop.
+
+R7's exact hero line is "Keep your AI agents, skills, and knowledge secure,
+reusable, and accessible across your organization." The four muted badges
+are Secure, Company-owned, Shared and Up to date; Japanese uses 安全, 会社のもの,
+共有 and いつも最新. They form one list with decorative shield, building, people
+and circular-arrow SVGs, not buttons. Badges sit below the buttons, keeping the
+intro-to-demo path direct. Both placements and the final choice,
+browser metrics and screenshots are recorded in `.copilot-runs/notes/r7.md`.
+R7 removes the pilot sentence from the availability fact and its direct answer,
+preserving the workspace beta and company-feature delivery statuses.
 
 The closing home intro has a Getting started heading and two
 waitlist/private-beta notes supplied by Yu for E5. They are draft copy, not
@@ -293,8 +303,8 @@ recorded in `.copilot-runs/notes/j1.md`.
 
 - Product name: **Jin AI**. It is a B2B product for AI-forward companies.
   Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
-- Headline: **We keep your agent harness up to date**
-- Japanese home headline: **会社のAI活用に必要な設定を、いつも最新にキープします。**
+- Headline: **Turn AI into a company asset**
+- Japanese home headline: **AIを、会社の資産に。**
   Its page and social titles omit the final Japanese full stop.
 - English headings and heading-like titles have no final period, including each
   line separated by a `br`. Keep sentence punctuation in running descriptions,
@@ -354,7 +364,7 @@ recorded in `.copilot-runs/notes/j1.md`.
   and pill buttons. R5 removes the pilot card in both languages, its unused
   styles and gradient tokens. Data now leads directly into the demo request,
   with the existing section spacing and divider unchanged. The fact source
-  has no pilot steps; the separate paid-pilot availability fact is unchanged.
+  has no pilot steps; R7 also removes the pilot availability requirement.
   Company copy remains unapproved in the E6c register; the AI harness article
   is retired in R3.
   Menu descriptions are short draft labels without tags.

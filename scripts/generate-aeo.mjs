@@ -48,7 +48,7 @@ function validate(source) {
   assert(Array.isArray(source.data_principles.items) && source.data_principles.items.length > 0 &&
     source.data_principles.items.every((item) => typeof item === "string" && item.trim()),
   "Data principles need non-empty facts.");
-  assert(source.product.headline === "We keep your agent harness up to date",
+  assert(source.product.headline === "Turn AI into a company asset",
     "The product headline must match the approved English H1 without a final period.");
   assert(source.solution.headline === "Jin AI keeps it" && source.solution.closing?.trim() &&
     source.how_it_works.introduction?.trim(), "Solution and How it works need their approved Keep copy.");

@@ -19,12 +19,12 @@
   },
   "product": {
     "name": "Jin AI",
-    "headline": "We keep your agent harness up to date",
+    "headline": "Turn AI into a company asset",
     "category": "AI harnesses for companies",
-    "description": "We keep your agent harness up to date. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.",
+    "description": "Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.",
     "harness_definition": "An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.",
     "status": "building",
-    "availability": "The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot.",
+    "availability": "The workspace beta is live. Company features are being built, starting with Claude Code.",
     "industry": "B2B"
   },
   "audience": {
@@ -144,7 +144,7 @@
     {
       "id": "what-is-jin-ai",
       "question": "What is Jin AI?",
-      "answer": "We keep your agent harness up to date. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
+      "answer": "Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
     },
     {
       "id": "what-is-an-ai-harness",
@@ -154,7 +154,7 @@
     {
       "id": "is-jin-ai-available",
       "question": "Is Jin AI available now?",
-      "answer": "The workspace beta is live. Company features are being built, starting with Claude Code. Companies start with a paid pilot."
+      "answer": "The workspace beta is live. Company features are being built, starting with Claude Code."
     },
     {
       "id": "which-ai-tools-does-it-work-with",
