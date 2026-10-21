@@ -130,8 +130,8 @@ E7 browser evidence and screenshots are in `.copilot-runs/notes/e7.md`.
 ### How it works feature screens (R3)
 
 Both companion pages stack Employees (two rows) above Admins (three rows).
-Each row has its exact title and explanation, plus one E5 demo stage with a
-translated caption chip. Desktop keeps text left and screen right; at 1023px
+Each row has its exact title and explanation. The first four have one E5 demo
+stage with a translated caption chip. Desktop keeps text left and screen right; at 1023px
 and below text precedes the screen. The home excerpts contain only the two
 audience labels, five feature titles and companion-page link, without screens.
 The approved AI harness definition is the bottom note at `#harness`.
@@ -139,6 +139,10 @@ The approved AI harness definition is the bottom note at `#harness`.
 The first four rows reuse the Connect, Categories, By role and What can move
 WebP stills, with independent nine-second camera cycles. The fifth is an
 intentionally blank framed placeholder, not an invented product interface.
+R8 hides the fifth stage and its caption with `hidden` on the figure in both
+languages. The text spans the row through the shared `:has()` layout rule.
+When demo v2 arrives, remove that figure's `hidden` attribute and set its
+`data-demo-src` as described below; the original stage markup is preserved.
 `workflow.js` runs a camera only in view and resets it offscreen or while the
 tab is hidden. Reduced motion and no JavaScript show full stills.
 
@@ -221,9 +225,21 @@ browser metrics and screenshots are recorded in `.copilot-runs/notes/r7.md`.
 R7 removes the pilot sentence from the availability fact and its direct answer,
 preserving the workspace beta and company-feature delivery statuses.
 
+R8 (Yu, 2026-10-21) changes the home Solution heading to
+"How Jin AI keeps your AI" / "Jin AIが、会社のAIをキープします。".
+Both home and How it works closing headings read
+"Turn your team's AI into a company asset" / "御社のAIを、会社の資産に。".
+Company has one top H1, no repeated label, and the approved mission:
+"Our mission is to turn every company's AI into an asset it owns: secure,
+shared, and always up to date." / "私たちの使命は、会社のAIを、その会社の資産にすることです。安全に、みんなで使えて、いつも最新の状態で。".
+Matching Company descriptions use the same mission. The privacy policies
+state that phone is collected and used only to arrange the demo, matching
+the required form field. All other policy text is unchanged.
+
 The closing home intro has a Getting started heading and two
 waitlist/private-beta notes supplied by Yu for E5. They are draft copy, not
-new product facts. The generated form note, privacy link, payload and consent
+new product facts. R8 removes the trailing smiley from English item 2.
+The generated form note, privacy link, payload and consent
 remain unchanged. E5 component values and browser evidence are recorded in
 `.copilot-runs/notes/e5.md`. Japanese pages share these components and
 the supplied Japanese notes. No page displays approval tags. The complete
@@ -321,9 +337,9 @@ recorded in `.copilot-runs/notes/j1.md`.
   Founders and direct answers belong in the Agent reference.
 - Problem: **AI is everywhere now. Is it really set up to last?**
   Shadow AI is a problem label, not a claim that Jin AI blocks it.
-- Solution: **Jin AI keeps it**, followed by **Keep it safe**, **Keep it in
+- Solution: **How Jin AI keeps your AI**, followed by **Keep it safe**, **Keep it in
   the company**, **Keep it shared**. Keep both employee and company value.
-  R6's English/Japanese copy is approved word for word in the source above;
+  R6's English/Japanese copy, with R7 hero and R8 review fixes, is approved word for word;
   it supersedes R1's pending headline and copy choices. No draft tag appears.
 - Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19).
   `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`.
@@ -365,7 +381,7 @@ recorded in `.copilot-runs/notes/j1.md`.
   styles and gradient tokens. Data now leads directly into the demo request,
   with the existing section spacing and divider unchanged. The fact source
   has no pilot steps; R7 also removes the pilot availability requirement.
-  Company copy remains unapproved in the E6c register; the AI harness article
+  Company copy outside the R8-approved mission remains unapproved in the E6c register; the AI harness article
   is retired in R3.
   Menu descriptions are short draft labels without tags.
 - E4 exception (Yu, 2026-10-20): the English home hero may use a small,

@@ -50,7 +50,7 @@ function validate(source) {
   "Data principles need non-empty facts.");
   assert(source.product.headline === "Turn AI into a company asset",
     "The product headline must match the approved English H1 without a final period.");
-  assert(source.solution.headline === "Jin AI keeps it" && source.solution.closing?.trim() &&
+  assert(source.solution.headline === "How Jin AI keeps your AI" && source.solution.closing?.trim() &&
     source.how_it_works.introduction?.trim(), "Solution and How it works need their approved Keep copy.");
 
   const access = source.early_access;

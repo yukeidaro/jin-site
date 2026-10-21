@@ -157,7 +157,7 @@ const pagePairs = [
   ["security/", security, japaneseSecurity, "会社のコンテクストは、会社のもの。", "セキュリティ | Jin AI",
     "会社ごとにコンテクストを分けて保管します。個人のコンテクストと会社のコンテクストも、分けて扱います。"],
   ["company/", company, japaneseCompany, "会社情報", "会社情報 | Jin AI",
-    "私たちの使命は、機密のコンテクストを社外に出さずに、すべての社員が、社内で一番 AI を使いこなす人と同じように AI を使えるようにすることです。"],
+    "私たちの使命は、会社のAIを、その会社の資産にすることです。安全に、みんなで使えて、いつも最新の状態で。"],
   ["privacy/", privacy, japanesePrivacy, "プライバシーポリシー", "プライバシーポリシー | Jin AI",
     "jinai.md でお預かりする情報と、その使い方について。"],
   ["accessibility/", accessibility, japaneseAccessibility, "アクセシビリティ", "アクセシビリティ | Jin AI",
@@ -560,7 +560,7 @@ function exactElement(source, tag, value) {
   return [...withoutJapanesePhrases(source).matchAll(new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)</${tag}>`, "g"))]
     .filter(([, inner]) => inner === value).length === 1;
 }
-check(exactElement(solutionSection, "h2", "Jin AI keeps it") &&
+check(exactElement(solutionSection, "h2", "How Jin AI keeps your AI") &&
   count(solutionSection, /<li>/g) === 3 && count(solutionSection, /<h3\b/g) === 3 &&
   count(solutionSection, /<p\b/g) === 4 &&
   solutionCopy.every(([title, body]) => exactElement(solutionSection, "h3", title) && exactElement(solutionSection, "p", body)) &&
@@ -575,7 +575,7 @@ const featureCopy = [
   ["classify", "Separate personal from company", "個人と会社を分ける", "Keep what came from personal AI apart from parts that hold confidential company context.", "個人のAIから持ってきたものと、会社の機密を含むものを分けて管理できる。", "Separate personal from company", "個人と会社を分ける", "demo-4-what-can-move.webp", "what-can-move"],
   ["tools", "Control approved AI tools", "承認したツールだけに", "Let people use only the tools you approve. For example: Claude Code for developers only, your company policy in Copilot, and only non-confidential parts in ChatGPT.", "承認したツールだけを使わせる。たとえば、Claude Codeは開発者だけ、Copilotには会社のポリシー、ChatGPTには機密を含まないものだけ。", "Control approved AI tools", "承認したツールだけに"]
 ];
-check(content.solution.status === "building" && content.solution.headline === "Jin AI keeps it" &&
+check(content.solution.status === "building" && content.solution.headline === "How Jin AI keeps your AI" &&
   content.solution.closing === solutionClosing &&
   JSON.stringify(content.solution.steps) === JSON.stringify(solutionCopy.map(([name, description]) => ({ name, description }))) &&
   JSON.stringify(content.how_it_works?.features) === JSON.stringify(featureCopy.map(f => ({ name: f[1], description: f[3] }))),
@@ -591,8 +591,25 @@ for (const [ja, page] of [[false, howPage], [true, japaneseHow]]) {
     "How it works must show its heading once, followed by its exact Keep introduction.");
   if (!ja) check(content.how_it_works?.introduction === introduction, "How it works facts must match the approved introduction.");
 }
-const closingCopy = "See Jin AI keep your team's agent harness";
-const japaneseClosingCopy = "御社のエージェントの設定で、Jin AIを試してみませんか。";
+const closingCopy = "Turn your team's AI into a company asset";
+const japaneseClosingCopy = "御社のAIを、会社の資産に。";
+for (const [ja, page, mission] of [
+  [false, company, "Our mission is to turn every company's AI into an asset it owns: secure, shared, and always up to date."],
+  [true, japaneseCompany, "私たちの使命は、会社のAIを、その会社の資産にすることです。安全に、みんなで使えて、いつも最新の状態で。"]
+]) {
+  const main = page.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
+  check(exactElement(main, "h1", ja ? "会社情報" : "Company") &&
+    exactElement(main, "p", mission) && !main.includes('class="mono-label"') &&
+    /<h1>[^<]+<\/h1>\s*<p class="article-lead">/.test(main),
+    "Company must show one H1 directly followed by the exact R8 mission, without a repeated label.");
+}
+for (const [page, paragraph] of [
+  [privacy, "When you request a demo, we collect the details you type into the form: your work email, first and last name, job title, phone number, company, industry, company size and country. We use your phone number only to arrange your demo. We also record the time of your request and whether our reply email was sent."],
+  [japanesePrivacy, "デモをお申し込みいただくとき、フォームに入力された情報をお預かりします。会社のメールアドレス、姓名、役職、電話番号、会社名、業種、従業員数、国です。電話番号は、デモの日程調整のためだけに使います。あわせて、お申し込みの日時と、こちらからの返信メールを送れたかどうかを記録します。"]
+]) {
+  check(exactElement(page, "p", paragraph),
+    "Privacy must state the required phone collection and demo-only purpose immediately after the collection sentence.");
+}
 for (const [ja, page] of [[false, home], [true, japanese], [false, howPage], [true, japaneseHow]]) {
   const closing = page.match(/<section class="(?:demo|closing-cta)"[^>]*>([\s\S]*?)<\/section>/)?.[1] || "";
   check(exactElement(closing, "h2", ja ? japaneseClosingCopy : closingCopy),
@@ -608,8 +625,9 @@ for (const [ja, source, homeSource] of [[false, howPage, home], [true, japaneseH
     !/harness-steps|section-head split|<ol\b|>0[1-4]</.test(source),
     `${label} How it works needs five unnumbered feature rows in Employees then Admins blocks, without split columns.`);
   const rows = [...source.matchAll(/<li class="feature-row" data-demo-scene="([^"]+)" data-demo-src="([^"]*)">([\s\S]*?)<\/li>/g)];
-  check(rows.length === 5 && count(source, /<figure class="demo-stage">/g) === 5,
-    `${label} How it works needs exactly five individual demo stages.`);
+  check(rows.length === 5 && count(source, /<figure class="demo-stage">/g) === 4 &&
+    count(source, /<figure class="demo-stage" hidden>/g) === 1,
+    `${label} How it works needs four visible demo stages and one hidden tools stage.`);
   featureCopy.forEach((f, index) => {
     const row = rows[index];
     const body = withoutJapanesePhrases(row?.[3] || "");
@@ -620,6 +638,7 @@ for (const [ja, source, homeSource] of [[false, howPage, home], [true, japaneseH
       body.includes(`<figcaption class="screen-caption">${caption}</figcaption>`) &&
       body.includes(`<div class="screen${index === 4 ? " screen-placeholder" : ""}" role="img" aria-label="${caption}">`) &&
       body.includes('<div class="demo-window moving-frame">') &&
+      body.includes(`<figure class="demo-stage"${index === 4 ? " hidden" : ""}>`) &&
       count(body, /<figure\b/g) === 1 &&
       (index < 4
         ? body.includes(`<img class="screen-${f[8]}" src="/assets/demo/${f[7]}" width="2880" height="1664" alt="" decoding="async" loading="lazy">`) &&
@@ -687,7 +706,7 @@ check(!/plugin-screen\.png|personal MCP|your own memory|#waitlist|Join &rarr;/.t
   "The companion page must not publish the retired consumer copy or CTA.");
 const closingBand = howPage.match(/<section class="closing-cta" aria-labelledby="closing-heading">([\s\S]*?)<\/section>/)?.[1] || "";
 check(closingBand.includes('<div class="wrap">') &&
-  closingBand.includes('<h2 id="closing-heading">See Jin AI keep your team\'s agent harness</h2>') &&
+  closingBand.includes(`<h2 id="closing-heading">${closingCopy}</h2>`) &&
   count(closingBand, /<(?:a|button)\b/g) === 1 &&
   closingBand.includes('<a class="btn btn-p" href="../#demo">Request a demo</a>') &&
   count(howPage, /class="closing-cta"/g) === 1 &&
@@ -887,18 +906,18 @@ for (const [relativePath, source] of [
 }
 
 const draftPages = [
-  ["company/", company, "Company", "Company", "Company",
-    "Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company.",
-    "Company Company Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Community: Discord Request a demo"]
+  ["company/", company, "Company", "Company",
+    "Our mission is to turn every company's AI into an asset it owns: secure, shared, and always up to date.",
+    "Company Our mission is to turn every company's AI into an asset it owns: secure, shared, and always up to date. Where we are Jin AI is an early-stage company. We build in close contact with the teams we talk to. Contact hello@jinai.md Community: Discord Request a demo"]
 ];
-for (const [route, source, title, heading, label, description, expectedCopy] of draftPages) {
+for (const [route, source, title, heading, description, expectedCopy] of draftPages) {
   const main = source.match(/<main\b([^>]*)>([\s\S]*?)<\/main>/);
   const visible = (main?.[2] || "").replace(/<button type="button" class="copy-email"[^>]*>[^<]*<\/button>/g, "")
     .replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
   check(source.includes('<html lang="en">') && source.includes(`<title>${title} | Jin AI</title>`) &&
     count(source, /<h1\b/g) === 1 && source.includes(`<h1>${heading}</h1>`) &&
     main?.[1].includes("draft-article") &&
-    (main?.[2] || "").includes(`<p class="mono-label">${label}</p>`),
+    !(main?.[2] || "").includes('class="mono-label"'),
     `/${route} needs its English title, exact H1 and article layout.`);
   check(visible === expectedCopy && !/\d|\b(?:founder|investor|team photos)\b/i.test(visible) &&
     !/<img\b/.test(main?.[2] || ""),
@@ -988,6 +1007,7 @@ const windowCss = cssBlock(englishCss, ".demo-window");
 check(cssBlock(englishCss, "html {").includes("scrollbar-gutter: stable"),
   "Reserve the scrollbar gutter before first paint so the Keep introduction cannot gain a line as the remaining page parses.");
 check(cssBlock(englishCss, ".feature-row {").includes("grid-template-columns: minmax(0, 1fr) minmax(0, 2fr)") &&
+  cssBlock(englishCss, ".feature-row:has(> .demo-stage[hidden])").includes("grid-template-columns: 1fr") &&
   cssBlock(englishCss, "@media (max-width: 1023px)").includes(".feature-row { grid-template-columns: 1fr;") &&
   cssBlock(englishCss, ".feature-row .demo-stage").includes("width: 100%") &&
   cssBlock(englishCss, ".screen-caption").includes("font: var(--t-label)") &&
@@ -1110,7 +1130,7 @@ check(dataSection.includes(`<h2 class="h2">${content.data_principles.headline}</
   content.data_principles.items.every((item) => dataSection.includes(`<li>${item}</li>`)),
   "Root must use all approved data promises.");
 const demoSection = homeSections.find((match) => match[1].includes('id="demo"'))?.[2] || "";
-check(demoSection.includes("<h2>See Jin AI keep your team's agent harness</h2>") &&
+check(demoSection.includes(`<h2>${closingCopy}</h2>`) &&
   demoSection.includes('id="waitlistForm"'), "The demo section must contain the approved heading and form.");
 const demoIntro = demoSection.match(/<div class="demo-intro">([\s\S]*?)<\/div>\s*<\/div>/)?.[1] || "";
 const gettingStarted = demoIntro.match(/<div class="getting-started">([\s\S]*)/)?.[1] || "";
@@ -1118,7 +1138,7 @@ check(gettingStarted.includes("<h3>Getting started</h3>") &&
   count(gettingStarted, /<ul>/g) === 1 &&
   JSON.stringify([...gettingStarted.matchAll(/<li>([\s\S]*?)<\/li>/g)].map(match => match[1])) === JSON.stringify([
     "We're working through our waitlist, so thank you for your patience. If your company wants to try Jin AI, request a demo below.",
-    "The fastest way in is an introduction from someone already in the Jin AI private beta. :)"
+    "The fastest way in is an introduction from someone already in the Jin AI private beta."
   ]) && !demoIntro.includes("<p>We will email you to set up a demo.</p>"),
   "The closing demo intro must contain the exact two-item Getting started list and H3.");
 const retiredPilotTexts = [
@@ -1159,9 +1179,20 @@ const retiredHeroTexts = [
   "Jin AI keeps the instructions, skills, memory and tools your company's AI agents run on: safe, inside the company, shared across teams, and always current.",
   "AIエージェントが動くための指示・スキル・記憶・ツールを、安全に、会社の中に、チームをまたいで、いつも最新の状態で保ちます。"
 ];
+const retiredReviewTexts = [
+  "Jin AI keeps it", "Jin AIが、キープします。",
+  "See Jin AI keep your team's agent harness", "御社のエージェントの設定で、Jin AIを試してみませんか。",
+  "Our mission is to make every employee as good with AI as your best AI users, without confidential context leaving the company.",
+  "私たちの使命は、機密のコンテクストを社外に出さずに、すべての社員が、社内で一番 AI を使いこなす人と同じように AI を使えるようにすることです。",
+  "phone number if you choose to give it", "電話番号（ご入力いただいた場合）", ":)"
+];
 for (const filename of deployedFiles.filter(filename => /\.(?:html|json|txt|css|m?js)$/.test(filename))) {
   const source = await text(filename);
   const plainText = source.replace(/<[^>]*>/g, "").replace(/\s+/g, " ");
+  for (const retired of retiredReviewTexts) {
+    check(!plainText.includes(retired) && !source.includes(retired),
+      `${filename} must not contain replaced R8 copy: ${retired}`);
+  }
   check(!/\bpilot(?:-card|-head|-heading|-steps)?\b|accent-surface-(?:from|to)/.test(source),
     `${filename} must not contain retired pilot markup, facts, styles or gradient tokens.`);
   for (const retired of retiredHeroTexts) {
@@ -1326,7 +1357,7 @@ const japaneseSolutionCopy = [
   ["会社にキープ", "エージェント、文脈、ワークフローは、人ではなく役割に残ります。後任は、前任者の続きから始められます。"],
   ["みんなでキープ", "いちばんいいスキルが、同じ仕事をするすべてのチームに届きます。"]
 ];
-check(exactElement(japaneseSolution, "h2", "Jin AIが、キープします。") &&
+check(exactElement(japaneseSolution, "h2", "Jin AIが、会社のAIをキープします。") &&
   count(japaneseSolution, /<li>/g) === 3 && count(japaneseSolution, /<h3\b/g) === 3 &&
   count(japaneseSolution, /<p\b/g) === 4 &&
   japaneseSolutionCopy.every(([title, body]) => exactElement(japaneseSolution, "h3", title) && exactElement(japaneseSolution, "p", body)) &&
@@ -1446,8 +1477,8 @@ check(count(japaneseReveal, /<span style="--word:[0-1]">[^<]+<\/span>/g) === 2 &
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
   "Japanese hero must preserve its two-phrase reveal, exact R7 text, accessible name and motion opt-in.");
 for (const [page, source, phrases] of [
-  ["/ja/", japanese, ["AIは全社に広がった。", "でも、本当に", "使いこなせていますか？", "エージェントの", "属人化", "シャドーAI", "スキルの共有不足", "Jin AIが、", "キープします。", "安全にキープ", "会社にキープ", "みんなでキープ", "御社の", "設定で、", "Jin AIを", "試して", "みませんか。"]],
-  ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "御社の", "エージェントの", "設定で、", "Jin AIを", "試して", "みませんか。"]],
+  ["/ja/", japanese, ["AIは全社に広がった。", "でも、本当に", "使いこなせていますか？", "エージェントの", "属人化", "シャドーAI", "スキルの共有不足", "Jin AIが、", "会社のAIを", "キープします。", "安全にキープ", "会社にキープ", "みんなでキープ", "御社のAIを、", "会社の資産に。"]],
+  ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "御社のAIを、", "会社の資産に。"]],
   ["/ja/security/", japaneseSecurity, ["コンテクストは、", "会社のもの。"]],
   ["/ja/privacy/", japanesePrivacy, ["プライバシー", "ポリシー", "取り扱いを", "委託している", "事業者"]]
 ]) {

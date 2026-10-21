@@ -39,7 +39,7 @@ AI is everywhere now. Is it really set up to last?
 
 ## Solution (Building)
 
-Jin AI keeps it
+How Jin AI keeps your AI
 
 - Keep it safe: Confidential parts stay inside the company and connect only to the AI tools you approve.
 - Keep it in the company: Agents, context and workflows stay with the role, not the person. A successor starts where the last person left off.
