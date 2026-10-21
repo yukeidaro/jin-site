@@ -8,6 +8,8 @@ const output = path.join(root, "_site");
 const files = [
   ".nojekyll",
   "CNAME",
+  "favicon.svg",
+  "favicon.ico",
   "index.html",
   "site.css",
   "base.css",

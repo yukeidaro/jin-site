@@ -25,7 +25,7 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/agent/` | Crawlable, status-aware reference generated for machine readers |
 | `/agent/content.json` | Public fact source for Human and Agent derivatives |
 | `/llms.txt` | Concise LLM index generated from the fact source |
-| `/robots.txt` | Search policy; model-training crawlers are blocked by default |
+| `/robots.txt` | AI and search crawlers are allowed (Yu, 2026-10-21) |
 | `/sitemap.xml` | Contains twelve English and Japanese content page URLs, excluding redirects |
 
 The public content pages are self-canonical, with `en`, `ja` and `x-default`

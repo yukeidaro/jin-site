@@ -70,6 +70,8 @@ const expectedFiles = [
   "company/index.html",
   "copy.js",
   "en/index.html",
+  "favicon.ico",
+  "favicon.svg",
   "googled8075da2e5b1406b.html",
   "human/index.html",
   "index.html",
@@ -107,6 +109,17 @@ check(emailLogo.length < 20 * 1024 &&
   emailLogo.toString("ascii", 12, 16) === "IHDR" &&
   emailLogo.readUInt32BE(16) === 272 && emailLogo.readUInt32BE(20) === 80,
   "The email logo must be a 272 x 80 PNG (2x its 136 x 40 email size) below 20 KB.");
+
+const favicon = await readFile(path.join(site, "favicon.ico"));
+check(favicon.length >= 62 &&
+  favicon.readUInt16LE(0) === 0 && favicon.readUInt16LE(2) === 1 && favicon.readUInt16LE(4) === 1 &&
+  favicon[6] === 48 && favicon[7] === 48 &&
+  favicon.readUInt16LE(10) === 1 && favicon.readUInt16LE(12) === 32 &&
+  favicon.readUInt32LE(14) === favicon.length - 22 && favicon.readUInt32LE(18) === 22 &&
+  favicon.subarray(22, 30).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])) &&
+  favicon.toString("ascii", 34, 38) === "IHDR" &&
+  favicon.readUInt32BE(38) === 48 && favicon.readUInt32BE(42) === 48,
+  "The favicon must be a valid ICO container with a 48 x 48, 32-bit PNG image.");
 
 const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson, privacy, accessibility, japanesePrivacy, japaneseAccessibility, security, company, harness, japaneseSecurity, japaneseCompany, japaneseHarness] = await Promise.all([
   text("index.html"),
@@ -552,10 +565,37 @@ check(count(agent, /<meta name="robots" content="index,follow,max-snippet:-1">/g
 check(agent.includes('data-content-version="2.0"'), "Agent page is not generated from content version 2.0.");
 
 check(robots.replaceAll("\r\n", "\n") === `User-agent: GPTBot
-Disallow: /
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
 
 User-agent: ClaudeBot
-Disallow: /
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
 
 User-agent: *
 Allow: /
@@ -1922,6 +1962,65 @@ const deployedFileSet = new Set(deployedFiles);
 const htmlCache = new Map();
 for (const relativePath of htmlFiles) htmlCache.set(relativePath, await text(relativePath));
 
+function schemaNodes(value) {
+  if (Array.isArray(value)) return value.flatMap(schemaNodes);
+  if (!value || typeof value !== "object") return [];
+  return [value, ...schemaNodes(value["@graph"])];
+}
+
+const jsonLdByFile = new Map();
+let jsonLdBlockCount = 0;
+let faviconPageCount = 0;
+for (const [relativePath, source] of htmlCache) {
+  const head = source.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1];
+  if (head !== undefined) {
+    faviconPageCount++;
+    check(head.includes('<link rel="icon" href="/favicon.svg" type="image/svg+xml">') &&
+      head.includes('<link rel="icon" href="/favicon.ico" sizes="48x48">') &&
+      count(head, /<link\b[^>]*\brel="icon"/g) === 2 &&
+      !/<link\b[^>]*\brel="icon"[^>]*\bhref="data:/i.test(head),
+      `${relativePath} must reference the crawlable SVG and ICO favicons, without an inline icon.`);
+  } else {
+    check(relativePath === "googled8075da2e5b1406b.html" &&
+      source.trim() === "google-site-verification: googled8075da2e5b1406b.html",
+      `${relativePath} must have a head unless it is the unchanged plain-text Google verification token.`);
+  }
+  const nodes = [];
+  for (const [, json] of source.matchAll(/<script\b[^>]*\btype=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    jsonLdBlockCount++;
+    try {
+      nodes.push(...schemaNodes(JSON.parse(json)));
+    } catch (error) {
+      if (!(error instanceof SyntaxError)) throw error;
+      check(false, `${relativePath} contains invalid JSON-LD: ${error.message}`);
+    }
+  }
+  jsonLdByFile.set(relativePath, nodes);
+}
+
+const faqPages = jsonLdByFile.get("agent/index.html").filter(node => node["@type"] === "FAQPage");
+check(faqPages.length === 1, "Agent must contain exactly one generated FAQPage.");
+const questions = faqPages[0]?.mainEntity;
+check(Array.isArray(questions) && questions.length === content.direct_answers.length &&
+  questions.every((question, index) => question["@type"] === "Question" &&
+    question.name === content.direct_answers[index].question &&
+    question.acceptedAnswer?.["@type"] === "Answer" &&
+    question.acceptedAnswer.text === content.direct_answers[index].answer),
+  "Agent FAQPage questions and answers must match every direct_answers entry exactly, in order.");
+const japaneseSitemapUrls = sitemapUrls.filter(url => new URL(url).pathname.startsWith("/ja/"));
+for (const url of japaneseSitemapUrls) {
+  const filename = `${new URL(url).pathname.slice(1)}index.html`;
+  const page = htmlCache.get(filename) || "";
+  const title = page.match(/<title>([^<]+)<\/title>/)?.[1];
+  const pages = (jsonLdByFile.get(filename) || []).filter(node => node["@type"] === "WebPage");
+  check(pages.length === 1 && pages[0]["@id"] === `${url}#webpage` &&
+    pages[0].url === url && pages[0].name === title && pages[0].inLanguage === "ja" &&
+    pages[0].isPartOf?.["@id"] === "https://jinai.md/#website" &&
+    pages[0].about?.["@id"] === "https://jinai.md/#organization" &&
+    pages[0].publisher?.["@id"] === "https://jinai.md/#organization",
+    `${filename} needs Japanese WebPage JSON-LD matching its canonical URL, title and shared entity IDs.`);
+}
+
 for (const [relativePath, source] of htmlCache) {
   if (!["resources/ai-harness/index.html", "ja/resources/ai-harness/index.html"].includes(relativePath)) {
     check(!/resources\/ai-harness\//.test(source),
@@ -2031,5 +2130,6 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exitCode = 1;
 } else {
+  console.log(`Crawl metadata: ${faviconPageCount} HTML documents with SVG/ICO favicons; ${jsonLdBlockCount} JSON-LD blocks parsed; ${questions.length}/${content.direct_answers.length} exact FAQ answers; ${japaneseSitemapUrls.length} Japanese WebPages.`);
   console.log("Pages artifact passed canonical, AEO, crawler and content checks.");
 }
