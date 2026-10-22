@@ -22,7 +22,7 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 
 ## Pages
 
-- [Jin AI | Turn AI into a company asset](https://jinai.md/): Jin AI keeps the AI harnesses your best people build safe for every employee and reusable for the company.
+- [Jin AI | Turn AI into a company asset](https://jinai.md/): Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.
 - [How it works | Jin AI](https://jinai.md/how-it-works/): How Jin AI connects to your AI tools, sorts each AI harness by category, and lets the company decide what can move.
 - [Security &amp; data | Jin AI](https://jinai.md/security/): How Jin AI keeps each company's context separate, and what it does not do.
 - [Company | Jin AI](https://jinai.md/company/): Our mission is to turn every company's AI into an asset it owns: secure, shared, and always up to date.
