@@ -192,7 +192,7 @@ function decodedMime(encoded, type) {
 }
 
 test("the release version and consent versions are exact and the mailer contains no community invite", () => {
-  assert.equal(backend.WAITLIST_VERSION, "2026-10-21.1");
+  assert.equal(backend.WAITLIST_VERSION, "2026-10-22.1");
   assert.equal(backend.WAITLIST_CONSENT, "waitlist-product-updates-v1");
   assert.equal(backend.DEMO_CONSENT, "demo-request-v1");
   assert.doesNotMatch(source, /discord/i);
@@ -1891,7 +1891,7 @@ test("production demo routing uses only Demo requests and the demo MIME", () => 
     assert.equal(locks, 4);
     assert.equal(releases, 4);
     assert.equal(messages[1], Buffer.from(backend.demoMime_(japanesePayload), "base64url").toString("utf8"));
-    assert.equal(backend.WAITLIST_VERSION, "2026-10-21.1");
+    assert.equal(backend.WAITLIST_VERSION, "2026-10-22.1");
   } finally {
     for (const key of ["PropertiesService", "LockService", "SpreadsheetApp", "Gmail", "ContentService"]) {
       delete backend[key];

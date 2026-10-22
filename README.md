@@ -633,7 +633,7 @@ and redeploy the existing
 web app with Deploy > Manage deployments > Edit > New version > Deploy.**
 Keep the current deployment and `/exec` URL; do not create a replacement endpoint.
 Run `inspectWaitlistSender` and ensure `installWaitlistRetry` has been run.
-The source version is `2026-10-21.1` (replacing `2026-10-20.1`). Do this before
+After redeploy, look for version `2026-10-22.1` at the `/exec` endpoint. Do this before
 publishing the R13b waitlist form. The existing frontend, endpoint, consent
 versions, manifest/scopes and retry trigger are unchanged by R13a; R13b selects
 the appropriate existing consent for each form step. Publish the site

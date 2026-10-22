@@ -3,7 +3,7 @@
  * Deploy with scripts/appsscript.json, execute as the deploying account, and
  * allow Anyone. Run setupWaitlist first; see README.md for the remaining steps.
  */
-var WAITLIST_VERSION = '2026-10-21.1';
+var WAITLIST_VERSION = '2026-10-22.1';
 var WAITLIST_FROM = 'hello@jinai.md';
 var WAITLIST_CONSENT = 'waitlist-product-updates-v1';
 var WAITLIST_SHEET = 'Waitlist';
