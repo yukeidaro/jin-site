@@ -145,6 +145,11 @@ const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, ro
   text("ja/resources/ai-harness/index.html")
 ]);
 
+const bingVerificationTag = '<meta name="msvalidate.01" content="7BF9C14D3232C5E464C8A6578E107EC5">';
+check(home.split(bingVerificationTag).length === 2 &&
+  home.match(/<head>([\s\S]*?)<\/head>/)?.[1].includes(bingVerificationTag),
+  "index.html must contain the exact Bing Webmaster Tools verification meta tag once, inside <head>.");
+
 const englishPages = [
   ["", home], ["how-it-works/", howPage], ["security/", security],
   ["privacy/", privacy], ["accessibility/", accessibility],
