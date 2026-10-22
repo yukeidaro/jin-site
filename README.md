@@ -235,9 +235,9 @@ the headline into a second visible component or a runtime text constant.
 The body is the separate `p.hero-intro` directly below the H1.
 
 When Yu chooses a new tagline, also update `product.headline` in
-`agent/content.json`, the corresponding page/social titles and image alt
-text, the share-image source/render, and the exact-headline/reveal assertions
-in the generator and validator. Regenerate with `node scripts\generate-aeo.mjs`;
+`agent/content.json`, the corresponding page/social titles, and the
+exact-headline/reveal assertions in the generator and validator.
+Regenerate with `node scripts\generate-aeo.mjs`;
 never edit generated blocks. If the span count changes, keep the body reveal
 after the last word finishes and the buttons after the body. R7 uses six
 English words and two unbroken Japanese phrases. Titles and social titles
@@ -835,7 +835,10 @@ GitHub Pages deploys through `.github/workflows/deploy-pages.yml`. The build
 copies only the allowlist in `scripts/build-pages.mjs` into `_site`.
 
 The production artifact includes the compatibility redirects, shared page assets
-and `shots/og-b2b.png`, the shared 1200 x 630 social image.
+and `shots/og-b2b.png`, the shared 1200 x 630 social image below 60 KB.
+The image contains only the centered white Jin AI mark and Inter wordmark on
+the site's black (`#08090A`); all social image alt text is `Jin AI`.
+The English home page and social descriptions use the current hero line.
 Its source, `shots/og-b2b-src.html`, is not deployed. Retired screenshots and
 illustrations remain in the repository but are not in the allowlist.
 Historical source directories such as `archive/` and

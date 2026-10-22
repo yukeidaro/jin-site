@@ -4,59 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jin AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,700&family=Inter:wght@400;600&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@510&display=swap" rel="stylesheet">
 <style>
-:root{--paper:#f5f3ef;--ink:#252525;--accent:#a84a1c;--accent-50:#fbf0e9}
 *{box-sizing:border-box;margin:0}
 html,body{width:1200px;height:630px}
-body{background:var(--paper);color:var(--ink);padding:56px 64px;font-family:Inter,system-ui,sans-serif}
-.brand{display:flex;align-items:center;gap:14px;font:700 34px/1 "Source Serif 4",Georgia,serif}
-.brand svg{width:38px;height:32px;fill:var(--ink)}
-main{display:grid;grid-template-columns:590px 480px;gap:0;align-items:center;margin-top:76px}
-h1{font:700 64px/1.08 "Source Serif 4",Georgia,serif;letter-spacing:-.035em}
-.art{width:480px;height:330px}
-.il{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.ia{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.tile{fill:var(--accent-50);stroke:var(--accent);stroke-width:1.8}
-.hw{font-family:Caveat,Inter,system-ui,sans-serif;font-size:22px;fill:var(--ink)}
+body{display:flex;align-items:center;justify-content:center;background:#08090a;color:#fff;font-family:Inter,system-ui,sans-serif}
+.brand{display:inline-flex;align-items:center;gap:48px;font-size:120px;font-weight:510;letter-spacing:-.022em;white-space:nowrap}
+.brand img{width:144px;height:144px;object-fit:contain}
 </style>
 </head>
 <body>
-<div class="brand"><svg viewBox="0 0 390 326" aria-hidden="true"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></svg>Jin AI</div>
-<main>
-  <h1>Turn AI into a company asset</h1>
-  <svg class="art" viewBox="0 0 480 330" role="img" aria-label="The top performer's AI harness reaches every person. All tiles are lit, all arrows are drawn and the cost bar is full.">
-    <defs>
-      <pattern id="ed-hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="10" height="10" fill="var(--accent-50)"/><rect width="4" height="10" fill="var(--accent)"/></pattern>
-      <marker id="ed-ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
-      <clipPath id="ed-barclip"><rect x="92" y="296" width="330" height="20" rx="10"/></clipPath>
-    </defs>
-    <text x="30" y="28" class="hw">Top performer</text>
-    <g id="ed-tiles"></g><g id="ed-arrows"></g>
-    <text x="30" y="313" class="hw">Cost</text>
-    <g clip-path="url(#ed-barclip)"><rect x="92" y="296" height="20" width="330" fill="url(#ed-hatch)"/></g>
-    <rect x="92" y="296" width="330" height="20" rx="10" class="il"/>
-    <path d="M432 290 l8 -8 M436 300 l11 -2" class="ia" stroke-width="1.8"/>
-  </svg>
-</main>
-<script>
-const NS="http://www.w3.org/2000/svg",cols=[40,140,240,340],rows=[44,128,212],W=64;
-const order=[[1,0],[2,0],[3,0],[3,1],[2,1],[1,1],[0,1],[0,2],[1,2],[2,2],[3,2]];
-const tiles=document.getElementById("ed-tiles"),arrows=document.getElementById("ed-arrows");
-function el(name,attributes,parent){const element=document.createElementNS(NS,name);for(const key in attributes)element.setAttribute(key,attributes[key]);parent.appendChild(element);return element}
-for(const x of cols)for(const y of rows){
-  el("rect",{x,y,width:W,height:W,rx:6,class:"tile","stroke-width":x===cols[0]&&y===rows[0]?2.4:1.8},tiles);
-  el("circle",{cx:x+W/2,cy:y+24,r:8,class:"ia"},tiles);
-  el("path",{d:`M${x+W/2-14} ${y+54} C${x+W/2-14} ${y+38} ${x+W/2+14} ${y+38} ${x+W/2+14} ${y+54}`,class:"ia"},tiles);
-}
-el("path",{d:"M22 52 l-10 -4 M24 68 l-12 2 M48 38 l-2 -12 M88 36 l6 -10",class:"ia","stroke-width":1.8},tiles);
-let previous=[0,0];
-for(const [column,row] of order){
-  const [pc,pr]=previous,x0=cols[pc]+W/2,y0=rows[pr]+W/2,x1=cols[column]+W/2,y1=rows[row]+W/2;
-  const dx=Math.sign(x1-x0),dy=Math.sign(y1-y0);
-  el("path",{d:`M${x0+dx*(W/2+6)} ${y0+dy*(W/2+6)} L${x1-dx*(W/2+8)} ${y1-dy*(W/2+8)}`,class:"ia","marker-end":"url(#ed-ah)"},arrows);
-  previous=[column,row];
-}
-</script>
+<div class="brand"><img src="../brand/jin-mark-white.svg" width="144" height="144" alt="">Jin AI</div>
 </body>
 </html>
