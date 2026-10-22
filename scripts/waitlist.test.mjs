@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import vm from "node:vm";
@@ -270,8 +271,8 @@ test("cached legacy signups retain their original name and role, with company em
   const email = decodedMime(backend.welcomeMime_(saved), "waitlist");
   assert.equal(email.subject, "Example, you're on the Jin AI waitlist");
   assert.match(email.text, /Hi Example,/);
-  assert.match(email.text, /Thanks for your interest in Jin AI!\r\n/);
-  assert.match(email.text, /We look forward to having you try Jin AI, Example!/);
+  assert.match(email.text, /Thanks for joining the Jin AI waitlist!\r\n/);
+  assert.match(email.text, /I'll reach out when early access is ready\./);
   assert.doesNotMatch(email.text, /We've added|undefined|null/);
   const oldRow = { ...input(), lang: "", firstName: "", lastName: "", company: "" };
   assert.equal(backend.welcomeText_(oldRow), email.text);
@@ -298,17 +299,16 @@ test("waitlist rejects invalid language, stale consent, bots, sources and IDs wi
 const approvedBodies = {
   waitlist: {
     en: [
-      "Thanks for your interest in Jin AI! We've added Contoso to our waitlist.",
-      "Jin AI helps companies keep their AI agents, skills, and knowledge secure, shared across teams, and always up to date.",
-      "We're getting ready to launch and will email you when early access becomes available.",
-      "In the meantime, we'd love to show you how Jin AI could work for your team. If you're interested, feel free to book a demo."
+      "Thanks for joining the Jin AI waitlist!",
+      "I'm Yu, the founder of Jin AI. We're building a way for companies to securely manage and share AI agents, skills, and knowledge across teams.",
+      "I'll reach out when early access is ready.",
+      "In the meantime, I'd love to hear how your team is using AI today. Feel free to reply to this email!"
     ],
     ja: [
-      "Jin AI にご関心をお寄せいただき、ありがとうございます。",
-      "Jin AIは、企業の大切な情報を守りながら、AIエージェントの知識やスキルを組織全体で共有・活用できるようにするプラットフォームです。",
-      "現在、サービスの公開に向けて準備を進めています。",
-      "先行利用のご案内や最新情報は、ご登録いただいたメールアドレスにお届けします。",
-      "また、Tanaka様のご利用環境に合わせたデモもご案内しています。ご興味がございましたら、ぜひお気軽にお申し込みください。"
+      "Jin AIのウェイトリストにご登録いただき、ありがとうございます。",
+      "私たちは、企業の機密情報を守りながら、AIエージェントやスキル、ナレッジを組織全体で安全に管理・共有できるサービスを開発しています。",
+      "先行利用の準備が整い次第、改めてご案内いたします。",
+      "貴社でのAI活用や情報管理について、課題やご関心がございましたら、ぜひこのメールにご返信いただけますと幸いです。"
     ]
   },
   demo: {
@@ -323,31 +323,66 @@ const approvedBodies = {
   }
 };
 
+function htmlContent(html) {
+  return html.replace(/<br>/g, "\r\n").replace(/<[^>]*>/g, "")
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'").replace(/&amp;/g, "&");
+}
+
+function expectedWaitlistBlocks(lang, first = "Maya", last = "Tanaka") {
+  const ja = lang === "ja";
+  return [
+    ja ? `${last}様` : `Hi ${first},`,
+    ...approvedBodies.waitlist[lang],
+    ja ? "浅野 悠\r\nFounder, Jin AI\r\njinai.md" : "Best,\r\nYu Asano\r\nFounder, Jin AI\r\njinai.md",
+    ja ? "プライバシーポリシー: https://jinai.md/ja/privacy/" : "Privacy Policy: https://jinai.md/privacy/"
+  ];
+}
+
 for (const type of ["waitlist", "demo"]) {
   for (const lang of ["en", "ja"]) {
-    test(`${type}/${lang} has the exact approved copy, name subject, company, branding and matching text order`, () => {
+    test(`${type}/${lang} has exact approved copy, personalized subject and matching HTML/text order`, () => {
       const record = waitlistInput({ lang });
       const email = decodedMime(type === "demo" ? backend.demoMime_(record) : backend.welcomeMime_(record), type);
       const ja = lang === "ja";
       const demo = type === "demo";
       const subject = ja ? `Tanaka様、Jin AI の${demo ? "デモにお申し込みいただきありがとうございます" : "ウェイトリストにご登録いただきました"}` :
         `Maya, ${demo ? "thanks for requesting a Jin AI demo" : "you're on the Jin AI waitlist"}`;
-      const heading = ja ? (demo ? "お話しできるのを楽しみにしております" : "ウェイトリストへのご登録ありがとうございます！") :
-        (demo ? "We're looking forward to meeting you" : "You're on the waitlist!");
+      if (!demo) {
+        const home = `https://jinai.md/${ja ? "ja/" : ""}`;
+        const blocks = expectedWaitlistBlocks(lang);
+        assert.equal(email.subject, subject);
+        assert.equal(email.text, blocks.join("\r\n\r\n"));
+        const htmlBlocks = [...email.html.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/g)]
+          .map(match => htmlContent(match[1]));
+        const expectedHtml = blocks.slice();
+        expectedHtml[expectedHtml.length - 1] = blocks.at(-1).replace(`: ${home}privacy/`, "");
+        assert.deepEqual(htmlBlocks, expectedHtml);
+        assert.match(email.html, new RegExp(`<html lang="${lang}">`));
+        assert.match(email.html, /background:#ffffff/);
+        assert.match(email.html, /font-size:16px;line-height:1\.6/);
+        assert.match(email.html, /font-size:12px;line-height:1\.6;color:#616161/);
+        assert.deepEqual([...email.html.matchAll(/<a href="([^"]+)"/g)].map(match => match[1]),
+          [home, `${home}privacy/`]);
+        assert.ok(email.html.includes(`<a href="${home}">jinai.md</a>`));
+        assert.ok(email.html.includes(`<a href="${home}privacy/" style="color:#616161;">`));
+        assert.doesNotMatch(email.html, /<img\b|<button\b|<h[1-6]\b|<table\b|role="button"|background:#(?:000000|f2f2f2|A84A1C)|border-radius/i);
+        assert.doesNotMatch(email.html + email.text, /demo|デモ|unsubscribe|配信停止|Contoso|undefined|null|[\u2013\u2014\u2018\u2019\u201c\u201d]/i);
+        assert.match(email.mime, /^From: Jin AI <hello@jinai\.md>\r\nReply-To: hello@jinai\.md/);
+        assert.doesNotMatch(email.mime, /\r\n(?:Bcc|Cc):/i);
+        assert.equal(backend.welcomeText_(record), email.text);
+        assert.equal(backend.welcomeHtml_(record), email.html);
+        return;
+      }
+      const heading = ja ? "お話しできるのを楽しみにしております" : "We're looking forward to meeting you";
       const salutation = ja ? "Contoso\r\nTanaka様" : "Hi Maya,";
       const home = `https://jinai.md/${ja ? "ja/" : ""}`;
-      const button = demo ? (ja ? "日時を選ぶ" : "Pick a time") : (ja ? "デモを申し込む" : "Request a demo");
-      const buttonUrl = demo ? `${bookingUrl}?name=Maya%20Tanaka&email=example%40example.com` : `${home}#request-demo`;
+      const button = ja ? "日時を選ぶ" : "Pick a time";
+      const buttonUrl = `${bookingUrl}?name=Maya%20Tanaka&email=example%40example.com`;
       const privacy = ja ? "プライバシーポリシー" : "Privacy Policy";
-      const unsubscribe = ja ? "配信停止をご希望の場合は、「unsubscribe」と返信してください。" :
-        "To stop receiving emails, reply with 'unsubscribe'.";
-      const closing = ja ? "Tanaka様にJin AIをお試しいただける日を楽しみにしております。" :
-        "We look forward to having you try Jin AI, Maya!";
       const blocks = [heading, salutation, ...approvedBodies[type][lang]];
       blocks.push(`${button}\r\n${buttonUrl}`);
-      if (!demo) blocks.push(closing);
       blocks.push("Yu Asano\r\nFounder, Jin AI", `jinai.md: ${home}\r\n${privacy}: ${home}privacy/`);
-      if (!demo) blocks.push(unsubscribe);
       assert.equal(email.subject, subject);
       assert.equal(email.text, blocks.join("\r\n\r\n"));
       const htmlText = email.html.replace(/<\/?span\b[^>]*>/g, "").replace(/<[^>]*>/g, " ")
@@ -357,9 +392,7 @@ for (const type of ["waitlist", "demo"]) {
         .map((match) => match[2].replace(/<br>/g, "\r\n").replace(/<[^>]*>/g, "").replace(/&#39;/g, "'"));
       assert.deepEqual(htmlBlocks.slice(0, 2 + approvedBodies[type][lang].length),
         [heading, salutation, ...approvedBodies[type][lang]]);
-      if (!demo) assert.deepEqual(htmlBlocks.slice(2 + approvedBodies[type][lang].length,
-        5 + approvedBodies[type][lang].length), [button, closing, "Yu Asano\r\nFounder, Jin AI"]);
-      else assert.deepEqual(htmlBlocks.slice(2 + approvedBodies[type][lang].length,
+      assert.deepEqual(htmlBlocks.slice(2 + approvedBodies[type][lang].length,
         4 + approvedBodies[type][lang].length), [button, "Yu Asano\r\nFounder, Jin AI"]);
       assert.match(email.html, new RegExp(`<html lang="${lang}">`));
       if (ja) {
@@ -369,8 +402,7 @@ for (const type of ["waitlist", "demo"]) {
         assert.match(headingHtml, /overflow-wrap:normal/);
         const phrases = [...headingHtml.matchAll(/<span style="display:inline-block;white-space:nowrap;">([^<]+)<\/span>/g)]
           .map((match) => match[1]);
-        assert.deepEqual(phrases, demo ? ["お話しできるのを", "楽しみにしております"] :
-          ["ウェイトリストへの", "ご登録", "ありがとうございます！"]);
+        assert.deepEqual(phrases, ["お話しできるのを", "楽しみにしております"]);
       }
       assert.match(email.html, /max-width:600px/);
       assert.match(email.html, /background:#f2f2f2/);
@@ -378,12 +410,12 @@ for (const type of ["waitlist", "demo"]) {
       assert.match(email.html, /background:#000000/);
       assert.ok(email.html.includes('<img src="https://jinai.md/brand/jin-mark-email.png" width="136" height="40" alt="Jin AI"'));
       assert.ok(email.html.includes(`<a href="${home}privacy/"`));
-      assert.equal(email.html.includes(`href="${home}#request-demo"`), !demo);
+      assert.equal(email.html.includes(`href="${home}#request-demo"`), false);
       assert.ok(email.html.includes(`href="${buttonUrl.replaceAll("&", "&amp;")}"`));
       assert.doesNotMatch(email.text + email.html, /#demo\b/);
       assert.equal(email.html.includes("background:#A84A1C"), true);
-      assert.equal(email.text.includes("unsubscribe"), !demo);
-      assert.equal(email.html.includes("unsubscribe"), !demo);
+      assert.equal(email.text.includes("unsubscribe"), false);
+      assert.equal(email.html.includes("unsubscribe"), false);
       for (const body of [email.text, email.html]) {
         assert.doesNotMatch(body, /discord|Co-founder|chat history|<script|<style|tracking|postal/i);
         assert.doesNotMatch(body, /[\u2013\u2014\u2018\u2019\u201c\u201d]/);
@@ -400,32 +432,32 @@ for (const type of ["waitlist", "demo"]) {
       const record = waitlistInput({ firstName: special, lastName: special, company, lang });
       const email = decodedMime(type === "demo" ? backend.demoMime_(record) : backend.welcomeMime_(record), type);
       assert.ok(email.html.includes("&lt;Maya&gt;&amp;&quot;&#39;"));
-      assert.ok(email.html.includes("&lt;Contoso&gt;&amp;&quot;&#39;"));
+      assert.equal(email.html.includes("&lt;Contoso&gt;&amp;&quot;&#39;"), type === "demo");
       assert.ok(!email.html.includes(special));
       assert.ok(!email.html.includes(company));
       assert.ok(email.text.includes(special));
-      assert.ok(email.text.includes(company));
+      assert.equal(email.text.includes(company), type === "demo");
       assert.ok(email.subject.startsWith(special));
+      assert.doesNotMatch(email.text, /&lt;|&gt;|&amp;|&quot;|&#39;/);
       const escapedName = "&lt;Maya&gt;&amp;&quot;&#39;";
       const escapedCompany = "&lt;Contoso&gt;&amp;&quot;&#39;";
+      if (type === "waitlist") {
+        assert.ok(email.html.includes(lang === "ja" ? `>${escapedName}様</p>` : `>Hi ${escapedName},</p>`));
+        assert.equal(email.text, expectedWaitlistBlocks(lang, special, special).join("\r\n\r\n"));
+        assert.doesNotMatch(email.html + email.text, /Contoso/);
+        assert.equal((email.html.match(/<img\b/g) || []).length, 0);
+        return;
+      }
       if (lang === "ja") {
         assert.ok(email.html.includes(`${escapedCompany}<br>${escapedName}様`));
         assert.ok(email.text.includes(`${company}\r\n${special}様`));
         assert.doesNotMatch(email.html, /&#39; 様/);
-        if (type === "waitlist") {
-          for (const [value, name] of [[email.html, escapedName], [email.text, special]]) {
-            assert.ok(value.includes(`また、${name}様のご利用環境に合わせたデモもご案内しています。ご興味がございましたら、ぜひお気軽にお申し込みください。`));
-            assert.ok(value.includes(`${name}様にJin AIをお試しいただける日を楽しみにしております。`));
-          }
-        }
       } else {
-        for (const [value, name, business, apostrophe] of [
-          [email.html, escapedName, escapedCompany, "&#39;"], [email.text, special, company, "'"]
+        for (const [value, name, business] of [
+          [email.html, escapedName, escapedCompany], [email.text, special, company]
         ]) {
           assert.ok(value.includes(`Hi ${name},`));
-          assert.ok(value.includes(type === "demo" ? `Thanks for requesting a Jin AI demo for ${business}.` :
-            `Thanks for your interest in Jin AI! We${apostrophe}ve added ${business} to our waitlist.`));
-          if (type === "waitlist") assert.ok(value.includes(`We look forward to having you try Jin AI, ${name}!`));
+          assert.ok(value.includes(`Thanks for requesting a Jin AI demo for ${business}.`));
         }
       }
       assert.doesNotMatch(email.text, /&lt;|&gt;|&amp;|&quot;|&#39;/);
@@ -456,30 +488,59 @@ for (const lang of ["en", "ja"]) {
 }
 
 for (const lang of ["en", "ja"]) {
-  test(`legacy ${lang} waitlist omits only the unknown company and keeps the revised wording`, () => {
+  test(`legacy ${lang} waitlist keeps its first-word/full-name fallback with the exact F letter`, () => {
     const email = decodedMime(backend.welcomeMime_(input({ lang })), "waitlist");
-    const expected = lang === "ja" ? [
-      "ウェイトリストへのご登録ありがとうございます！", "Example Tester様",
-      ...approvedBodies.waitlist.ja.map((paragraph) => paragraph.replaceAll("Tanaka様", "Example Tester様")),
-      "デモを申し込む\r\nhttps://jinai.md/ja/#request-demo",
-      "Example Tester様にJin AIをお試しいただける日を楽しみにしております。",
-      "Yu Asano\r\nFounder, Jin AI",
-      "jinai.md: https://jinai.md/ja/\r\nプライバシーポリシー: https://jinai.md/ja/privacy/",
-      "配信停止をご希望の場合は、「unsubscribe」と返信してください。"
-    ] : [
-      "You're on the waitlist!", "Hi Example,", "Thanks for your interest in Jin AI!",
-      ...approvedBodies.waitlist.en.slice(1), "Request a demo\r\nhttps://jinai.md/#request-demo",
-      "We look forward to having you try Jin AI, Example!", "Yu Asano\r\nFounder, Jin AI",
-      "jinai.md: https://jinai.md/\r\nPrivacy Policy: https://jinai.md/privacy/",
-      "To stop receiving emails, reply with 'unsubscribe'."
-    ];
+    const expected = expectedWaitlistBlocks(lang, "Example", "Example Tester");
     assert.equal(email.text, expected.join("\r\n\r\n"));
+    assert.equal(email.subject, lang === "ja" ? "Example Tester様、Jin AI のウェイトリストにご登録いただきました" :
+      "Example, you're on the Jin AI waitlist");
     for (const body of [email.html, email.text]) {
       assert.doesNotMatch(body, /We've added|We&#39;ve added|Contoso|undefined|null|\s様/);
     }
     assert.ok(email.html.includes(lang === "ja" ? ">Example Tester様</p>" : ">Hi Example,</p>"));
+    for (const missing of [undefined, null, ""]) {
+      assert.equal(backend.welcomeText_({ ...input({ lang }), firstName: missing, lastName: missing }), email.text);
+    }
   });
 }
+
+test("waitlist preserves independent and empty legacy name fallbacks without injecting HTML", () => {
+  for (const lang of ["en", "ja"]) {
+    const record = { name: '<Legacy>&"\' Person', firstName: "Current", lastName: "Surname", lang };
+    const missing = lang === "ja" ? "lastName" : "firstName";
+    for (const value of [undefined, null, ""]) {
+      const sample = { ...record, [missing]: value };
+      const name = lang === "ja" ? record.name : record.name.split(/\s+/)[0];
+      const email = backend.requestEmail_(sample, "waitlist");
+      assert.equal(email.salutation, lang === "ja" ? `${name}様` : `Hi ${name},`);
+      assert.ok(backend.welcomeHtml_(sample).includes(backend.escapeEmailHtml_(name)));
+      assert.ok(!backend.welcomeHtml_(sample).includes(name));
+    }
+    const empty = backend.requestEmail_({ lang }, "waitlist");
+    assert.equal(empty.salutation, lang === "ja" ? "様" : "Hi ,");
+    assert.equal(empty.subject, lang === "ja" ? "様、Jin AI のウェイトリストにご登録いただきました" :
+      ", you're on the Jin AI waitlist");
+  }
+});
+
+test("demo MIME stays byte-identical to main 2405ec2, including booking, headers and both alternatives", () => {
+  const hashes = {
+    en: ["5b7e709cec4eeafea783ae6e75d0f7d0f869d560d2df64db1f25b4d27d659b5b",
+      "a891b4a70f55bbff3745a1c22d78bc5fbdfb84498c262c708ed07fe6ca9173d7"],
+    ja: ["2c74f4565c2b223798e7b5015eaecd50474644fff49b98d30ad39558e983a686",
+      "68f7e99aa6f3881d823dacb2c2f0f90902cdd9c49e33cd29e009d84205db8cc9"]
+  };
+  for (const lang of [undefined, "en", "ja"]) {
+    for (const special of [false, true]) {
+      const record = demoInput({ lang, ...(special ? {
+        firstName: '<Maya>&"\'', lastName: '<Tanaka>&"\'', company: '<Contoso>&"\'',
+        email: "maya+demo@example.com"
+      } : {}) });
+      assert.equal(createHash("sha256").update(backend.demoMime_(record)).digest("hex"),
+        hashes[lang || "en"][Number(special)], `${lang || "missing"}/${special}`);
+    }
+  }
+});
 
 test("email copy controls retain only the R13e-approved trailing punctuation", async () => {
   for (const page of ["index.html", "how-it-works/index.html", "security/index.html", "company/index.html",
@@ -715,8 +776,9 @@ for (const type of ["waitlist", "demo"]) {
         sends++;
         const email = decodedMime(type === "demo" ? backend.demoMime_(record) : backend.welcomeMime_(record), type);
         assert.ok(email.subject.startsWith(lang === "ja" ? "0様" : "1688,"));
-        assert.ok(email.text.includes(lang === "ja" ? "true\r\n0様" : "Hi 1688,"));
-        assert.ok(email.html.includes(lang === "ja" ? "true<br>0様" : "Hi 1688,"));
+        assert.ok(email.text.includes(lang === "ja" ? (type === "demo" ? "true\r\n0様" : "0様") : "Hi 1688,"));
+        assert.ok(email.html.includes(lang === "ja" ? (type === "demo" ? "true<br>0様" : "0様") : "Hi 1688,"));
+        assert.equal(record.company, "true");
         assert.equal(record[type === "demo" ? "jobTitle" : "role"], "false");
         if (type === "demo") assert.equal(record.phone, "5551234");
         return "coerced-text-message";
@@ -811,7 +873,7 @@ for (const type of ["waitlist", "demo"]) {
             "10-4" + (type === "demo" ? ", thanks for requesting a Jin AI demo" : ", you're on the Jin AI waitlist"));
           for (const [content, escaped] of [[mail.text, false], [mail.html, true]]) {
             assert.ok(content.includes(lang === "ja" ? "3/4様" : "Hi 10-4,"));
-            assert.ok(content.includes(escaped ? backend.escapeEmailHtml_(company) : company));
+            assert.equal(content.includes(escaped ? backend.escapeEmailHtml_(company) : company), type === "demo");
           }
           assert.doesNotMatch(mail.html, /<007/);
           return "text-preserved-message";
@@ -837,7 +899,9 @@ test("Japanese waitlist retries keep the saved company, surname, language and on
   const send = f.deps.sender.send;
   f.deps.sender.send = (record) => {
     const email = decodedMime(backend.welcomeMime_(record), "waitlist");
-    assert.match(email.text, /Contoso\r\nTanaka様/);
+    assert.match(email.text, /^Tanaka様\r\n/);
+    assert.doesNotMatch(email.text + email.html, /Contoso/);
+    assert.equal(record.company, "Contoso");
     assert.equal(email.subject, "Tanaka様、Jin AI のウェイトリストにご登録いただきました");
     return send(record);
   };
@@ -848,7 +912,7 @@ test("Japanese waitlist retries keep the saved company, surname, language and on
   assert.equal(f.records[0].lang, "ja");
 });
 
-test("production waitlist then demo stores separate intents and sends both branded emails exactly once", () => {
+test("production waitlist then demo stores separate intents and sends both confirmations exactly once", () => {
   const tabs = new Map([
     ["Waitlist", sheetFixture(Array.from(backend.WAITLIST_COLUMNS, (column) => column[1]))],
     ["Demo requests", sheetFixture(Array.from(backend.DEMO_COLUMNS, (column) => column[1]))]
@@ -1179,7 +1243,7 @@ test("sheet cells are escaped and HTML names cannot inject markup", () => {
   assert.equal(backend.safeCell_(3), 3);
   const html = backend.welcomeHtml_(waitlistInput({ firstName: "<img/src=x/onerror=alert(1)>" }));
   assert.ok(html.includes("&lt;img/src=x/onerror=alert(1)&gt;"));
-  assert.equal((html.match(/<img\b/g) || []).length, 1, "Only the fixed brand image is permitted.");
+  assert.equal((html.match(/<img\b/g) || []).length, 0, "The letter has no image.");
 });
 
 test("the legacy welcome MIME has the real From, approved copy and no community promotion", () => {
@@ -1194,8 +1258,9 @@ test("the legacy welcome MIME has the real From, approved copy and no community 
     const body = Buffer.from(part[1].replace(/\s/g, ""), "base64").toString("utf8");
     assert.doesNotMatch(body, /discord/i);
     assert.ok(body.includes("Hi Yu,"));
-    assert.ok(body.includes("Jin AI helps companies keep their AI agents, skills, and knowledge secure, shared across teams, and always up to date."));
-    assert.ok(body.includes("We look forward to having you try Jin AI, Yu!"));
+    assert.ok(body.includes("Thanks for joining the Jin AI waitlist!"));
+    assert.ok(body.includes("Founder, Jin AI"));
+    assert.doesNotMatch(body, /unsubscribe|配信停止|demo|デモ/i);
     assert.ok(!body.includes("No newsletter"));
     assert.ok(!/visual workspace|created by AI agents|chat history|Co-founder/.test(body),
       "Retired positioning and signature must not reach new signups.");

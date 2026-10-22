@@ -519,8 +519,8 @@ reuse their ID. Validation/transport failures keep that step's data and do
 not show success. The existing demo success and delivery states are retained.
 Both `#demo` (section) and `#waitlist` (inner wrapper) remain valid entry links;
 neither bypasses the waitlist. No survey was added or removed.
-R13d adds `/#request-demo` and `/ja/#request-demo` for the waitlist email's
-demo button. Opening either link, or changing the hash to `#request-demo`,
+R13d adds `/#request-demo` and `/ja/#request-demo` as direct-demo entry links.
+Opening either link, or changing the hash to `#request-demo`,
 reveals all nine required fields together and submits only a demo request
 with the existing demo consent. Initial navigation keeps native fragment
 focus; Tab reaches the first name control (surname first in Japanese).
@@ -568,7 +568,8 @@ codes with Node's `Intl.DisplayNames`. Client messages follow the document
 language. Demo payloads include `lang` (`ja` for document languages starting with
 `ja`, otherwise `en`); the backend stores it and sends Japanese confirmations
 with a company and surname greeting for `ja`, or the approved English email for
-`en` or missing `lang`.
+`en` or missing `lang`. Waitlist confirmations use only the surname greeting
+in Japanese; the company-and-surname greeting applies only to demos.
 
 R13a added the backend support used by R13b's frontend. The backend accepts waitlist payloads with required
 `firstName` (80 characters), `lastName` (80), `email` (254), `jobTitle` (120) and
@@ -699,35 +700,42 @@ and `3/4`, and company `007` (then `TRUE` if checking both), and verify the
 sheet's exact text, retry read-back and confirmation values without a visible
 escape apostrophe. Existing confirmations intentionally do not include phones.
 
-R13c uses Yu's revised 2026-10-21 waitlist copy in matching plain-text and branded
-HTML alternatives. Subjects are unchanged and include the first name in English
+R14c uses Yu's approved F-form letter (2026-10-22) in matching plain-text and
+plain HTML waitlist alternatives. Subjects are unchanged and include the first name in English
 or surname in Japanese:
 `{First}, you're on the Jin AI waitlist` and
 `{First}, thanks for requesting a Jin AI demo`, or
 `{Last}様、Jin AI のウェイトリストにご登録いただきました` and
 `{Last}様、Jin AI のデモにお申し込みいただきありがとうございます`.
-Japanese salutations put company above `{Last}様`, without a space, in both
-waitlist and demo emails. English opening paragraphs include the company.
-The waitlist headings are `You're on the waitlist!` and
-`ウェイトリストへのご登録ありがとうございます！`. The revised paragraphs
-describe preparing to launch, early-access updates and an optional demo,
-followed by the demo button and personalized closing. The demo-booking brief changes only the demo scheduling sentence and adds the
-prefilled Cal.com link to both email alternatives; the reply invitation and
-all waitlist email copy stay unchanged. Japanese headings wrap only between inline-block phrases, with
+The waitlist greeting is only `Hi {First},` or `{Last}様`, with no signup
+company anywhere in either alternative. The English letter introduces Yu,
+describes what we are building, promises an early-access update and invites a
+reply about the team's AI use. Japanese uses the exact approved letter and
+signs `浅野 悠`. Neither waitlist alternative has a demo invitation, demo URL
+or unsubscribe line. Both end with the founder signature, `jinai.md` and the
+localized Privacy Policy link (`https://jinai.md/privacy/` or
+`https://jinai.md/ja/privacy/`). The text alternative preserves the same words,
+paragraph breaks and signature lines, with the privacy URL written out.
+Waitlist HTML is a plain white letter with 16px system-font body text, no band,
+logo, heading, card or button, and a small grey privacy footer.
+
+Demo emails are unchanged, including their company greetings, branded HTML,
+reply invitation and prefilled Cal.com booking link in both alternatives.
+Their Japanese headings wrap only between inline-block phrases, with
 `word-break: keep-all`, so words stay intact on phones.
-Legacy records without company omit the company salutation line in Japanese;
-their English first paragraph is exactly `Thanks for your interest in Jin AI!`,
-without the `We've added {Company} to our waitlist.` part. All other revised
-wording remains, using the first word of legacy `name` in English and the full
-legacy `name` before `様` in Japanese.
-The signature is `Yu Asano` / `Founder, Jin AI`.
+Legacy records without a first name still use the first word of legacy `name`
+in English; records without a last name still use the full legacy `name` before
+`様` in Japanese. These fallbacks also apply to the unchanged personalized
+subjects. Missing company does not change the waitlist letter. If both the
+relevant name and legacy `name` are absent, the existing empty-name behavior
+remains; new signups cannot omit either name.
+The English waitlist signature is `Best,` / `Yu Asano` / `Founder, Jin AI` /
+`jinai.md`; Japanese uses `浅野 悠` / `Founder, Jin AI` / `jinai.md`.
 Every subject is RFC 2047 encoded; inserted HTML values are escaped and text
 values are control-character-free.
 
-Both emails use a white card, grey background, black logo band and localized
-Privacy Policy link. The waitlist email has a vermilion demo button
-(`/#request-demo` or `/ja/#request-demo`) and reply-to-unsubscribe line.
-The demo email has a vermilion **Pick a time** / **日時を選ぶ** button to the
+The demo email retains its white card, grey background, black logo band and
+localized Privacy Policy link, with a vermilion **Pick a time** / **日時を選ぶ** button to the
 same prefilled Cal.com URL as the saved-request panel, not a claim that a time
 is already booked. Copy the updated self-contained `scripts/waitlist-mailer.gs`
 into the existing Apps Script project and redeploy the existing web app version
@@ -770,31 +778,35 @@ reached. Existing response history is not automatically emailed during migration
 Keep the approved community invite in `early_access.community`; the generator
 publishes it in the LLM index, not the demo form or confirmation flow.
 
-### Email review previews (R13a, refreshed for R13c)
+### Waitlist letter review previews (R14c)
 
-Run `node .copilot-runs\notes\r13-email-previews.mjs` with installed Chrome.
+Run `node .copilot-runs\notes\r14c-email-previews.mjs` with installed Chrome.
 It uses the same VM-loaded `.gs` templates as the tests, sample
 `Maya` / `Tanaka` / `Contoso`, and a dedicated headless Chrome debugging pipe.
-By default it installs nothing, uses no port, blocks HTTP/HTTPS requests in the preview
-page and does not send emails. The script renders the white source mark plus
-wordmark into `brand/jin-mark-email.png` at 272 x 80 pixels, displayed at
-136 x 40 in the emails, below 20 KB.
+It installs nothing, uses no port, blocks HTTP/HTTPS requests in the preview
+page and never invokes a send function. It does not load a tab-test script or
+change the existing logo asset.
 
-Review `.copilot-runs/notes/r13-email-{waitlist,demo}-{en,ja}.html`;
-they load the logo via a relative local path before deployment.
+Review `.copilot-runs/notes/r14c-email-waitlist-{en,ja}.html`.
 The corresponding `-600.png` and `-390.png` files show each email at desktop
-and phone widths. `r13-email-texts.md` contains all four subjects and text
-alternatives; `r13-email-metrics.json` records dimensions, logo loading and
-no-horizontal-overflow and Japanese heading phrase assertions at 600, 390 and
-375 pixels. Original implementation results are in `.copilot-runs/notes/r13a.md`;
-the revised copy, checks and preview inventory are in `.copilot-runs/notes/r13c.md`.
+and phone widths. `r14c-email-texts.md` contains both subjects and text
+alternatives; `r14c-email-metrics.json` records exact rendered paragraphs,
+signature, links, white background, absence of images/headings/buttons and
+no horizontal overflow at 600, 390 and 375 pixels. Results, preservation checks
+and the preview inventory are recorded in `.copilot-runs/notes/r14c.md`.
+Gmail tab placement is not guaranteed by these offline previews.
+
+### Earlier email and contact review evidence (R13a/R13c)
+
+The earlier branded-email previews and results remain in
+`.copilot-runs/notes/r13-email-{waitlist,demo}-{en,ja}.html`, `r13a.md` and
+`r13c.md`. Their waitlist copy is historical, not the current F letter.
 Contact Copy components retain selectable email addresses. R13e's approved
 noscript fallbacks include their exact sentence-ending punctuation.
-After building `_site`, add `--contact` to the preview command to capture
-`r13c-contact-{en,ja}-{1440,390}.png` and `r13c-contact-metrics.json`.
-This optional mode starts and closes its own localhost server on an assigned
-port, permits only its local site and the existing Google Fonts hosts,
-and blocks every POST and all other page requests.
+The earlier contact captures are `r13c-contact-{en,ja}-{1440,390}.png` and
+`r13c-contact-metrics.json`. That review used its own localhost server on an
+assigned port, permitted only its local site and the existing Google Fonts
+hosts, and blocked every POST and all other page requests.
 
 ### Form review evidence (R13b)
 
@@ -817,7 +829,8 @@ For R13d direct-demo coverage, run
 It validates intercepted demo payloads with the actual backend validator,
 checks direct/hash-change entry and failure retries, and saves bilingual
 1440px/390px screenshots plus 375px overflow evidence under `r13d-*`.
-The email preview command above also refreshes the new button links.
+Its original email previews show the former waitlist demo button; R14c removes
+that button from the email without changing the direct-demo routes.
 
 For R13e copy evidence, run `node .copilot-runs\notes\r13e-browser.mjs`
 against port 8793 after building. The installed-Chrome runner intercepts all
