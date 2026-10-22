@@ -205,123 +205,61 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       <h2 class="h2"><span class="ja-phrase">御社のAIは、</span><span class="ja-phrase">会社の管理下に</span><span class="ja-phrase">ありますか？</span></h2>
     </div>
     <div class="problem-grid">
-      <figure class="problem-column" data-problem="shadow" data-state="idle" tabindex="0" aria-label="図: 会社の仕事が個人のAIに流れていく">
+      <figure class="problem-column" data-problem="shadow" data-state="idle" tabindex="0" aria-label="図: 会社の書類が境界の外の個人AIにつながる">
         <div class="problem-art">
-          <svg viewBox="0 0 420 320" role="img" aria-label="社員が会社の土台の内側で机に向かっています。個人のAIは外側に分かれて置かれています。書類には小さな鍵の印があります。" data-label-idle="社員が会社の土台の内側で机に向かっています。個人のAIは外側に分かれて置かれています。書類には小さな鍵の印があります。" data-label-playing="機密の書類が社員のもとを離れ、会社の境界を越えて個人のAIに向かいます。境界に警告の印が現れます。" data-label-changed="機密の書類は会社の外の個人のAIにあります。越えた境界に警告の印が付き、個人のAIが朱色の線で囲まれています。">
-            <g class="shadow-company">
-              <path class="iso-base" d="M22 156 145 85 268 156V174L145 245 22 174Z"/>
-              <path class="shadow-boundary" d="M22 156 145 85 268 156 145 227ZM145 227V245"/>
-              <g class="shadow-employee iso-highlight">
-                <circle cx="117" cy="90" r="8"/>
-                <path class="iso-face" d="M105 120V110C105 96 129 96 129 110V120"/>
-                <path d="M108 119 123 133 142 123M126 117 137 124"/>
-              </g>
-              <path class="iso-face" d="M87 150 131 125 175 150V171L131 196 87 171Z"/>
-              <path d="M87 150 131 175 175 150M131 175V196"/>
-              <path class="iso-face" d="M132 126V104L157 118V140ZM132 126 118 134 143 148 157 140"/>
-              <path d="M124 134 143 145 152 140"/>
+          <svg viewBox="0 0 420 320" role="img" aria-label="白い書類が、破線で描かれた会社の境界の内側にあります。" data-label-idle="白い書類が、破線で描かれた会社の境界の内側にあります。" data-label-playing="書類から会社の境界を越えて、個人のAIへ線が伸びます。" data-label-changed="朱色の線が会社の破線の境界を越えて、個人AIの吹き出しにつながっています。感嘆符は、会社が把握できないリスクを示します。">
+            <rect class="shadow-boundary flat-intro" x="28" y="90" width="178" height="140" rx="12"/>
+            <g class="shadow-document flat-document flat-intro" transform="translate(60 129)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+            <path class="shadow-route flat-route" pathLength="1" d="M104 160H286"/>
+            <g class="shadow-ai" transform="translate(-20 0)">
+              <path d="M314 137H368A8 8 0 0 1 376 145V175A8 8 0 0 1 368 183H330L316 195V183H314A8 8 0 0 1 306 175V145A8 8 0 0 1 314 137Z"/>
+              <path d="M322 153H360M322 165H349"/>
             </g>
-            <path class="iso-base" d="M286 225 340 194 394 225V240L340 271 286 240Z"/>
-            <path d="M286 225 340 256 394 225M340 256V271"/>
-            <g class="shadow-ai">
-              <path class="iso-face" d="M312 203 340 187 368 203V224L340 240 312 224Z"/>
-              <path d="M312 203 340 219 368 203M340 219V240"/>
-              <path class="iso-face" d="M325 143H355A4 4 0 0 1 359 147V165A4 4 0 0 1 355 169H340L330 177V169H325A4 4 0 0 1 321 165V147A4 4 0 0 1 325 143Z"/>
-              <path d="M330 153H350M330 160H343"/>
-              <path class="shadow-ai-outline" d="M312 203 340 187 368 203V224L340 240 312 224ZM312 203 340 219 368 203M340 219V240"/>
-            </g>
-            <path class="shadow-route" d="M176 130C211 130 244 165 267 181S320 210 340 212"/>
-            <g transform="translate(245 168)">
-              <circle class="shadow-warning-pulse" r="18"/>
-              <g class="shadow-warning">
-                <path class="iso-face" d="M0-13 13 10H-13Z"/>
-                <path d="M0-5V1M0 5V6"/>
-              </g>
-            </g>
-            <g transform="translate(176 130)">
-              <g class="shadow-document">
-                <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1Z"/>
-                <path d="M-24-1 0 13 24-1M0 13V18"/>
-                <g class="shadow-confidential" transform="translate(0 -4)">
-                  <path class="iso-face" d="M-5-2H5V6H-5ZM-3-2V-5A3 3 0 0 1 3-5V-2"/>
-                  <path d="M0 1V3"/>
-                </g>
-              </g>
-            </g>
+            <g class="shadow-warning problem-finish"><path d="M371 143V156M371 163V164"/></g>
           </svg>
         </div>
         <figcaption><h3><span class="ja-phrase">シャドーAIによる</span><span class="ja-phrase">情報漏洩リスク</span></h3><p>会社の機密情報が個人のAIツールに共有され、企業が把握・管理できない状態になっているかもしれません。</p></figcaption>
-        <p class="problem-status" id="problem-shadow-status" aria-live="polite" aria-atomic="true" data-status-idle="機密の書類は会社の内側にあり、個人のAIは外側にあります。" data-status-playing="機密の書類が、会社の境界を越えて個人のAIに向かっています。" data-status-changed="機密の書類が、会社の外の個人のAIに渡りました。">機密の書類は会社の内側にあり、個人のAIは外側にあります。</p>
+        <p class="problem-status" id="problem-shadow-status" aria-live="polite" aria-atomic="true" data-status-idle="書類が会社の境界の内側にあります。" data-status-playing="会社の書類から個人のAIへ接続が伸びています。" data-status-changed="書類が会社の管理外にある個人のAIにつながりました。感嘆符がリスクを示しています。">書類が会社の境界の内側にあります。</p>
       </figure>
-      <figure class="problem-column" data-problem="dependency" data-state="idle" tabindex="0" aria-label="図: 担当者が辞めると、後任者が文脈・指示・ツール・ワークフローを一から作り直す">
+      <figure class="problem-column" data-problem="dependency" data-state="idle" tabindex="0" aria-label="図: 担当者が離れると接続が切れ、後任者に何も届かない">
         <div class="problem-art">
-          <svg viewBox="0 0 420 320" role="img" aria-label="担当者が文脈・指示・ツール・ワークフローの層につながっています。" data-label-idle="担当者が文脈・指示・ツール・ワークフローの層につながっています。" data-label-playing="担当者が辞めます。人と接続が破線になり、接続に×が付き、積み重ねた層が薄くなります。" data-label-rebuilding="後任者がワークフロー・ツール・指示・文脈を下から一つずつ作り直しています。" data-label-changed="3つの段階です。担当者が層を持ち、担当者が辞めて層が薄くなり、後任者が文脈・指示・ツール・ワークフローを一から作り直しました。">
-            <defs>
-              <g id="dependency-person">
-                <circle cy="40" r="12"/>
-                <path d="M-21 89V78C-21 54 21 54 21 78V89Z"/>
+          <svg viewBox="0 0 420 320" role="img" aria-label="朱色の担当者が、Context、Instructions、Tools、Workflowsの四枚のカードにつながっています。右側に灰色の後任者がいます。" data-label-idle="朱色の担当者が、Context、Instructions、Tools、Workflowsの四枚のカードにつながっています。右側に灰色の後任者がいます。" data-label-playing="担当者が破線の輪郭になって離れます。接続が切れ、カードが薄くなり、後任者への矢印は途中で止まります。" data-label-changed="離れた担当者と四枚のカードが灰色の破線になっています。二つの朱色のばつ印が、切れた接続と途中で止まった矢印を示し、灰色の後任者には何も届きません。">
+            <defs><g id="dependency-person"><circle cy="-22" r="12"/><path d="M-21 34V21C-21-7 21-7 21 21V34Z"/></g></defs>
+            <g transform="translate(42 160)">
+              <use class="dependency-owner" href="#dependency-person"/>
+              <use class="dependency-departed" href="#dependency-person"/>
+            </g>
+            <path class="dependency-old-link" d="M70 160H132"/>
+            <path class="dependency-break" d="M95 154 107 166M107 154 95 166"/>
+            <g class="dependency-stack">
+              <g class="harness-card" data-layer="context" style="--step:0" transform="translate(132 64)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M0-11H10L16-5V11H0ZM10-11V-5H16M4 0H12M4 5H12"/></g>
+                <text x="44" y="27">Context</text>
               </g>
-              <g id="dependency-layer">
-                <path d="M-56 0 0-9 56 0V24L0 33-56 24ZM-56 0 0 9 56 0"/>
+              <g class="harness-card" data-layer="instructions" style="--step:1" transform="translate(132 114)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M5-8H18M5 0H18M5 8H18M-1-8H0M-1 0H0M-1 8H0"/></g>
+                <text x="44" y="27">Instructions</text>
               </g>
-              <mask id="dependency-context" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
-                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
-              </mask>
-              <mask id="dependency-instructions" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
-                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
-              </mask>
-              <mask id="dependency-tools" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
-                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
-              </mask>
-              <mask id="dependency-workflows" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
-                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
-              </mask>
-            </defs>
-            <g class="dependency-stage" data-stage="owner" transform="translate(66 0)">
-              <use class="dependency-person" href="#dependency-person"/>
-              <path class="dependency-link" d="M0 89V117"/>
-              <g class="dependency-stack">
-                <use href="#dependency-layer" y="258"/><use href="#dependency-layer" y="214"/>
-                <use href="#dependency-layer" y="170"/><use href="#dependency-layer" y="126"/>
-                <text y="151">Context</text><text y="195">Instructions</text>
-                <text y="239">Tools</text><text y="283">Workflows</text>
+              <g class="harness-card" data-layer="tools" style="--step:2" transform="translate(132 164)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M10-10A8 8 0 0 0 2 0L-7 9A3 3 0 0 0-3 13L6 4A8 8 0 0 0 16-4L11 1 7-3Z"/></g>
+                <text x="44" y="27">Tools</text>
+              </g>
+              <g class="harness-card" data-layer="workflows" style="--step:3" transform="translate(132 214)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><rect x="4" y="-12" width="8" height="7" rx="1"/><rect x="-5" y="6" width="8" height="7" rx="1"/><rect x="13" y="6" width="8" height="7" rx="1"/><path d="M8-5V1M-1 6V1H17V6"/></g>
+                <text x="44" y="27">Workflows</text>
               </g>
             </g>
-            <path class="dependency-transition" style="--step:0" d="M129 214H145M139 208 145 214 139 220"/>
-            <g class="dependency-stage dependency-departure" data-stage="departure" transform="translate(210 0)">
-              <use class="dependency-person dependency-owner-solid" href="#dependency-person"/>
-              <use class="dependency-owner-gone" href="#dependency-person"/>
-              <path class="dependency-link dependency-broken-link" d="M0 89V117"/>
-              <path class="dependency-break" d="M-5 95 5 105M5 95-5 105"/>
-              <g class="dependency-stack dependency-faded-stack">
-                <use href="#dependency-layer" y="258"/><use href="#dependency-layer" y="214"/>
-                <use href="#dependency-layer" y="170"/><use href="#dependency-layer" y="126"/>
-                <text y="151">Context</text><text y="195">Instructions</text>
-                <text y="239">Tools</text><text y="283">Workflows</text>
-              </g>
-            </g>
-            <path class="dependency-transition" style="--step:1" d="M273 214H289M283 208 289 214 283 220"/>
-            <g class="dependency-stage dependency-successor" data-stage="successor" transform="translate(354 0)">
-              <use class="dependency-person" href="#dependency-person"/>
-              <path class="dependency-link dependency-new-link" d="M0 89V117"/>
-              <g class="dependency-rebuild" data-layer="context" style="--step:3" transform="translate(0 126)">
-                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-context)"/><text y="25">Context</text>
-              </g>
-              <g class="dependency-rebuild" data-layer="instructions" style="--step:2" transform="translate(0 170)">
-                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-instructions)"/><text y="25">Instructions</text>
-              </g>
-              <g class="dependency-rebuild" data-layer="tools" style="--step:1" transform="translate(0 214)">
-                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-tools)"/><text y="25">Tools</text>
-              </g>
-              <g class="dependency-rebuild" data-layer="workflows" style="--step:0" transform="translate(0 258)">
-                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-workflows)"/><text y="25">Workflows</text>
-              </g>
-              <g transform="translate(39 104)"><path class="dependency-redo" d="M12-5A13 13 0 1 0 13 3M12-13V-5H4"/></g>
-            </g>
+            <path class="dependency-attempt flat-route" pathLength="1" d="M288 160H320M314 154 320 160 314 166"/>
+            <path class="dependency-stop problem-finish" d="M326 154 338 166M338 154 326 166"/>
+            <g class="dependency-successor" transform="translate(376 160)"><use href="#dependency-person"/></g>
           </svg>
         </div>
         <figcaption><h3><span class="ja-phrase">AIエージェントの</span><span class="ja-phrase">属人化</span></h3><p>AIエージェントやワークフローが作成者個人に依存。担当者が異動・退職すると、後任者は一から作り直さなければなりません。</p></figcaption>
-        <p class="problem-status" id="problem-dependency-status" aria-live="polite" aria-atomic="true" data-status-idle="担当者が文脈・指示・ツール・ワークフローを持っています。" data-status-playing="担当者が辞め、接続が切れ、積み重ねた層が薄くなります。" data-status-rebuilding="後任者がワークフロー・ツール・指示・文脈を下から一つずつ作り直しています。" data-status-changed="担当者が辞めました。後任者が文脈・指示・ツール・ワークフローを一から作り直しました。">担当者が文脈・指示・ツール・ワークフローを持っています。</p>
+        <p class="problem-status" id="problem-dependency-status" aria-live="polite" aria-atomic="true" data-status-idle="担当者が文脈・指示・ツール・ワークフローにつながっています。後任者にはつながっていません。" data-status-playing="担当者が離れ、カードが薄くなり、引き継ぎが途中で止まります。" data-status-changed="担当者が離れました。二つの接続が切れ、後任者には何も届きませんでした。">担当者が文脈・指示・ツール・ワークフローにつながっています。後任者にはつながっていません。</p>
       </figure>
       <figure class="problem-column" data-problem="teams" data-state="idle" tabindex="0" aria-label="図: 離れたチームの手順は隠れたままです。">
         <div class="problem-art">
@@ -382,83 +320,68 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
     <h2 class="h2 solution-heading"><span class="ja-phrase">Jin AIが実現する、</span><span class="ja-phrase">安心して</span><span class="ja-phrase">使い続けられる</span><span class="ja-phrase">AI環境</span></h2>
     <ul class="solution-copy">
       <li>
-        <figure class="solution-figure" data-solution="safe" data-state="idle" tabindex="0" aria-label="図: 機密は社内に残り、再利用できる部分だけが承認したAIツールに届く">
+        <figure class="solution-figure" data-solution="safe" data-state="idle" tabindex="0" aria-label="図: 機密の書類は鍵で守られ、再利用できる書類は共有できる">
           <div class="problem-art">
-            <svg viewBox="0 0 420 320" role="img" aria-label="会社の台の内側に、ひとつの束があります。承認したAIツールと個人のAIは外側にあります。" data-label-idle="会社の台の内側に、ひとつの束があります。承認したAIツールと個人のAIは外側にあります。" data-label-playing="束が分かれます。鍵の付いた部分は社内に残り、再利用できる部分はチェックの付いたAIツールへ進みます。個人のAIへの経路は、ばつ印で止まります。" data-label-changed="鍵の付いた機密情報は社内に残りました。再利用できる部分だけが承認したAIツールに届き、個人のAIへの経路は、ばつ印で止まりました。">
-              <g class="safe-company">
-                <path class="iso-base" d="M20 174 145 102 270 174V194L145 266 20 194Z"/>
-                <path class="safe-boundary" d="M20 174 145 246 270 174M145 246V266"/>
-              </g>
-              <g class="safe-approved">
-                <path class="iso-base" d="M292 123 345 93 398 123V139L345 170 292 139Z"/>
-                <path d="M292 123 345 154 398 123M345 154V170"/>
-                <path class="iso-face" d="M317 104 345 88 373 104V125L345 141 317 125Z"/>
-                <path d="M317 104 345 120 373 104M345 120V141"/>
-                <path class="safe-check" d="M332 67 341 76 359 57"/>
-              </g>
-              <g class="safe-personal">
-                <path class="iso-base" d="M292 264 345 234 398 264V280L345 311 292 280Z"/>
-                <path d="M292 264 345 295 398 264M345 295V311"/>
-                <path class="iso-face" d="M317 245 345 229 373 245V266L345 282 317 266Z"/>
-                <path d="M317 245 345 261 373 245M345 261V282"/>
-                <path class="iso-face" d="M330 190H360V215H345L335 223V215H330ZM337 198H353M337 205H348"/>
-              </g>
-              <path class="safe-approved-route" pathLength="1" d="M118 154 174 171 260 121 329 106"/>
-              <path class="safe-blocked-route" pathLength="1" d="M159 186 218 220 263 246"/>
-              <path class="safe-block" d="M256 239 270 253M270 239 256 253"/>
-              <g transform="translate(118 154)">
-                <g class="safe-confidential">
-                  <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1ZM-24-1 0 13 24-1M0 13V18"/>
-                  <g class="safe-lock" transform="translate(0 -4)">
-                    <path class="iso-face" d="M-5-2H5V6H-5ZM-3-2V-5A3 3 0 0 1 3-5V-2"/>
-                    <path d="M0 1V3"/>
-                  </g>
+            <svg viewBox="0 0 420 320" role="img" aria-label="白い書類が、機密情報と再利用できる部分に分かれる前の状態です。" data-label-idle="白い書類が、機密情報と再利用できる部分に分かれる前の状態です。" data-label-playing="線が上側の朱色の枝と下側の白い枝に分かれます。" data-label-changed="上側の朱色の矢印は、社内に残る鍵付きの機密書類につながっています。下側の白い矢印は、三つの丸をつないだ共有アイコン付きの再利用できる書類につながっています。">
+              <g class="safe-document flat-document flat-intro" transform="translate(60 129)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+              <path class="safe-stem flat-route" pathLength="1" d="M104 160H166"/>
+              <path class="safe-upper flat-route" pathLength="1" d="M166 160C202 160 204 84 242 84H278M271 77 278 84 271 91"/>
+              <path class="safe-lower flat-route" pathLength="1" d="M166 160C202 160 204 236 242 236H278M271 229 278 236 271 243"/>
+              <g class="safe-confidential">
+                <g class="flat-document flat-back" transform="translate(304 43)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+                <g class="flat-document" transform="translate(294 53)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+                <g class="safe-lock" transform="translate(350 85)">
+                  <rect width="22" height="18" rx="3"/><path d="M5 0V-7A6 6 0 0 1 17-7V0M11 7V11"/>
                 </g>
-                <g class="safe-reusable solution-finish">
-                  <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1ZM-24-1 0 13 24-1M0 13V18"/>
-                  <path d="M-12-1 0 6 12-1M-6-5 6 2"/>
+              </g>
+              <g class="safe-reusable solution-finish">
+                <g class="flat-document flat-back" transform="translate(304 195)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+                <g class="flat-document" transform="translate(294 205)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+                <g class="safe-share">
+                  <circle cx="354" cy="236" r="4"/><circle cx="375" cy="223" r="4"/><circle cx="375" cy="249" r="4"/>
+                  <path d="M358 234 371 225M358 238 371 247"/>
                 </g>
               </g>
             </svg>
           </div>
-          <span class="problem-status" id="solution-safe-status" aria-live="polite" aria-atomic="true" data-status-idle="会社の内側に、分ける前のひとつの束があります。" data-status-playing="機密情報と再利用できる部分が分かれ、承認したAIへの経路だけに情報が流れます。" data-status-changed="機密は社内に残りました。再利用できる部分だけが承認したAIツールに届き、個人のAIへの経路は止まりました。">会社の内側に、分ける前のひとつの束があります。</span>
+          <span class="problem-status" id="solution-safe-status" aria-live="polite" aria-atomic="true" data-status-idle="一枚の書類が、機密情報と再利用できる部分に分かれる前の状態です。" data-status-playing="機密情報への枝が伸び、続いて再利用できる部分への枝が伸びます。" data-status-changed="機密書類は鍵で守られて社内に残り、再利用できる書類には共有アイコンが付きました。">一枚の書類が、機密情報と再利用できる部分に分かれる前の状態です。</span>
         </figure>
         <h3><span class="ja-phrase">機密情報を</span><span class="ja-phrase">安全に管理する</span></h3><p>機密情報と共有可能な知識・スキル・ワークフローを自動で分類。情報に応じて適切なAIツールだけに共有することで、安全なAI活用を実現します。</p>
       </li>
       <li>
-        <figure class="solution-figure" data-solution="company" data-state="idle" tabindex="0" aria-label="図: 設定は会社に残り、次の担当者がそのままつながる">
+        <figure class="solution-figure" data-solution="company" data-state="idle" tabindex="0" aria-label="図: 会社に残る四枚のカードが次の担当者にそのままつながる">
           <div class="problem-art">
-            <svg viewBox="0 0 420 320" role="img" aria-label="文脈・指示・ツール・ワークフローの四層が、会社の台の内側に実線で描かれ、一人の担当者につながっています。" data-label-idle="文脈・指示・ツール・ワークフローの四層が、会社の台の内側に実線で描かれ、一人の担当者につながっています。" data-label-playing="最初の担当者が破線の輪郭になって離れます。会社の四層は実線のまま残り、次の担当者がつながります。" data-label-changed="最初の担当者が離れた後も、同じ四層が会社に残っています。次の担当者が実線でつながり、作り直す必要はありません。">
-              <defs>
-                <g id="solution-company-person">
-                  <circle r="10"/><path d="M-17 46V34C-17 12 17 12 17 34V46Z"/>
-                </g>
-                <g id="solution-company-layer">
-                  <path class="iso-face" d="M-56 0 0-9 56 0V24L0 33-56 24ZM-56 0 0 9 56 0"/>
-                </g>
-              </defs>
-              <g class="company-platform">
-                <path class="iso-base" d="M40 204 210 106 380 204V214L210 312 40 214Z"/>
-                <path d="M40 204 210 302 380 204M210 302V312"/>
+            <svg viewBox="0 0 420 320" role="img" aria-label="会社のカードの左側に、灰色の前任者と破線があります。右側に次の担当者がいます。" data-label-idle="会社のカードの左側に、灰色の前任者と破線があります。右側に次の担当者がいます。" data-label-playing="Context、Instructions、Tools、Workflowsが上から順に現れ、朱色の矢印が次の担当者へ伸びます。" data-label-changed="中央に四枚の実線のカードが残っています。灰色の破線で前任者につながり、朱色の実線の矢印で、同じカードが朱色の次の担当者につながっています。">
+              <defs><g id="solution-company-person"><circle cy="-22" r="12"/><path d="M-21 34V21C-21-7 21-7 21 21V34Z"/></g></defs>
+              <g class="company-previous flat-intro" transform="translate(42 160)"><use href="#solution-company-person"/></g>
+              <path class="company-old-link flat-intro" d="M70 160H132"/>
+              <g class="company-stack">
+              <g class="harness-card" data-layer="context" style="--step:0" transform="translate(132 64)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M0-11H10L16-5V11H0ZM10-11V-5H16M4 0H12M4 5H12"/></g>
+                <text x="44" y="27">Context</text>
               </g>
-              <path class="company-old-link" d="M100 185 154 217"/>
-              <path class="company-new-link solution-finish" pathLength="1" d="M328 185 266 217"/>
-              <g transform="translate(83 139)">
-                <use class="company-owner" href="#solution-company-person"/>
-                <use class="company-departed" href="#solution-company-person"/>
+              <g class="harness-card" data-layer="instructions" style="--step:1" transform="translate(132 114)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M5-8H18M5 0H18M5 8H18M-1-8H0M-1 0H0M-1 8H0"/></g>
+                <text x="44" y="27">Instructions</text>
               </g>
-              <g class="company-successor" transform="translate(345 139)">
-                <use href="#solution-company-person"/>
+              <g class="harness-card" data-layer="tools" style="--step:2" transform="translate(132 164)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M10-10A8 8 0 0 0 2 0L-7 9A3 3 0 0 0-3 13L6 4A8 8 0 0 0 16-4L11 1 7-3Z"/></g>
+                <text x="44" y="27">Tools</text>
               </g>
-              <g class="company-stack" transform="translate(210 0)">
-                <use href="#solution-company-layer" y="226"/><use href="#solution-company-layer" y="182"/>
-                <use href="#solution-company-layer" y="138"/><use href="#solution-company-layer" y="94"/>
-                <text y="119">Context</text><text y="163">Instructions</text>
-                <text y="207">Tools</text><text y="251">Workflows</text>
+              <g class="harness-card" data-layer="workflows" style="--step:3" transform="translate(132 214)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><rect x="4" y="-12" width="8" height="7" rx="1"/><rect x="-5" y="6" width="8" height="7" rx="1"/><rect x="13" y="6" width="8" height="7" rx="1"/><path d="M8-5V1M-1 6V1H17V6"/></g>
+                <text x="44" y="27">Workflows</text>
               </g>
+              </g>
+              <path class="company-new-link flat-route" pathLength="1" d="M288 160H350M343 153 350 160 343 167"/>
+              <g class="company-successor solution-finish" transform="translate(376 160)"><use href="#solution-company-person"/></g>
             </svg>
           </div>
-          <span class="problem-status" id="solution-company-status" aria-live="polite" aria-atomic="true" data-status-idle="一人の担当者が、会社の四層につながっています。" data-status-playing="最初の担当者が離れても、四層は会社に残り、次の担当者がつながります。" data-status-changed="文脈・指示・ツール・ワークフローは会社に残りました。次の担当者が、作り直さずにそのままつながりました。">一人の担当者が、会社の四層につながっています。</span>
+          <span class="problem-status" id="solution-company-status" aria-live="polite" aria-atomic="true" data-status-idle="前任者は灰色で、会社のカードは次の担当者につなぐ前の状態です。" data-status-playing="会社の四枚のカードが順に現れ、次の担当者へつながります。" data-status-changed="文脈・指示・ツール・ワークフローは会社に残り、次の担当者にそのままつながりました。">前任者は灰色で、会社のカードは次の担当者につなぐ前の状態です。</span>
         </figure>
         <h3><span class="ja-phrase">AIを会社の</span><span class="ja-phrase">資産として残す</span></h3><p>AIエージェントを構成する知識・ルール・ツール・ワークフローを組織に蓄積。担当者が異動・退職しても、AIエージェントをそのまま使い続けられます。</p>
       </li>

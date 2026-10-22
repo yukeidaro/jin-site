@@ -92,22 +92,11 @@ for (const figure of figures) {
       });
     });
   };
-  if (figure.dataset.problem === "shadow") {
-    // Animation completion keeps the status in sync when visibility pauses motion.
-    figure.querySelector(".shadow-document").addEventListener("animationend", event => {
-      if (event.animationName === "problem-shadow-document" && figure.dataset.busy === "true") end();
-    });
-  }
-  if (figure.dataset.problem === "dependency") {
-    drawing.addEventListener("animationend", event => {
-      if (figure.dataset.busy !== "true") return;
-      if (event.animationName === "problem-dependency-successor") describe("Rebuilding");
-      if (event.animationName === "problem-dependency-redo") end();
-    });
-  }
-  if (figure.dataset.solution) {
-    figure.querySelector(".solution-finish").addEventListener("animationend", event => {
-      if (event.target.classList.contains("solution-finish") && figure.dataset.busy === "true") end();
+  const finish = figure.querySelector(".problem-finish, .solution-finish");
+  if (finish) {
+    // Use the drawing's terminal clock, including time paused in hidden tabs.
+    finish.addEventListener("animationend", event => {
+      if (event.target === finish && figure.dataset.busy === "true") end();
     });
   }
   for (const control of controls) {

@@ -109,45 +109,30 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .iso-highlight { stroke: var(--text-1); }
 .problem-art text { fill: var(--text-2); stroke: none; font: 12px var(--font-sans); }
 .problem-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.dependency-person, .dependency-link, .dependency-break, .dependency-transition, .dependency-outline, .dependency-redo { stroke: var(--accent-light); }
-.dependency-person, .dependency-owner-gone { stroke-width: 1.8; }
-.dependency-stack { stroke: var(--text-3); }
-.problem-art .dependency-stage text { font-size: 16.5px; fill: var(--text-1); text-anchor: middle; }
-.dependency-departure, .dependency-successor, .dependency-transition, .dependency-owner-gone, .dependency-break, .dependency-rebuild, .dependency-rebuild text, .dependency-redo { opacity: 0; }
-.dependency-owner-gone, .dependency-new-link, .dependency-outline { stroke-dasharray: 4 5; }
-.dependency-broken-link { stroke: var(--text-3); }
-.dependency-break { stroke-width: 2; }
-.dependency-trace { fill: none; stroke: white; stroke-width: 4; stroke-dasharray: 1; stroke-dashoffset: 1; }
-#dependency-context { --step: 3; }
-#dependency-instructions { --step: 2; }
-#dependency-tools { --step: 1; }
-#dependency-workflows { --step: 0; }
-.dependency-redo { transform-box: fill-box; transform-origin: center; stroke-width: 1.8; }
-[data-state="changed"] .dependency-transition { animation: problem-layer-in .25s ease calc(.65s + var(--step) * 1.35s) both; }
-[data-state="changed"] .dependency-departure { animation: problem-layer-in .25s ease .85s both; }
-[data-state="changed"] .dependency-owner-solid { animation: problem-dependency-leave .45s ease 1.25s both; }
-[data-state="changed"] .dependency-owner-gone { animation: problem-dependency-ghost .45s ease 1.25s both; }
-[data-state="changed"] .dependency-broken-link { animation: problem-dependency-dash .45s ease 1.25s both; }
-[data-state="changed"] .dependency-break { animation: problem-layer-in .2s ease 1.5s both; }
-[data-state="changed"] .dependency-faded-stack { animation: problem-dependency-fade .6s ease 1.35s both; }
-[data-state="changed"] .dependency-successor { animation: problem-dependency-successor .25s ease 2.2s both; }
-[data-state="changed"] .dependency-rebuild { animation: problem-layer-in .01s linear calc(2.4s + var(--step) * .45s) both; }
-[data-state="changed"] .dependency-trace { animation: problem-draw .5s linear calc(2.4s + var(--step) * .45s) both; }
-[data-state="changed"] .dependency-rebuild text { animation: problem-layer-in .15s ease calc(2.75s + var(--step) * .45s) both; }
-[data-state="changed"] .dependency-redo { animation: problem-dependency-redo .7s ease 3.8s both; }
+.flat-document, .harness-icon { stroke: var(--text-1); }
+.flat-back { opacity: .25; }
+.flat-route { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.harness-card { stroke: var(--text-3); }
+.problem-art .harness-card text { font-size: 16.5px; fill: var(--text-1); }
+.dependency-owner, .dependency-old-link, .dependency-break, .dependency-attempt, .dependency-stop { stroke: var(--accent-light); }
+.dependency-owner, .dependency-departed, .dependency-successor { stroke-width: 1.8; }
+.dependency-departed { stroke-dasharray: 4 5; opacity: 0; }
+.dependency-break, .dependency-stop { opacity: 0; stroke-width: 1.8; }
+[data-state="changed"] .dependency-owner { animation: problem-dependency-leave .6s ease .45s both; }
+[data-state="changed"] .dependency-departed { animation: problem-dependency-ghost .8s ease .45s both; }
+[data-state="changed"] .dependency-old-link { animation: problem-dependency-dash .6s ease .65s both; }
+[data-state="changed"] .dependency-break { animation: flat-in .2s ease 1s both; }
+[data-state="changed"] .dependency-stack { animation: problem-dependency-fade .5s ease 1.2s both; }
+[data-state="changed"] .dependency-attempt { animation: problem-draw .5s linear 1.85s both; }
+[data-state="changed"] .dependency-stop { animation: flat-finish 3s linear both; }
 [data-problem="dependency"][data-state] .problem-art * { animation-play-state: paused; }
 [data-problem="dependency"][data-state].problem-flow-running .problem-art * { animation-play-state: running; }
 @keyframes problem-dependency-leave { to { opacity: 0; } }
-@keyframes problem-dependency-ghost { to { opacity: .5; } }
+@keyframes problem-dependency-ghost { to { opacity: .5; transform: translateX(-10px); } }
 @keyframes problem-dependency-dash { to { stroke-dasharray: 4 5; opacity: .5; } }
 @keyframes problem-dependency-fade { to { stroke-dasharray: 4 5; opacity: .36; } }
-@keyframes problem-dependency-successor { from { opacity: 0; } to { opacity: 1; } }
-@keyframes problem-dependency-redo {
-  0% { opacity: 0; transform: rotate(-360deg); }
-  15% { opacity: 1; }
-  100% { opacity: 1; transform: rotate(0); }
-}
-@keyframes problem-layer-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes flat-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes flat-finish { 0%, 85% { opacity: 0; } 100% { opacity: 1; } }
 @keyframes problem-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 .team-lid { transition: transform .35s var(--ease), opacity .35s ease; }
 .team-lid-face { fill: var(--surface-1); fill-opacity: .88; }
@@ -163,61 +148,39 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .team-control[data-team="b"] { right: 6.5%; }
 .team-control[data-team="c"] { left: 35%; top: 50%; }
 .team-control:focus-visible { outline-offset: 0; }
-.shadow-boundary { stroke: var(--text-3); }
-.shadow-document, .shadow-route, .shadow-warning, .shadow-warning-pulse, .shadow-ai-outline { stroke: var(--accent-light); }
-.shadow-route { stroke-dasharray: 4 6; opacity: 0; }
-.shadow-warning, .shadow-warning-pulse, .shadow-ai-outline { opacity: 0; }
-[data-state="changed"] .shadow-document { transform: translate(164px, 82px); animation: problem-shadow-document 3s linear both; }
-[data-state="changed"] .shadow-route { animation: problem-shadow-route 3s linear both; }
-[data-state="changed"] .shadow-warning { animation: problem-shadow-warning 3s linear both; }
-[data-state="changed"] .shadow-warning-pulse { animation: problem-shadow-pulse 3s linear both; }
-[data-state="changed"] .shadow-ai-outline { animation: problem-shadow-outline 3s linear both; }
-[data-problem="shadow"] .shadow-document, [data-problem="shadow"] .shadow-route, [data-problem="shadow"] .shadow-warning,
-[data-problem="shadow"] .shadow-warning-pulse, [data-problem="shadow"] .shadow-ai-outline { animation-play-state: paused; }
-[data-problem="shadow"].problem-flow-running .shadow-document, [data-problem="shadow"].problem-flow-running .shadow-route,
-[data-problem="shadow"].problem-flow-running .shadow-warning, [data-problem="shadow"].problem-flow-running .shadow-warning-pulse,
-[data-problem="shadow"].problem-flow-running .shadow-ai-outline { animation-play-state: running; }
-@keyframes problem-shadow-document {
-  0%, 12% { transform: translate(0, 0); }
-  42% { transform: translate(60px, 22px); }
-  58% { transform: translate(91px, 44px); }
-  83% { transform: translate(164px, 80px); }
-  90% { transform: translate(164px, 84px); }
-  100% { transform: translate(164px, 82px); }
-}
-@keyframes problem-shadow-route { 0%, 12% { opacity: 0; } 24%, 100% { opacity: .65; } }
-@keyframes problem-shadow-warning { 0%, 44% { opacity: 0; } 50%, 100% { opacity: 1; } }
-@keyframes problem-shadow-pulse {
-  0%, 44% { opacity: 0; transform: scale(.65); }
-  50% { opacity: .65; transform: scale(.85); }
-  72%, 100% { opacity: 0; transform: scale(1.6); }
-}
-@keyframes problem-shadow-outline { 0%, 78% { opacity: 0; } 92%, 100% { opacity: .6; } }
+.shadow-boundary { stroke: var(--text-3); stroke-dasharray: 4 5; }
+.shadow-route, .shadow-ai, .shadow-warning { stroke: var(--accent-light); }
+.shadow-ai, .shadow-warning { opacity: 0; }
+.shadow-warning { stroke-width: 1.8; }
+[data-state="changed"] .flat-intro { animation: flat-in .3s ease both; }
+[data-state="changed"] .shadow-route { animation: problem-draw 1s linear .4s both; }
+[data-state="changed"] .shadow-ai { animation: flat-in .3s ease 1.6s both; }
+[data-state="changed"] .shadow-warning { animation: flat-finish 3s linear both; }
+[data-problem="shadow"][data-state] .problem-art * { animation-play-state: paused; }
+[data-problem="shadow"][data-state].problem-flow-running .problem-art * { animation-play-state: running; }
 .solution-heading { margin-bottom: var(--s-12); }
 .home-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-16); }
 .solution-copy { display: grid; grid-template-columns: 1fr; row-gap: var(--s-8); padding: 0; list-style: none; }
 .solution-copy li { min-width: 0; }
 .solution-figure { position: relative; margin-bottom: var(--s-6); border-radius: var(--r-s); }
 .solution-figure:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 4px; }
-.solution-figure .safe-confidential, .safe-reusable, .safe-approved-route, .safe-blocked-route, .safe-block, .safe-check,
-.company-successor, .company-new-link, .shared-source, .shared-target-a, .shared-target-b, .shared-moving-a, .shared-moving-b, .shared-route { stroke: var(--accent-light); }
-.safe-reusable { transform: translate(0, -7px); }
-.safe-check, .safe-block { stroke-width: 2; }
-.safe-approved-route, .safe-blocked-route, .company-new-link, .shared-route { stroke-dasharray: 1; stroke-dashoffset: 1; }
-.safe-block, .company-departed, .company-successor, .shared-target-a, .shared-target-b, .shared-moving-a, .shared-moving-b { opacity: 0; }
-.company-departed { stroke-dasharray: 4 5; }
-.company-owner, .company-departed, .company-successor { stroke-width: 1.8; }
-.problem-art .company-stack text { font-size: 16.5px; fill: var(--text-1); text-anchor: middle; }
-[data-state="changed"] .safe-confidential { animation: solution-safe-stay 3.6s ease both; }
-[data-state="changed"] .safe-reusable { animation: solution-safe-reuse 3.6s linear both; }
-[data-state="changed"] .safe-approved-route { animation: solution-route 2.8s linear both; }
-[data-state="changed"] .safe-blocked-route { animation: solution-route 1.8s linear both; }
-[data-state="changed"] .safe-block { animation: solution-appear .2s ease 1.6s both; }
-[data-state="changed"] .company-owner { animation: solution-owner-leave 1.6s ease both; }
-[data-state="changed"] .company-departed { animation: solution-owner-ghost 1.6s ease both; }
-[data-state="changed"] .company-old-link { animation: solution-old-link 1.6s ease both; }
-[data-state="changed"] .company-successor { animation: solution-appear .4s ease 1.8s both; }
-[data-state="changed"] .company-new-link { animation: solution-company-connect 3.6s linear both; }
+.safe-stem, .safe-lower, .safe-reusable { stroke: var(--text-1); }
+.safe-upper, .safe-confidential, .safe-confidential .flat-document, .company-new-link,
+.shared-source, .shared-target-a, .shared-target-b, .shared-moving-a, .shared-moving-b, .shared-route { stroke: var(--accent-light); }
+.safe-confidential, .safe-reusable, .shared-target-a, .shared-target-b, .shared-moving-a, .shared-moving-b { opacity: 0; }
+.shared-route { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.company-old-link { stroke-dasharray: 4 5; }
+.company-previous { opacity: .5; }
+.company-previous, .company-successor { stroke-width: 1.8; }
+[data-state="changed"] .safe-stem { animation: problem-draw .4s linear .35s both; }
+[data-state="changed"] .safe-upper { animation: problem-draw .55s linear .85s both; }
+[data-state="changed"] .safe-lower { animation: problem-draw .55s linear 1.45s both; }
+[data-state="changed"] .safe-confidential { animation: flat-in .35s ease 2.1s both; }
+[data-state="changed"] .safe-reusable { animation: flat-finish 3s linear both; }
+[data-state="changed"] .company-previous { animation: solution-previous .3s ease both; }
+[data-state="changed"] .company-stack .harness-card { animation: flat-in .3s ease calc(.4s + var(--step) * .35s) both; }
+[data-state="changed"] .company-new-link { animation: problem-draw .65s linear 1.9s both; }
+[data-state="changed"] .company-successor { animation: solution-company-owner 3s linear both; }
 [data-state="changed"] .shared-route-a { animation: solution-route 2.7s linear both; }
 [data-state="changed"] .shared-route-b { animation: solution-route 3.4s linear both; }
 [data-state="changed"] .shared-moving-a { animation: solution-copy-a 3.6s ease-in-out both; }
@@ -226,22 +189,10 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 [data-state="changed"] .shared-target-b { animation: solution-appear .01s linear 3.4s both; }
 [data-solution][data-state] .problem-art * { animation-play-state: paused; }
 [data-solution][data-state].problem-flow-running .problem-art * { animation-play-state: running; }
-@keyframes solution-safe-stay {
-  0%, 10% { transform: translate(0, 0); }
-  35%, 100% { transform: translate(-24px, 45px); }
-}
-@keyframes solution-safe-reuse {
-  0%, 10% { transform: translate(0, -7px); }
-  32% { transform: translate(56px, 10px); }
-  65% { transform: translate(142px, -40px); }
-  85%, 100% { transform: translate(211px, -48px); }
-}
 @keyframes solution-route { 0%, 15% { stroke-dashoffset: 1; } 100% { stroke-dashoffset: 0; } }
 @keyframes solution-appear { from { opacity: 0; } to { opacity: 1; } }
-@keyframes solution-owner-leave { 0%, 25% { opacity: 1; } 100% { opacity: 0; transform: translate(-24px, -25px); } }
-@keyframes solution-owner-ghost { 0%, 25% { opacity: 0; } 100% { opacity: .5; transform: translate(-24px, -25px); } }
-@keyframes solution-old-link { 0%, 25% { opacity: 1; } 100% { opacity: .4; stroke-dasharray: 4 5; } }
-@keyframes solution-company-connect { 0%, 58% { stroke-dashoffset: 1; } 92%, 100% { stroke-dashoffset: 0; } }
+@keyframes solution-previous { from { opacity: 0; } to { opacity: .5; } }
+@keyframes solution-company-owner { 0%, 85% { stroke: var(--text-3); } 100% { stroke: var(--accent-light); } }
 @keyframes solution-copy-a {
   0%, 18% { opacity: 0; transform: translate(0, 0); }
   22% { opacity: 1; transform: translate(0, 0); }
@@ -502,29 +453,20 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 
 @media (prefers-reduced-motion: reduce) {
   .problem-art * { animation: none !important; transition: none !important; }
-  [data-problem="dependency"] .dependency-departure, [data-problem="dependency"] .dependency-successor, [data-problem="dependency"] .dependency-transition,
-  [data-problem="dependency"] .dependency-break, [data-problem="dependency"] .dependency-rebuild, [data-problem="dependency"] .dependency-rebuild text, [data-problem="dependency"] .dependency-redo { opacity: 1; }
-  [data-problem="dependency"] .dependency-owner-solid { opacity: 0; }
-  [data-problem="dependency"] .dependency-owner-gone { opacity: .5; }
-  [data-problem="dependency"] .dependency-broken-link { stroke-dasharray: 4 5; opacity: .5; }
-  [data-problem="dependency"] .dependency-faded-stack { stroke-dasharray: 4 5; opacity: .36; }
-  [data-problem="dependency"] .dependency-trace { stroke-dashoffset: 0; }
+  [data-problem="dependency"] .dependency-owner { opacity: 0; }
+  [data-problem="dependency"] .dependency-departed { opacity: .5; transform: translateX(-10px); }
+  [data-problem="dependency"] .dependency-old-link { stroke-dasharray: 4 5; opacity: .5; }
+  [data-problem="dependency"] .dependency-stack { stroke-dasharray: 4 5; opacity: .36; }
+  [data-problem="dependency"] .dependency-break, [data-problem="dependency"] .dependency-stop { opacity: 1; }
+  .problem-art .flat-route { stroke-dashoffset: 0; }
   [data-problem="teams"] .team-lid { transform: none; }
   [data-problem="teams"] [data-team-art="c"] .team-lid { opacity: .2; }
   [data-problem="teams"] [data-team-art="c"] .team-workflow { opacity: 1; }
-  [data-problem="shadow"] .shadow-document { transform: translate(164px, 82px); }
-  [data-problem="shadow"] .shadow-route { opacity: .65; }
-  [data-problem="shadow"] .shadow-warning { opacity: 1; }
-  [data-problem="shadow"] .shadow-ai-outline { opacity: .6; }
-  [data-solution] .safe-confidential { transform: translate(-24px, 45px); }
-  [data-solution] .safe-reusable { transform: translate(211px, -48px); }
-  [data-solution] .safe-approved-route, [data-solution] .safe-blocked-route,
-  [data-solution] .company-new-link, [data-solution] .shared-route { stroke-dashoffset: 0; }
-  [data-solution] .safe-block, [data-solution] .company-successor,
+  [data-problem="shadow"] .shadow-ai, [data-problem="shadow"] .shadow-warning { opacity: 1; }
+  [data-solution] .safe-confidential, [data-solution] .safe-reusable,
   [data-solution] .shared-target-a, [data-solution] .shared-target-b { opacity: 1; }
-  [data-solution] .company-owner { opacity: 0; }
-  [data-solution] .company-departed { opacity: .5; transform: translate(-24px, -25px); }
-  [data-solution] .company-old-link { opacity: .4; stroke-dasharray: 4 5; }
+  [data-solution] .company-successor { stroke: var(--accent-light); }
+  [data-solution] .shared-route { stroke-dashoffset: 0; }
   .hero-reveal > span, .hero-intro, .hero-badges, .hero-actions { animation: none; opacity: 1; filter: none; transform: none; }
   .hero-screen iframe, .screen iframe { display: none; transition: none; }
   .moving-frame .screen img { animation: none; transform: none; will-change: auto; }

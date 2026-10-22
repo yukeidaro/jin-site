@@ -294,36 +294,33 @@ R11's approved text:
 | Agents that depend on one person | Agents and workflows stay with the people who built them. When they leave, everything starts over. | AIエージェントの属人化 / AIエージェントやワークフローが作成者個人に依存。担当者が異動・退職すると、後任者は一から作り直さなければなりません。 |
 | Skills stuck in one team | Teams build useful AI workflows, but they rarely get shared across the company. | AI活用ノウハウの共有不足 / 各チームで生まれた便利なAI活用方法やワークフローが、ほかのチームに共有されず、組織全体に広がっていません。 |
 
-Three inline isometric SVGs share a 420:320 viewBox, in Shadow AI, dependency,
-then team-sharing order. The original Shadow AI and teams drawings and
-behavior are unchanged. `problem.js` manages independent states for both
+Three inline SVGs share a 420:320 viewBox, in Shadow AI, dependency,
+then team-sharing order. R15 simplifies the first two into flat line drawings;
+the original team-sharing drawing and behavior are unchanged.
+`problem.js` manages independent states for both
 Problem and Solution without dependencies.
 
 There are no figure numbers or action/reset buttons. Each of the three
 animated figures is focusable and plays once when half visible, resets after leaving view, and
 replays on mouse hover, tap or keyboard focus. Replay input during a running
 sequence is ignored, so transitions cannot stack.
-R10's dependency drawing shows three stages from left to right: an accent
-owner connected to a solid grey stack; the departing owner becoming a dashed
-grey outline, an x on the dashed connection and a fading dashed stack; a new
-accent owner rebuilding four dashed accent layers. Two accent arrows connect
-the stages. Each stack has front labels in Context, Instructions, Tools,
-Workflows order, including on Japanese pages. No stage captions or other
-visible text appear inside the SVG.
-The sequence lasts 4.5 seconds: departure appears at 0.85s and fades through
-1.95s; the successor appears at 2.2s; layers draw from bottom to top starting
-at 2.4s, spaced by 0.45s; the redo arrow turns once from 3.8s to 4.5s.
-CSS clocks pause while hidden. Successor/redo animation completion updates
-translated rebuilding/end descriptions and polite status without a separate
-completion timer. The sequence never loops.
-The Shadow AI figure shows an employee at a desk inside a company platform and
-a separate personal AI block identified by a chat icon. A lock-marked document
-travels out along a dashed accent path; a boundary warning pulses once and the
-personal AI gains a faint accent outline. Its three-second sequence uses the
-same replay/reset behavior. CSS pauses its animation clocks while hidden;
-animation completion, rather than an independent timer, updates its named SVG
-and polite status. Reduced motion shows the end state even before enhancement,
-and the idle drawing remains readable without JavaScript.
+R15's dependency drawing is one horizontal row: an accent owner, four rounded
+cards and a grey successor. The owner becomes a departing dashed grey outline;
+an x breaks the owner connection and the cards become faint and dashed.
+An accent arrow stops halfway to the successor at a second x. Nothing reaches
+the successor; there is no rebuilding stack or redo arrow.
+The four cards are Context, Instructions, Tools and Workflows, top to bottom,
+with document, bulleted-list, wrench and connected-box icons. Names stay English
+on Japanese pages. Both dependency and its Solution answer use identical
+card geometry and 16.5px SVG labels.
+Shadow AI uses a white document inside a dashed rounded company boundary.
+A vermilion line grows through the boundary, followed by a personal-AI chat
+bubble and a small exclamation mark. There is no x or platform.
+Both sequences last three seconds, never loop and pause their actual CSS
+clocks while hidden. The terminal warning/x animation updates the translated
+image description and polite live status without a separate completion timer.
+Reduced motion shows the final state even before enhancement; without
+JavaScript, the idle drawing and explanatory copy remain readable.
 Problem and Solution use three columns from 1024px, otherwise one column.
 Drawings are capped at their native 420px width. Dependency labels use 16.5px
 in SVG coordinates to stay readable in three columns. R10's report records
@@ -368,30 +365,38 @@ E6b behavior, performance evidence and bilingual screenshots are recorded in
 R10's exact-copy, preservation, browser, performance and screenshot evidence
 is in `.copilot-runs/notes/r10.md`.
 
-### Solution figures (R12)
+### Solution figures (R12, simplified in R15)
 
-The three original 420:320 isometric SVGs answer the Problem columns in order.
-Keep it safe separates one bundle: the locked confidential part stays inside
-the company platform, the reusable part follows an accent route to a checked
-AI tool, and the personal AI route stops at an accent x.
-Keep it in the company retains four solid layers inside the company platform.
-The first person leaves as a dashed outline; the next accent person connects
-to the same stack by a solid line, without rebuilding. Its only drawing text
-is Context, Instructions, Tools and Workflows, top to bottom, in both languages.
+The three 420:320 SVGs answer the Problem columns in order.
+R15's flat Keep it safe figure uses the same white source document as Shadow
+AI. Its line splits: an upper vermilion arrow leads to confidential documents
+with a lock, while a lower white arrow leads to reusable documents with a
+three-circle share icon. Each endpoint has a faint document behind it.
+The document appears, the stem grows, the upper and lower branches grow in
+turn, and the two endpoint groups appear. There is no platform or blocked-AI x.
+Keep it in the company uses dependency's exact four-card layout. A grey
+previous owner and dashed grey line appear, then the four solid cards appear
+top to bottom. A solid vermilion arrow grows toward the next owner, who turns
+vermilion. Only Context, Instructions, Tools and Workflows appear as drawing
+text in both languages. The cards are not rebuilt by the next owner.
 Keep it shared retains one team's accent workflow and copies it along accent
 routes to the other two team platforms; all three end with the same workflow.
+Its complete figure markup and animation remain unchanged.
 
 Each named figure is independently focusable and uses the existing shared
 controller's half-visible entry, full-exit reset and hover/tap/focus replay.
-The 3.6-second CSS sequences play once, ignore replay input while busy and
+The safe/company three-second sequences and shared 3.6-second sequence play
+once, ignore replay input while busy and
 pause their actual clocks while the tab is hidden. One terminal animation
 per figure synchronizes its translated image description and polite live
 status with completion. There is no additional animation timer or controller.
 Reduced motion, including without JavaScript, shows the completed still.
 Without JavaScript and normal motion, the readable idle drawings remain.
 The existing drawing size and 24px figure-to-heading gap match Problem.
-Layer labels use 16.5px SVG type; rendered sizes, bilingual browser evidence
-and screenshots are recorded in `.copilot-runs/notes/r12.md`.
+Card labels use 16.5px SVG type. R15's validator checks the flat parts, ordered
+matching cards, bilingual geometry/states, and unchanged complete teams/shared
+figure fingerprints from `d79a2c9`. Rendered sizes, column positions, bilingual
+browser evidence and screenshots are recorded in `.copilot-runs/notes/r15.md`.
 
 ## Japanese typesetting
 
