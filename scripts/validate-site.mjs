@@ -305,17 +305,17 @@ for (const [page, source] of pagePairs.flatMap(([route, english, japanesePage]) 
       `${page} must declare the share image ${dimension}.`);
   }
   for (const [attribute, name] of [["property", "og:image:alt"], ["name", "twitter:image:alt"]]) {
-    const imageAlt = page.startsWith("/ja/") ? "Jin AI: AIを、会社の資産に" : "Jin AI: Turn AI into a company asset";
+    const imageAlt = "Jin AI";
     check(source.includes(`<meta ${attribute}="${name}" content="${imageAlt}">`),
       `${page} must use the approved ${name}.`);
   }
 }
 const shareImage = await readFile(path.join(site, "shots", "og-b2b.png"));
-check(shareImage.length >= 24 && shareImage.length < 300000 &&
+check(shareImage.length >= 24 && shareImage.length < 60000 &&
   shareImage.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])) &&
   shareImage.toString("ascii", 12, 16) === "IHDR" &&
   shareImage.readUInt32BE(16) === 1200 && shareImage.readUInt32BE(20) === 630,
-  "The B2B share image must be a 1200 x 630 PNG below 300 KB.");
+  "The logo share image must be a 1200 x 630 PNG below 60 KB.");
 check(home.includes("<main>") && home.includes("</main>"), "Root must have a main landmark.");
 const homeSections = [...home.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
 check(homeSections.length === 6 && homeSections[0]?.[1].includes('class="hero"') &&
@@ -329,7 +329,7 @@ check(home.includes(`<title>${homeTitle}</title>`), "Root must use the approved 
 for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:title"]]) {
   check(home.includes(`<meta ${attribute}="${name}" content="${homeTitle}">`), `Root must use the approved ${name}.`);
 }
-const homeDescription = "Jin AI keeps the AI harnesses your best people build safe for every employee and reusable for the company.";
+const homeDescription = "Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.";
 for (const [attribute, name] of [["name", "description"], ["property", "og:description"], ["name", "twitter:description"]]) {
   check(home.includes(`<meta ${attribute}="${name}" content="${homeDescription}">`), `Root must use the approved ${name}.`);
 }
@@ -914,8 +914,8 @@ for (const [attribute, name, value] of [
   ["property", "og:image", "https://jinai.md/shots/og-b2b.png"],
   ["name", "twitter:image", "https://jinai.md/shots/og-b2b.png"],
   ["property", "og:image:width", "1200"], ["property", "og:image:height", "630"],
-  ["property", "og:image:alt", "Jin AI: Turn AI into a company asset"],
-  ["name", "twitter:image:alt", "Jin AI: Turn AI into a company asset"]
+  ["property", "og:image:alt", "Jin AI"],
+  ["name", "twitter:image:alt", "Jin AI"]
 ]) {
   check(security.includes(`<meta ${attribute}="${name}" content="${value}">`),
     `Security must have the approved ${name}.`);
@@ -1126,8 +1126,8 @@ for (const [route, source, title, heading, description, expectedCopy] of draftPa
     ["property", "og:image", "https://jinai.md/shots/og-b2b.png"],
     ["name", "twitter:image", "https://jinai.md/shots/og-b2b.png"],
     ["property", "og:image:width", "1200"], ["property", "og:image:height", "630"],
-    ["property", "og:image:alt", "Jin AI: Turn AI into a company asset"],
-    ["name", "twitter:image:alt", "Jin AI: Turn AI into a company asset"],
+    ["property", "og:image:alt", "Jin AI"],
+    ["name", "twitter:image:alt", "Jin AI"],
     ["name", "twitter:card", "summary_large_image"]
   ]) {
     check(source.includes(`<meta ${attribute}="${name}" content="${value}">`),
