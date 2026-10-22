@@ -3,7 +3,7 @@
  * Deploy with scripts/appsscript.json, execute as the deploying account, and
  * allow Anyone. Run setupWaitlist first; see README.md for the remaining steps.
  */
-var WAITLIST_VERSION = '2026-10-21.1';
+var WAITLIST_VERSION = '2026-10-22.1';
 var WAITLIST_FROM = 'hello@jinai.md';
 var WAITLIST_CONSENT = 'waitlist-product-updates-v1';
 var WAITLIST_SHEET = 'Waitlist';
@@ -684,55 +684,100 @@ function demoBookingUrl_(record) {
 }
 
 function requestEmail_(record, type) {
+  if (type !== 'demo') return waitlistEmail_(record);
   var ja = record.lang === 'ja';
-  var demo = type === 'demo';
   var legacyName = emailValue_(record.name);
   var first = emailValue_(record.firstName) || legacyName.split(/\s+/)[0];
   var last = emailValue_(record.lastName) || legacyName;
   var company = emailValue_(record.company);
   var home = 'https://jinai.md/' + (ja ? 'ja/' : '');
-  var heading = ja ? (demo ? ['お話しできるのを', '楽しみにしております'] :
-    ['ウェイトリストへの', 'ご登録', 'ありがとうございます！']) :
-    [demo ? "We're looking forward to meeting you" : "You're on the waitlist!"];
+  var heading = ja ? ['お話しできるのを', '楽しみにしております'] :
+    ["We're looking forward to meeting you"];
   return {
     lang: ja ? 'ja' : 'en',
-    subject: ja ? last + (demo ? '様、Jin AI のデモにお申し込みいただきありがとうございます' :
-      '様、Jin AI のウェイトリストにご登録いただきました') :
-      first + (demo ? ', thanks for requesting a Jin AI demo' : ", you're on the Jin AI waitlist"),
+    subject: ja ? last + '様、Jin AI のデモにお申し込みいただきありがとうございます' :
+      first + ', thanks for requesting a Jin AI demo',
     heading: heading.join(''),
     headingPhrases: heading,
     salutation: ja ? (company ? [company, last + '様'] : [last + '様']) : ['Hi ' + first + ','],
-    paragraphs: ja ? (demo ? [
+    paragraphs: ja ? [
       'Jin AI のデモにお申し込みいただき、ありがとうございます。',
       '下の「日時を選ぶ」ボタンから、デモの日時をお選びください。デモで特に見たいことがあれば、このメールにそのまま返信してください。'
     ] : [
-      'Jin AI にご関心をお寄せいただき、ありがとうございます。',
-      'Jin AIは、企業の大切な情報を守りながら、AIエージェントの知識やスキルを組織全体で共有・活用できるようにするプラットフォームです。',
-      '現在、サービスの公開に向けて準備を進めています。',
-      '先行利用のご案内や最新情報は、ご登録いただいたメールアドレスにお届けします。',
-      'また、' + last + '様のご利用環境に合わせたデモもご案内しています。ご興味がございましたら、ぜひお気軽にお申し込みください。'
-    ]) : (demo ? [
       'Thanks for requesting a Jin AI demo for ' + company + '.',
       "Use the Pick a time button below to choose a time for your demo. If there's anything you'd like us to cover, just reply to this email."
-    ] : [
-      'Thanks for your interest in Jin AI!' + (company ? " We've added " + company + ' to our waitlist.' : ''),
-      'Jin AI helps companies keep their AI agents, skills, and knowledge secure, shared across teams, and always up to date.',
-      "We're getting ready to launch and will email you when early access becomes available.",
-      "In the meantime, we'd love to show you how Jin AI could work for your team. If you're interested, feel free to book a demo."
-    ]),
-    button: demo ? (ja ? '日時を選ぶ' : 'Pick a time') : (ja ? 'デモを申し込む' : 'Request a demo'),
-    closing: demo ? '' : (ja ? last + '様にJin AIをお試しいただける日を楽しみにしております。' :
-      'We look forward to having you try Jin AI, ' + first + '!'),
-    demoUrl: demo ? demoBookingUrl_(record) : home + '#request-demo',
+    ],
+    button: ja ? '日時を選ぶ' : 'Pick a time',
+    closing: '',
+    demoUrl: demoBookingUrl_(record),
     home: home,
     privacy: ja ? 'プライバシーポリシー' : 'Privacy Policy',
     privacyUrl: home + 'privacy/',
-    unsubscribe: demo ? '' : (ja ? '配信停止をご希望の場合は、「unsubscribe」と返信してください。' :
-      "To stop receiving emails, reply with 'unsubscribe'.")
+    unsubscribe: ''
   };
 }
 
+function waitlistEmail_(record) {
+  var ja = record.lang === 'ja';
+  var legacyName = emailValue_(record.name);
+  var first = emailValue_(record.firstName) || legacyName.split(/\s+/)[0];
+  var last = emailValue_(record.lastName) || legacyName;
+  emailValue_(record.company);
+  var home = 'https://jinai.md/' + (ja ? 'ja/' : '');
+  return {
+    letter: true,
+    lang: ja ? 'ja' : 'en',
+    subject: ja ? last + '様、Jin AI のウェイトリストにご登録いただきました' :
+      first + ", you're on the Jin AI waitlist",
+    salutation: ja ? last + '様' : 'Hi ' + first + ',',
+    paragraphs: ja ? [
+      'Jin AIのウェイトリストにご登録いただき、ありがとうございます。',
+      '私たちは、企業の機密情報を守りながら、AIエージェントやスキル、ナレッジを組織全体で安全に管理・共有できるサービスを開発しています。',
+      '先行利用の準備が整い次第、改めてご案内いたします。',
+      '貴社でのAI活用や情報管理について、課題やご関心がございましたら、ぜひこのメールにご返信いただけますと幸いです。'
+    ] : [
+      'Thanks for joining the Jin AI waitlist!',
+      "I'm Yu, the founder of Jin AI. We're building a way for companies to securely manage and share AI agents, skills, and knowledge across teams.",
+      "I'll reach out when early access is ready.",
+      "In the meantime, I'd love to hear how your team is using AI today. Feel free to reply to this email!"
+    ],
+    signature: ja ? ['浅野 悠', 'Founder, Jin AI', 'jinai.md'] :
+      ['Best,', 'Yu Asano', 'Founder, Jin AI', 'jinai.md'],
+    home: home,
+    privacy: ja ? 'プライバシーポリシー' : 'Privacy Policy',
+    privacyUrl: home + 'privacy/'
+  };
+}
+
+function waitlistEmailText_(email) {
+  return [email.salutation].concat(email.paragraphs, [
+    email.signature.join('\r\n'),
+    email.privacy + ': ' + email.privacyUrl
+  ]).join('\r\n\r\n');
+}
+
+function waitlistEmailHtml_(email) {
+  var paragraph = 'margin:0 0 16px;';
+  return [
+    '<!doctype html><html lang="' + email.lang + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>',
+    '<body style="margin:0;padding:16px;background:#ffffff;color:#252525;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Yu Gothic,Meiryo,Arial,sans-serif;font-size:16px;line-height:1.6;overflow-wrap:anywhere;">',
+    '<p style="' + paragraph + '">' + escapeEmailHtml_(email.salutation) + '</p>',
+    email.paragraphs.map(function (text) {
+      return '<p style="' + paragraph + '">' + escapeEmailHtml_(text) + '</p>';
+    }).join(''),
+    '<p class="signature" style="' + paragraph + '">' + email.signature.map(function (line, index) {
+      return index === email.signature.length - 1 ?
+        '<a href="' + escapeEmailHtml_(email.home) + '">' + escapeEmailHtml_(line) + '</a>' : escapeEmailHtml_(line);
+    }).join('<br>') + '</p>',
+    '<p style="margin:24px 0 0;font-size:12px;line-height:1.6;color:#616161;"><a href="' +
+      escapeEmailHtml_(email.privacyUrl) + '" style="color:#616161;">' +
+      escapeEmailHtml_(email.privacy) + '</a></p>',
+    '</body></html>'
+  ].join('');
+}
+
 function requestEmailText_(email) {
+  if (email.letter) return waitlistEmailText_(email);
   var blocks = [email.heading, email.salutation.join('\r\n')].concat(email.paragraphs);
   if (email.button) blocks.push(email.button + '\r\n' + email.demoUrl);
   if (email.closing) blocks.push(email.closing);
@@ -743,6 +788,7 @@ function requestEmailText_(email) {
 }
 
 function requestEmailHtml_(email) {
+  if (email.letter) return waitlistEmailHtml_(email);
   // Tables and inline styles work without external fonts, scripts or tracking pixels.
   var paragraph = 'margin:0 0 20px;font-size:16px;line-height:1.8;';
   return [
