@@ -484,9 +484,9 @@ function checkHarnessCards(source, label) {
 function checkFlatProblems(shadow, dependency, language) {
   check(hasClass(shadow, "shadow-document") && hasClass(shadow, "shadow-ai") &&
     shadow.includes('<rect class="shadow-boundary flat-intro" x="28" y="90" width="178" height="140" rx="12"/>') &&
-    shadow.includes('class="shadow-route flat-route" pathLength="1" d="M104 160H306"') &&
-    shadow.includes('class="shadow-warning problem-finish"><path d="M391 143V156M391 163V164"') &&
-    /class="shadow-ai">[\s\S]*?A8 8[\s\S]*?<\/g>/.test(shadow) &&
+    shadow.includes('class="shadow-route flat-route" pathLength="1" d="M104 160H286"') &&
+    shadow.includes('class="shadow-warning problem-finish"><path d="M371 143V156M371 163V164"') &&
+    /class="shadow-ai" transform="translate\(-20 0\)">[\s\S]*?A8 8[\s\S]*?<\/g>/.test(shadow) &&
     !/<text\b|<button\b|shadow-warning-pulse|shadow-confidential/.test(shadow) &&
     count(shadow, /\bproblem-finish\b/g) === 1,
     `${language} Shadow AI needs a white document inside a dashed rounded boundary, an outgoing line, personal-AI chat bubble and small exclamation mark, not an x.`);
