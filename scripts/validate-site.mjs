@@ -432,7 +432,7 @@ check(problemSection.includes('<span class="mono-label">Problem</span>') &&
 check(problemFigures.length === 3 && count(problemSection, /<svg\b/g) === 3 &&
   count(problemSection, /<h2\b/g) === 1 && count(problemSection, /<h3\b/g) === 3 &&
   count(problemSection, /<p\b/g) === 6,
-  "Problem needs exactly three interactive isometric figures: Shadow AI, dependency and teams.");
+  "Problem needs exactly three interactive figures: Shadow AI, dependency and teams.");
 for (const [index, [id, title, description]] of problemCopy.entries()) {
   const attributes = problemFigures[index]?.[2] || "";
   const body = problemFigures[index]?.[3] || "";
@@ -454,43 +454,56 @@ for (const [index, [id, title, description]] of problemCopy.entries()) {
     `Problem figure ${index + 1} needs exact copy, a focusable named figure, no number/action/reset, shared SVG size, state descriptions and polite status.`);
 }
 const shadowFigure = problemFigures[0]?.[3] || "";
-check(problemFigures[0]?.[2].includes('aria-label="Figure: company work flows into a personal AI"') &&
-  ["shadow-company", "shadow-boundary", "shadow-employee iso-highlight", "shadow-ai", "shadow-ai-outline",
-    "shadow-route", "shadow-warning-pulse", "shadow-warning", "shadow-document", "shadow-confidential"]
-    .every(name => shadowFigure.includes(`class="${name}"`)) &&
-  count(shadowFigure, /<path\b[^>]*\bd="[^"]+"/g) >= 20 &&
-  shadowFigure.includes('data-status-changed="A confidential document left the company for a personal AI."') &&
-  !shadowFigure.includes("R2 draws this") &&
-  !/<button\b/.test(shadowFigure),
-  "Shadow AI needs its exact accessible name, company boundary, employee and desk, separate AI, confidential document, dashed route, warning and completed live status.");
 check(!/\b(?:sa-|ho-|ed-)|class="art"|animateMotion/.test(problemSection) &&
   !/sa-svg|ho-svg|ed-svg|ed-tiles|ed-arrows|pauseAnimations/.test(home),
   "English home must not retain the old shadow AI, handover or education illustrations or controller.");
 const dependencyFigure = problemFigures[1]?.[3] || "";
 const layerNames = ["Context", "Instructions", "Tools", "Workflows"];
-const dependencyStages = [...dependencyFigure.matchAll(/class="dependency-stage[^"]*" data-stage="([^"]+)" transform="translate\((\d+) 0\)"/g)];
-const rebuildLayers = [...dependencyFigure.matchAll(/<g class="dependency-rebuild" data-layer="([^"]+)" style="--step:(\d)" transform="translate\(0 (\d+)\)">\s*<use class="dependency-outline" href="#dependency-layer" mask="url\(#dependency-([^"]+)\)"\/><text y="25">([^<]+)<\/text>/g)];
-check(dependencyStages.length === 3 && dependencyStages.every((stage, index) =>
-  stage[1] === ["owner", "departure", "successor"][index] && Number(stage[2]) === 66 + index * 144) &&
-  count(dependencyFigure, /class="dependency-transition"/g) === 2 &&
-  count(dependencyFigure, /href="#dependency-person"/g) === 4 &&
-  count(dependencyFigure, /class="dependency-break"/g) === 1 &&
-  dependencyFigure.includes('class="dependency-owner-gone"') &&
-  dependencyFigure.includes('class="dependency-stack dependency-faded-stack"') &&
-  dependencyFigure.includes('class="dependency-link dependency-new-link"') &&
-  dependencyFigure.includes('class="dependency-redo"') &&
-  dependencyFigure.includes('data-label-rebuilding="') && dependencyFigure.includes('data-status-rebuilding="') &&
-  problemFigures[1]?.[2].includes('aria-label="Figure: when the owner leaves, the successor rebuilds context, instructions, tools and workflows from scratch"'),
-  "Dependency needs three left-to-right owner/leaving/successor stages, two arrows, a broken connection, fading stack, new owner and redo arrow.");
-check(rebuildLayers.length === 4 && rebuildLayers.every((layer, index) =>
-  layer[1] === layerNames[index].toLowerCase() && Number(layer[2]) === 3 - index &&
-  Number(layer[3]) === 126 + index * 44 && layer[4] === layer[1] && layer[5] === layerNames[index]) &&
-  count(dependencyFigure, /class="dependency-trace" pathLength="1"/g) === 4 &&
-  count(dependencyFigure, /href="#dependency-layer" y=/g) === 8 &&
-  [...dependencyFigure.matchAll(/<text\b[^>]*>([^<]*)<\/text>/g)].map(match => match[1]).join() ===
-    [...layerNames, ...layerNames, ...layerNames].join() &&
-  !/\b(?:Rules|Exceptions)\b|<text\b[^>]*transform=/.test(dependencyFigure),
-  "Dependency needs four front labels per stack in Context/Instructions/Tools/Workflows order, bottom-up masked rebuilding and no stage captions or other SVG text.");
+const hasClass = (source, name) => new RegExp(`class="[^"]*\\b${name}\\b`).test(source);
+function checkFlatDrawing(source, label) {
+  check(!/<(?:image|img|polygon|mask|linearGradient|radialGradient)\b|iso-|platform|dependency-rebuild|dependency-redo|(?:skew|matrix)\(/.test(source),
+    `${label} must be an original flat line drawing without platforms, isometric parts, images, gradients or rebuilding.`);
+}
+function harnessCards(source) {
+  return [...source.matchAll(/<g class="harness-card" data-layer="([^"]+)" style="--step:(\d)" transform="translate\((\d+) (\d+)\)">\s*(<rect[^>]+\/>)\s*<g class="harness-icon" transform="translate\(17 21\)">([\s\S]*?)<\/g>\s*<text x="44" y="27">([^<]+)<\/text>\s*<\/g>/g)];
+}
+function checkHarnessCards(source, label) {
+  const cards = harnessCards(source);
+  check(cards.length === 4 && cards.every((card, index) =>
+    card[1] === layerNames[index].toLowerCase() && Number(card[2]) === index &&
+    Number(card[3]) === 132 && Number(card[4]) === 64 + index * 50 &&
+    card[5] === '<rect width="156" height="42" rx="7"/>' &&
+    card[6].includes("<path") && card[7] === layerNames[index]) &&
+    [...source.matchAll(/<text\b[^>]*>([^<]*)<\/text>/g)].map(m => m[1]).join() === layerNames.join(),
+    `${label} needs four matching rounded cards with document/list/wrench/connected-box icons and only Context/Instructions/Tools/Workflows text in top-to-bottom order.`);
+  check(cards[0]?.[6].includes("M0-11H10L16-5") && cards[1]?.[6].includes("M5-8H18") &&
+    cards[2]?.[6].includes("A8 8") && count(cards[3]?.[6] || "", /<rect\b/g) === 3,
+    `${label} needs the correct distinct layer icons.`);
+  checkFlatDrawing(source, label);
+}
+function checkFlatProblems(shadow, dependency, language) {
+  check(hasClass(shadow, "shadow-document") && hasClass(shadow, "shadow-ai") &&
+    shadow.includes('<rect class="shadow-boundary flat-intro" x="28" y="90" width="178" height="140" rx="12"/>') &&
+    shadow.includes('class="shadow-route flat-route" pathLength="1" d="M104 160H306"') &&
+    shadow.includes('class="shadow-warning problem-finish"><path d="M391 143V156M391 163V164"') &&
+    /class="shadow-ai">[\s\S]*?A8 8[\s\S]*?<\/g>/.test(shadow) &&
+    !/<text\b|<button\b|shadow-warning-pulse|shadow-confidential/.test(shadow) &&
+    count(shadow, /\bproblem-finish\b/g) === 1,
+    `${language} Shadow AI needs a white document inside a dashed rounded boundary, an outgoing line, personal-AI chat bubble and small exclamation mark, not an x.`);
+  checkFlatDrawing(shadow, `${language} Shadow AI`);
+  checkHarnessCards(dependency, `${language} dependency`);
+  check(["dependency-owner", "dependency-departed", "dependency-stack", "dependency-old-link",
+    "dependency-break", "dependency-attempt", "dependency-stop", "dependency-successor"].every(name => hasClass(dependency, name)) &&
+    count(dependency, /href="#dependency-person"/g) === 3 &&
+    dependency.includes('transform="translate(42 160)"') && dependency.includes('transform="translate(376 160)"') &&
+    dependency.includes('d="M70 160H132"') &&
+    dependency.includes('d="M288 160H320M314 154 320 160 314 166"') &&
+    dependency.includes('d="M95 154 107 166M107 154 95 166"') &&
+    dependency.includes('class="dependency-stop problem-finish" d="M326 154 338 166M338 154 326 166"') &&
+    count(dependency, /\bproblem-finish\b/g) === 1 && !/rebuilding|data-stage/.test(dependency),
+    `${language} dependency needs a single owner/cards/successor row, a dashed departing outline, broken owner link, fading cards and a halfway-stopped arrow with a second x.`);
+}
+checkFlatProblems(shadowFigure, dependencyFigure, "English");
 const teamFigure = problemFigures[2]?.[3] || "";
 for (const team of ["a", "b", "c"]) {
   check(teamFigure.includes(`data-team-art="${team}"`) &&
@@ -498,21 +511,18 @@ for (const team of ["a", "b", "c"]) {
     `Team ${team.toUpperCase()} needs an independently focusable, named HTML button and translated-in-place state strings.`);
 }
 check(teamFigure.indexOf('class="team-controls"') > teamFigure.indexOf("</svg>") &&
-  count(problemSection, /<text\b/g) === 12 &&
+  count(problemSection, /<text\b/g) === 4 &&
   layerNames.every(label =>
     problemSection.includes(`>${label}</text>`)) &&
   count(home, /<script type="module" src="problem.js"><\/script>/g) === 1,
-  "Team controls must sit outside role=img; only the twelve stack labels may be SVG text; home must load problem.js once.");
+  "Team controls must sit outside role=img; only the four card labels may be SVG text; home must load problem.js once.");
 const problemClient = await text("problem.js");
 check(problemClient.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
   problemClient.includes('querySelectorAll("[data-problem], [data-solution]")') &&
   problemClient.includes('figure.dataset.problem === "shadow" || figure.dataset.problem === "dependency"') &&
-  problemClient.includes('figure.dataset.problem === "dependency"') &&
-  problemClient.includes('event.animationName === "problem-dependency-successor"') &&
-  problemClient.includes('describe("Rebuilding")') &&
-  problemClient.includes('event.animationName === "problem-dependency-redo"') &&
-  problemClient.includes('querySelector(".shadow-document").addEventListener("animationend"') &&
-  problemClient.includes('event.animationName === "problem-shadow-document" && figure.dataset.busy === "true"') &&
+  problemClient.includes('figure.querySelector(".problem-finish, .solution-finish")') &&
+  problemClient.includes('finish.addEventListener("animationend"') &&
+  problemClient.includes('event.target === finish && figure.dataset.busy === "true"') &&
   problemClient.includes("new IntersectionObserver") && problemClient.includes('"visibilitychange"') &&
   problemClient.includes("!document.hidden") && problemClient.includes("visible.has(figure)") &&
   problemClient.includes('if (figure.dataset.busy === "true") return;') &&
@@ -658,13 +668,13 @@ check(exactElement(solutionSection, "h2", "How Jin AI keeps your AI") &&
   "Root Solution needs the exact Keep heading, three title/body pairs and closing line, each once.");
 const solutionNames = {
   en: [
-    "Figure: confidential parts stay inside; reusable parts reach only approved AI tools",
-    "Figure: the stack stays with the company and the next person connects to it",
+    "Figure: confidential documents stay locked while reusable documents can be shared",
+    "Figure: four company-owned cards connect directly to the next owner",
     "Figure: one team's workflow spreads to the other teams"
   ],
   ja: [
-    "図: 機密は社内に残り、再利用できる部分だけが承認したAIツールに届く",
-    "図: 設定は会社に残り、次の担当者がそのままつながる",
+    "図: 機密の書類は鍵で守られ、再利用できる書類は共有できる",
+    "図: 会社に残る四枚のカードが次の担当者にそのままつながる",
     "図: ひとつのチームのワークフローが、ほかのチームに広がる"
   ]
 };
@@ -692,22 +702,31 @@ function checkSolutionFigures(section, language) {
       localized(status?.[2]) &&
       status?.[2] === status?.[1].match(/\bdata-status-idle="([^"]*)"/)?.[1] &&
       count(body, /class="[^"]*\bsolution-finish\b[^"]*"/g) === 1 &&
-      count(body, /<path\b[^>]*\bd="[^"]+"/g) >= (id === "company" ? 6 : 8),
+      count(body, /<path\b[^>]*\bd="[^"]+"/g) >= (id === "company" ? 5 : 8),
       `${language} Solution ${id} needs ordered placement, a focusable accessible name, shared geometry, a drawn scene, one completion clock and localized idle/playing/end descriptions and live status.`);
   }
   const safe = figures[0]?.[3] || "", company = figures[1]?.[3] || "", shared = figures[2]?.[3] || "";
-  check(["safe-company", "safe-boundary", "safe-approved", "safe-personal", "safe-check", "safe-lock",
-    "safe-confidential", "safe-reusable", "safe-approved-route", "safe-blocked-route", "safe-block"].every(name =>
-    new RegExp(`class="[^"]*\\b${name}\\b`).test(safe)) &&
-    safe.includes('class="safe-blocked-route" pathLength="1" d="M159 186 218 220 263 246"') &&
-    safe.includes('class="safe-block" d="M256 239 270 253M270 239 256 253"'),
-    `${language} safe figure needs a company boundary, locked confidential part, reusable part, checked tool and a personal route that ends at the x.`);
-  check(["company-platform", "company-stack", "company-owner", "company-departed", "company-successor",
-    "company-old-link", "company-new-link"].every(name => new RegExp(`class="[^"]*\\b${name}\\b`).test(company)) &&
-    [...company.matchAll(/<text\b[^>]*>([^<]*)<\/text>/g)].map(m => m[1]).join() === layerNames.join() &&
-    count(company, /href="#solution-company-layer" y=/g) === 4 &&
-    !/<mask\b|dependency-rebuild|<text\b[^>]*transform=/.test(company),
-    `${language} company figure needs four permanent solid layers in Context/Instructions/Tools/Workflows order, a departing person and a connected successor, with no rebuild or captions.`);
+  check(["safe-document", "safe-stem", "safe-upper", "safe-lower", "safe-lock", "safe-share",
+    "safe-confidential", "safe-reusable"].every(name => hasClass(safe, name)) &&
+    count(safe, /\bflat-back\b/g) === 2 && count(safe, /<circle\b/g) === 3 &&
+    safe.includes('d="M104 160H166"') &&
+    safe.includes('d="M166 160C202 160 204 84 242 84H278M271 77 278 84 271 91"') &&
+    safe.includes('d="M166 160C202 160 204 236 242 236H278M271 229 278 236 271 243"') &&
+    !/<text\b|safe-personal|safe-block|safe-check/.test(safe),
+    `${language} safe figure needs one white document, a split line, upper locked vermilion documents, lower white documents with a three-circle share icon, faint back documents and no blocked-AI route.`);
+  checkFlatDrawing(safe, `${language} safe`);
+  const sourceDocument = source => source.match(/class="(?:shadow-document|safe-document) flat-document flat-intro" transform="translate\(60 129\)">([\s\S]*?)<\/g>/)?.[1];
+  check(Boolean(sourceDocument(safe)) && sourceDocument(safe) === sourceDocument(shadowFigure),
+    `${language} safe and Shadow AI must use the same source document and position.`);
+  checkHarnessCards(company, `${language} company`);
+  check(["company-previous", "company-stack", "company-successor", "company-old-link", "company-new-link"]
+    .every(name => hasClass(company, name)) &&
+    count(company, /href="#solution-company-person"/g) === 2 &&
+    company.includes('transform="translate(42 160)"') && company.includes('transform="translate(376 160)"') &&
+    company.includes('d="M70 160H132"') &&
+    company.includes('d="M288 160H350M343 153 350 160 343 167"') &&
+    harnessCards(company).map(m => m[0]).join() === harnessCards(dependencyFigure).map(m => m[0]).join(),
+    `${language} company figure needs the exact dependency card layout, grey previous owner and dashed link, solid vermilion arrow to the next owner, without rebuilding.`);
   check(count(shared, /href="#solution-team-base"/g) === 3 &&
     count(shared, /href="#solution-workflow"/g) === 5 &&
     ["shared-source", "shared-target-a", "shared-target-b", "shared-moving-a", "shared-moving-b",
@@ -717,8 +736,8 @@ function checkSolutionFigures(section, language) {
 }
 const solutionFigures = checkSolutionFigures(solutionSection, "en");
 check(problemClient.includes('figure.dataset.solution || figure.dataset.problem === "shadow"') &&
-  problemClient.includes('figure.querySelector(".solution-finish").addEventListener("animationend"') &&
-  problemClient.includes('event.target.classList.contains("solution-finish") && figure.dataset.busy === "true"') &&
+  problemClient.includes('figure.querySelector(".problem-finish, .solution-finish")') &&
+  problemClient.includes('event.target === finish && figure.dataset.busy === "true"') &&
   count(problemClient, /new IntersectionObserver/g) === 1,
   "Both figure sections must share one visibility/replay/reduced-motion controller and finish Solution states on their single CSS completion clock.");
 const howSection = homeSections.find((match) => match[1].includes('id="how"'))?.[2] || "";
@@ -1224,47 +1243,47 @@ check(cssBlock(englishCss, ".screen-camera {").includes("animation-duration: 9s"
   ["workflow-pointer", "workflow-pointer-connect", "workflow-click", "workflow-click-connect"].every(name =>
     englishCss.includes(`@keyframes ${name} {`)),
   "Workflow cursors must share the nine-second camera lifecycle, use still-relative targets, yield to future frames and disappear under reduced motion.");
-check(cssBlock(englishCss, ".shadow-route {").includes("stroke-dasharray: 4 6") &&
-  cssBlock(englishCss, '[data-state="changed"] .shadow-document').includes("animation: problem-shadow-document 3s linear both") &&
-  cssBlock(englishCss, "@keyframes problem-shadow-document").includes("transform: translate(164px, 82px)") &&
-  ["route", "warning", "pulse", "outline"].every(name => englishCss.includes(`@keyframes problem-shadow-${name}`)) &&
-  /shadow-ai-outline \{ animation-play-state: paused; \}/.test(englishCss) &&
-  /shadow-ai-outline \{ animation-play-state: running; \}/.test(englishCss) &&
-  !/[^{}]*shadow[^{}]*\{[^}]*\binfinite\b/.test(englishCss) &&
-  ['[data-problem="shadow"] .shadow-document { transform: translate(164px, 82px);',
-    '[data-problem="shadow"] .shadow-route { opacity: .65;',
-    '[data-problem="shadow"] .shadow-warning { opacity: 1;',
-    '[data-problem="shadow"] .shadow-ai-outline { opacity: .6;']
-    .every(rule => cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(rule)),
-  "Shadow AI needs a single three-second sequence, dashed path, boundary warning/pulse, faint AI outline, visibility pause and CSS reduced-motion end state.");
+const reducedFigureCss = cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)");
+check(cssBlock(englishCss, ".shadow-boundary {").includes("stroke-dasharray: 4 5") &&
+  cssBlock(englishCss, ".flat-document, .harness-icon").includes("stroke: var(--text-1)") &&
+  cssBlock(englishCss, ".shadow-route, .shadow-ai, .shadow-warning").includes("stroke: var(--accent-light)") &&
+  cssBlock(englishCss, ".flat-route {").includes("stroke-dasharray: 1; stroke-dashoffset: 1") &&
+  cssBlock(englishCss, '[data-state="changed"] .flat-intro').includes("flat-in .3s") &&
+  cssBlock(englishCss, '[data-state="changed"] .shadow-route').includes("problem-draw 1s linear .4s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .shadow-ai').includes("flat-in .3s ease 1.6s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .shadow-warning').includes("flat-finish 3s linear both") &&
+  cssBlock(englishCss, '[data-problem="shadow"][data-state] .problem-art *').includes("animation-play-state: paused") &&
+  cssBlock(englishCss, '[data-problem="shadow"][data-state].problem-flow-running .problem-art *').includes("animation-play-state: running") &&
+  reducedFigureCss.includes('[data-problem="shadow"] .shadow-ai, [data-problem="shadow"] .shadow-warning { opacity: 1;') &&
+  reducedFigureCss.includes(".problem-art .flat-route { stroke-dashoffset: 0;"),
+  "Shadow AI needs a dashed frame, white document, growing vermilion line, bubble then warning, one three-second completion clock, hidden pause and reduced-motion end state.");
 check(cssBlock(englishCss, ".problem-art svg").includes("aspect-ratio: 420 / 320") &&
-  cssBlock(englishCss, ".dependency-person,").includes("stroke: var(--accent-light)") &&
-  cssBlock(englishCss, ".dependency-stack").includes("stroke: var(--text-3)") &&
+  cssBlock(englishCss, ".dependency-owner, .dependency-old-link,").includes("stroke: var(--accent-light)") &&
+  cssBlock(englishCss, ".harness-card {").includes("stroke: var(--text-3)") &&
   cssBlock(englishCss, '[data-problem="dependency"][data-state] .problem-art *').includes("animation-play-state: paused") &&
   cssBlock(englishCss, '[data-problem="dependency"][data-state].problem-flow-running .problem-art *').includes("animation-play-state: running") &&
-  !/infinite/.test(englishCss.slice(englishCss.indexOf(".dependency-person"), englishCss.indexOf(".team-lid"))) &&
-  cssBlock(englishCss, '[data-state="changed"] .dependency-departure').includes(".85s both") &&
-  cssBlock(englishCss, '[data-state="changed"] .dependency-successor').includes("2.2s both") &&
-  cssBlock(englishCss, '[data-state="changed"] .dependency-trace').includes("2.4s + var(--step) * .45s") &&
-  cssBlock(englishCss, '[data-state="changed"] .dependency-redo').includes(".7s ease 3.8s both") &&
-  cssBlock(englishCss, "@keyframes problem-dependency-redo").includes("rotate(-360deg)") &&
+  !/infinite/.test(englishCss.slice(englishCss.indexOf(".flat-document"), englishCss.indexOf(".team-lid"))) &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-owner').includes(".6s ease .45s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-stack').includes(".5s ease 1.2s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-attempt').includes(".5s linear 1.85s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-stop').includes("flat-finish 3s linear both") &&
   cssBlock(englishCss, "@keyframes problem-dependency-fade").includes("stroke-dasharray: 4 5; opacity: .36") &&
   cssBlock(englishCss, "@keyframes problem-dependency-dash").includes("stroke-dasharray: 4 5; opacity: .5") &&
   cssBlock(englishCss, "@media (min-width: 1024px)").includes(".problem-grid, .solution-copy { grid-template-columns: repeat(3, minmax(0, 1fr)); }") &&
-  cssBlock(englishCss, ".problem-art .dependency-stage text").includes("font-size: 16.5px") &&
-  cssBlock(englishCss, ".dependency-owner-gone, .dependency-new-link,").includes("stroke-dasharray: 4 5") &&
-  layerNames.every((name, index) => cssBlock(englishCss, `#dependency-${name.toLowerCase()}`).includes(`--step: ${3 - index}`)) &&
+  cssBlock(englishCss, ".problem-art .harness-card text").includes("font-size: 16.5px") &&
+  cssBlock(englishCss, ".dependency-departed {").includes("stroke-dasharray: 4 5") &&
   cssBlock(englishCss, "@keyframes problem-draw").includes("stroke-dashoffset: 1") &&
   cssBlock(englishCss, "#problem .problem-column:focus-visible").includes("outline: 2px solid var(--accent-light)") &&
-  cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(
+  reducedFigureCss.includes(
     ".problem-art * { animation: none !important; transition: none !important; }") &&
-  ['[data-problem="dependency"] .dependency-owner-solid { opacity: 0;',
-    '[data-problem="dependency"] .dependency-owner-gone { opacity: .5;',
-    '[data-problem="dependency"] .dependency-faded-stack { stroke-dasharray: 4 5; opacity: .36;',
-    '[data-problem="dependency"] .dependency-trace { stroke-dashoffset: 0;',
-    '[data-problem="dependency"] .dependency-redo { opacity: 1;', '[data-team-art="c"] .team-workflow { opacity: 1;']
-    .every(rule => cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(rule)),
-  "Problem figures need reserved geometry, a finite 4.5s three-stage sequence, legible front labels, dashed-outline drawing, visible keyboard focus, paused flow and CSS reduced-motion end states.");
+  ['[data-problem="dependency"] .dependency-owner { opacity: 0;',
+    '[data-problem="dependency"] .dependency-departed { opacity: .5; transform: translateX(-10px);',
+    '[data-problem="dependency"] .dependency-old-link { stroke-dasharray: 4 5; opacity: .5;',
+    '[data-problem="dependency"] .dependency-stack { stroke-dasharray: 4 5; opacity: .36;',
+    '[data-problem="dependency"] .dependency-break, [data-problem="dependency"] .dependency-stop { opacity: 1;',
+    '[data-team-art="c"] .team-workflow { opacity: 1;']
+    .every(rule => reducedFigureCss.includes(rule)),
+  "Problem figures need reserved geometry, a finite three-second departure/failed-transfer sequence, readable flat cards, keyboard focus, hidden pause and CSS reduced-motion end states.");
 check(stageCss.includes("padding: var(--s-12)") && stageCss.includes("border: var(--border)") &&
   stageCss.includes("border-radius: 24px") && stageCss.includes("background: var(--surface-1)") &&
   windowCss.includes("overflow: hidden") && windowCss.includes("border-radius: var(--r-xl)") &&
@@ -1462,23 +1481,30 @@ check(cssBlock(englishCss, ".solution-copy {").includes("row-gap: var(--s-8)") &
 check(cssBlock(englishCss, ".solution-figure {").includes("margin-bottom: var(--s-6)") &&
   cssBlock(englishCss, ".solution-figure:focus-visible").includes("outline: 2px solid var(--accent-light)") &&
   cssBlock(englishCss, "@media (min-width: 1024px)").includes(".solution-copy li + li { border-left: 1px solid transparent; }") &&
-  cssBlock(englishCss, ".problem-art .company-stack text").includes("font-size: 16.5px") &&
+  cssBlock(englishCss, ".problem-art .harness-card text").includes("font-size: 16.5px") &&
   cssBlock(englishCss, '[data-solution][data-state] .problem-art *').includes("animation-play-state: paused") &&
   cssBlock(englishCss, '[data-solution][data-state].problem-flow-running .problem-art *').includes("animation-play-state: running") &&
-  ["safe-reuse", "company-connect", "copy-b"].every(name =>
-    englishCss.includes(`animation: solution-${name} 3.6s`)) &&
+  cssBlock(englishCss, '[data-state="changed"] .safe-stem').includes(".4s linear .35s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .safe-upper').includes(".55s linear .85s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .safe-lower').includes(".55s linear 1.45s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .safe-confidential').includes(".35s ease 2.1s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .safe-reusable').includes("flat-finish 3s linear both") &&
+  cssBlock(englishCss, '[data-state="changed"] .company-stack .harness-card').includes(".4s + var(--step) * .35s") &&
+  cssBlock(englishCss, '[data-state="changed"] .company-new-link').includes(".65s linear 1.9s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .company-successor').includes("solution-company-owner 3s linear both") &&
+  cssBlock(englishCss, '[data-state="changed"] .shared-moving-b').includes("solution-copy-b 3.6s") &&
+  cssBlock(englishCss, ".safe-stem, .safe-lower, .safe-reusable").includes("stroke: var(--text-1)") &&
+  cssBlock(englishCss, ".safe-upper, .safe-confidential,").includes("stroke: var(--accent-light)") &&
+  cssBlock(englishCss, ".company-old-link {").includes("stroke-dasharray: 4 5") &&
   !/[^{}]*\{[^}]*animation[^}]*\binfinite\b/.test(englishCss.slice(
     englishCss.indexOf(".solution-figure {"), englishCss.indexOf(".solution-copy h3"))) &&
-  !/[^{}]*\.company-stack[^{}]*\{[^}]*(?:animation|stroke-dasharray)/.test(englishCss) &&
-  ['[data-solution] .safe-confidential { transform: translate(-24px, 45px);',
-    '[data-solution] .safe-reusable { transform: translate(211px, -48px);',
-    '[data-solution] .company-owner { opacity: 0;',
-    '[data-solution] .company-departed { opacity: .5; transform: translate(-24px, -25px);',
-    '[data-solution] .company-old-link { opacity: .4; stroke-dasharray: 4 5;',
+  !/[^{}]*\.company-stack[^{}]*\{[^}]*stroke-dasharray/.test(englishCss) &&
+  ['[data-solution] .safe-confidential, [data-solution] .safe-reusable,',
+    '[data-solution] .company-successor { stroke: var(--accent-light);',
     '[data-solution] .shared-target-a, [data-solution] .shared-target-b { opacity: 1;',
-    '[data-solution] .company-new-link, [data-solution] .shared-route { stroke-dashoffset: 0;']
-    .every(rule => cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(rule)),
-  "Solution figures need matched drawing rhythm, readable layer names, visible focus, finite 3.6s clocks, solid retained layers, hidden-tab pause and CSS-only reduced-motion end states.");
+    '[data-solution] .shared-route { stroke-dashoffset: 0;']
+    .every(rule => reducedFigureCss.includes(rule)),
+  "Solution figures need matched drawing rhythm, readable cards, visible focus, finite three-second safe/company and unchanged shared clocks, solid company cards, hidden pause and CSS-only reduced-motion end states.");
 check(!/class="(?:final|closing-cta|cta-band)"/.test(home) &&
   homeSections.at(-1)?.[1].includes('id="demo"'),
   "The form must close the home page, with no additional closing CTA band.");
@@ -1635,8 +1661,8 @@ const japaneseProblemCopy = [
   ["teams", "AI活用ノウハウの共有不足", "各チームで生まれた便利なAI活用方法やワークフローが、ほかのチームに共有されず、組織全体に広がっていません。"]
 ];
 const japaneseFigures = [...japaneseProblem.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
-check(japaneseFigures[0]?.[2].includes('aria-label="図: 会社の仕事が個人のAIに流れていく"') &&
-  japaneseFigures[0]?.[3].includes('data-status-changed="機密の書類が、会社の外の個人のAIに渡りました。"'),
+check(japaneseFigures[0]?.[2].includes('aria-label="図: 会社の書類が境界の外の個人AIにつながる"') &&
+  japaneseFigures[0]?.[3].includes('data-status-changed="書類が会社の管理外にある個人のAIにつながりました。感嘆符がリスクを示しています。"'),
   "Japanese Shadow AI must use its exact accessible name and completed live status.");
 check(japaneseProblem.includes('<span class="mono-label">課題</span>') &&
   withoutJapanesePhrases(japaneseProblem).includes('<h2 class="h2">御社のAIは、会社の管理下にありますか？</h2>') &&
@@ -1666,22 +1692,22 @@ for (const [index, [id, heading, description]] of japaneseProblemCopy.entries())
     "English and Japanese Problem markup and SVG must be identical apart from text.");
 }
 check([...(japaneseFigures[1]?.[3] || "").matchAll(/<text\b[^>]*>([^<]*)<\/text>/g)].map(match => match[1]).join() ===
-    [...layerNames, ...layerNames, ...layerNames].join() &&
-  japaneseFigures[1]?.[2].includes('aria-label="図: 担当者が辞めると、後任者が文脈・指示・ツール・ワークフローを一から作り直す"') &&
+    layerNames.join() &&
+  japaneseFigures[1]?.[2].includes('aria-label="図: 担当者が離れると接続が切れ、後任者に何も届かない"') &&
   ["A", "B", "C"].every(team => japaneseProblem.includes(`>チーム ${team} を開く</span>`)),
   "Japanese dependency layers must keep the same English labels; the figure name, states and team controls must be translated.");
-// R10 changes only the captions of the original R9 Shadow AI and teams figures.
+checkFlatProblems(japaneseFigures[0]?.[3] || "", japaneseFigures[1]?.[3] || "", "Japanese");
+// R15 preserves the complete teams/shared figures from baseline d79a2c9.
 for (const [filename, source, hashes] of [
-  ["index.html", home, ["3cb6fd9cf58ec7d1b5688d076e36585fb52d24df74652041a008eb74a035094f",
-    "2cc1bc24fbc71b9efec5af075ab22d04e6fbfa59616d7bce2d35c68c9c11f91e"]],
-  ["ja/index.html", japanese, ["77a42afcb83c94223fb37ab94194359f0d68f1c776253df90f1e4b0e983ea614",
-    "006717f75376835549b5caa52fddc46f394706e81ccbc6b0660f3aefcd189042"]]
+  ["index.html", home, ["1bfa6c33da0b9e81a3e10b56fbfbea991120720929b1aa45d1175b872b093866",
+    "0fd7fbbfee12e8b08856dc8a97aaf5a9adb04e8c4bf687002820d327b4862b95"]],
+  ["ja/index.html", japanese, ["152fd4bc2735eb43777e19a5dcaed4d7c1735f1a261aa1e7d2a99cbb031f46d1",
+    "6945f7220d06b0f8e606bf3bbab6d6ca7b2155f89a513c8c18c7983ce2d9cd75"]]
 ]) {
-  for (const [index, id] of ["shadow", "teams"].entries()) {
-    const figure = source.match(new RegExp(`<figure class="problem-column" data-problem="${id}"[\\s\\S]*?</figure>`))?.[0] || "";
-    const preserved = figure.replace(/<figcaption>[\s\S]*?<\/figcaption>/, "");
-    check(createHash("sha256").update(preserved).digest("hex") === hashes[index],
-      `${filename} ${id} drawing, name, states and controls must remain unchanged from R9.`);
+  for (const [index, [type, id]] of [["problem", "teams"], ["solution", "shared"]].entries()) {
+    const figure = source.match(new RegExp(`<figure class="[^"]+" data-${type}="${id}"[\\s\\S]*?</figure>`))?.[0] || "";
+    check(createHash("sha256").update(figure).digest("hex") === hashes[index],
+      `${filename} ${id} SVG, name, states, copy and controls must remain unchanged from d79a2c9.`);
   }
 }
 
@@ -1707,14 +1733,6 @@ const solutionMarkup = figures => figures.map(figure => figure
   .replace(/(<span\b[^>]*>)[^<]*(<\/span>)/g, "$1TEXT$2"));
 check(JSON.stringify(solutionMarkup(solutionFigures)) === JSON.stringify(solutionMarkup(japaneseSolutionFigures)),
   "English and Japanese Solution figures must have identical full markup and SVG geometry apart from accessible text; layer names stay English.");
-for (const [filename, source, hash] of [
-  ["index.html", home, "86201423accbb544335eb8963118a5896b2dfb03aa84c9f91d7183db937a53c1"],
-  ["ja/index.html", japanese, "2a88698510eac755398463145e4c461b156c2a3e88f85fbff67f5ca1164f5d02"]
-]) {
-  const preserved = source.match(/<section class="section" id="problem">[\s\S]*?<\/section>/)?.[0] || "";
-  check(createHash("sha256").update(preserved).digest("hex") === hash,
-    `${filename} entire Problem section must remain unchanged from R11 (7c6dc8b) during R12.`);
-}
 for (const [language, source, introduction, badges] of [
   ["English", home, "Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.",
     ["Secure", "Company-owned", "Shared", "Up to date"]],

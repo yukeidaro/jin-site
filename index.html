@@ -303,123 +303,61 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       <h2 class="h2">Is your company in control of its AI?</h2>
     </div>
     <div class="problem-grid">
-      <figure class="problem-column" data-problem="shadow" data-state="idle" tabindex="0" aria-label="Figure: company work flows into a personal AI">
+      <figure class="problem-column" data-problem="shadow" data-state="idle" tabindex="0" aria-label="Figure: a company document connects to a personal AI outside the boundary">
         <div class="problem-art">
-          <svg viewBox="0 0 420 320" role="img" aria-label="An employee works at a desk inside the company platform. A separate personal AI sits outside it. A document has a small lock sign." data-label-idle="An employee works at a desk inside the company platform. A separate personal AI sits outside it. A document has a small lock sign." data-label-playing="A confidential document travels from the employee across the company boundary to a personal AI. A warning appears at the boundary." data-label-changed="The confidential document is in the personal AI outside the company. A warning marks the crossed boundary and the personal AI has an accent outline.">
-            <g class="shadow-company">
-              <path class="iso-base" d="M22 156 145 85 268 156V174L145 245 22 174Z"/>
-              <path class="shadow-boundary" d="M22 156 145 85 268 156 145 227ZM145 227V245"/>
-              <g class="shadow-employee iso-highlight">
-                <circle cx="117" cy="90" r="8"/>
-                <path class="iso-face" d="M105 120V110C105 96 129 96 129 110V120"/>
-                <path d="M108 119 123 133 142 123M126 117 137 124"/>
-              </g>
-              <path class="iso-face" d="M87 150 131 125 175 150V171L131 196 87 171Z"/>
-              <path d="M87 150 131 175 175 150M131 175V196"/>
-              <path class="iso-face" d="M132 126V104L157 118V140ZM132 126 118 134 143 148 157 140"/>
-              <path d="M124 134 143 145 152 140"/>
-            </g>
-            <path class="iso-base" d="M286 225 340 194 394 225V240L340 271 286 240Z"/>
-            <path d="M286 225 340 256 394 225M340 256V271"/>
+          <svg viewBox="0 0 420 320" role="img" aria-label="A white document sits inside a dashed company boundary." data-label-idle="A white document sits inside a dashed company boundary." data-label-playing="A line grows from the document through the company boundary toward a personal AI." data-label-changed="A vermilion line crosses the dashed company boundary to a personal AI chat bubble. An exclamation mark warns that the company cannot see it.">
+            <rect class="shadow-boundary flat-intro" x="28" y="90" width="178" height="140" rx="12"/>
+            <g class="shadow-document flat-document flat-intro" transform="translate(60 129)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+            <path class="shadow-route flat-route" pathLength="1" d="M104 160H306"/>
             <g class="shadow-ai">
-              <path class="iso-face" d="M312 203 340 187 368 203V224L340 240 312 224Z"/>
-              <path d="M312 203 340 219 368 203M340 219V240"/>
-              <path class="iso-face" d="M325 143H355A4 4 0 0 1 359 147V165A4 4 0 0 1 355 169H340L330 177V169H325A4 4 0 0 1 321 165V147A4 4 0 0 1 325 143Z"/>
-              <path d="M330 153H350M330 160H343"/>
-              <path class="shadow-ai-outline" d="M312 203 340 187 368 203V224L340 240 312 224ZM312 203 340 219 368 203M340 219V240"/>
+              <path d="M314 137H368A8 8 0 0 1 376 145V175A8 8 0 0 1 368 183H330L316 195V183H314A8 8 0 0 1 306 175V145A8 8 0 0 1 314 137Z"/>
+              <path d="M322 153H360M322 165H349"/>
             </g>
-            <path class="shadow-route" d="M176 130C211 130 244 165 267 181S320 210 340 212"/>
-            <g transform="translate(245 168)">
-              <circle class="shadow-warning-pulse" r="18"/>
-              <g class="shadow-warning">
-                <path class="iso-face" d="M0-13 13 10H-13Z"/>
-                <path d="M0-5V1M0 5V6"/>
-              </g>
-            </g>
-            <g transform="translate(176 130)">
-              <g class="shadow-document">
-                <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1Z"/>
-                <path d="M-24-1 0 13 24-1M0 13V18"/>
-                <g class="shadow-confidential" transform="translate(0 -4)">
-                  <path class="iso-face" d="M-5-2H5V6H-5ZM-3-2V-5A3 3 0 0 1 3-5V-2"/>
-                  <path d="M0 1V3"/>
-                </g>
-              </g>
-            </g>
+            <g class="shadow-warning problem-finish"><path d="M391 143V156M391 163V164"/></g>
           </svg>
         </div>
         <figcaption><h3>Shadow AI</h3><p>Confidential company information could end up in personal AI tools, outside the company's control.</p></figcaption>
-        <p class="problem-status" id="problem-shadow-status" aria-live="polite" aria-atomic="true" data-status-idle="A confidential document is inside the company. The personal AI is outside." data-status-playing="A confidential document is crossing the company boundary to a personal AI." data-status-changed="A confidential document left the company for a personal AI.">A confidential document is inside the company. The personal AI is outside.</p>
+        <p class="problem-status" id="problem-shadow-status" aria-live="polite" aria-atomic="true" data-status-idle="A document is inside the company boundary." data-status-playing="A connection is growing from the company document to a personal AI." data-status-changed="The document connects to a personal AI outside company control. An exclamation mark marks the risk.">A document is inside the company boundary.</p>
       </figure>
-      <figure class="problem-column" data-problem="dependency" data-state="idle" tabindex="0" aria-label="Figure: when the owner leaves, the successor rebuilds context, instructions, tools and workflows from scratch">
+      <figure class="problem-column" data-problem="dependency" data-state="idle" tabindex="0" aria-label="Figure: the owner's departure breaks the connection and nothing reaches the successor">
         <div class="problem-art">
-          <svg viewBox="0 0 420 320" role="img" aria-label="One owner is connected to a stack of context, instructions, tools and workflows." data-label-idle="One owner is connected to a stack of context, instructions, tools and workflows." data-label-playing="The owner leaves. Their outline and connection become dashed, an x marks the break, and their stack fades." data-label-rebuilding="A new owner rebuilds workflows, tools, instructions and context from the bottom up." data-label-changed="Three stages: one owner holds the stack; the owner leaves and the stack fades; a successor rebuilds context, instructions, tools and workflows from scratch.">
-            <defs>
-              <g id="dependency-person">
-                <circle cy="40" r="12"/>
-                <path d="M-21 89V78C-21 54 21 54 21 78V89Z"/>
+          <svg viewBox="0 0 420 320" role="img" aria-label="A vermilion owner connects to four cards: Context, Instructions, Tools and Workflows. A grey successor waits on the right." data-label-idle="A vermilion owner connects to four cards: Context, Instructions, Tools and Workflows. A grey successor waits on the right." data-label-playing="The owner becomes a dashed outline and leaves. The connection breaks, the cards fade and an arrow stops halfway to the successor." data-label-changed="The departed owner and four cards are dashed grey. Two vermilion x marks show the broken owner connection and the stopped arrow. Nothing reaches the grey successor.">
+            <defs><g id="dependency-person"><circle cy="-22" r="12"/><path d="M-21 34V21C-21-7 21-7 21 21V34Z"/></g></defs>
+            <g transform="translate(42 160)">
+              <use class="dependency-owner" href="#dependency-person"/>
+              <use class="dependency-departed" href="#dependency-person"/>
+            </g>
+            <path class="dependency-old-link" d="M70 160H132"/>
+            <path class="dependency-break" d="M95 154 107 166M107 154 95 166"/>
+            <g class="dependency-stack">
+              <g class="harness-card" data-layer="context" style="--step:0" transform="translate(132 64)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M0-11H10L16-5V11H0ZM10-11V-5H16M4 0H12M4 5H12"/></g>
+                <text x="44" y="27">Context</text>
               </g>
-              <g id="dependency-layer">
-                <path d="M-56 0 0-9 56 0V24L0 33-56 24ZM-56 0 0 9 56 0"/>
+              <g class="harness-card" data-layer="instructions" style="--step:1" transform="translate(132 114)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M5-8H18M5 0H18M5 8H18M-1-8H0M-1 0H0M-1 8H0"/></g>
+                <text x="44" y="27">Instructions</text>
               </g>
-              <mask id="dependency-context" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
-                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
-              </mask>
-              <mask id="dependency-instructions" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
-                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
-              </mask>
-              <mask id="dependency-tools" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
-                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
-              </mask>
-              <mask id="dependency-workflows" maskUnits="userSpaceOnUse" x="-59" y="-21" width="118" height="74">
-                <path class="dependency-trace" pathLength="1" d="M-56 0 0-9 56 0V24L0 33-56 24V0L0 9 56 0"/>
-              </mask>
-            </defs>
-            <g class="dependency-stage" data-stage="owner" transform="translate(66 0)">
-              <use class="dependency-person" href="#dependency-person"/>
-              <path class="dependency-link" d="M0 89V117"/>
-              <g class="dependency-stack">
-                <use href="#dependency-layer" y="258"/><use href="#dependency-layer" y="214"/>
-                <use href="#dependency-layer" y="170"/><use href="#dependency-layer" y="126"/>
-                <text y="151">Context</text><text y="195">Instructions</text>
-                <text y="239">Tools</text><text y="283">Workflows</text>
+              <g class="harness-card" data-layer="tools" style="--step:2" transform="translate(132 164)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M10-10A8 8 0 0 0 2 0L-7 9A3 3 0 0 0-3 13L6 4A8 8 0 0 0 16-4L11 1 7-3Z"/></g>
+                <text x="44" y="27">Tools</text>
+              </g>
+              <g class="harness-card" data-layer="workflows" style="--step:3" transform="translate(132 214)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><rect x="4" y="-12" width="8" height="7" rx="1"/><rect x="-5" y="6" width="8" height="7" rx="1"/><rect x="13" y="6" width="8" height="7" rx="1"/><path d="M8-5V1M-1 6V1H17V6"/></g>
+                <text x="44" y="27">Workflows</text>
               </g>
             </g>
-            <path class="dependency-transition" style="--step:0" d="M129 214H145M139 208 145 214 139 220"/>
-            <g class="dependency-stage dependency-departure" data-stage="departure" transform="translate(210 0)">
-              <use class="dependency-person dependency-owner-solid" href="#dependency-person"/>
-              <use class="dependency-owner-gone" href="#dependency-person"/>
-              <path class="dependency-link dependency-broken-link" d="M0 89V117"/>
-              <path class="dependency-break" d="M-5 95 5 105M5 95-5 105"/>
-              <g class="dependency-stack dependency-faded-stack">
-                <use href="#dependency-layer" y="258"/><use href="#dependency-layer" y="214"/>
-                <use href="#dependency-layer" y="170"/><use href="#dependency-layer" y="126"/>
-                <text y="151">Context</text><text y="195">Instructions</text>
-                <text y="239">Tools</text><text y="283">Workflows</text>
-              </g>
-            </g>
-            <path class="dependency-transition" style="--step:1" d="M273 214H289M283 208 289 214 283 220"/>
-            <g class="dependency-stage dependency-successor" data-stage="successor" transform="translate(354 0)">
-              <use class="dependency-person" href="#dependency-person"/>
-              <path class="dependency-link dependency-new-link" d="M0 89V117"/>
-              <g class="dependency-rebuild" data-layer="context" style="--step:3" transform="translate(0 126)">
-                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-context)"/><text y="25">Context</text>
-              </g>
-              <g class="dependency-rebuild" data-layer="instructions" style="--step:2" transform="translate(0 170)">
-                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-instructions)"/><text y="25">Instructions</text>
-              </g>
-              <g class="dependency-rebuild" data-layer="tools" style="--step:1" transform="translate(0 214)">
-                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-tools)"/><text y="25">Tools</text>
-              </g>
-              <g class="dependency-rebuild" data-layer="workflows" style="--step:0" transform="translate(0 258)">
-                <use class="dependency-outline" href="#dependency-layer" mask="url(#dependency-workflows)"/><text y="25">Workflows</text>
-              </g>
-              <g transform="translate(39 104)"><path class="dependency-redo" d="M12-5A13 13 0 1 0 13 3M12-13V-5H4"/></g>
-            </g>
+            <path class="dependency-attempt flat-route" pathLength="1" d="M288 160H320M314 154 320 160 314 166"/>
+            <path class="dependency-stop problem-finish" d="M326 154 338 166M338 154 326 166"/>
+            <g class="dependency-successor" transform="translate(376 160)"><use href="#dependency-person"/></g>
           </svg>
         </div>
         <figcaption><h3>Agents that depend on one person</h3><p>Agents and workflows stay with the people who built them. When they leave, everything starts over.</p></figcaption>
-        <p class="problem-status" id="problem-dependency-status" aria-live="polite" aria-atomic="true" data-status-idle="One owner holds context, instructions, tools and workflows." data-status-playing="The owner leaves. The connection breaks and the stack fades." data-status-rebuilding="The successor is rebuilding workflows, tools, instructions and context from the bottom up." data-status-changed="The owner left. The successor rebuilt context, instructions, tools and workflows from scratch.">One owner holds context, instructions, tools and workflows.</p>
+        <p class="problem-status" id="problem-dependency-status" aria-live="polite" aria-atomic="true" data-status-idle="One owner connects to Context, Instructions, Tools and Workflows. The successor is not connected." data-status-playing="The owner is leaving. The cards fade and the transfer stops." data-status-changed="The owner left. Both connections are broken and nothing reached the successor.">One owner connects to Context, Instructions, Tools and Workflows. The successor is not connected.</p>
       </figure>
       <figure class="problem-column" data-problem="teams" data-state="idle" tabindex="0" aria-label="Figure: separate teams keep their workflows hidden.">
         <div class="problem-art">
@@ -480,83 +418,68 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
     <h2 class="h2 solution-heading">How Jin AI keeps your AI</h2>
     <ul class="solution-copy">
       <li>
-        <figure class="solution-figure" data-solution="safe" data-state="idle" tabindex="0" aria-label="Figure: confidential parts stay inside; reusable parts reach only approved AI tools">
+        <figure class="solution-figure" data-solution="safe" data-state="idle" tabindex="0" aria-label="Figure: confidential documents stay locked while reusable documents can be shared">
           <div class="problem-art">
-            <svg viewBox="0 0 420 320" role="img" aria-label="A bundle is inside the company platform. An approved AI tool and a personal AI are outside." data-label-idle="A bundle is inside the company platform. An approved AI tool and a personal AI are outside." data-label-playing="The bundle separates. The locked part stays inside; the reusable part moves toward the checked AI tool. The personal AI route stops at an x." data-label-changed="The locked confidential part remains inside the company. Only the reusable part reaches the approved AI tool. An x stops the route to the personal AI.">
-              <g class="safe-company">
-                <path class="iso-base" d="M20 174 145 102 270 174V194L145 266 20 194Z"/>
-                <path class="safe-boundary" d="M20 174 145 246 270 174M145 246V266"/>
-              </g>
-              <g class="safe-approved">
-                <path class="iso-base" d="M292 123 345 93 398 123V139L345 170 292 139Z"/>
-                <path d="M292 123 345 154 398 123M345 154V170"/>
-                <path class="iso-face" d="M317 104 345 88 373 104V125L345 141 317 125Z"/>
-                <path d="M317 104 345 120 373 104M345 120V141"/>
-                <path class="safe-check" d="M332 67 341 76 359 57"/>
-              </g>
-              <g class="safe-personal">
-                <path class="iso-base" d="M292 264 345 234 398 264V280L345 311 292 280Z"/>
-                <path d="M292 264 345 295 398 264M345 295V311"/>
-                <path class="iso-face" d="M317 245 345 229 373 245V266L345 282 317 266Z"/>
-                <path d="M317 245 345 261 373 245M345 261V282"/>
-                <path class="iso-face" d="M330 190H360V215H345L335 223V215H330ZM337 198H353M337 205H348"/>
-              </g>
-              <path class="safe-approved-route" pathLength="1" d="M118 154 174 171 260 121 329 106"/>
-              <path class="safe-blocked-route" pathLength="1" d="M159 186 218 220 263 246"/>
-              <path class="safe-block" d="M256 239 270 253M270 239 256 253"/>
-              <g transform="translate(118 154)">
-                <g class="safe-confidential">
-                  <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1ZM-24-1 0 13 24-1M0 13V18"/>
-                  <g class="safe-lock" transform="translate(0 -4)">
-                    <path class="iso-face" d="M-5-2H5V6H-5ZM-3-2V-5A3 3 0 0 1 3-5V-2"/>
-                    <path d="M0 1V3"/>
-                  </g>
+            <svg viewBox="0 0 420 320" role="img" aria-label="A white document is ready to split into confidential and reusable parts." data-label-idle="A white document is ready to split into confidential and reusable parts." data-label-playing="The line splits into an upper vermilion branch and a lower white branch." data-label-changed="The upper vermilion arrow leads to confidential documents with a lock: they stay inside the company. The lower white arrow leads to reusable documents with a three-circle share icon.">
+              <g class="safe-document flat-document flat-intro" transform="translate(60 129)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+              <path class="safe-stem flat-route" pathLength="1" d="M104 160H166"/>
+              <path class="safe-upper flat-route" pathLength="1" d="M166 160C202 160 204 84 242 84H278M271 77 278 84 271 91"/>
+              <path class="safe-lower flat-route" pathLength="1" d="M166 160C202 160 204 236 242 236H278M271 229 278 236 271 243"/>
+              <g class="safe-confidential">
+                <g class="flat-document flat-back" transform="translate(304 43)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+                <g class="flat-document" transform="translate(294 53)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+                <g class="safe-lock" transform="translate(350 85)">
+                  <rect width="22" height="18" rx="3"/><path d="M5 0V-7A6 6 0 0 1 17-7V0M11 7V11"/>
                 </g>
-                <g class="safe-reusable solution-finish">
-                  <path class="iso-face" d="M0-15 24-1V4L0 18-24 4V-1ZM-24-1 0 13 24-1M0 13V18"/>
-                  <path d="M-12-1 0 6 12-1M-6-5 6 2"/>
+              </g>
+              <g class="safe-reusable solution-finish">
+                <g class="flat-document flat-back" transform="translate(304 195)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+                <g class="flat-document" transform="translate(294 205)"><path d="M0 0H30L44 14V62H0ZM30 0V14H44M10 28H32M10 39H32M10 50H24"/></g>
+                <g class="safe-share">
+                  <circle cx="354" cy="236" r="4"/><circle cx="375" cy="223" r="4"/><circle cx="375" cy="249" r="4"/>
+                  <path d="M358 234 371 225M358 238 371 247"/>
                 </g>
               </g>
             </svg>
           </div>
-          <span class="problem-status" id="solution-safe-status" aria-live="polite" aria-atomic="true" data-status-idle="One bundle is inside the company, ready to separate." data-status-playing="Confidential and reusable parts separate. Only the approved AI route carries a part." data-status-changed="Confidential parts stayed inside. The reusable part reached only the approved AI tool. The personal AI route stopped.">One bundle is inside the company, ready to separate.</span>
+          <span class="problem-status" id="solution-safe-status" aria-live="polite" aria-atomic="true" data-status-idle="One document is ready to separate into confidential and reusable parts." data-status-playing="The confidential branch grows first, followed by the reusable branch." data-status-changed="Confidential documents stay locked inside the company. Reusable documents have a share icon.">One document is ready to separate into confidential and reusable parts.</span>
         </figure>
         <h3>Keep it safe</h3><p>Separate confidential information from reusable context, skills, and workflows. Share each part only with the AI tools you approve.</p>
       </li>
       <li>
-        <figure class="solution-figure" data-solution="company" data-state="idle" tabindex="0" aria-label="Figure: the stack stays with the company and the next person connects to it">
+        <figure class="solution-figure" data-solution="company" data-state="idle" tabindex="0" aria-label="Figure: four company-owned cards connect directly to the next owner">
           <div class="problem-art">
-            <svg viewBox="0 0 420 320" role="img" aria-label="Context, instructions, tools and workflows sit in solid layers inside the company platform, connected to one person." data-label-idle="Context, instructions, tools and workflows sit in solid layers inside the company platform, connected to one person." data-label-playing="The first person leaves as a dashed outline. All four company layers stay solid while the next person connects to them." data-label-changed="The first person has left. The same four solid company layers are connected to the next person by a solid line, without rebuilding.">
-              <defs>
-                <g id="solution-company-person">
-                  <circle r="10"/><path d="M-17 46V34C-17 12 17 12 17 34V46Z"/>
-                </g>
-                <g id="solution-company-layer">
-                  <path class="iso-face" d="M-56 0 0-9 56 0V24L0 33-56 24ZM-56 0 0 9 56 0"/>
-                </g>
-              </defs>
-              <g class="company-platform">
-                <path class="iso-base" d="M40 204 210 106 380 204V214L210 312 40 214Z"/>
-                <path d="M40 204 210 302 380 204M210 302V312"/>
+            <svg viewBox="0 0 420 320" role="img" aria-label="A grey previous owner and dashed line sit to the left of the company cards. The next owner waits on the right." data-label-idle="A grey previous owner and dashed line sit to the left of the company cards. The next owner waits on the right." data-label-playing="Context, Instructions, Tools and Workflows appear from top to bottom. A vermilion arrow grows toward the next owner." data-label-changed="Four solid cards remain in the middle. A dashed grey line leads to the previous owner; a solid vermilion arrow connects the same cards to the vermilion next owner.">
+              <defs><g id="solution-company-person"><circle cy="-22" r="12"/><path d="M-21 34V21C-21-7 21-7 21 21V34Z"/></g></defs>
+              <g class="company-previous flat-intro" transform="translate(42 160)"><use href="#solution-company-person"/></g>
+              <path class="company-old-link flat-intro" d="M70 160H132"/>
+              <g class="company-stack">
+              <g class="harness-card" data-layer="context" style="--step:0" transform="translate(132 64)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M0-11H10L16-5V11H0ZM10-11V-5H16M4 0H12M4 5H12"/></g>
+                <text x="44" y="27">Context</text>
               </g>
-              <path class="company-old-link" d="M100 185 154 217"/>
-              <path class="company-new-link solution-finish" pathLength="1" d="M328 185 266 217"/>
-              <g transform="translate(83 139)">
-                <use class="company-owner" href="#solution-company-person"/>
-                <use class="company-departed" href="#solution-company-person"/>
+              <g class="harness-card" data-layer="instructions" style="--step:1" transform="translate(132 114)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M5-8H18M5 0H18M5 8H18M-1-8H0M-1 0H0M-1 8H0"/></g>
+                <text x="44" y="27">Instructions</text>
               </g>
-              <g class="company-successor" transform="translate(345 139)">
-                <use href="#solution-company-person"/>
+              <g class="harness-card" data-layer="tools" style="--step:2" transform="translate(132 164)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><path d="M10-10A8 8 0 0 0 2 0L-7 9A3 3 0 0 0-3 13L6 4A8 8 0 0 0 16-4L11 1 7-3Z"/></g>
+                <text x="44" y="27">Tools</text>
               </g>
-              <g class="company-stack" transform="translate(210 0)">
-                <use href="#solution-company-layer" y="226"/><use href="#solution-company-layer" y="182"/>
-                <use href="#solution-company-layer" y="138"/><use href="#solution-company-layer" y="94"/>
-                <text y="119">Context</text><text y="163">Instructions</text>
-                <text y="207">Tools</text><text y="251">Workflows</text>
+              <g class="harness-card" data-layer="workflows" style="--step:3" transform="translate(132 214)">
+                <rect width="156" height="42" rx="7"/>
+                <g class="harness-icon" transform="translate(17 21)"><rect x="4" y="-12" width="8" height="7" rx="1"/><rect x="-5" y="6" width="8" height="7" rx="1"/><rect x="13" y="6" width="8" height="7" rx="1"/><path d="M8-5V1M-1 6V1H17V6"/></g>
+                <text x="44" y="27">Workflows</text>
               </g>
+              </g>
+              <path class="company-new-link flat-route" pathLength="1" d="M288 160H350M343 153 350 160 343 167"/>
+              <g class="company-successor solution-finish" transform="translate(376 160)"><use href="#solution-company-person"/></g>
             </svg>
           </div>
-          <span class="problem-status" id="solution-company-status" aria-live="polite" aria-atomic="true" data-status-idle="One person connects to the company's four solid layers." data-status-playing="The first person leaves. The layers remain with the company as the next person connects." data-status-changed="Context, instructions, tools and workflows stayed with the company. The next person connected without rebuilding.">One person connects to the company's four solid layers.</span>
+          <span class="problem-status" id="solution-company-status" aria-live="polite" aria-atomic="true" data-status-idle="The previous owner is grey. The company cards are ready for the next owner." data-status-playing="The four company cards appear in order, then connect to the next owner." data-status-changed="Context, Instructions, Tools and Workflows stay with the company and connect directly to the next owner.">The previous owner is grey. The company cards are ready for the next owner.</span>
         </figure>
         <h3>Keep it in the company</h3><p>Context, instructions, tools, and workflows stay with the company, not with one person. Even when someone leaves, the setup keeps working and the next person can continue from there.</p>
       </li>
