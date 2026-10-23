@@ -141,7 +141,8 @@ E7 browser evidence and screenshots are in `.copilot-runs/notes/e7.md`.
 
 Both companion pages stack Employees (two rows) above Admins (three rows).
 Each row has its exact title and explanation. The first four have one E5 demo
-stage with a translated caption chip. Desktop keeps text left and screen right; at 1023px
+stage without a caption; each screen keeps its translated accessible name.
+Desktop keeps text left and screen right; at 1023px
 and below text precedes the screen. The home excerpts contain only the two
 audience labels, five feature titles and companion-page link, without screens.
 The approved AI harness definition is the bottom note at `#harness`.
@@ -149,7 +150,7 @@ The approved AI harness definition is the bottom note at `#harness`.
 The first four rows reuse the Connect, Categories, By role and What can move
 WebP stills, with independent nine-second camera cycles. The fifth is an
 intentionally blank framed placeholder, not an invented product interface.
-R8 hides the fifth stage and its caption with `hidden` on the figure in both
+R8 hides the fifth stage with `hidden` on the figure in both
 languages. The text spans the row through the shared `:has()` layout rule.
 When demo v2 arrives, remove that figure's `hidden` attribute and set its
 `data-demo-src` as described below; the original stage markup is preserved.

@@ -803,8 +803,11 @@ for (const [ja, page] of [[false, home], [true, japanese], [false, howPage], [tr
   check(exactElement(closing, "h2", ja ? japaneseClosingCopy : closingCopy),
     "Both home and companion closing headings must match the approved Keep copy exactly once.");
 }
+const removedScreenCaptionClass = ["screen", "caption"].join("-");
 for (const [ja, source, homeSource] of [[false, howPage, home], [true, japaneseHow, japanese]]) {
   const label = ja ? "Japanese" : "English";
+  check(!source.includes(removedScreenCaptionClass) && !/<figcaption\b/i.test(source),
+    `${label} How it works must not contain screen captions or figcaption elements.`);
   const blocks = [...source.matchAll(/<section class="section workflow" id="(employee|admin)" aria-labelledby="([^"]+)">([\s\S]*?)<\/section>/g)];
   const excerpt = homeSource.match(/<section class="section" id="how">([\s\S]*?)<\/section>/)?.[1] || "";
   check(blocks.length === 2 && blocks.map(b => b[1]).join() === "employee,admin" &&
@@ -825,7 +828,7 @@ for (const [ja, source, homeSource] of [[false, howPage, home], [true, japaneseH
     const cursor = '<svg class="workflow-cursor" aria-hidden="true" viewBox="0 0 24 32"><circle cx="2" cy="2" r="14"/><path d="M2 2L2 26L8 20L13 30L18 28L13 18L22 18Z"/></svg>';
     check(row?.[1] === f[0] && (row?.[2] === "" || row?.[2] === embedUrl) &&
       body.includes(`<div class="feature-copy"><h3>${title}</h3><p>${description}</p></div>`) &&
-      body.includes(`<figcaption class="screen-caption">${caption}</figcaption>`) &&
+      !body.includes(removedScreenCaptionClass) && !/<figcaption\b/i.test(body) &&
       body.includes(`<div class="screen${index === 4 ? " screen-placeholder" : ""}" role="img" aria-label="${caption}">`) &&
       body.includes('<div class="demo-window moving-frame">') &&
       body.includes(`<figure class="demo-stage"${index === 4 ? " hidden" : ""}>`) &&
@@ -834,7 +837,7 @@ for (const [ja, source, homeSource] of [[false, howPage, home], [true, japaneseH
         ? body.includes(`<img class="screen-${f[8]}" src="/assets/demo/${f[7]}" width="2880" height="1664" alt="" decoding="async" loading="lazy">`) &&
           count(body, /<img\b/g) === 1 && !/<iframe\b/.test(body)
         : body.includes('<span class="placeholder-mark" aria-hidden="true"></span>') && !/<(?:img|iframe|svg)\b/.test(body)),
-      `${label} ${f[0]} needs its exact title, description, caption, named screen and single still or empty tools placeholder.`);
+      `${label} ${f[0]} needs its exact title, description, named screen and single still or empty tools placeholder, without a caption.`);
     check(index < 4
       ? body.includes(`<div class="screen-camera screen-${f[8]}">`) &&
         count(body, /class="screen-camera /g) === 1 && count(body, /class="workflow-cursor"/g) === 1 &&
@@ -1218,12 +1221,12 @@ check(cssBlock(englishCss, ".feature-row {").includes("grid-template-columns: mi
   cssBlock(englishCss, ".feature-row:has(> .demo-stage[hidden])").includes("grid-template-columns: 1fr") &&
   cssBlock(englishCss, "@media (max-width: 1023px)").includes(".feature-row { grid-template-columns: 1fr;") &&
   cssBlock(englishCss, ".feature-row .demo-stage").includes("width: 100%") &&
-  cssBlock(englishCss, ".screen-caption").includes("font: var(--t-label)") &&
+  !englishCss.includes(`.${removedScreenCaptionClass}`) &&
   cssBlock(englishCss, ".email-contact").includes("justify-content: flex-start") &&
   cssBlock(englishCss, ".footer-column .copy-email").includes("justify-content: flex-start") &&
   !englishCss.includes("screen-crossfade") &&
   cssBlock(englishCss, "@media (prefers-reduced-motion: reduce)").includes(".moving-frame .screen img { animation: none; transform: none;"),
-  "R3 rows need responsive text-first layout, label captions, left-aligned email wrapping and independent reduced-motion stills.");
+  "R3 rows need responsive text-first layout without screen captions, left-aligned email wrapping and independent reduced-motion stills.");
 check(cssBlock(englishCss, ".screen-camera {").includes("animation-duration: 9s") &&
   cssBlock(englishCss, ".screen-camera {").includes("animation-play-state: paused") &&
   cssBlock(englishCss, ".screen-running .screen-camera").includes("animation-play-state: running") &&
@@ -2161,7 +2164,8 @@ for (const [relativePath, source] of htmlCache) {
       const window = stage.children[caption ? 1 : 0];
       const screen = window?.children[0];
       check(stage.name === "figure" && stage.children.length === (caption ? 2 : 1) &&
-        (!caption || hasClass(caption, "screen-caption")) &&
+        (!caption || (!["how-it-works/index.html", "ja/how-it-works/index.html"].includes(relativePath) &&
+          hasClass(caption, removedScreenCaptionClass))) &&
         window?.name === "div" && hasClass(window, "demo-window") && window.children.length === 1 &&
         screen?.name === "div" && (hasClass(screen, "hero-screen") || hasClass(screen, "screen")) &&
         screen.children.length > 0 && screen.children.every(child =>
@@ -2171,7 +2175,7 @@ for (const [relativePath, source] of htmlCache) {
             hasClass(child.children[1], "workflow-cursor")) ||
           (hasClass(screen, "screen-placeholder") && child.name === "span" && hasClass(child, "placeholder-mark")) ||
           (child.name === "template" && child.children.length === 1 && child.children[0].name === "iframe")),
-        `${relativePath}: demo-stage must contain only an optional caption and one demo-window/screen, with no added title bar.`);
+        `${relativePath}: demo-stage must contain one demo-window/screen, with no caption on How it works and no added title bar.`);
     }
   }
 
