@@ -8,6 +8,7 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | --- | --- |
 | `/` | Complete English Human landing page |
 | `/how-it-works/` | Five feature rows: Employees, then Admins; AI harness definition |
+| `/handover/` | Jin Handover use-case page for technical leaders, with illustrative demo data and direct demo booking |
 | `/security/` | Draft English security and data page |
 | `/company/` | Draft company mission and contact page |
 | `/resources/ai-harness/` | `noindex` compatibility redirect to `/how-it-works/#harness` |
@@ -15,6 +16,7 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/accessibility/` | Accessibility goal, known limits and contact details |
 | `/ja/` | Japanese translation of the English home, with the live demo, interactive Problem/Solution figures and the same waitlist-then-demo form |
 | `/ja/how-it-works/` | Japanese twin of the five feature rows and harness definition |
+| `/ja/handover/` | Japanese twin of Jin Handover; unapproved copy tracked in the E6c register |
 | `/ja/security/` | Draft Japanese security and data page |
 | `/ja/company/` | Draft Japanese company mission and contact page |
 | `/ja/resources/ai-harness/` | `noindex` compatibility redirect to `/ja/how-it-works/#harness` |
@@ -26,7 +28,7 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 | `/agent/content.json` | Public fact source for Human and Agent derivatives |
 | `/llms.txt` | Concise LLM index generated from the fact source |
 | `/robots.txt` | AI and search crawlers are allowed (Yu, 2026-10-21) |
-| `/sitemap.xml` | Contains twelve English and Japanese content page URLs, excluding redirects |
+| `/sitemap.xml` | Contains fourteen English and Japanese content page URLs, excluding redirects |
 
 The public content pages are self-canonical, with `en`, `ja` and `x-default`
 hreflang alternates. Every Japanese page has the same body structure, section

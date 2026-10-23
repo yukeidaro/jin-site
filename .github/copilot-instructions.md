@@ -29,6 +29,8 @@ The home page (`index.html`) contains only the hero, problem, solution, how it w
 
 R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイトリストに登録**, then optional **Request a demo** / **デモを申し込む**. Waitlist note: **We'll email you when access is ready. You can request a demo after joining.** / **ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。** Direct `#request-demo` and the optional demo show **We'll email you to find a time.** / **日程の調整のため、こちらからメールでご連絡します。** Keep the existing fields, endpoint and each step's consent version. No post-request survey.
 
+**Jin Handover page (Yu, 2026-10-23):** Only `/handover/` and `/ja/handover/` have these exceptions: write for CTOs, technical co-founders and engineering leaders without explaining technical terms; use **Book a demo** / **デモを予約する** CTAs linking directly to the existing Cal.com URL in `early_access.form.demo_booking.url`, not the waitlist flow; allow "setup" in demo harness names **Engineering Productivity Setup** / **Platform Operations Setup** (the validator exempts only these two pages and `handover.js`). The preview is front-end only and must be labelled as illustrative demo data, not a real customer. Japanese copy is unapproved and tracked in `.copilot-runs/notes/e6c-unapproved-copy.md`.
+
 ## Facts and status
 
 - `agent/content.json` is the single fact source. Change facts there, then run `node scripts/generate-aeo.mjs`. Never edit inside `GENERATED:*` markers by hand.

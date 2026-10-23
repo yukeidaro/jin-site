@@ -74,9 +74,12 @@ const expectedFiles = [
   "favicon.svg",
   "googled8075da2e5b1406b.html",
   "human/index.html",
+  "handover/index.html",
+  "handover.js",
   "index.html",
   "ja/index.html",
   "ja/how-it-works/index.html",
+  "ja/handover/index.html",
   "ja/privacy/index.html",
   "ja/accessibility/index.html",
   "ja/security/index.html",
@@ -121,7 +124,7 @@ check(favicon.length >= 62 &&
   favicon.readUInt32BE(38) === 48 && favicon.readUInt32BE(42) === 48,
   "The favicon must be a valid ICO container with a 48 x 48, 32-bit PNG image.");
 
-const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson, privacy, accessibility, japanesePrivacy, japaneseAccessibility, security, company, harness, japaneseSecurity, japaneseCompany, japaneseHarness] = await Promise.all([
+const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, robots, sitemap, llms, contentJson, privacy, accessibility, japanesePrivacy, japaneseAccessibility, security, company, harness, japaneseSecurity, japaneseCompany, japaneseHarness, handover, japaneseHandover] = await Promise.all([
   text("index.html"),
   text("ja/index.html"),
   text("how-it-works/index.html"),
@@ -142,7 +145,9 @@ const [home, japanese, howPage, japaneseHow, agent, humanAlias, englishAlias, ro
   text("resources/ai-harness/index.html"),
   text("ja/security/index.html"),
   text("ja/company/index.html"),
-  text("ja/resources/ai-harness/index.html")
+  text("ja/resources/ai-harness/index.html"),
+  text("handover/index.html"),
+  text("ja/handover/index.html")
 ]);
 
 const bingVerificationTag = '<meta name="msvalidate.01" content="7BF9C14D3232C5E464C8A6578E107EC5">';
@@ -153,7 +158,7 @@ check(home.split(bingVerificationTag).length === 2 &&
 const englishPages = [
   ["", home], ["how-it-works/", howPage], ["security/", security],
   ["privacy/", privacy], ["accessibility/", accessibility],
-  ["company/", company]
+  ["company/", company], ["handover/", handover]
 ];
 
 for (const [route, source] of [...englishPages, ["agent/", agent]]) {
@@ -182,6 +187,8 @@ const pagePairs = [
     "AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。"],
   ["how-it-works/", howPage, japaneseHow, "仕組み", "仕組み | Jin AI",
     "Jin AI が AI ツールにつながり、AI ハーネスを種類ごとに整理し、持ち出せるものを会社が決める仕組みです。"],
+  ["handover/", handover, japaneseHandover, "エースが退職しても、そのAIは会社に残る。", "Jin Handover | Jin AI",
+    "エンジニアが退職しても、チームのAIエージェント、スキル、指示、再利用できるコンテクストを会社に残します。"],
   ["security/", security, japaneseSecurity, "会社のコンテクストは、会社のもの。", "セキュリティ | Jin AI",
     "会社ごとにコンテクストを分けて保管します。個人のコンテクストと会社のコンテクストも、分けて扱います。"],
   ["company/", company, japaneseCompany, "会社情報", "会社情報 | Jin AI",
@@ -622,7 +629,7 @@ const sitemapPageUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match
 const sitemapUrls = [...sitemapPageUrls].sort();
 check(JSON.stringify(sitemapUrls) === JSON.stringify(
   pagePairs.flatMap(([route]) => [`https://jinai.md/${route}`, `https://jinai.md/ja/${route}`]).sort()),
-  "Sitemap must contain exactly the twelve English and Japanese content page URLs, without retired articles.");
+  "Sitemap must contain exactly the fourteen English and Japanese content page URLs, without retired articles.");
 check(!llms.includes(".md)"), "llms.txt must not link to Markdown mirrors.");
 check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blockquote summary.");
 const expectedLlmsPages = `## Pages\n\n${(await Promise.all(sitemapPageUrls.map(async (url) => {
@@ -639,6 +646,50 @@ check(!llms.includes("sole canonical product page") && !llms.includes("Canonical
   "llms.txt must describe the canonical Human pages in the plural.");
 
 const content = JSON.parse(contentJson);
+const handoverTitle = "Jin Handover | Jin AI";
+const handoverDescription = "Keep your team's AI agents, skills, instructions and reusable context with the company when an engineer leaves.";
+check(handover.includes(`<title>${handoverTitle}</title>`) &&
+  handover.includes("<h1 id=\"handover-heading\">Your best engineer leaves<br>Their AI shouldn't</h1>"),
+  "Handover must retain its approved English title and headline.");
+for (const [attribute, name, value] of [
+  ["property", "og:title", handoverTitle], ["name", "twitter:title", handoverTitle],
+  ["name", "description", handoverDescription], ["property", "og:description", handoverDescription],
+  ["name", "twitter:description", handoverDescription]
+]) {
+  check(handover.includes(`<meta ${attribute}="${name}" content="${value}">`),
+    `Handover must retain its approved English ${name}.`);
+}
+for (const [filename, source, previewLabel, availability] of [
+  ["handover/index.html", handover, "Demo preview. Illustrative data, not a real customer.",
+    "Company features are being built, starting with Claude Code."],
+  ["ja/handover/index.html", japaneseHandover, "デモ表示です。架空のデータで、実在の顧客ではありません。",
+    "会社向けの機能は、Claude Codeから開発を進めています。"]
+]) {
+  check(JSON.stringify([...source.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(match => match[1])) ===
+    '["problem","how","preview","github"]' && count(source, /<section\b/g) === 6,
+    `${filename} must have the six handover sections in order.`);
+  const preview = source.match(/<figure class="demo-stage handover-stage"[^>]*>([\s\S]*?)<\/figure>/)?.[1] || "";
+  check(source.includes(`<p class="handover-preview-label" id="preview-label">${previewLabel}</p>`) &&
+    source.includes(availability) &&
+    source.includes('<script type="module" src="/handover.js"></script>') &&
+    !/<form\b|<iframe\b/.test(preview),
+    `${filename} needs a labelled, illustrative, local-only preview and the company-feature availability caveat.`);
+  const booking = `<a class="btn btn-p" href="${content.early_access.form.demo_booking.url}" target="_blank" rel="noopener">`;
+  check(source.split(booking).length === 3,
+    `${filename} needs exactly two direct demo-booking links using the existing fact-source URL.`);
+  check(preview.includes('<fieldset class="handover-people" hidden>') &&
+    preview.includes('<legend>Employee</legend>') &&
+    preview.includes('<input type="radio" name="employee" value="alex" checked>') &&
+    preview.includes('<input type="radio" name="employee" value="priya">') &&
+    preview.includes('<h3 data-harness-title>AI harness: Engineering Productivity Setup</h3>') &&
+    preview.includes('class="btn btn-secondary handover-connect" disabled>Connect to Claude Code (demo)</button>'),
+    `${filename} needs the native employee selector, Alex fallback and inert demo-only connection button.`);
+  for (const panel of ["components", "summary", "movement", "receiver"]) {
+    check(count(preview, new RegExp(`<div class="handover-panel" id="panel-${panel}" data-panel="${panel}">`, "g")) === 1 &&
+      preview.includes(`id="tab-${panel}" data-tab="${panel}"`),
+      `${filename} needs the ${panel} tab and a visible no-JavaScript fallback panel.`);
+  }
+}
 check(content.product.name === "Jin AI", "Structured data product name is invalid.");
 check(content.product.status === "building", "Structured data must state the Building status.");
 check(home.includes(`<h2 class="h2">${content.problem.headline}</h2>`), "Root must use the approved problem heading.");
@@ -995,7 +1046,7 @@ function normalizedLandmark(source, landmark, baseUrl) {
 }
 for (const [route, source] of [
   ["how-it-works", howPage], ["security", security], ["privacy", privacy], ["accessibility", accessibility],
-  ["company", company]
+  ["company", company], ["handover", handover]
 ]) {
   const baseUrl = `https://jinai.md/${route}/`;
   const stylesheets = [...source.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)]
@@ -1070,10 +1121,11 @@ for (const [route, source] of englishPages) {
     JSON.stringify([...columns[index][2].matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(match => [match[2], match[1]])) ===
       JSON.stringify(links.map(([title, href]) => [title, href]))),
     `/${route} needs the complete Product, Legal, Company and Connect footer columns.`);
+  const footerLanguageRoute = route === "handover/" ? route : "";
   check(footer.includes("Visits are counted with Cloudflare Web Analytics. No cookies.") &&
     footer.includes("&copy; 2026 Jin AI") &&
-    footer.includes('<nav class="language-switch" aria-label="Language"><a href="/" lang="en" hreflang="en" aria-current="page" data-jin-lang="en">English</a> / <a href="/ja/" lang="ja" hreflang="ja" data-jin-lang="ja">日本語</a></nav>'),
-    `/${route} needs the analytics, copyright and root English/Japanese footer links.`);
+    footer.includes(`<nav class="language-switch" aria-label="Language"><a href="/${footerLanguageRoute}" lang="en" hreflang="en" aria-current="page" data-jin-lang="en">English</a> / <a href="/ja/${footerLanguageRoute}" lang="ja" hreflang="ja" data-jin-lang="ja">日本語</a></nav>`),
+    `/${route} needs the analytics, copyright and English/Japanese footer links.`);
   check(source.includes('<script type="module" src="/nav.js"></script>'),
     `/${route} must load the shared navigation script.`);
 }
@@ -1350,7 +1402,7 @@ for (const [filename, css] of [
 ]) {
   for (const [, selectors, declarations] of css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     if (/var\(--(?:font-mono|mono)\)/.test(declarations)) {
-      check(selectors.split(",").every(selector => /^(?:\.workflow code|code|\.files b|\.md \.path|\.md pre)$/.test(selector.trim())),
+      check(selectors.split(",").every(selector => /^(?:\.workflow code|\.handover-page code|code|\.files b|\.md \.path|\.md pre)$/.test(selector.trim())),
         `${filename}: monospace is reserved for code and file names, not ${selectors.trim()}.`);
     }
     check(!/text-transform:\s*uppercase/.test(declarations),
@@ -2000,14 +2052,15 @@ for (const relativePath of customerFacingTextFiles) {
   } else {
     const englishRoute = englishPages.find(([route]) => relativePath === `${route}index.html`)?.[0];
     const allowedLink = englishRoute === undefined ? "" :
-      '<a href="/ja/" lang="ja" hreflang="ja" data-jin-lang="ja">日本語</a>';
+      `<a href="/ja/${englishRoute === "handover/" ? englishRoute : ""}" lang="ja" hreflang="ja" data-jin-lang="ja">日本語</a>`;
     const withoutPageIndex = relativePath === "llms.txt" && exactLlmsPages ? source.replace(llmsPages, "") : source;
     const englishOnly = allowedLink ? withoutPageIndex.replace(allowedLink, "") : withoutPageIndex;
     check(!cjk.test(englishOnly), `${relativePath} contains CJK outside its Japanese footer language link or verified LLM page index.`);
   }
   check(!/[\u2013\u2014\u2018\u2019\u201c\u201d]/u.test(source),
     `${relativePath} contains em dashes, en dashes or curly quotes.`);
-  check(!/\bsetup\b/i.test(source.replaceAll(approvedCompanySolution, "")),
+  check(["handover/index.html", "ja/handover/index.html", "handover.js"].includes(relativePath) ||
+    !/\bsetup\b/i.test(source.replaceAll(approvedCompanySolution, "")),
     `${relativePath} contains setup outside the exact R11-approved Solution body.`);
   if (!relativePath.endsWith(".html") && !["agent/content.json", "llms.txt"].includes(relativePath)) {
     check(!/\bDiscord\b|discord\.gg/i.test(source), `${relativePath} contains an out-of-scope community mention.`);
@@ -2163,6 +2216,15 @@ for (const [relativePath, source] of htmlCache) {
       const caption = stage.children[0]?.name === "figcaption" ? stage.children[0] : null;
       const window = stage.children[caption ? 1 : 0];
       const screen = window?.children[0];
+      if (["handover/index.html", "ja/handover/index.html"].includes(relativePath) && hasClass(stage, "handover-stage")) {
+        check(stage.name === "figure" && stage.children.length === 1 &&
+          window?.name === "div" && hasClass(window, "demo-window") && window.children.length === 1 &&
+          screen?.name === "div" && hasClass(screen, "screen") && hasClass(screen, "handover-screen") &&
+          screen.children.length === 2 &&
+          hasClass(screen.children[0], "handover-titlebar") && hasClass(screen.children[1], "handover-app"),
+          `${relativePath}: the interactive handover preview must retain one demo-stage/window/screen and its own title bar.`);
+        continue;
+      }
       check(stage.name === "figure" && stage.children.length === (caption ? 2 : 1) &&
         (!caption || (!["how-it-works/index.html", "ja/how-it-works/index.html"].includes(relativePath) &&
           hasClass(caption, removedScreenCaptionClass))) &&
