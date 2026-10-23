@@ -249,7 +249,6 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .feature-copy p { max-width: 44ch; }
 .feature-row .demo-stage { width: 100%; min-width: 0; }
 .feature-row:has(> .demo-stage[hidden]) { grid-template-columns: 1fr; }
-.screen-caption { width: fit-content; margin-bottom: var(--s-4); padding: var(--s-1) var(--s-2); border: var(--border); border-radius: var(--r-s); color: var(--text-2); font: var(--t-label); letter-spacing: 0; }
 .screen-placeholder { display: grid; place-items: center; }
 .placeholder-mark { width: var(--s-8); border-top: var(--border); }
 .harness-note { padding-block: var(--s-12); border-top: var(--border); }
