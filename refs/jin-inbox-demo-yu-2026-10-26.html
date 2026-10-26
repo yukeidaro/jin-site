@@ -1,0 +1,333 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Jin AI Inbox Demo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+<style>
+/* One deliberate dark look. A plain desktop with a mail window; Jin is a dark glass band
+   attached to the top-center edge of the screen. It stays a thin band until there is
+   prepared work, then drops down. */
+:root {
+  --page: #0A0B0F;
+  --page-ink: #C9CCD6;
+  --page-muted: #7D8394;
+  --desk-a: #23262E;
+  --desk-b: #15171C;
+  --win: #F5F6F8;
+  --win-2: #E9EBEF;
+  --win-line: #DADDE3;
+  --win-ink: #1B1E26;
+  --win-muted: #6B7180;
+  --win-sel: #DEE5F7;
+  --glass-top: rgba(0, 0, 0, .97);
+  --glass-mid: rgba(3, 6, 16, .93);
+  --glass-low: rgba(12, 30, 86, .88);
+  --glass-line: rgba(255, 255, 255, .08);
+  --glass-ink: #F2F4F8;
+  --glass-muted: rgba(226, 231, 242, .58);
+  --glass-chip: rgba(255, 255, 255, .07);
+  --glass-chip-on: rgba(255, 255, 255, .18);
+  --pill: rgba(255, 255, 255, .10);
+  --pill-hover: rgba(255, 255, 255, .16);
+  --ok: #7FD6A8;
+  --font: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--page); color: var(--page-ink);
+  font-family: var(--font); font-size: 14px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 32px;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+.wrap { max-width: 1080px; margin: 0 auto; display: grid; gap: 14px; }
+
+/* ---------- the screen ---------- */
+.screen {
+  position: relative; overflow: hidden;
+  height: clamp(520px, 62vw, 640px);
+  border-radius: 18px;
+  background: radial-gradient(120% 90% at 50% 0%, var(--desk-a), var(--desk-b));
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+/* mail window, deliberately plain */
+.mail {
+  position: absolute; left: 7%; right: 7%; top: 64px; bottom: 6%;
+  background: var(--win); color: var(--win-ink);
+  border-radius: 12px; overflow: hidden;
+  display: grid; grid-template-columns: 280px 1fr;
+  box-shadow: 0 30px 80px rgba(0,0,0,.45);
+}
+.list { background: var(--win-2); border-right: 1px solid var(--win-line); padding: 12px 8px; display: grid; align-content: start; gap: 2px; }
+.list-h { font-size: 12px; font-weight: 600; color: var(--win-muted); padding: 2px 10px 8px; }
+.msg { text-align: left; padding: 9px 10px; border-radius: 8px; display: grid; gap: 1px; }
+.msg:hover { background: rgba(0,0,0,.04); }
+.msg.on { background: var(--win-sel); }
+.msg b { font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.msg span { font-size: 12.5px; color: var(--win-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.msg .dot { width: 7px; height: 7px; border-radius: 50%; background: #3B63D8; flex: none; }
+.msg:not(.unread) .dot { visibility: hidden; }
+
+.reader { padding: 28px 32px; min-width: 0; overflow: hidden; display: grid; align-content: start; gap: 14px; }
+.reader .empty { color: var(--win-muted); margin-top: 30%; text-align: center; }
+.reader h2 { margin: 0; font-size: 19px; font-weight: 600; text-wrap: balance; }
+.from { font-size: 13px; color: var(--win-muted); }
+.body { font-size: 14px; max-width: 60ch; }
+.body p { margin: 0 0 10px; }
+.reply {
+  border: 1px solid var(--win-line); border-radius: 10px; padding: 12px 14px;
+  font-size: 13.5px; white-space: pre-wrap; max-width: 60ch;
+  background: #fff; animation: rise .5s ease;
+}
+.reply .lbl { font-size: 11.5px; color: var(--win-muted); display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.reply .sent { font-size: 11px; font-weight: 600; color: #1E7A4C; background: #DDF3E6; padding: 1px 8px; border-radius: 999px; }
+
+/* ---------- Jin: the band at the top edge ---------- */
+.jin {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 200px; max-width: calc(100% - 24px);
+  height: 34px;
+  border-radius: 0 0 18px 18px;
+  background: linear-gradient(180deg, var(--glass-top) 0%, var(--glass-mid) 55%, var(--glass-low) 100%);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  border: 1px solid var(--glass-line); border-top: 0;
+  color: var(--glass-ink);
+  overflow: hidden; z-index: 5;
+  transition: width .55s cubic-bezier(.2,.9,.25,1), height .55s cubic-bezier(.2,.9,.25,1), border-radius .55s;
+  box-shadow: 0 18px 50px rgba(0,0,0,.35);
+}
+.jin[data-state="ready"] { width: 560px; height: 168px; border-radius: 0 0 30px 30px; }
+.jin[data-state="open"]  { width: 560px; border-radius: 0 0 30px 30px; }
+.jin[data-state="done"]  { width: 260px; }
+.undo { font-size: 12px; color: var(--glass-muted); text-decoration: underline; text-underline-offset: 2px; }
+.undo:hover { color: var(--glass-ink); }
+
+.band {
+  height: 34px; display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 12.5px; color: var(--glass-muted); white-space: nowrap;
+}
+.band .pulse { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.35); }
+.jin[data-state="done"] .band { color: var(--glass-ink); }
+.jin[data-state="done"] .pulse { background: var(--ok); }
+.jin[data-state="ready"] .band, .jin[data-state="open"] .band { display: none; }
+
+.glyph {
+  position: absolute; top: 14px; left: 18px;
+  height: 18px; color: var(--glass-ink); display: block;
+  opacity: 0; transition: opacity .3s .2s;
+}
+.glyph svg { height: 100%; width: auto; display: block; }
+.jin[data-state="ready"] .glyph, .jin[data-state="open"] .glyph { opacity: 1; }
+
+.panel {
+  position: absolute; inset: 0; padding: 18px 24px 22px;
+  display: grid; align-content: start; justify-items: center; gap: 4px;
+  opacity: 0; pointer-events: none; transition: opacity .25s;
+}
+.jin[data-state="ready"] .panel, .jin[data-state="open"] .panel { opacity: 1; pointer-events: auto; transition-delay: .18s; }
+
+.headline { margin-top: 30px; font-size: 16px; font-weight: 500; text-align: center; text-wrap: balance; }
+.sub { font-size: 12.5px; color: var(--glass-muted); text-align: center; }
+.pill {
+  margin-top: 14px; padding: 8px 22px; border-radius: 999px;
+  background: var(--pill); font-size: 13px; font-weight: 500;
+  transition: background .2s;
+}
+.pill:hover { background: var(--pill-hover); }
+.jin[data-state="open"] .pill.show { display: none; }
+
+.detail { width: 100%; display: grid; gap: 14px; margin-top: 16px; text-align: left; }
+.jin:not([data-state="open"]) .detail { display: none; }
+.k { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--glass-muted); margin-bottom: 6px; }
+.times { display: flex; flex-wrap: wrap; gap: 6px; }
+.time { padding: 6px 12px; border-radius: 999px; background: var(--glass-chip); font-size: 12.5px; }
+.time[aria-pressed="true"] { background: var(--glass-chip-on); }
+.draft {
+  background: rgba(255,255,255,.05); border: 1px solid var(--glass-line);
+  border-radius: 14px; padding: 12px 14px; font-size: 13px; line-height: 1.55;
+  white-space: pre-wrap; color: rgba(242,244,248,.9);
+}
+.acts { display: flex; justify-content: center; gap: 8px; margin-top: 2px; }
+.acts .pill { margin-top: 0; }
+.acts .primary { background: #F2F4F8; color: #0B0E16; }
+.acts .primary:hover { background: #fff; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ---------- caption under the screen ---------- */
+.foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; font-size: 13px; color: var(--page-muted); }
+.foot b { color: var(--page-ink); font-weight: 500; }
+.replay { padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.14); color: var(--page-ink); font-size: 12.5px; }
+.replay:hover { background: rgba(255,255,255,.06); }
+
+/* ---------- narrow screens ---------- */
+@media (max-width: 760px) {
+  .mail { left: 10px; right: 10px; grid-template-columns: 1fr; }
+  .list { display: none; }
+  .reader { padding: 22px 18px; }
+  .screen { height: 660px; }
+  .panel { padding: 16px 16px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jin, .panel, .glyph { transition: none; }
+  .reply { animation: none; }
+}
+</style>
+
+<div class="wrap">
+  <div class="screen" id="screen">
+    <div class="mail" aria-label="Mail app">
+      <nav class="list" aria-label="Inbox">
+        <div class="list-h">Inbox</div>
+        <button class="msg unread" data-id="sarah"><b><i class="dot"></i>Sarah Chen</b><span>Q4 pilot kickoff timing</span></button>
+        <button class="msg" data-id="other"><b><i class="dot"></i>Northwind Billing</b><span>Your October invoice</span></button>
+        <button class="msg" data-id="other"><b><i class="dot"></i>Marcus Lee</b><span>Notes from Thursday</span></button>
+        <button class="msg" data-id="other"><b><i class="dot"></i>Priya Raman</b><span>Re: security questionnaire</span></button>
+      </nav>
+      <section class="reader" id="reader">
+        <div class="empty">Select a message</div>
+      </section>
+    </div>
+
+    <div class="jin" id="jin" data-state="idle" role="region" aria-label="Jin" aria-live="polite">
+      <div class="band"><i class="pulse"></i><span id="bandText">Jin</span><button class="undo" id="undo" hidden>Undo</button></div>
+      <span class="glyph" aria-hidden="true"><svg viewBox="0 0 390 326"><g fill="currentColor"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></g></svg></span>
+      <div class="panel">
+        <div class="headline">Your reply to Sarah is ready</div>
+        <div class="sub">I checked your calendar and picked 3 open times next week.</div>
+        <button class="pill show" id="show">Show</button>
+
+        <div class="detail">
+          <div>
+            <div class="k">Open on your calendar</div>
+            <div class="times" id="times"></div>
+          </div>
+          <div>
+            <div class="k">Draft</div>
+            <div class="draft" id="draft"></div>
+          </div>
+          <div class="acts">
+            <button class="pill primary" id="put">Send</button>
+            <button class="pill" id="later">Not now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span><b>Open an email.</b> Jin drops down from the top of the screen with the work already done.</span>
+    <button class="replay" id="replay">Replay</button>
+  </div>
+</div>
+
+<script>
+const TIMES = [
+  { chip: "Tue 10/28 · 10:00 AM", day: "Tue", long: "Tuesday, Oct 28", at: "10:00 AM" },
+  { chip: "Wed 10/29 · 2:30 PM", day: "Wed", long: "Wednesday, Oct 29", at: "2:30 PM" },
+  { chip: "Thu 10/30 · 9:00 AM", day: "Thu", long: "Thursday, Oct 30", at: "9:00 AM" },
+];
+const jin = document.getElementById("jin");
+const reader = document.getElementById("reader");
+const bandText = document.getElementById("bandText");
+const timesEl = document.getElementById("times");
+const draftEl = document.getElementById("draft");
+let picked = 0, timers = [];
+
+function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+function setState(s, text) {
+  jin.dataset.state = s; bandText.textContent = text || "Jin";
+  // the open card grows to fit its content
+  jin.style.height = s === "open" ? jin.querySelector(".panel").scrollHeight + "px" : "";
+}
+
+function draftText() {
+  const t = TIMES[picked];
+  const others = TIMES.filter((_, i) => i !== picked).map(o => `${o.day} ${o.at}`);
+  return `Hi Sarah,\n\nNext week works well. Would ${t.long} at ${t.at} PT work for a 30-minute kickoff? If not, ${others[0]} or ${others[1]} PT are open too.\n\nBest,\nYu Asano`;
+}
+function renderTimes() {
+  timesEl.innerHTML = "";
+  TIMES.forEach((t, i) => {
+    const b = document.createElement("button");
+    b.className = "time"; b.textContent = t.chip + " PT";
+    b.setAttribute("aria-pressed", String(i === picked));
+    b.onclick = () => { picked = i; renderTimes(); draftEl.textContent = draftText(); };
+    timesEl.appendChild(b);
+  });
+}
+
+function openMail(btn) {
+  document.querySelectorAll(".msg").forEach(m => m.classList.toggle("on", m === btn));
+  if (btn.dataset.id !== "sarah") {
+    reader.innerHTML = `<h2>${btn.querySelector("span").textContent}</h2><div class="from">${btn.querySelector("b").textContent}</div><div class="body"><p>Nothing to prepare for this one, so Jin stays out of the way.</p></div>`;
+    if (jin.dataset.state !== "done") setState("idle");
+    return;
+  }
+  btn.classList.remove("unread");
+  reader.innerHTML = `
+    <h2>Q4 pilot kickoff timing</h2>
+    <div class="from">Sarah Chen &lt;sarah@contoso.com&gt; · 9:12 AM</div>
+    <div class="body">
+      <p>Hi Yu,</p>
+      <p>Our team is ready a bit earlier than planned. Could we move the pilot kickoff to next week? 30 minutes is enough. Send me a few times that work for you.</p>
+      <p>Thanks,<br>Sarah</p>
+    </div>`;
+  picked = 0; renderTimes(); draftEl.textContent = draftText();
+  clearTimers();
+  setState("idle", "Preparing…");
+  later(() => setState("ready"), 650);
+}
+
+const undoBtn = document.getElementById("undo");
+const sarahRow = () => document.querySelector('.msg[data-id="sarah"] span');
+
+function sendReply() {
+  const box = document.createElement("div");
+  box.className = "reply";
+  box.innerHTML = `<span class="lbl">Yu Asano · just now <span class="sent">Sent</span></span>`;
+  box.appendChild(document.createTextNode(draftEl.textContent));
+  reader.querySelector(".reply")?.remove();
+  reader.appendChild(box);
+  sarahRow().textContent = "You: Next week works well…";
+  setState("done", "Sent to Sarah");
+  undoBtn.hidden = false;
+  later(() => { undoBtn.hidden = true; setState("idle"); }, 5000);
+}
+undoBtn.onclick = () => {
+  clearTimers();
+  undoBtn.hidden = true;
+  reader.querySelector(".reply")?.remove();
+  sarahRow().textContent = "Q4 pilot kickoff timing";
+  setState("open");
+};
+
+document.querySelectorAll(".msg").forEach(b => b.addEventListener("click", () => openMail(b)));
+document.getElementById("show").onclick = () => setState("open");
+document.getElementById("put").onclick = sendReply;
+document.getElementById("later").onclick = () => { setState("done", "Okay, not now"); later(() => setState("idle"), 1800); };
+document.addEventListener("keydown", e => { if (e.key === "Escape" && jin.dataset.state !== "idle") setState("idle"); });
+
+function replay() {
+  clearTimers();
+  undoBtn.hidden = true;
+  sarahRow().textContent = "Q4 pilot kickoff timing";
+  setState("idle");
+  document.querySelectorAll(".msg").forEach((m, i) => { m.classList.remove("on"); if (i === 0) m.classList.add("unread"); });
+  reader.innerHTML = `<div class="empty">Select a message</div>`;
+  later(() => openMail(document.querySelector('.msg[data-id="sarah"]')), 1400);
+}
+document.getElementById("replay").onclick = replay;
+replay();
+</script>
+
+</body></html>
