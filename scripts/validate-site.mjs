@@ -63,6 +63,16 @@ const expectedFiles = [
   "assets/demo/demo-2-categories.webp",
   "assets/demo/demo-3-by-role.webp",
   "assets/demo/demo-4-what-can-move.webp",
+  "assets/figures/problem-tools.webp",
+  "assets/figures/problem-busy.webp",
+  "assets/figures/problem-how.webp",
+  "assets/figures/today.webp",
+  "assets/figures/with-jin.webp",
+  "assets/figures/control.webp",
+  "assets/figures/how-it-works-wide.webp",
+  "assets/figures/how-it-works-tall.webp",
+  "assets/figures/why-jin.webp",
+  "assets/figures/team-learning.webp",
   "base.css",
   "brand/jin-mark.svg",
   "brand/jin-mark-white.svg",
@@ -75,6 +85,7 @@ const expectedFiles = [
   "googled8075da2e5b1406b.html",
   "human/index.html",
   "index.html",
+  "inbox-demo.js",
   "ja/index.html",
   "ja/how-it-works/index.html",
   "ja/privacy/index.html",
@@ -93,6 +104,7 @@ const expectedFiles = [
   "security/index.html",
   "shots/og-b2b.png",
   "site.css",
+  "site-page.css",
   "theme-en.css",
   "theme-ja.css",
   "sitemap.xml",
@@ -350,16 +362,76 @@ for (const match of home.matchAll(/<(?:script|link)\b[^>]*(?:src|href)="(https?:
   check(["fonts.googleapis.com", "fonts.gstatic.com", "static.cloudflareinsights.com"].includes(new URL(match[1]).hostname),
     `Root loads an unapproved external resource: ${match[1]}.`);
 }
-const briefStage = home.match(/<div class="product-viewport">\s*<figure class="brief-stage">([\s\S]*?)<\/figure>\s*<\/div>/)?.[1] || "";
-check(home.indexOf('class="brief-stage"') > home.indexOf("</section>") &&
-  home.indexOf('class="brief-stage"') < home.indexOf('id="problem"') &&
-  exactElement(briefStage, "h2", "Your meeting is tomorrow. The prep is already done") &&
-  briefStage.includes('<div class="brief-window">') &&
-  briefStage.includes('<span class="brief-example">Example</span>') &&
-  briefStage.includes('<div class="brief-actions" aria-hidden="true">') &&
-  !/<(?:iframe|template|button|a|input)\b/.test(briefStage) &&
-  !home.includes('class="demo-stage"') && !home.includes('id="jin-hero-demo"'),
-  "Root must show the labelled example meeting brief directly below the hero, without a live demo, controls or links.");
+const inboxClient = await text("inbox-demo.js");
+const homeFigureCss = await text("site-page.css");
+for (const [language, page, copy] of [
+  ["English", home, [
+    "Jin AI inbox demo", "Mail app", "Inbox", "Select a message",
+    "Q4 pilot kickoff timing", "Northwind Billing", "Your October invoice", "Notes from Thursday", "Re: security questionnaire",
+    "Hi Yu,", "Our team is ready a bit earlier than planned. Could we move the pilot kickoff to next week? 30 minutes is enough. Send me a few times that work for you.",
+    "Thanks,<br>Sarah", "Nothing to prepare for this one, so Jin stays out of the way.",
+    "Your reply to Sarah is ready", "I checked your calendar and picked 3 open times next week.",
+    "Show", "Send", "Not now", "Undo", "Replay", "Open on your calendar", "Draft",
+    "Preparing…", "Sent to Sarah", "Okay, not now", "You: Next week works well…", "Yu Asano · just now", "Sent",
+    "Tue 10/28 · 10:00 AM PT", "Wed 10/29 · 2:30 PM PT", "Thu 10/30 · 9:00 AM PT",
+    "Hi Sarah,\n\nNext week works well. Would {long} at {at} PT work for a 30-minute kickoff? If not, {other1} or {other2} PT are open too.\n\nBest,\nYu Asano",
+    "<b>Open an email.</b> Jin drops down from the top of the screen with the work already done."
+  ]],
+  ["Japanese", japanese, [
+    "Jin AIの受信箱デモ", "メールアプリ", "受信箱", "メールを選んでください",
+    "第4四半期の試験導入キックオフの日程", "Northwind 請求担当", "10月分の請求書", "木曜日の打ち合わせメモ", "Re: セキュリティ質問票",
+    "Yuさん", "チームの準備が予定より少し早く整いました。試験導入のキックオフを来週に早められますか？30分あれば十分です。ご都合のよい日時をいくつか教えてください。",
+    "よろしくお願いします。<br>Sarah", "このメールで準備することはないので、Jinは何も表示しません。",
+    "Sarahへの返信ができています", "カレンダーを見て、来週の空き時間を3つ選びました。",
+    "表示", "送信", "今はしない", "元に戻す", "もう一度見る", "カレンダーの空き時間", "下書き",
+    "準備しています…", "Sarahに送信しました", "わかりました。今はしません", "自分：来週で大丈夫です…", "Yu Asano · たった今", "送信済み",
+    "10月28日（火）10:00（太平洋時間）", "10月29日（水）14:30（太平洋時間）", "10月30日（木）9:00（太平洋時間）",
+    "Sarahさん\n\n来週で大丈夫です。30分のキックオフを、{long}{at}（太平洋時間）に行うのはいかがでしょうか。難しければ、{other1}か{other2}（いずれも太平洋時間）も空いています。\n\nよろしくお願いします。\nYu Asano",
+    "<b>メールを開くと、</b>Jinが準備を済ませて、画面の上から降りてきます。"
+  ]]
+]) {
+  const demo = page.match(/<div class="product-viewport">\s*(<figure class="inbox-demo"[\s\S]*?<\/figure>)\s*<\/div>/)?.[1] || "";
+  check(/<\/section>\s*<div class="product-viewport">\s*<figure class="inbox-demo"[\s\S]*?<\/figure>\s*<\/div>\s*<section class="section" id="problem">/.test(page) &&
+    count(page, /class="inbox-demo"/g) === 1 && !/brief-stage|jin-hero-demo|class="demo-stage"/.test(page),
+    `${language} must show exactly one inbox demo directly after the hero and before Problem, replacing the retired brief.`);
+  check(copy.every(value => demo.includes(value)) &&
+    ["Sarah Chen", "Marcus Lee", "Priya Raman", "Yu Asano", "sarah@contoso.com"].every(name => demo.includes(name)) &&
+    count(demo, /class="msg[^"]*" data-id=/g) === 4 && count(demo, /class="time" /g) === 3 &&
+    /class="jin" data-state="ready"/.test(demo) &&
+    /class="email-sarah">\s*<h2>/.test(demo) && /class="empty email-empty" hidden/.test(demo),
+    `${language} inbox must retain Yu's mail list, email, exact localized copy, three times and static ready fallback.`);
+  const labels = language === "English" ? ["Show", "Send", "Not now", "Undo", "Replay"] :
+    ["表示", "送信", "今はしない", "元に戻す", "もう一度見る"];
+  check(["pill show", "pill primary", "pill later", "undo", "replay"].every((className, index) =>
+    new RegExp(`<button type="button" class="${className}"(?: hidden)?>${labels[index]}</button>`).test(demo)),
+    `${language} inbox must retain each exact Show, Send, Not now, Undo and Replay button label.`);
+  check(page.includes('<link rel="stylesheet" href="/site-page.css">') &&
+    page.includes('<script src="/inbox-demo.js" defer></script>') && !/Geist/i.test(page),
+    `${language} must load the shared local inbox assets without Geist.`);
+  for (const [element, tag, url] of page.matchAll(/<(script|link)\b[^>]*(?:src|href)="(https?:\/\/[^"]+)"[^>]*>/g)) {
+    if (tag === "link" && !/\brel="(?:stylesheet|preconnect)"/.test(element)) continue;
+    check(["fonts.googleapis.com", "fonts.gstatic.com", "static.cloudflareinsights.com"].includes(new URL(url).hostname),
+      `${language} must not add an external resource host: ${url}`);
+  }
+}
+check(inboxClient.includes("new IntersectionObserver") &&
+  inboxClient.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
+  inboxClient.includes("visible && !started && !reduced.matches") &&
+  inboxClient.includes("!visible || document.hidden || reduced.matches") &&
+  inboxClient.includes("if (reduced.matches) openMail(sarah, true)") &&
+  inboxClient.includes("document.hidden") && inboxClient.includes("clearTimeout(timer)") &&
+  inboxClient.includes('setState("open")') && inboxClient.includes('setState("done", root.dataset.sent)') &&
+  !/\b(?:fetch|XMLHttpRequest|WebSocket|import)\s*\(/.test(inboxClient),
+  "Inbox playback must be viewport/motion guarded, pause hidden timers, support Show/Send/Undo and never send real requests.");
+check(homeFigureCss.includes("font: 14px/1.5 var(--font-sans)") &&
+  cssBlock(homeFigureCss, "@media (prefers-reduced-motion: reduce)").includes("animation: none !important; transition: none !important") &&
+  !/@import|\burl\s*\(|Geist/.test(homeFigureCss),
+  "Inbox must inherit existing fonts, fully disable reduced-motion animation and load no external CSS resources.");
+const scopedHomeCss = homeFigureCss.replace(`@keyframes inbox-rise {${cssBlock(homeFigureCss, "@keyframes inbox-rise")}}`, "");
+for (const [, selectors] of scopedHomeCss.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+  check(selectors.split(/,(?![^(]*\))/).every(selector => /^\s*\.(?:inbox-demo|home-page)\b/.test(selector)),
+    `Home-only styles must remain scoped: ${selectors.trim()}`);
+}
 const demoApp = await text("assets/demo/app.html");
 check(demoApp.includes('new URLSearchParams(location.search).get("embed") === "hero"') &&
   demoApp.includes(".hero-embed .controls,.hero-embed .progress,.hero-embed .stats{display:none!important}") &&
@@ -577,9 +649,43 @@ for (const [language, source, entries] of homeCopy) {
     check(exactElement(homeSection(source, id), tag, value), `${language} home ${id} must use the approved ${tag} once: ${value}`);
   }
   check(count(homeSection(source, "how"), /<li>/g) === 4 &&
-    ["problem", "solution", "data", "how", "why", "team"].every(id => !/<(?:figure|svg|img|button|iframe)\b/.test(homeSection(source, id))) &&
+    ["problem", "solution", "data", "how", "why", "team"].every(id => !/<(?:svg|button|iframe)\b/.test(homeSection(source, id))) &&
     !/problem\.js|data-problem|data-solution/.test(source),
-    `${language} home sections must be text only, with four How it works steps and no retired figures or controller.`);
+    `${language} home sections must retain four HTML How it works steps and no retired interactive figures or controller.`);
+}
+const sectionImages = [
+  ["problem", "problem-tools", 1200, 309, "", ""],
+  ["problem", "problem-busy", 900, 640, "", ""],
+  ["problem", "problem-how", 1079, 636, "", ""],
+  ["solution", "today", 1200, 750, "", ""],
+  ["solution", "with-jin", 1200, 750, "", ""],
+  ["data", "control", 1600, 800, "Drafts prepared by Jin are sent out only after a person approves them.", "Jinが用意した下書きは、人が承認してから外に出る"],
+  ["how", "how-it-works-wide", 1600, 360, "Four steps: connect, spot, prepare, and learn.", "つなぐ、見つける、用意する、学ぶの4段階"],
+  ["why", "why-jin", 1600, 800, "A comparison of automations you build yourself and automations Jin finds and offers.", "自分で組む自動化と、Jinが見つけて差し出す自動化の比較"],
+  ["team", "team-learning", 1600, 800, "One person's improvement reaches others doing similar work after review.", "1人の改善が、確認を経て、似た仕事をする人たちに届く"]
+];
+for (const [id, name, width, height, enAlt, jaAlt] of sectionImages) {
+  const bytes = await readFile(path.join(site, "assets", "figures", `${name}.webp`));
+  check(bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 16) === "WEBPVP8X" &&
+    bytes.readUIntLE(24, 3) + 1 === width && bytes.readUIntLE(27, 3) + 1 === height,
+    `${name} must keep its original WebP pixel dimensions.`);
+  for (const [language, page, alt] of [["English", home, enAlt], ["Japanese", japanese, jaAlt]]) {
+    const section = homeSection(page, id);
+    check(section.includes(`src="/assets/figures/${name}.webp" width="${width}" height="${height}" loading="lazy" decoding="async" alt="${alt}"`) &&
+      count(section, /<img\b/g) === sectionImages.filter(image => image[0] === id).length,
+      `${language} ${id} must have exactly its approved images, with intrinsic dimensions, lazy/async loading and exact alt.`);
+  }
+}
+const tallFigure = await readFile(path.join(site, "assets", "figures", "how-it-works-tall.webp"));
+check(tallFigure.toString("ascii", 8, 16) === "WEBPVP8X" &&
+  tallFigure.readUIntLE(24, 3) + 1 === 750 && tallFigure.readUIntLE(27, 3) + 1 === 1440,
+  "The tall How it works image must keep its 750 x 1440 dimensions.");
+for (const [language, page] of [["English", home], ["Japanese", japanese]]) {
+  check(/<picture class="how-figure">\s*<source media="\(max-width: 760px\)" srcset="\/assets\/figures\/how-it-works-tall.webp" width="750" height="1440">\s*<img src="\/assets\/figures\/how-it-works-wide.webp"[^>]+>\s*<\/picture>/.test(homeSection(page, "how")) &&
+    /class="compare-before"[\s\S]*?src="\/assets\/figures\/today.webp"[\s\S]*?class="compare-after"[\s\S]*?src="\/assets\/figures\/with-jin.webp"/.test(homeSection(page, "solution")) &&
+    count(homeSection(page, "problem"), /class="problem-scene"><p[\s\S]*?<\/p><img src="\/assets\/figures\/problem-(?:tools|busy|how).webp"/g) === 3 &&
+    !/assets\/figures\/brief-/.test(page),
+    `${language} must pair each Problem point and Today/With Jin column with its image, and use the responsive How picture instead of a brief image.`);
 }
 check(JSON.stringify(content.problem.points.map(point => point.description)) === JSON.stringify([
   "Companies have invested in ChatGPT, Copilot, and other AI tools.",
@@ -713,7 +819,7 @@ for (const [file, source] of [...englishPages, ...pagePairs.map(([route, , sourc
 }
 for (const [page, source] of [["Root", home], ["How it works", howPage], ["Security", security]]) {
   const visibleCopy = source.replace(/<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, "")
-    .replace(/<[^>]*>/g, " ");
+    .replace(/<[^>]*>/g, " ").replaceAll("Next week works well.", "");
   check(!/\bclass="[^"]*\b(?:st|harness-status)\b/.test(source) &&
     !/\b(?:Live|Building|Next|Beta)\b|Claude Code first/.test(visibleCopy),
     `${page} must not show status labels or the retired Claude Code first sentence.`);
@@ -1258,7 +1364,9 @@ for (const filename of deployedFiles.filter(filename => /\.(?:html|json|txt|css|
     check(!plainText.includes(retired) && !source.includes(retired),
       `${filename} must not contain replaced R8 copy: ${retired}`);
   }
-  check(!/\bpilot(?:-card|-head|-heading|-steps)?\b|accent-surface-(?:from|to)/.test(source),
+  const withoutApprovedInboxPilot = source.replaceAll("Q4 pilot kickoff timing", "")
+    .replaceAll("Could we move the pilot kickoff to next week?", "");
+  check(!/\bpilot(?:-card|-head|-heading|-steps)?\b|accent-surface-(?:from|to)/.test(withoutApprovedInboxPilot),
     `${filename} must not contain retired pilot markup, facts, styles or gradient tokens.`);
   for (const retired of retiredHeroTexts) {
     check(!plainText.includes(retired) && !source.includes(retired),
@@ -1516,10 +1624,10 @@ for (const [route, english, translated] of pagePairs) {
     `/ja/${route} must retain all English scripts, except the English-only language choice and fact graph.`);
   const stylesheets = [...translated.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)]
     .map(([, url]) => new URL(url, `https://jinai.md/ja/${route}`).pathname);
-  check(JSON.stringify(stylesheets) === '["/base.css","/theme-en.css","/theme-ja.css"]' &&
+  check(JSON.stringify(stylesheets) === JSON.stringify(["/base.css", "/theme-en.css", "/theme-ja.css", ...(route === "" ? ["/site-page.css"] : [])]) &&
     translated.includes("family=Inter:wght@400..700") && translated.includes("family=Noto+Sans+JP:wght@400..700") &&
     !/Source\+Serif|Noto\+Serif|site\.css/.test(translated),
-    `/ja/${route} must load the English dark theme followed only by Japanese sans-serif typesetting.`);
+    `/ja/${route} must load the English dark theme and Japanese typesetting, with home-only figure/demo styles only on the home.`);
   check(translated.match(/<head>([\s\S]*?)<\/head>/)?.[1].includes('document.documentElement.classList.add("js-nav")'),
     `/ja/${route} must establish the same pre-paint navigation geometry.`);
   const markup = translated.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "");
@@ -1537,7 +1645,7 @@ check(count(japaneseReveal, /<span style="--word:[0-2]">[^<]+<\/span>/g) === 3 &
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
   "Japanese hero must keep its three-phrase reveal, exact text, accessible name and motion opt-in.");
 for (const [page, source, phrases] of [
-  ["/ja/", japanese, ["会議は明日。", "下準備は、", "もうできています。", "AIツールはあるのに、", "なぜまだ全部", "自分でやっているのでしょう？", "もし、AIが", "先に動いてくれたら？", "下準備はJinが。", "決めるのは、", "あなたのチームです。", "Jinは、", "チームの働き方を学びます。", "自動化を、", "社員が自分で作る", "必要はありません。", "一人の改善が、", "チーム全体の助けになる。", "もう二度とやりたくない仕事を、", "ひとつ見つけましょう。"]],
+  ["/ja/", japanese, ["AIツールはあるのに、", "なぜまだ全部", "自分でやっているのでしょう？", "もし、AIが", "先に動いてくれたら？", "下準備はJinが。", "決めるのは、", "あなたのチームです。", "Jinは、", "チームの働き方を学びます。", "自動化を、", "社員が自分で作る", "必要はありません。", "一人の改善が、", "チーム全体の助けになる。", "もう二度とやりたくない仕事を、", "ひとつ見つけましょう。"]],
   ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "御社のAIを、", "会社の資産に。"]],
   ["/ja/security/", japaneseSecurity, ["コンテクストは、", "会社のもの。"]],
   ["/ja/privacy/", japanesePrivacy, ["プライバシー", "ポリシー", "取り扱いを", "委託している", "事業者"]]
@@ -1545,10 +1653,6 @@ for (const [page, source, phrases] of [
   check(phrases.every(phrase => source.includes(`<span class="ja-phrase">${phrase}</span>`)),
     `${page} must protect the approved heading phrase boundaries from internal breaks.`);
 }
-check(!japanese.includes('class="demo-stage"') && !japanese.includes('id="jin-hero-demo"') &&
-  japanese.includes('<span class="brief-example">例</span>') &&
-  japanese.includes('<div class="brief-actions" aria-hidden="true">'),
-  "Japanese home must show the same labelled example brief, without the retired live hero.");
 const japaneseCss = await text("theme-ja.css");
 const typesettingProperties = new Set([
   "--font-sans", "font-family", "font-size", "font-weight", "line-height", "line-break",

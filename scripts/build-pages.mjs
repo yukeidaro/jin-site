@@ -15,6 +15,8 @@ const files = [
   "base.css",
   "theme-en.css",
   "theme-ja.css",
+  "site-page.css",
+  "inbox-demo.js",
   "ja/index.html",
   "ja/how-it-works/index.html",
   "ja/privacy/index.html",
@@ -55,6 +57,16 @@ const files = [
   "assets/demo/demo-2-categories.webp",
   "assets/demo/demo-3-by-role.webp",
   "assets/demo/demo-4-what-can-move.webp",
+  "assets/figures/problem-tools.webp",
+  "assets/figures/problem-busy.webp",
+  "assets/figures/problem-how.webp",
+  "assets/figures/today.webp",
+  "assets/figures/with-jin.webp",
+  "assets/figures/control.webp",
+  "assets/figures/how-it-works-wide.webp",
+  "assets/figures/how-it-works-tall.webp",
+  "assets/figures/why-jin.webp",
+  "assets/figures/team-learning.webp",
   "shots/og-b2b.png"
 ];
 

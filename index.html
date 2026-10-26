@@ -160,6 +160,8 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 <!-- GENERATED:JSON_LD:END -->
 <link rel="stylesheet" href="base.css">
 <link rel="stylesheet" href="theme-en.css">
+<link rel="stylesheet" href="/site-page.css">
+<script src="/inbox-demo.js" defer></script>
 </head>
 <body class="home-page">
 
@@ -208,23 +210,61 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 </section>
 
 <div class="product-viewport">
-  <figure class="brief-stage">
-    <figcaption class="brief-caption"><h2 class="h2">Your meeting is tomorrow. The prep is already done</h2></figcaption>
-    <div class="brief-window">
-      <div class="brief-card">
-        <p class="brief-from"><img src="/brand/jin-mark-white.svg" width="20" height="20" alt="">Jin AI<span class="brief-example">Example</span></p>
-        <p>Hey Sarah, I put together a brief for tomorrow's meeting with Contoso.</p>
-        <p>Here's what I found:</p>
-        <ul class="brief-points">
-          <li><strong>Last meeting:</strong> Discussed the company-wide rollout</li>
-          <li><strong>Still open:</strong> Security review</li>
-          <li><strong>Suggested next step:</strong> Agree on the rollout timeline</li>
-        </ul>
-        <p>I've also drafted an agenda based on your previous conversations.</p>
-        <div class="brief-actions" aria-hidden="true"><span class="brief-btn brief-btn-p">Review brief</span><span class="brief-btn">Make changes</span><span class="brief-btn">Not helpful</span></div>
-        <p class="brief-followup">Want me to do this for your other meetings too?</p>
+  <figure class="inbox-demo" aria-label="Jin AI inbox demo" data-preparing="Preparing…" data-sent="Sent to Sarah" data-later="Okay, not now" data-reply-subject="You: Next week works well…">
+    <div class="screen">
+      <div class="mail" role="group" aria-label="Mail app">
+        <nav class="list" aria-label="Inbox">
+          <div class="list-h">Inbox</div>
+          <button type="button" class="msg unread on" data-id="sarah"><b><i class="dot"></i>Sarah Chen</b><span>Q4 pilot kickoff timing</span></button>
+          <button type="button" class="msg" data-id="other"><b><i class="dot"></i>Northwind Billing</b><span>Your October invoice</span></button>
+          <button type="button" class="msg" data-id="other"><b><i class="dot"></i>Marcus Lee</b><span>Notes from Thursday</span></button>
+          <button type="button" class="msg" data-id="other"><b><i class="dot"></i>Priya Raman</b><span>Re: security questionnaire</span></button>
+        </nav>
+        <div class="reader">
+          <div class="empty email-empty" hidden>Select a message</div>
+          <div class="email-sarah">
+            <h2>Q4 pilot kickoff timing</h2>
+            <div class="from">Sarah Chen &lt;sarah@contoso.com&gt; · 9:12 AM</div>
+            <div class="body">
+              <p>Hi Yu,</p>
+              <p>Our team is ready a bit earlier than planned. Could we move the pilot kickoff to next week? 30 minutes is enough. Send me a few times that work for you.</p>
+              <p>Thanks,<br>Sarah</p>
+            </div>
+          </div>
+          <div class="email-other" hidden>
+            <h2 class="other-subject"></h2>
+            <div class="from other-from"></div>
+            <div class="body"><p>Nothing to prepare for this one, so Jin stays out of the way.</p></div>
+          </div>
+          <div class="reply" hidden><span class="lbl">Yu Asano · just now <span class="sent">Sent</span></span><div class="reply-text"></div></div>
+        </div>
       </div>
+      <div class="jin" data-state="ready" role="region" aria-label="Jin" aria-live="polite">
+        <div class="band"><i class="pulse"></i><span class="band-text">Jin</span><button type="button" class="undo" hidden>Undo</button></div>
+        <span class="glyph" aria-hidden="true"><svg viewBox="0 0 390 326"><g fill="currentColor"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></g></svg></span>
+        <div class="panel">
+          <div class="headline">Your reply to Sarah is ready</div>
+          <div class="sub">I checked your calendar and picked 3 open times next week.</div>
+          <button type="button" class="pill show">Show</button>
+          <div class="detail">
+            <div><div class="k">Open on your calendar</div><div class="times">
+              <button type="button" class="time" data-day="Tue" data-long="Tuesday, Oct 28" data-at="10:00 AM" aria-pressed="true">Tue 10/28 · 10:00 AM PT</button>
+              <button type="button" class="time" data-day="Wed" data-long="Wednesday, Oct 29" data-at="2:30 PM" aria-pressed="false">Wed 10/29 · 2:30 PM PT</button>
+              <button type="button" class="time" data-day="Thu" data-long="Thursday, Oct 30" data-at="9:00 AM" aria-pressed="false">Thu 10/30 · 9:00 AM PT</button>
+            </div></div>
+            <div><div class="k">Draft</div><div class="draft" aria-live="polite"></div></div>
+            <div class="acts"><button type="button" class="pill primary">Send</button><button type="button" class="pill later">Not now</button></div>
+          </div>
+        </div>
+      </div>
+      <template class="draft-template">Hi Sarah,
+
+Next week works well. Would {long} at {at} PT work for a 30-minute kickoff? If not, {other1} or {other2} PT are open too.
+
+Best,
+Yu Asano</template>
     </div>
+    <figcaption class="foot"><span><b>Open an email.</b> Jin drops down from the top of the screen with the work already done.</span><button type="button" class="replay">Replay</button></figcaption>
   </figure>
 </div>
 
@@ -234,9 +274,9 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
       <span class="mono-label">Problem</span>
       <h2 class="h2">Your team has AI tools. So why are they still doing everything themselves?</h2>
     </div>
-    <p>Companies have invested in ChatGPT, Copilot, and other AI tools.</p>
-    <p>But employees still spend hours preparing for meetings, putting together reports, and moving information between apps.</p>
-    <p class="narrative-close"><strong>AI is available. Getting value from it still takes work.</strong></p>
+    <div class="problem-scene"><p>Companies have invested in ChatGPT, Copilot, and other AI tools.</p><img src="/assets/figures/problem-tools.webp" width="1200" height="309" loading="lazy" decoding="async" alt=""></div>
+    <div class="problem-scene"><p>But employees still spend hours preparing for meetings, putting together reports, and moving information between apps.</p><img src="/assets/figures/problem-busy.webp" width="900" height="640" loading="lazy" decoding="async" alt=""></div>
+    <div class="problem-scene"><p class="narrative-close"><strong>AI is available. Getting value from it still takes work.</strong></p><img src="/assets/figures/problem-how.webp" width="1079" height="636" loading="lazy" decoding="async" alt=""></div>
   </div>
 </section>
 
@@ -244,8 +284,8 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
   <div class="wrap">
     <h2 class="h2 solution-heading">What if AI took the first step?</h2>
     <div class="compare">
-      <div class="compare-before"><h3>Today</h3><p>Employees figure out what needs to be done, open an AI tool, provide context, and check the output.</p></div>
-      <div class="compare-after"><h3>With Jin</h3><p>Jin recognizes what's coming up, prepares a first draft, and lets employees review it when they're ready.</p></div>
+      <div class="compare-before"><h3>Today</h3><p>Employees figure out what needs to be done, open an AI tool, provide context, and check the output.</p><img class="section-figure" src="/assets/figures/today.webp" width="1200" height="750" loading="lazy" decoding="async" alt=""></div>
+      <div class="compare-after"><h3>With Jin</h3><p>Jin recognizes what's coming up, prepares a first draft, and lets employees review it when they're ready.</p><img class="section-figure" src="/assets/figures/with-jin.webp" width="1200" height="750" loading="lazy" decoding="async" alt=""></div>
     </div>
     <p class="solution-closing"><strong>Instead of asking AI for help, your team starts with work that's already prepared.</strong></p>
   </div>
@@ -255,6 +295,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
   <div class="wrap narrative" id="privacy">
     <h2 class="h2">Jin does the prep work. Your team stays in control</h2>
     <p class="trust-intro">Jin reads the email, calendar, chat, and files your team connects, such as Gmail, Outlook, Slack, and Teams, so the work it prepares is accurate. What it reads is used only to prepare work for that person. It is never used to train AI models, and your admin can exclude any folder, channel, label, or team.</p>
+    <img class="section-figure" src="/assets/figures/control.webp" width="1600" height="800" loading="lazy" decoding="async" alt="Drafts prepared by Jin are sent out only after a person approves them.">
     <ul class="trust-list">
       <li>Your admin chooses which teams and tools Jin can use. Each employee connects their own account and can disconnect at any time.</li>
       <li>Jin never sends messages or changes your systems without approval.</li>
@@ -268,6 +309,10 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 <section class="section" id="how">
   <div class="wrap">
     <div class="section-head"><span class="mono-label">How it works</span><h2 class="h2">Jin learns how your team works</h2></div>
+    <picture class="how-figure">
+      <source media="(max-width: 760px)" srcset="/assets/figures/how-it-works-tall.webp" width="750" height="1440">
+      <img src="/assets/figures/how-it-works-wide.webp" width="1600" height="360" loading="lazy" decoding="async" alt="Four steps: connect, spot, prepare, and learn.">
+    </picture>
     <ol class="steps">
       <li><h3>Connect your tools</h3><p>Jin works with the tools your team already uses, with the permissions you choose.</p></li>
       <li><h3>Spot repetitive work</h3><p>It looks for tasks that keep coming up and chances to save time.</p></li>
@@ -282,6 +327,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
     <h2 class="h2">Your team shouldn't have to build their own automations</h2>
     <p>Most AI tools are useful once someone knows what to ask. Workflow builders are powerful, but someone still has to decide what to automate and set it up.</p>
     <p><strong>Jin takes a different approach.</strong> It finds chances to help, prepares the work, and suggests what could be automated next. Your employees don't need to become AI experts to benefit from AI.</p>
+    <img class="section-figure" src="/assets/figures/why-jin.webp" width="1600" height="800" loading="lazy" decoding="async" alt="A comparison of automations you build yourself and automations Jin finds and offers.">
   </div>
 </section>
 
@@ -290,6 +336,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
     <h2 class="h2">One person's improvement can help the whole team</h2>
     <p>When someone improves a result, Jin learns what changed and why. Over time, those lessons can help others doing similar work, without everyone starting from scratch.</p>
     <p>What gets shared is the way of doing the task, not anyone's emails or files. An admin reviews each improvement before it reaches other teams.</p>
+    <img class="section-figure" src="/assets/figures/team-learning.webp" width="1600" height="800" loading="lazy" decoding="async" alt="One person's improvement reaches others doing similar work after review.">
     <p class="narrative-close"><strong>The more your team teaches Jin, the more useful it becomes for everyone.</strong></p>
   </div>
 </section>

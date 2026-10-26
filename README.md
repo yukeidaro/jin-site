@@ -7,10 +7,17 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 The home pages follow the proactive pitch: **What if the work was already
 done?** / **もし、仕事がもう終わっていたら？** Jin spots repetitive tasks,
 prepares the work, and learns from the team's feedback. The home order is hero,
-a labelled example meeting brief, Problem, Solution (Today versus With Jin),
+Yu's bilingual inbox demo, Problem, Solution (Today versus With Jin),
 Data, How it works (four steps), Why Jin, Team learning and the waitlist.
 The exact bilingual copy is pinned in `scripts/validate-site.mjs` and the
 facts live in `agent/content.json`.
+
+The inbox demo uses `inbox-demo.js` and scoped `site-page.css`, with the
+existing English/Japanese fonts and no additional external requests. It starts
+only when its screen enters the viewport. Reduced motion and no JavaScript
+show Sarah's email and the ready band without autoplay. The approved WebP
+figures accompany each section; How it works switches to the tall image at
+760px and below while retaining all four steps as HTML.
 
 Jin reads connected email, calendar, chat and files, including bodies and
 attachments (Yu, 2026-10-26). The four trust promises in the Data section are
@@ -29,7 +36,7 @@ hero demo, badges, Problem figures and Keep Solution are historical.
 | `/resources/ai-harness/` | `noindex` compatibility redirect to `/how-it-works/#harness` |
 | `/privacy/` | Approved website privacy policy |
 | `/accessibility/` | Accessibility goal, known limits and contact details |
-| `/ja/` | Japanese translation of the English home, with the live demo, interactive Problem/Solution figures and the same waitlist-then-demo form |
+| `/ja/` | Japanese translation of the English home, with the inbox demo, approved section images and the same waitlist-then-demo form |
 | `/ja/how-it-works/` | Japanese twin of the five feature rows and harness definition |
 | `/ja/security/` | Draft Japanese security and data page |
 | `/ja/company/` | Draft Japanese company mission and contact page |
@@ -443,7 +450,7 @@ recorded in `.copilot-runs/notes/j1.md`.
 - Use **agent harness**, **AI harness** or **harnesses** for this concept.
   An AI harness is the instructions, skills, memory and connected tools around
   an AI agent that make it work for a role.
-- The home page contains only the hero, example brief, problem, solution, data,
+- The home page contains only the hero, inbox demo, problem, solution, data,
   how it works, why Jin, team learning and the waitlist. Do not show pricing or founders on the home page.
   Founders and direct answers belong in the Agent reference.
 - Problem: **Your team has AI tools. So why are they still doing everything themselves?**

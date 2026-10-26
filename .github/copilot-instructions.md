@@ -8,7 +8,7 @@ Jin AI is a B2B product. It spots repetitive work, prepares it before anyone ask
 
 Headline: **What if the work was already done?** / **もし、仕事がもう終わっていたら？** Page and social titles omit the Japanese question mark.
 
-Hero: small **Jin AI** eyebrow; line **Jin spots repetitive tasks, prepares the work, and learns from your team's feedback.** / **Jinは、繰り返しの仕事を見つけて準備し、チームのフィードバックから学びます。**; tools note below the actions. No badges. Preserve the reveal and CTAs. A labelled example meeting brief (text, not a screenshot or live demo) sits directly below the hero.
+Hero: small **Jin AI** eyebrow; line **Jin spots repetitive tasks, prepares the work, and learns from your team's feedback.** / **Jinは、繰り返しの仕事を見つけて準備し、チームのフィードバックから学びます。**; tools note below the actions. No badges. Preserve the reveal and CTAs. Yu's bilingual inbox demo sits directly below the hero, before Problem. It starts only in view; reduced motion and no JavaScript show Sarah's email and the ready band without autoplay.
 
 Home sections, in order: Problem (**Your team has AI tools. So why are they still doing everything themselves?**), Solution (**What if AI took the first step?**, Today versus With Jin), Data (**Jin does the prep work. Your team stays in control**), How it works (four steps), Why Jin, Team learning, then the waitlist. The exact bilingual copy is pinned in `scripts/validate-site.mjs` and the facts live in `agent/content.json`.
 
@@ -20,7 +20,7 @@ The old consumer and visual-workspace positioning is retired. Do not reintroduce
 
 ## Page scope
 
-The home page (`index.html`) contains only the hero, the example brief, problem, solution, data, how it works, why Jin, team learning and the waitlist. Do not show pricing or founders on the home page. Founders and direct answers belong in the Agent reference.
+The home page (`index.html`) contains only the hero, the inbox demo, problem, solution, data, how it works, why Jin, team learning and the waitlist. Do not show pricing or founders on the home page. Founders and direct answers belong in the Agent reference.
 
 R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイトリストに登録**, then optional **Request a demo** / **デモを申し込む**. Waitlist note: **We'll email you when access is ready. You can request a demo after joining.** / **ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。** Direct `#request-demo` and the optional demo show **We'll email you to find a time.** / **日程の調整のため、こちらからメールでご連絡します。** Keep the existing fields, endpoint and each step's consent version. No post-request survey.
 
@@ -52,6 +52,7 @@ R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイト�
 - Keep the existing system: dark `#08090A` background, Inter headings, body and sentence-case labels (not monospace), primary buttons with white text on `#A84A1C`, existing radii and spacing. Monospace is reserved for code and file names.
 - Japanese pages use `"Yu Gothic", "YuGothic", "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif` for Japanese and Latin text, with body weight 500 and existing heading weights. Keep the Noto Sans JP web-font fallback and English fonts unchanged. Protect heading phrases with nonbreaking spans and progressively enhance with `word-break: auto-phrase`.
 - One accent color only: `#a84a1c`. Do not add new colors, gradients, glows, blurs, shadows beyond what exists, or emoji.
+- Inbox demo exception (Yu, 2026-10-26): only inside `.inbox-demo`, preserve Yu's approved mock styling, including its colors, glass blur, gradients and shadows; use the site's existing fonts.
 - No rows of identical icon cards, numbered circles, 2x2 positioning charts or letter-spaced all-caps labels. Prefer prose, lists, tables and real product screenshots.
 - Vary weight: one dominant visual per section.
 - Must work at 375px wide with no horizontal scroll.
