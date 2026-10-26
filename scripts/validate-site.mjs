@@ -178,8 +178,8 @@ check([...demoClient.matchAll(/\bheading:\s*(?:[^?\n]+\?\s*)?"([^"]+)"/g)]
   "Demo success and error headings must not end with periods.");
 
 const pagePairs = [
-  ["", home, japanese, "もし、仕事がもう終わっていたら？", "Jin AI | もし、仕事がもう終わっていたら",
-    "Jinは、繰り返しの仕事を見つけて準備し、チームのフィードバックから学びます。"],
+  ["", home, japanese, "AIを、会社の資産に。", "Jin AI | AIを、会社の資産に",
+    "AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。"],
   ["how-it-works/", howPage, japaneseHow, "仕組み", "仕組み | Jin AI",
     "Jin AI が AI ツールにつながり、AI ハーネスを種類ごとに整理し、持ち出せるものを会社が決める仕組みです。"],
   ["security/", security, japaneseSecurity, "会社のコンテクストは、会社のもの。", "セキュリティ | Jin AI",
@@ -318,28 +318,26 @@ check(shareImage.length >= 24 && shareImage.length < 60000 &&
   "The logo share image must be a 1200 x 630 PNG below 60 KB.");
 check(home.includes("<main>") && home.includes("</main>"), "Root must have a main landmark.");
 const homeSections = [...home.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
-const homeSectionOrder = "problem,solution,data,how,why,team,demo";
-check(homeSections.length === 8 && homeSections[0]?.[1].includes('class="hero"') &&
-  homeSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() === homeSectionOrder,
-  "Root must contain only hero, problem, solution, data, how, why, team and demo sections, in order.");
+check(homeSections.length === 6 && homeSections[0]?.[1].includes('class="hero"') &&
+  homeSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() ===
+  "problem,solution,how,data,demo", "Root must contain only hero, problem, solution, how, data and demo sections, in order.");
 check(count(home, /<h1\b/g) === 1 &&
-  home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "What if the work was already done?",
+  home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "Turn AI into a company asset",
   "Root must use the approved H1 once.");
-const homeTitle = "Jin AI | What if the work was already done?";
+const homeTitle = "Jin AI | Turn AI into a company asset";
 check(home.includes(`<title>${homeTitle}</title>`), "Root must use the approved title.");
 for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:title"]]) {
   check(home.includes(`<meta ${attribute}="${name}" content="${homeTitle}">`), `Root must use the approved ${name}.`);
 }
-const homeDescription = "Jin spots repetitive tasks, prepares the work, and learns from your team's feedback.";
+const homeDescription = "Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.";
 for (const [attribute, name] of [["name", "description"], ["property", "og:description"], ["name", "twitter:description"]]) {
   check(home.includes(`<meta ${attribute}="${name}" content="${homeDescription}">`), `Root must use the approved ${name}.`);
 }
 const hero = homeSections[0]?.[2] || "";
-check(count(hero, /<p\b/g) === 2 && hero.includes('<p class="hero-intro">') &&
-  hero.includes('<p class="hero-note">Works with the email, calendar, and chat your team already uses.</p>') &&
-  !/<img\b|<ul\b|class="(?:eyebrow|lede|waitnote|hero-badges)"/.test(hero),
-  "The hero must contain only the intro and tools note, without a status tag, badges or product image.");
-check(hero.includes('href="#how">See how it works &rarr;</a>'), "The hero must link to the How it works section.");
+check(count(hero, /<p\b/g) === 1 && hero.includes('<p class="hero-intro">') &&
+  !/<img\b|class="(?:eyebrow|lede|waitnote)"/.test(hero),
+  "The hero must contain only the R7 intro paragraph, without a status tag, note or product image.");
+check(hero.includes('href="how-it-works/">How it works &rarr;</a>'), "The hero must link to the How it works page.");
 check(home.includes('<link rel="stylesheet" href="base.css">') &&
   home.includes('<link rel="stylesheet" href="theme-en.css">') &&
   !home.includes('href="site.css"'), "Root must use the shared base and English theme, not the legacy stylesheet.");
@@ -350,16 +348,34 @@ for (const match of home.matchAll(/<(?:script|link)\b[^>]*(?:src|href)="(https?:
   check(["fonts.googleapis.com", "fonts.gstatic.com", "static.cloudflareinsights.com"].includes(new URL(match[1]).hostname),
     `Root loads an unapproved external resource: ${match[1]}.`);
 }
-const briefStage = home.match(/<div class="product-viewport">\s*<figure class="brief-stage">([\s\S]*?)<\/figure>\s*<\/div>/)?.[1] || "";
-check(home.indexOf('class="brief-stage"') > home.indexOf("</section>") &&
-  home.indexOf('class="brief-stage"') < home.indexOf('id="problem"') &&
-  exactElement(briefStage, "h2", "Your meeting is tomorrow. The prep is already done") &&
-  briefStage.includes('<div class="brief-window">') &&
-  briefStage.includes('<span class="brief-example">Example</span>') &&
-  briefStage.includes('<div class="brief-actions" aria-hidden="true">') &&
-  !/<(?:iframe|template|button|a|input)\b/.test(briefStage) &&
-  !home.includes('class="demo-stage"') && !home.includes('id="jin-hero-demo"'),
-  "Root must show the labelled example meeting brief directly below the hero, without a live demo, controls or links.");
+const productFrame = home.match(/<figure class="demo-stage">([\s\S]*?)<\/figure>/)?.[1] || "";
+const productAlt = "Jin AI employee workspace. Harness parts are sorted by category, and each part is marked Can move or Confidential.";
+const stillTag = productFrame.match(/<img\b[^>]*>/)?.[0] || "";
+check(stillTag === `<img src="assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="${productAlt}" decoding="async" loading="eager" fetchpriority="high" elementtiming="hero-still">` &&
+  productFrame.includes('class="hero-screen"') &&
+  home.indexOf('class="demo-stage"') > home.indexOf("</section>") &&
+  home.indexOf('class="demo-stage"') < home.indexOf('id="problem"'),
+  "Root must retain the eager Categories fallback, exact alt and dimensions directly below the hero.");
+const demoTemplate = productFrame.match(/<template id="hero-demo-template">([\s\S]*?)<\/template>/)?.[1] || "";
+const demoIframe = demoTemplate.match(/<iframe\b[^>]*>/)?.[0] || "";
+check(count(productFrame, /<iframe\b/g) === 1 && demoIframe.includes('src="assets/demo/app.html?embed=hero"') &&
+  demoIframe.includes('title="Jin AI employee workspace demo"') &&
+  demoIframe.includes('width="1440"') && demoIframe.includes('height="832"') &&
+  demoIframe.includes('tabindex="-1"') && /\sinert(?:\s|>)/.test(demoIframe) &&
+  demoIframe.includes('aria-hidden="true"') && demoIframe.includes('scrolling="no"') &&
+  !/\bloading="lazy"/.test(demoIframe),
+  "Root needs one non-lazy, inert, aria-hidden, untabbable native-size hero iframe in an unloaded template.");
+const heroDemoScript = home.match(/<script id="jin-hero-demo">([\s\S]*?)<\/script>/)?.[1] || "";
+check(heroDemoScript.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
+  heroDemoScript.includes("if (!painted || reduced.matches || iframe) return;") &&
+  heroDemoScript.includes("iframe?.remove()") && heroDemoScript.includes("new IntersectionObserver") &&
+  heroDemoScript.includes('"visibilitychange"') && heroDemoScript.includes("!document.hidden") &&
+  heroDemoScript.includes("new ResizeObserver") && heroDemoScript.includes("/ 1440") &&
+  heroDemoScript.includes('event.source !== iframe.contentWindow') &&
+  heroDemoScript.includes('event.origin !== location.origin') &&
+  heroDemoScript.includes('event.data.action !== "ready"') &&
+  heroDemoScript.includes("setTimeout(() => reveal(frame), 500)"),
+  "Hero lifecycle must gate creation on still paint and reduced motion, scale, authenticate readiness and pause off screen or in a hidden tab.");
 const demoApp = await text("assets/demo/app.html");
 check(demoApp.includes('new URLSearchParams(location.search).get("embed") === "hero"') &&
   demoApp.includes(".hero-embed .controls,.hero-embed .progress,.hero-embed .stats{display:none!important}") &&
@@ -398,9 +414,129 @@ check(JSON.stringify(heroTargets) === JSON.stringify([
 check(demoApp.includes('content="default-src \'none\'; script-src \'unsafe-inline\'; style-src \'unsafe-inline\'; img-src \'self\' data:; base-uri \'none\'; form-action \'none\'"') &&
   !/<(?:script|img|link)\b[^>]*(?:src|href)=["']https?:\/\//i.test(demoApp),
   "Demo must prohibit off-site resources and network connections.");
-check(count(home, /<img\b[^>]*src="assets\/demo\//g) === 0 &&
+check(count(home, /<img\b[^>]*src="assets\/demo\//g) === 1 &&
   !/demo-[134]-|admin console|screen-by-role|screen-what-can-move/.test(home),
   "Root must not show admin screens or any still beyond the Categories fallback.");
+const problemMatch = homeSections.find((match) => match[1].includes('id="problem"'));
+const problemSection = problemMatch?.[2] || "";
+const problemCopy = [
+  ["shadow", "Shadow AI", "Confidential company information could end up in personal AI tools, outside the company's control."],
+  ["dependency", "Agents that depend on one person", "Agents and workflows stay with the people who built them. When they leave, everything starts over."],
+  ["teams", "Skills stuck in one team", "Teams build useful AI workflows, but they rarely get shared across the company."]
+];
+const problemFigures = [...problemSection.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
+check(problemSection.includes('<span class="mono-label">Problem</span>') &&
+  problemSection.includes('<h2 class="h2">Is your company in control of its AI?</h2>') &&
+  !/Draft copy|\bdata-draft\b/.test((problemMatch?.[1] || "") + problemSection),
+  "Problem must use the exact approved label and H2 without a Draft copy tag or data-draft.");
+check(problemFigures.length === 3 && count(problemSection, /<svg\b/g) === 3 &&
+  count(problemSection, /<h2\b/g) === 1 && count(problemSection, /<h3\b/g) === 3 &&
+  count(problemSection, /<p\b/g) === 6,
+  "Problem needs exactly three interactive figures: Shadow AI, dependency and teams.");
+for (const [index, [id, title, description]] of problemCopy.entries()) {
+  const attributes = problemFigures[index]?.[2] || "";
+  const body = problemFigures[index]?.[3] || "";
+  const svg = body.match(/<svg\b[^>]*>/)?.[0] || "";
+  const status = body.match(new RegExp(`<p class="problem-status" id="problem-${id}-status" aria-live="polite" aria-atomic="true"[^>]*>([^<]+)</p>`));
+  check(problemFigures[index]?.[1] === id &&
+    attributes.includes('tabindex="0"') && /\baria-label="Figure: [^"]+"/.test(attributes) &&
+    !/Fig\.\s*0[123]|problem-action|data-action-|Reset/.test(body) &&
+    [...body.matchAll(/<button\b[^>]*>/g)].every(([button]) => id === "teams" && button.includes('class="team-control"')) &&
+    body.includes(`<figcaption><h3>${title}</h3><p>${description}</p></figcaption>`) &&
+    svg.includes('viewBox="0 0 420 320"') && svg.includes('role="img"') &&
+    svg.match(/\baria-label="([^"]*)"/)?.[1].trim() &&
+    svg.match(/\bdata-label-idle="([^"]*)"/)?.[1].trim() &&
+    (id === "teams" || (svg.match(/\bdata-label-playing="([^"]*)"/)?.[1].trim() &&
+      svg.match(/\bdata-label-changed="([^"]*)"/)?.[1].trim())) &&
+    status?.[1].trim() &&
+    /\bdata-status-idle="[^"]+"/.test(status?.[0] || "") &&
+    (id === "teams" || ["idle", "playing", "changed"].every(state => (status?.[0] || "").includes(`data-status-${state}="`))),
+    `Problem figure ${index + 1} needs exact copy, a focusable named figure, no number/action/reset, shared SVG size, state descriptions and polite status.`);
+}
+const shadowFigure = problemFigures[0]?.[3] || "";
+check(!/\b(?:sa-|ho-|ed-)|class="art"|animateMotion/.test(problemSection) &&
+  !/sa-svg|ho-svg|ed-svg|ed-tiles|ed-arrows|pauseAnimations/.test(home),
+  "English home must not retain the old shadow AI, handover or education illustrations or controller.");
+const dependencyFigure = problemFigures[1]?.[3] || "";
+const layerNames = ["Context", "Instructions", "Tools", "Workflows"];
+const hasClass = (source, name) => new RegExp(`class="[^"]*\\b${name}\\b`).test(source);
+function checkFlatDrawing(source, label) {
+  check(!/<(?:image|img|polygon|mask|linearGradient|radialGradient)\b|iso-|platform|dependency-rebuild|dependency-redo|(?:skew|matrix)\(/.test(source),
+    `${label} must be an original flat line drawing without platforms, isometric parts, images, gradients or rebuilding.`);
+}
+function harnessCards(source) {
+  return [...source.matchAll(/<g class="harness-card" data-layer="([^"]+)" style="--step:(\d)" transform="translate\((\d+) (\d+)\)">\s*(<rect[^>]+\/>)\s*<g class="harness-icon" transform="translate\(17 21\)">([\s\S]*?)<\/g>\s*<text x="44" y="27">([^<]+)<\/text>\s*<\/g>/g)];
+}
+function checkHarnessCards(source, label) {
+  const cards = harnessCards(source);
+  check(cards.length === 4 && cards.every((card, index) =>
+    card[1] === layerNames[index].toLowerCase() && Number(card[2]) === index &&
+    Number(card[3]) === 132 && Number(card[4]) === 64 + index * 50 &&
+    card[5] === '<rect width="156" height="42" rx="7"/>' &&
+    card[6].includes("<path") && card[7] === layerNames[index]) &&
+    [...source.matchAll(/<text\b[^>]*>([^<]*)<\/text>/g)].map(m => m[1]).join() === layerNames.join(),
+    `${label} needs four matching rounded cards with document/list/wrench/connected-box icons and only Context/Instructions/Tools/Workflows text in top-to-bottom order.`);
+  check(cards[0]?.[6].includes("M0-11H10L16-5") && cards[1]?.[6].includes("M5-8H18") &&
+    cards[2]?.[6].includes("A8 8") && count(cards[3]?.[6] || "", /<rect\b/g) === 3,
+    `${label} needs the correct distinct layer icons.`);
+  checkFlatDrawing(source, label);
+}
+function checkFlatProblems(shadow, dependency, language) {
+  check(hasClass(shadow, "shadow-document") && hasClass(shadow, "shadow-ai") &&
+    shadow.includes('<rect class="shadow-boundary flat-intro" x="28" y="90" width="178" height="140" rx="12"/>') &&
+    shadow.includes('class="shadow-route flat-route" pathLength="1" d="M104 160H286"') &&
+    shadow.includes('class="shadow-warning problem-finish"><path d="M371 143V156M371 163V164"') &&
+    /class="shadow-ai" transform="translate\(-20 0\)">[\s\S]*?A8 8[\s\S]*?<\/g>/.test(shadow) &&
+    !/<text\b|<button\b|shadow-warning-pulse|shadow-confidential/.test(shadow) &&
+    count(shadow, /\bproblem-finish\b/g) === 1,
+    `${language} Shadow AI needs a white document inside a dashed rounded boundary, an outgoing line, personal-AI chat bubble and small exclamation mark, not an x.`);
+  checkFlatDrawing(shadow, `${language} Shadow AI`);
+  checkHarnessCards(dependency, `${language} dependency`);
+  check(["dependency-owner", "dependency-departed", "dependency-stack", "dependency-old-link",
+    "dependency-break", "dependency-attempt", "dependency-stop", "dependency-successor"].every(name => hasClass(dependency, name)) &&
+    count(dependency, /href="#dependency-person"/g) === 3 &&
+    dependency.includes('transform="translate(42 160)"') && dependency.includes('transform="translate(376 160)"') &&
+    dependency.includes('d="M70 160H132"') &&
+    dependency.includes('d="M288 160H320M314 154 320 160 314 166"') &&
+    dependency.includes('d="M95 154 107 166M107 154 95 166"') &&
+    dependency.includes('class="dependency-stop problem-finish" d="M326 154 338 166M338 154 326 166"') &&
+    count(dependency, /\bproblem-finish\b/g) === 1 && !/rebuilding|data-stage/.test(dependency),
+    `${language} dependency needs a single owner/cards/successor row, a dashed departing outline, broken owner link, fading cards and a halfway-stopped arrow with a second x.`);
+}
+checkFlatProblems(shadowFigure, dependencyFigure, "English");
+const teamFigure = problemFigures[2]?.[3] || "";
+for (const team of ["a", "b", "c"]) {
+  check(teamFigure.includes(`data-team-art="${team}"`) &&
+    new RegExp(`<button\\b[^>]*class="team-control"[^>]*data-team="${team}"[^>]*aria-pressed="false"[^>]*data-label="[^"]+"[^>]*data-status="[^"]+"[^>]*><span class="problem-status">Open Team ${team.toUpperCase()}</span></button>`).test(teamFigure),
+    `Team ${team.toUpperCase()} needs an independently focusable, named HTML button and translated-in-place state strings.`);
+}
+check(teamFigure.indexOf('class="team-controls"') > teamFigure.indexOf("</svg>") &&
+  count(problemSection, /<text\b/g) === 4 &&
+  layerNames.every(label =>
+    problemSection.includes(`>${label}</text>`)) &&
+  count(home, /<script type="module" src="problem.js"><\/script>/g) === 1,
+  "Team controls must sit outside role=img; only the four card labels may be SVG text; home must load problem.js once.");
+const problemClient = await text("problem.js");
+check(problemClient.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
+  problemClient.includes('querySelectorAll("[data-problem], [data-solution]")') &&
+  problemClient.includes('figure.dataset.problem === "shadow" || figure.dataset.problem === "dependency"') &&
+  problemClient.includes('figure.querySelector(".problem-finish, .solution-finish")') &&
+  problemClient.includes('finish.addEventListener("animationend"') &&
+  problemClient.includes('event.target === finish && figure.dataset.busy === "true"') &&
+  problemClient.includes("new IntersectionObserver") && problemClient.includes('"visibilitychange"') &&
+  problemClient.includes("!document.hidden") && problemClient.includes("visible.has(figure)") &&
+  problemClient.includes('if (figure.dataset.busy === "true") return;') &&
+  problemClient.includes("clearTimeout(timer)") &&
+  problemClient.includes("cancelAnimationFrame(frame)") &&
+  problemClient.includes('threshold: [0, .5]') && problemClient.includes("else controller.reset();") &&
+  problemClient.includes('figure.addEventListener("focus"') &&
+  problemClient.includes('figure.addEventListener("pointerenter"') &&
+  problemClient.includes('figure.addEventListener("click"') &&
+  !problemClient.includes("later(end,") &&
+  problemClient.includes('control.addEventListener("focus", select)') &&
+  problemClient.includes('control.addEventListener("pointerenter"') &&
+  problemClient.includes('control.addEventListener("click", select)'),
+  "Problem sequences must play once at half-view, reset on exit, guard repeated focus/hover/tap input, finish within five seconds using animation completion and support reduced motion and flow pause.");
 check(!home.includes("Turn the AI you already use into an assistant that actually knows you") &&
   !home.includes("plugin-screen.png") && !home.includes("privacy-tabs.mjs") &&
   !/<section\b[^>]*\bid="(?:what|benefits|privacy|waitlist)"/.test(home),
@@ -505,88 +641,106 @@ check(!llms.includes("sole canonical product page") && !llms.includes("Canonical
 const content = JSON.parse(contentJson);
 check(content.product.name === "Jin AI", "Structured data product name is invalid.");
 check(content.product.status === "building", "Structured data must state the Building status.");
+check(home.includes(`<h2 class="h2">${content.problem.headline}</h2>`), "Root must use the approved problem heading.");
+check(JSON.stringify(content.problem.points) === JSON.stringify(problemCopy.map(([, name, description]) => ({ name, description }))),
+  "Problem facts must contain exactly the three approved Keep titles and bodies.");
+for (const point of content.problem.points) {
+  check(problemSection.includes(`<h3>${point.name}</h3>`) && problemSection.includes(`<p>${point.description}</p>`),
+    `Root must use the approved ${point.name} copy.`);
+}
+const solutionSection = homeSections.find((match) => match[1].includes('id="solution"'))?.[2] || "";
+const solutionCopy = [
+  ["Keep it safe", "Separate confidential information from reusable context, skills, and workflows. Share each part only with the AI tools you approve."],
+  ["Keep it in the company", approvedCompanySolution],
+  ["Keep it shared", "Useful workflows and skills can be shared across teams and recommended where they fit, so good AI practices spread instead of staying in one team."]
+];
+const solutionClosing = "As people improve the way they work with AI, Jin AI keeps those improvements available to the whole company.";
 function exactElement(source, tag, value) {
   return [...withoutJapanesePhrases(source).matchAll(new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)</${tag}>`, "g"))]
     .filter(([, inner]) => inner === value).length === 1;
 }
-const homeSection = (source, id) =>
-  source.match(new RegExp(`<section\\b[^>]*\\bid="${id}"[^>]*>([\\s\\S]*?)</section>`))?.[1] || "";
-const homeSteps = [
-  ["Connect your tools", "Jin works with the tools your team already uses, with the permissions you choose."],
-  ["Spot repetitive work", "It looks for tasks that keep coming up and chances to save time."],
-  ["Get the work ready", "Jin prepares drafts and other work for your team to review."],
-  ["Learn what works", "Every approval, edit, or rejection helps Jin understand what to do differently next time."]
-];
-const japaneseHomeSteps = [
-  ["ツールをつなぐ", "チームがいつも使っているツールと、選んだ権限でつながります。"],
-  ["繰り返しの仕事を見つける", "何度も出てくる作業や、時間を節約できるところを探します。"],
-  ["仕事を準備する", "たたき台などを用意し、チームが確認できるようにします。"],
-  ["うまくいくやり方を学ぶ", "承認、修正、却下のひとつひとつから、次にどうするかを学びます。"]
-];
-const pairs = (id, items) => items.flatMap(([title, body]) => [[id, "h3", title], [id, "p", body]]);
-const homeCopy = [
-  ["English", home, [
-    ["problem", "h2", content.problem.headline],
-    ["problem", "p", "Companies have invested in ChatGPT, Copilot, and other AI tools."],
-    ["problem", "p", "But employees still spend hours preparing for meetings, putting together reports, and moving information between apps."],
-    ["problem", "p", `<strong>${content.problem.closing}</strong>`],
-    ["solution", "h2", content.solution.headline],
-    ...pairs("solution", content.solution.steps.map(step => [step.name, step.description])),
-    ["solution", "p", `<strong>${content.solution.closing}</strong>`],
-    ["how", "h2", "Jin learns how your team works"],
-    ...pairs("how", homeSteps),
-    ["why", "h2", "Your team shouldn't have to build their own automations"],
-    ["why", "p", "Most AI tools are useful once someone knows what to ask. Workflow builders are powerful, but someone still has to decide what to automate and set it up."],
-    ["why", "p", "<strong>Jin takes a different approach.</strong> It finds chances to help, prepares the work, and suggests what could be automated next. Your employees don't need to become AI experts to benefit from AI."],
-    ["team", "h2", "One person's improvement can help the whole team"],
-    ["team", "p", "When someone improves a result, Jin learns what changed and why. Over time, those lessons can help others doing similar work, without everyone starting from scratch."],
-    ["team", "p", "What gets shared is the way of doing the task, not anyone's emails or files. An admin reviews each improvement before it reaches other teams."],
-    ["team", "p", "<strong>The more your team teaches Jin, the more useful it becomes for everyone.</strong>"]
-  ]],
-  ["Japanese", japanese, [
-    ["problem", "h2", "AIツールはあるのに、なぜまだ全部自分でやっているのでしょう？"],
-    ["problem", "p", "多くの会社が、ChatGPTやCopilotなどのAIツールに投資してきました。"],
-    ["problem", "p", "それでも社員は、会議の準備、報告書づくり、アプリ間の情報の移し替えに、何時間も使っています。"],
-    ["problem", "p", "<strong>AIは使える。でも、価値を引き出すには、まだ手間がかかります。</strong>"],
-    ["solution", "h2", "もし、AIが先に動いてくれたら？"],
-    ...pairs("solution", [
-      ["いま", "社員がやることを考え、AIツールを開き、背景を伝え、結果を確かめています。"],
-      ["Jinなら", "Jinが次に来る仕事に気づいてたたき台を用意し、社員は都合のよいときに確認します。"]
-    ]),
-    ["solution", "p", "<strong>AIに頼むところからではなく、準備ができた仕事から始められます。</strong>"],
-    ["data", "h2", "下準備はJinが。決めるのは、あなたのチームです。"],
-    ["data", "p", "Jinは、チームがつないだメール、カレンダー、チャット、ファイル（Gmail、Outlook、Slack、Teamsなど）を読み、正確な準備をします。読んだ内容は、その人の仕事の準備にだけ使い、AIモデルの学習には使いません。管理者は、フォルダ、チャンネル、ラベル、チームごとに対象から外せます。"],
-    ["data", "li", "Jinを使えるチームとツールは、管理者が選びます。社員は自分のアカウントをつなぎ、いつでも外せます。"],
-    ["data", "li", "Jinは、承認なしにメッセージを送ったり、システムを変えたりしません。"],
-    ["data", "li", "Jinが見つけたことは本人に届き、上司には届きません。Jinは人を採点したり、順位を付けたりしません。"],
-    ["data", "li", "データは会社ごとに分けて保管します。Jinが画面を録画することはありません。"],
-    ["data", "p", "<strong>いつも役に立ち、いつもあなたの管理下に。</strong>"],
-    ["how", "h2", "Jinは、チームの働き方を学びます。"],
-    ...pairs("how", japaneseHomeSteps),
-    ["why", "h2", "自動化を、社員が自分で作る必要はありません。"],
-    ["why", "p", "多くのAIツールは、何を頼めばよいかが分かっている人にとって便利なものです。ワークフローを作るツールは強力ですが、何を自動化するかを決めて設定する人が必要です。"],
-    ["why", "p", "<strong>Jinのやり方は違います。</strong> 手伝えるところを見つけ、仕事を準備し、次に自動化できそうなことを提案します。社員がAIの専門家にならなくても、AIの恩恵を受けられます。"],
-    ["team", "h2", "一人の改善が、チーム全体の助けになる。"],
-    ["team", "p", "誰かが結果を直すと、Jinは何がなぜ変わったのかを学びます。その学びは、似た仕事をするほかの人の助けになり、みんなが一から始めずに済みます。"],
-    ["team", "p", "共有されるのは仕事のやり方で、誰かのメールやファイルではありません。ほかのチームに届く前に、管理者がひとつずつ確認します。"],
-    ["team", "p", "<strong>チームがJinに教えるほど、Jinはみんなの役に立つようになります。</strong>"]
-  ]]
-];
-for (const [language, source, entries] of homeCopy) {
-  for (const [id, tag, value] of entries) {
-    check(exactElement(homeSection(source, id), tag, value), `${language} home ${id} must use the approved ${tag} once: ${value}`);
+check(exactElement(solutionSection, "h2", "How Jin AI keeps your AI") &&
+  count(solutionSection, /<li>/g) === 3 && count(solutionSection, /<h3\b/g) === 3 &&
+  count(solutionSection, /<p\b/g) === 4 &&
+  solutionCopy.every(([title, body]) => exactElement(solutionSection, "h3", title) && exactElement(solutionSection, "p", body)) &&
+  exactElement(solutionSection, "p", solutionClosing) &&
+  !/<img\b|class="(?:ph|eyebrow)"/.test(solutionSection),
+  "Root Solution needs the exact Keep heading, three title/body pairs and closing line, each once.");
+const solutionNames = {
+  en: [
+    "Figure: confidential documents stay locked while reusable documents can be shared",
+    "Figure: four company-owned cards connect directly to the next owner",
+    "Figure: one team's workflow spreads to the other teams"
+  ],
+  ja: [
+    "図: 機密の書類は鍵で守られ、再利用できる書類は共有できる",
+    "図: 会社に残る四枚のカードが次の担当者にそのままつながる",
+    "図: ひとつのチームのワークフローが、ほかのチームに広がる"
+  ]
+};
+function checkSolutionFigures(section, language) {
+  const items = [...section.matchAll(/<li>([\s\S]*?)<\/li>/g)];
+  const figures = [...section.matchAll(/<figure class="solution-figure" data-solution="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
+  check(figures.length === 3 && count(section, /<svg\b/g) === 3 &&
+    count(section, /<figure\b/g) === 3 && count(section, /<text\b/g) === 4 &&
+    !/<figcaption\b|<(?:button|img|image)\b|data-draft|draft-tag/.test(section),
+    `${language} Solution needs three original inline drawings before the text, no captions, buttons, images, draft tags or extra SVG text.`);
+  for (const [index, id] of ["safe", "company", "shared"].entries()) {
+    const attributes = figures[index]?.[2] || "", body = figures[index]?.[3] || "";
+    const svg = body.match(/<svg\b[^>]*>/)?.[0] || "";
+    const status = body.match(new RegExp(`<span class="problem-status" id="solution-${id}-status" aria-live="polite" aria-atomic="true"([^>]*)>([^<]*)</span>`));
+    const localized = value => Boolean(value?.trim()) &&
+      (language !== "ja" || /[\p{Script=Han}\p{Script=Hiragana}]/u.test(value));
+    check(figures[index]?.[1] === id && attributes.includes('tabindex="0"') &&
+      attributes.includes(`aria-label="${solutionNames[language][index]}"`) &&
+      /^\s*<figure\b[\s\S]*?<\/figure>\s*<h3>/.test(items[index]?.[1] || "") &&
+      svg.includes('viewBox="0 0 420 320"') && svg.includes('role="img"') &&
+      localized(svg.match(/\baria-label="([^"]*)"/)?.[1]) &&
+      ["idle", "playing", "changed"].every(state =>
+        localized(svg.match(new RegExp(`\\bdata-label-${state}="([^"]*)"`))?.[1]) &&
+        localized(status?.[1].match(new RegExp(`\\bdata-status-${state}="([^"]*)"`))?.[1])) &&
+      localized(status?.[2]) &&
+      status?.[2] === status?.[1].match(/\bdata-status-idle="([^"]*)"/)?.[1] &&
+      count(body, /class="[^"]*\bsolution-finish\b[^"]*"/g) === 1 &&
+      count(body, /<path\b[^>]*\bd="[^"]+"/g) >= (id === "company" ? 5 : 8),
+      `${language} Solution ${id} needs ordered placement, a focusable accessible name, shared geometry, a drawn scene, one completion clock and localized idle/playing/end descriptions and live status.`);
   }
-  check(count(homeSection(source, "how"), /<li>/g) === 4 &&
-    ["problem", "solution", "data", "how", "why", "team"].every(id => !/<(?:figure|svg|img|button|iframe)\b/.test(homeSection(source, id))) &&
-    !/problem\.js|data-problem|data-solution/.test(source),
-    `${language} home sections must be text only, with four How it works steps and no retired figures or controller.`);
+  const safe = figures[0]?.[3] || "", company = figures[1]?.[3] || "", shared = figures[2]?.[3] || "";
+  check(["safe-document", "safe-stem", "safe-upper", "safe-lower", "safe-lock", "safe-share",
+    "safe-confidential", "safe-reusable"].every(name => hasClass(safe, name)) &&
+    count(safe, /\bflat-back\b/g) === 2 && count(safe, /<circle\b/g) === 3 &&
+    safe.includes('d="M104 160H166"') &&
+    safe.includes('d="M166 160C202 160 204 84 242 84H278M271 77 278 84 271 91"') &&
+    safe.includes('d="M166 160C202 160 204 236 242 236H278M271 229 278 236 271 243"') &&
+    !/<text\b|safe-personal|safe-block|safe-check/.test(safe),
+    `${language} safe figure needs one white document, a split line, upper locked vermilion documents, lower white documents with a three-circle share icon, faint back documents and no blocked-AI route.`);
+  checkFlatDrawing(safe, `${language} safe`);
+  const sourceDocument = source => source.match(/class="(?:shadow-document|safe-document) flat-document flat-intro" transform="translate\(60 129\)">([\s\S]*?)<\/g>/)?.[1];
+  check(Boolean(sourceDocument(safe)) && sourceDocument(safe) === sourceDocument(shadowFigure),
+    `${language} safe and Shadow AI must use the same source document and position.`);
+  checkHarnessCards(company, `${language} company`);
+  check(["company-previous", "company-stack", "company-successor", "company-old-link", "company-new-link"]
+    .every(name => hasClass(company, name)) &&
+    count(company, /href="#solution-company-person"/g) === 2 &&
+    company.includes('transform="translate(42 160)"') && company.includes('transform="translate(376 160)"') &&
+    company.includes('d="M70 160H132"') &&
+    company.includes('d="M288 160H350M343 153 350 160 343 167"') &&
+    harnessCards(company).map(m => m[0]).join() === harnessCards(dependencyFigure).map(m => m[0]).join(),
+    `${language} company figure needs the exact dependency card layout, grey previous owner and dashed link, solid vermilion arrow to the next owner, without rebuilding.`);
+  check(count(shared, /href="#solution-team-base"/g) === 3 &&
+    count(shared, /href="#solution-workflow"/g) === 5 &&
+    ["shared-source", "shared-target-a", "shared-target-b", "shared-moving-a", "shared-moving-b",
+      "shared-route-a", "shared-route-b"].every(name => new RegExp(`class="[^"]*\\b${name}\\b`).test(shared)),
+    `${language} shared figure needs three team platforms, a retained source workflow and two routed copies with matching destination workflows.`);
+  return figures.map(m => m[0]);
 }
-check(JSON.stringify(content.problem.points.map(point => point.description)) === JSON.stringify([
-  "Companies have invested in ChatGPT, Copilot, and other AI tools.",
-  "Employees still spend hours preparing for meetings, putting together reports, and moving information between apps."
-]) && content.solution.status === "building" &&
-  JSON.stringify(content.solution.steps.map(step => step.name)) === JSON.stringify(["Today", "With Jin"]),
-  "Problem and Solution facts must match the approved home copy.");
+const solutionFigures = checkSolutionFigures(solutionSection, "en");
+check(problemClient.includes('figure.dataset.solution || figure.dataset.problem === "shadow"') &&
+  problemClient.includes('figure.querySelector(".problem-finish, .solution-finish")') &&
+  problemClient.includes('event.target === finish && figure.dataset.busy === "true"') &&
+  count(problemClient, /new IntersectionObserver/g) === 1,
+  "Both figure sections must share one visibility/replay/reduced-motion controller and finish Solution states on their single CSS completion clock.");
+const howSection = homeSections.find((match) => match[1].includes('id="how"'))?.[2] || "";
 const featureCopy = [
   ["connect", "Connect once", "一度つなぐだけ", "Connect your usual AI tools once, through MCP.", "MCPで、いつものAIツールに一度つなぐだけ。", "Connect in one click", "ワンクリックでつなぐ", "demo-1-connect.webp", "connect"],
   ["categories", "See every part by type", "種類ごとに見る", "Skills, prompts, memory and MCP settings, sorted by type.", "スキル・プロンプト・記憶・MCPの設定を、種類ごとに整理して見られる。", "See every part by type", "種類ごとに見る", "demo-2-categories.webp", "categories"],
@@ -594,8 +748,11 @@ const featureCopy = [
   ["classify", "Separate personal from company", "個人と会社を分ける", "Keep what came from personal AI apart from parts that hold confidential company context.", "個人のAIから持ってきたものと、会社の機密を含むものを分けて管理できる。", "Separate personal from company", "個人と会社を分ける", "demo-4-what-can-move.webp", "what-can-move"],
   ["tools", "Control approved AI tools", "承認したツールだけに", "Let people use only the tools you approve. For example: Claude Code for developers only, your company policy in Copilot, and only non-confidential parts in ChatGPT.", "承認したツールだけを使わせる。たとえば、Claude Codeは開発者だけ、Copilotには会社のポリシー、ChatGPTには機密を含まないものだけ。", "Control approved AI tools", "承認したツールだけに"]
 ];
-check(JSON.stringify(content.how_it_works?.features) === JSON.stringify(featureCopy.map(f => ({ name: f[1], description: f[3] }))),
-  "How it works facts must keep the five unchanged features.");
+check(content.solution.status === "building" && content.solution.headline === "How Jin AI keeps your AI" &&
+  content.solution.closing === solutionClosing &&
+  JSON.stringify(content.solution.steps) === JSON.stringify(solutionCopy.map(([name, description]) => ({ name, description }))) &&
+  JSON.stringify(content.how_it_works?.features) === JSON.stringify(featureCopy.map(f => ({ name: f[1], description: f[3] }))),
+  "Facts need the three Keep solutions, their closing line, unchanged five features and Building status.");
 for (const [ja, page] of [[false, howPage], [true, japaneseHow]]) {
   const heading = ja ? "仕組み" : "How it works";
   const introduction = ja
@@ -609,8 +766,6 @@ for (const [ja, page] of [[false, howPage], [true, japaneseHow]]) {
 }
 const closingCopy = "Turn your team's AI into a company asset";
 const japaneseClosingCopy = "御社のAIを、会社の資産に。";
-const homeClosingCopy = "Let's find one task your team never wants to do again";
-const japaneseHomeClosingCopy = "もう二度とやりたくない仕事を、ひとつ見つけましょう。";
 for (const [ja, page, mission] of [
   [false, company, "Our mission is to turn every company's AI into an asset it owns: secure, shared, and always up to date."],
   [true, japaneseCompany, "私たちの使命は、会社のAIを、その会社の資産にすることです。安全に、みんなで使えて、いつも最新の状態で。"]
@@ -643,11 +798,10 @@ for (const [page, date, sections] of [
       `Privacy must put the exact waitlist/demo and booking disclosure under ${heading}.`);
   }
 }
-for (const [page, heading] of [[home, homeClosingCopy], [japanese, japaneseHomeClosingCopy],
-  [howPage, closingCopy], [japaneseHow, japaneseClosingCopy]]) {
+for (const [ja, page] of [[false, home], [true, japanese], [false, howPage], [true, japaneseHow]]) {
   const closing = page.match(/<section class="(?:demo|closing-cta)"[^>]*>([\s\S]*?)<\/section>/)?.[1] || "";
-  check(exactElement(closing, "h2", heading),
-    "Home and companion closing headings must match their approved copy exactly once.");
+  check(exactElement(closing, "h2", ja ? japaneseClosingCopy : closingCopy),
+    "Both home and companion closing headings must match the approved Keep copy exactly once.");
 }
 const removedScreenCaptionClass = ["screen", "caption"].join("-");
 for (const [ja, source, homeSource] of [[false, howPage, home], [true, japaneseHow, japanese]]) {
@@ -655,6 +809,7 @@ for (const [ja, source, homeSource] of [[false, howPage, home], [true, japaneseH
   check(!source.includes(removedScreenCaptionClass) && !/<figcaption\b/i.test(source),
     `${label} How it works must not contain screen captions or figcaption elements.`);
   const blocks = [...source.matchAll(/<section class="section workflow" id="(employee|admin)" aria-labelledby="([^"]+)">([\s\S]*?)<\/section>/g)];
+  const excerpt = homeSource.match(/<section class="section" id="how">([\s\S]*?)<\/section>/)?.[1] || "";
   check(blocks.length === 2 && blocks.map(b => b[1]).join() === "employee,admin" &&
     blocks.every((b, index) => b[3].includes(`<h2 class="how-audience" id="${b[1]}-heading">${ja ? ["社員", "管理者"][index] : ["Employees", "Admins"][index]}</h2>`) &&
       count(b[3], /class="feature-row"/g) === [2, 3][index]) &&
@@ -690,6 +845,14 @@ for (const [ja, source, homeSource] of [[false, howPage, home], [true, japaneseH
       : !/screen-camera|workflow-cursor/.test(body),
       `${label} ${f[0]} must keep one decorative arrow and click ring inside its still's transformed camera layer, with none in the hidden tools stage.`);
   });
+  check(excerpt.includes('<div class="how-excerpt">') && count(excerpt, /class="how-audience"/g) === 2 &&
+    count(excerpt, /class="feature-titles"/g) === 2 &&
+    excerpt.includes(`class="how-audience">${ja ? "社員" : "Employees"}</h3>`) &&
+    excerpt.includes(`class="how-audience">${ja ? "管理者" : "Admins"}</h3>`) &&
+    JSON.stringify([...excerpt.matchAll(/<li>([^<]+)<\/li>/g)].map(m => m[1])) === JSON.stringify(featureCopy.map(f => f[ja ? 2 : 1])) &&
+    !/<(?:img|figure|ol|h4)\b|harness-definition|mono-label/.test(excerpt) &&
+    excerpt.includes(`>${ja ? "仕組みを見る" : "How it works"} &rarr;</a>`),
+    `${label} home excerpt must contain only the heading, two stacked audience labels, five feature titles and link.`);
   const definition = ja
     ? "AI ハーネスとは、AI エージェントを役割に合わせて働かせるための、指示・スキル・記憶・接続ツールの一式です。"
     : content.product.harness_definition;
@@ -734,13 +897,8 @@ for (const [attribute, name] of [["name", "description"], ["property", "og:descr
   check(howPage.includes(`<meta ${attribute}="${name}" content="${howDescription}">`),
     `The companion page must use the approved ${name}.`);
 }
-// How it works and Security keep their own data promises until they are rewritten for the proactive pitch.
-const companionDataPrinciples = {
-  headline: "Your company's context stays yours",
-  items: ["Each company's context is kept separate.", "Jin AI never records your screen.", "Jin AI itself never trains on your data."]
-};
-check(howPage.includes(`<h2 class="h2">${companionDataPrinciples.headline}</h2>`) &&
-  companionDataPrinciples.items.every((item) => howPage.includes(`<li>${item}</li>`)) &&
+check(howPage.includes(`<h2 class="h2">${content.data_principles.headline}</h2>`) &&
+  content.data_principles.items.every((item) => howPage.includes(`<li>${item}</li>`)) &&
   howPage.includes('<a class="btn btn-p" href="../#demo">Join the waitlist</a>'),
   "The companion page must include all data promises and the demo CTA.");
 check(!/plugin-screen\.png|personal MCP|your own memory|#waitlist|Join &rarr;/.test(howPage),
@@ -761,7 +919,7 @@ const securityDescription = "How Jin AI keeps each company's context separate, a
 check(security.includes('<html lang="en">') &&
   security.includes(`<title>${securityTitle}</title>`) &&
   count(security, /<h1\b/g) === 1 &&
-  security.includes(`<h1>${companionDataPrinciples.headline}</h1>`) &&
+  security.includes(`<h1>${content.data_principles.headline}</h1>`) &&
   security.includes('<p class="mono-label">Security</p>') &&
   security.includes('<main>'),
   "Security must have its approved title, English language, H1, label and main.");
@@ -1102,6 +1260,33 @@ check(cssBlock(englishCss, ".shadow-boundary {").includes("stroke-dasharray: 4 5
   reducedFigureCss.includes('[data-problem="shadow"] .shadow-ai, [data-problem="shadow"] .shadow-warning { opacity: 1;') &&
   reducedFigureCss.includes(".problem-art .flat-route { stroke-dashoffset: 0;"),
   "Shadow AI needs a dashed frame, white document, growing vermilion line, bubble then warning, one three-second completion clock, hidden pause and reduced-motion end state.");
+check(cssBlock(englishCss, ".problem-art svg").includes("aspect-ratio: 420 / 320") &&
+  cssBlock(englishCss, ".dependency-owner, .dependency-old-link,").includes("stroke: var(--accent-light)") &&
+  cssBlock(englishCss, ".harness-card {").includes("stroke: var(--text-3)") &&
+  cssBlock(englishCss, '[data-problem="dependency"][data-state] .problem-art *').includes("animation-play-state: paused") &&
+  cssBlock(englishCss, '[data-problem="dependency"][data-state].problem-flow-running .problem-art *').includes("animation-play-state: running") &&
+  !/infinite/.test(englishCss.slice(englishCss.indexOf(".flat-document"), englishCss.indexOf(".team-lid"))) &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-owner').includes(".6s ease .45s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-stack').includes(".5s ease 1.2s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-attempt').includes(".5s linear 1.85s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .dependency-stop').includes("flat-finish 3s linear both") &&
+  cssBlock(englishCss, "@keyframes problem-dependency-fade").includes("stroke-dasharray: 4 5; opacity: .36") &&
+  cssBlock(englishCss, "@keyframes problem-dependency-dash").includes("stroke-dasharray: 4 5; opacity: .5") &&
+  cssBlock(englishCss, "@media (min-width: 1024px)").includes(".problem-grid, .solution-copy { grid-template-columns: repeat(3, minmax(0, 1fr)); }") &&
+  cssBlock(englishCss, ".problem-art .harness-card text").includes("font-size: 16.5px") &&
+  cssBlock(englishCss, ".dependency-departed {").includes("stroke-dasharray: 4 5") &&
+  cssBlock(englishCss, "@keyframes problem-draw").includes("stroke-dashoffset: 1") &&
+  cssBlock(englishCss, "#problem .problem-column:focus-visible").includes("outline: 2px solid var(--accent-light)") &&
+  reducedFigureCss.includes(
+    ".problem-art * { animation: none !important; transition: none !important; }") &&
+  ['[data-problem="dependency"] .dependency-owner { opacity: 0;',
+    '[data-problem="dependency"] .dependency-departed { opacity: .5; transform: translateX(-10px);',
+    '[data-problem="dependency"] .dependency-old-link { stroke-dasharray: 4 5; opacity: .5;',
+    '[data-problem="dependency"] .dependency-stack { stroke-dasharray: 4 5; opacity: .36;',
+    '[data-problem="dependency"] .dependency-break, [data-problem="dependency"] .dependency-stop { opacity: 1;',
+    '[data-team-art="c"] .team-workflow { opacity: 1;']
+    .every(rule => reducedFigureCss.includes(rule)),
+  "Problem figures need reserved geometry, a finite three-second departure/failed-transfer sequence, readable flat cards, keyboard focus, hidden pause and CSS reduced-motion end states.");
 check(stageCss.includes("padding: var(--s-12)") && stageCss.includes("border: var(--border)") &&
   stageCss.includes("border-radius: 24px") && stageCss.includes("background: var(--surface-1)") &&
   windowCss.includes("overflow: hidden") && windowCss.includes("border-radius: var(--r-xl)") &&
@@ -1109,18 +1294,21 @@ check(stageCss.includes("padding: var(--s-12)") && stageCss.includes("border: va
   cssBlock(englishCss, "@media (max-width: 767px)").includes(
     ".demo-stage { width: calc(100% - 48px); padding: var(--s-4); }") &&
   !/product-frame|mask-image|--glow|\.demo-(?:stage|window)::(?:before|after)/.test(englishCss) &&
-  cssBlock(englishCss, ".screen {").includes("aspect-ratio: 2880 / 1664"),
-  "Demo stages must share responsive padding, outline, surface and floating windows without a fade, glow or extra chrome; screen ratios must remain.");
+  cssBlock(englishCss, ".hero-screen").includes("aspect-ratio: 2880 / 1664") &&
+  cssBlock(englishCss, ".screen {").includes("aspect-ratio: 2880 / 1664") &&
+  heroDemoScript.includes("screen.clientWidth / 1440") &&
+  heroDemoScript.includes("}).observe(screen)"),
+  "Demo stages must share responsive padding, outline, surface and floating windows without a fade, glow or extra chrome; screen ratios and inner-screen scaling must remain.");
 const paintScript = home.match(/<head>[\s\S]*?<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] || "";
 check(paintScript.includes('document.documentElement.classList.add("js-nav")') &&
   /if\s*\(!matchMedia\("\(prefers-reduced-motion: reduce\)"\)\.matches\)\s*document\.documentElement\.classList\.add\("js-reveal"\)/.test(paintScript),
   "Home reveal must opt in through a reduced-motion-guarded inline head script.");
 const revealHeading = home.match(/<h1 class="hero-reveal">([\s\S]*?)<\/h1>/)?.[1] || "";
-check(count(revealHeading, /<span style="--word:[0-6]">[^<]+<\/span>/g) === 7 &&
+check(count(revealHeading, /<span style="--word:[0-5]">[^<]+<\/span>/g) === 6 &&
   !/aria-hidden|aria-label/.test(revealHeading) &&
-  [...revealHeading.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "0123456" &&
-  [...revealHeading.matchAll(/<span[^>]*>([^<]+)<\/span>/g)].map(match => match[1]).join(" ") === content.product.headline,
-  "Home H1 must contain seven ordered readable word spans with its exact accessible name.");
+  [...revealHeading.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "012345" &&
+  [...revealHeading.matchAll(/<span[^>]*>([^<]+)<\/span>/g)].map(match => match[1]).join(" ") === "Turn AI into a company asset",
+  "Home H1 must contain six ordered readable word spans with its exact accessible name.");
 const revealCss = cssBlock(englishCss, "@media (prefers-reduced-motion: no-preference)");
 check(cssBlock(englishCss, ".hero-intro {").includes("max-width: 720px"),
   "The hero body must use a font-independent line measure so font swapping cannot change its line count on tablets.");
@@ -1179,31 +1367,25 @@ for (const [route, source] of [["privacy", privacy], ["accessibility", accessibi
   check(source.includes('<main class="legal-copy">'), `${route} must use the narrow article layout.`);
 }
 const dataSection = homeSections.find((match) => match[1].includes('id="data"'))?.[2] || "";
-check(exactElement(dataSection, "h2", content.data_principles.headline) &&
-  dataSection.includes(`<p class="trust-intro">${content.data_principles.introduction}</p>`) &&
-  count(dataSection, /<li>/g) === content.data_principles.items.length &&
-  content.data_principles.items.every((item) => dataSection.includes(`<li>${item}</li>`)) &&
-  dataSection.includes(`<p class="narrative-close"><strong>${content.data_principles.closing}</strong></p>`),
-  "Root must use the approved data introduction, every data promise and the closing line.");
+check(dataSection.includes(`<h2 class="h2">${content.data_principles.headline}</h2>`) &&
+  content.data_principles.items.every((item) => dataSection.includes(`<li>${item}</li>`)),
+  "Root must use all approved data promises.");
 const demoSection = homeSections.find((match) => match[1].includes('id="demo"'))?.[2] || "";
-check(exactElement(demoSection, "h2", homeClosingCopy) &&
+check(demoSection.includes(`<h2>${closingCopy}</h2>`) &&
   demoSection.includes('id="waitlistForm"'), "The demo section must contain the approved heading and form.");
 const demoIntro = demoSection.match(/<div class="demo-intro">([\s\S]*?)<\/div>\s*<\/div>/)?.[1] || "";
 const gettingStarted = demoIntro.match(/<div class="getting-started">([\s\S]*)/)?.[1] || "";
 check(gettingStarted.includes("<h3>Getting started</h3>") &&
   count(gettingStarted, /<ul>/g) === 1 &&
   JSON.stringify([...gettingStarted.matchAll(/<li>([\s\S]*?)<\/li>/g)].map(match => match[1])) === JSON.stringify([
-    "We start with one team and one repetitive task, and measure together how often people use what Jin prepared, how much time it saves, how much editing it needs, and what it costs to run.",
     "We're working through our waitlist, so thank you for your patience. Join below. After signing up, you can also request a demo for your company.",
     "The fastest way in is an introduction from someone already in the Jin AI private beta."
   ]),
-  "The closing demo intro must contain the exact three-item Getting started list and H3.");
+  "The closing demo intro must contain the exact two-item Getting started list and H3.");
 const japaneseGettingStarted = japanese.match(/<div class="getting-started">([\s\S]*?)<\/ul>/)?.[1] || "";
-check(JSON.stringify([...japaneseGettingStarted.matchAll(/<li>([\s\S]*?)<\/li>/g)].slice(0, 2).map(match => match[1])) === JSON.stringify([
-  "まず一つのチームと一つの繰り返しの仕事から始め、Jinが準備したものがどれだけ使われたか、どれだけ時間が浮いたか、どれだけ直しが必要だったか、動かす費用はいくらかを一緒に測ります。",
-  "ウェイトリストの方から順にご案内しています。下のフォームからご登録ください。登録後、ご希望の方は会社向けのデモもお申し込みいただけます。"
-]),
-  "Japanese Getting started must open with the pilot measure, then the exact R13e waitlist copy.");
+check([...japaneseGettingStarted.matchAll(/<li>([\s\S]*?)<\/li>/g)][0]?.[1] ===
+  "ウェイトリストの方から順にご案内しています。下のフォームからご登録ください。登録後、ご希望の方は会社向けのデモもお申し込みいただけます。",
+  "Japanese Getting started item 1 must match the exact R13e copy.");
 const retiredPilotTexts = [
   "How a pilot works", "We walk through Jin AI with your team's AI harnesses.",
   "Run a paid pilot", "One team uses Jin AI with Claude Code for a set period.",
@@ -1294,6 +1476,38 @@ for (const [language, source] of [["English", home], ["Japanese", japanese]]) {
     `${language} ${id} titles must not have number labels.`);
   }
 }
+check(cssBlock(englishCss, ".solution-copy {").includes("row-gap: var(--s-8)") &&
+  !/(?:^|[;{])\s*(?:gap|column-gap)\s*:/.test(cssBlock(englishCss, ".solution-copy {")) &&
+  cssBlock(englishCss, "@media (min-width: 1024px)").includes(".solution-copy li { padding-inline: var(--s-4); }") &&
+  cssBlock(englishCss, "#problem .problem-column {").includes("padding-inline: var(--s-4)"),
+  "Solution must match Problem's column widths, zero column gap and desktop inner padding.");
+check(cssBlock(englishCss, ".solution-figure {").includes("margin-bottom: var(--s-6)") &&
+  cssBlock(englishCss, ".solution-figure:focus-visible").includes("outline: 2px solid var(--accent-light)") &&
+  cssBlock(englishCss, "@media (min-width: 1024px)").includes(".solution-copy li + li { border-left: 1px solid transparent; }") &&
+  cssBlock(englishCss, ".problem-art .harness-card text").includes("font-size: 16.5px") &&
+  cssBlock(englishCss, '[data-solution][data-state] .problem-art *').includes("animation-play-state: paused") &&
+  cssBlock(englishCss, '[data-solution][data-state].problem-flow-running .problem-art *').includes("animation-play-state: running") &&
+  cssBlock(englishCss, '[data-state="changed"] .safe-stem').includes(".4s linear .35s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .safe-upper').includes(".55s linear .85s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .safe-lower').includes(".55s linear 1.45s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .safe-confidential').includes(".35s ease 2.1s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .safe-reusable').includes("flat-finish 3s linear both") &&
+  cssBlock(englishCss, '[data-state="changed"] .company-stack .harness-card').includes(".4s + var(--step) * .35s") &&
+  cssBlock(englishCss, '[data-state="changed"] .company-new-link').includes(".65s linear 1.9s both") &&
+  cssBlock(englishCss, '[data-state="changed"] .company-successor').includes("solution-company-owner 3s linear both") &&
+  cssBlock(englishCss, '[data-state="changed"] .shared-moving-b').includes("solution-copy-b 3.6s") &&
+  cssBlock(englishCss, ".safe-stem, .safe-lower, .safe-reusable").includes("stroke: var(--text-1)") &&
+  cssBlock(englishCss, ".safe-upper, .safe-confidential,").includes("stroke: var(--accent-light)") &&
+  cssBlock(englishCss, ".company-old-link {").includes("stroke-dasharray: 4 5") &&
+  !/[^{}]*\{[^}]*animation[^}]*\binfinite\b/.test(englishCss.slice(
+    englishCss.indexOf(".solution-figure {"), englishCss.indexOf(".solution-copy h3"))) &&
+  !/[^{}]*\.company-stack[^{}]*\{[^}]*stroke-dasharray/.test(englishCss) &&
+  ['[data-solution] .safe-confidential, [data-solution] .safe-reusable,',
+    '[data-solution] .company-successor { stroke: var(--accent-light);',
+    '[data-solution] .shared-target-a, [data-solution] .shared-target-b { opacity: 1;',
+    '[data-solution] .shared-route { stroke-dashoffset: 0;']
+    .every(rule => reducedFigureCss.includes(rule)),
+  "Solution figures need matched drawing rhythm, readable cards, visible focus, finite three-second safe/company and unchanged shared clocks, solid company cards, hidden pause and CSS-only reduced-motion end states.");
 check(!/class="(?:final|closing-cta|cta-band)"/.test(home) &&
   homeSections.at(-1)?.[1].includes('id="demo"'),
   "The form must close the home page, with no additional closing CTA band.");
@@ -1434,13 +1648,99 @@ check(llms.includes(`[Discord](${communityUrl})`) && count(llms, /https:\/\/disc
   "The LLM index must publish the single approved community invite.");
 
 const japaneseSections = [...japanese.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
-check(japaneseSections.length === 8 && japaneseSections[0]?.[1].includes('class="hero"') &&
-  japaneseSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() === homeSectionOrder,
-  "Japanese home must keep the English home sections in order.");
-for (const [language, source, introduction, note] of [
-  ["English", home, content.product.description, "Works with the email, calendar, and chat your team already uses."],
-  ["Japanese", japanese, "Jinは、繰り返しの仕事を見つけて準備し、チームのフィードバックから学びます。",
-    "チームがいつも使っているメール、カレンダー、チャットとつながります。"]
+check(japaneseSections.length === 6 && japaneseSections[0]?.[1].includes('class="hero"') &&
+  japaneseSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() ===
+  "problem,solution,how,data,demo", "Japanese home must retain the six English home sections in order.");
+const japaneseProblem = japaneseSections.find((match) => match[1].includes('id="problem"'))?.[2] || "";
+const svgGeometry = source => [...source.matchAll(/<svg\b[\s\S]*?<\/svg>/g)].map(([svg]) =>
+  svg.replace(/\s(?:aria-label|data-label-idle|data-label-playing|data-label-rebuilding|data-label-changed)="[^"]*"/g, "")
+    .replace(/(<text\b[^>]*>)[^<]*(<\/text>)/g, "$1LAYER$2"));
+check(count(japaneseProblem, /<svg\b[^>]*role="img"[^>]*aria-label="[^"]+"/g) === 3 &&
+  JSON.stringify(svgGeometry(japaneseProblem)) === JSON.stringify(svgGeometry(problemSection)),
+  "Japanese Problem SVGs must match English geometry, with three translated accessible descriptions.");
+const japaneseProblemCopy = [
+  ["shadow", "シャドーAIによる情報漏洩リスク", "会社の機密情報が個人のAIツールに共有され、企業が把握・管理できない状態になっているかもしれません。"],
+  ["dependency", "AIエージェントの属人化", "AIエージェントやワークフローが作成者個人に依存。担当者が異動・退職すると、後任者は一から作り直さなければなりません。"],
+  ["teams", "AI活用ノウハウの共有不足", "各チームで生まれた便利なAI活用方法やワークフローが、ほかのチームに共有されず、組織全体に広がっていません。"]
+];
+const japaneseFigures = [...japaneseProblem.matchAll(/<figure class="problem-column" data-problem="([^"]+)" data-state="idle"([^>]*)>([\s\S]*?)<\/figure>/g)];
+check(japaneseFigures[0]?.[2].includes('aria-label="図: 会社の書類が境界の外の個人AIにつながる"') &&
+  japaneseFigures[0]?.[3].includes('data-status-changed="書類が会社の管理外にある個人のAIにつながりました。感嘆符がリスクを示しています。"'),
+  "Japanese Shadow AI must use its exact accessible name and completed live status.");
+check(japaneseProblem.includes('<span class="mono-label">課題</span>') &&
+  withoutJapanesePhrases(japaneseProblem).includes('<h2 class="h2">御社のAIは、会社の管理下にありますか？</h2>') &&
+  japaneseFigures.length === 3 && count(japaneseProblem, /<h2\b/g) === 1 &&
+  count(japaneseProblem, /<h3\b/g) === 3 && count(japaneseProblem, /<p\b/g) === 6 &&
+  !/data-draft|draft-tag|sa-svg|ho-svg|ed-svg/.test(japaneseProblem) &&
+  japanese.includes('<script type="module" src="/problem.js"></script>'),
+  "Japanese Problem must use the exact Keep heading, three problems and shared controller, without draft or legacy content.");
+for (const [index, [id, heading, description]] of japaneseProblemCopy.entries()) {
+  const attributes = japaneseFigures[index]?.[2] || "";
+  const figure = japaneseFigures[index]?.[3] || "";
+  check(japaneseFigures[index]?.[1] === id &&
+    attributes.includes('tabindex="0"') && /\baria-label="[^"]*[\p{Script=Han}\p{Script=Hiragana}][^"]*"/u.test(attributes) &&
+    !/図\s*0[123]|problem-action|data-action-|元に戻す/.test(figure) &&
+    [...figure.matchAll(/<button\b[^>]*>/g)].every(([button]) => id === "teams" && button.includes('class="team-control"')) &&
+    withoutJapanesePhrases(figure).includes(`<figcaption><h3>${heading}</h3><p>${description}</p></figcaption>`) &&
+    new RegExp(`<p class="problem-status" id="problem-${id}-status" aria-live="polite" aria-atomic="true" data-status-idle="[^"]+"`).test(figure) &&
+    /<p class="problem-status"[^>]*aria-live="polite"[^>]*>[^<]*[\p{Script=Han}\p{Script=Hiragana}][^<]*<\/p>/u.test(figure),
+    `Japanese figure ${index + 1} needs approved copy, a focusable name, no number/action/reset and translated live status.`);
+  for (const [, value] of figure.matchAll(/\b(?:aria-label|data-label(?:-idle|-playing|-rebuilding|-changed)?|data-status(?:-idle|-playing|-rebuilding|-changed)?)="([^"]*)"/g)) {
+    check(/[\p{Script=Han}\p{Script=Hiragana}]/u.test(value), `Japanese ${id} has an untranslated state description.`);
+  }
+  const problemMarkup = source => withoutJapanesePhrases(source)
+    .replace(/\b(?:aria-label|data-label(?:-idle|-playing|-rebuilding|-changed)?|data-status(?:-idle|-playing|-rebuilding|-changed)?)="[^"]*"/g, 'data-translated="TEXT"')
+    .replace(/>[^<]+</g, "><");
+  check(problemMarkup(japaneseProblem) === problemMarkup(problemSection),
+    "English and Japanese Problem markup and SVG must be identical apart from text.");
+}
+check([...(japaneseFigures[1]?.[3] || "").matchAll(/<text\b[^>]*>([^<]*)<\/text>/g)].map(match => match[1]).join() ===
+    layerNames.join() &&
+  japaneseFigures[1]?.[2].includes('aria-label="図: 担当者が離れると接続が切れ、後任者に何も届かない"') &&
+  ["A", "B", "C"].every(team => japaneseProblem.includes(`>チーム ${team} を開く</span>`)),
+  "Japanese dependency layers must keep the same English labels; the figure name, states and team controls must be translated.");
+checkFlatProblems(japaneseFigures[0]?.[3] || "", japaneseFigures[1]?.[3] || "", "Japanese");
+// R15 preserves the complete teams/shared figures from baseline d79a2c9.
+for (const [filename, source, hashes] of [
+  ["index.html", home, ["1bfa6c33da0b9e81a3e10b56fbfbea991120720929b1aa45d1175b872b093866",
+    "0fd7fbbfee12e8b08856dc8a97aaf5a9adb04e8c4bf687002820d327b4862b95"]],
+  ["ja/index.html", japanese, ["152fd4bc2735eb43777e19a5dcaed4d7c1735f1a261aa1e7d2a99cbb031f46d1",
+    "6945f7220d06b0f8e606bf3bbab6d6ca7b2155f89a513c8c18c7983ce2d9cd75"]]
+]) {
+  for (const [index, [type, id]] of [["problem", "teams"], ["solution", "shared"]].entries()) {
+    const figure = source.match(new RegExp(`<figure class="[^"]+" data-${type}="${id}"[\\s\\S]*?</figure>`))?.[0] || "";
+    check(createHash("sha256").update(figure).digest("hex") === hashes[index],
+      `${filename} ${id} SVG, name, states, copy and controls must remain unchanged from d79a2c9.`);
+  }
+}
+
+const japaneseSolution = japaneseSections.find((match) => match[1].includes('id="solution"'))?.[2] || "";
+const japaneseSolutionCopy = [
+  ["機密情報を安全に管理する", "機密情報と共有可能な知識・スキル・ワークフローを自動で分類。情報に応じて適切なAIツールだけに共有することで、安全なAI活用を実現します。"],
+  ["AIを会社の資産として残す", "AIエージェントを構成する知識・ルール・ツール・ワークフローを組織に蓄積。担当者が異動・退職しても、AIエージェントをそのまま使い続けられます。"],
+  ["AI活用のノウハウを組織全体に広げる", "各チームで生まれた優れたAI活用方法やワークフローを共有。ほかのチームにも最適な活用方法を自動でおすすめし、組織全体の生産性向上につなげます。"]
+];
+const japaneseSolutionClosing = `<div class="solution-closing">
+      <p><strong>一人ひとりのAI活用が、会社全体の資産になる。</strong></p>
+      <p>Jin AIは、日々進化するAIの活用方法を組織に蓄積し、誰もが活用できる環境をつくります。</p>
+    </div>`;
+check(exactElement(japaneseSolution, "h2", "Jin AIが実現する、安心して使い続けられるAI環境") &&
+  count(japaneseSolution, /<li>/g) === 3 && count(japaneseSolution, /<h3\b/g) === 3 &&
+  count(japaneseSolution, /<p\b/g) === 5 &&
+  japaneseSolutionCopy.every(([title, body]) => exactElement(japaneseSolution, "h3", title) && exactElement(japaneseSolution, "p", body)) &&
+  count(japaneseSolution, /class="solution-closing"/g) === 1 && japaneseSolution.includes(japaneseSolutionClosing),
+  "Japanese Solution needs the exact R11 heading, three title/body pairs and two-part bold/paragraph closing, each once.");
+const japaneseSolutionFigures = checkSolutionFigures(japaneseSolution, "ja");
+const solutionMarkup = figures => figures.map(figure => figure
+  .replace(/\b(?:aria-label|data-label-(?:idle|playing|changed)|data-status-(?:idle|playing|changed))="[^"]*"/g, 'data-translated="TEXT"')
+  .replace(/(<span\b[^>]*>)[^<]*(<\/span>)/g, "$1TEXT$2"));
+check(JSON.stringify(solutionMarkup(solutionFigures)) === JSON.stringify(solutionMarkup(japaneseSolutionFigures)),
+  "English and Japanese Solution figures must have identical full markup and SVG geometry apart from accessible text; layer names stay English.");
+for (const [language, source, introduction, badges] of [
+  ["English", home, "Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.",
+    ["Secure", "Company-owned", "Shared", "Up to date"]],
+  ["Japanese", japanese, "AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。",
+    ["安全", "会社のもの", "共有", "いつも最新"]]
 ]) {
   const section = source.match(/<section class="hero">([\s\S]*?)<\/section>/)?.[1] || "";
   check(count(section, /class="mono-label hero-eyebrow"/g) === 1 &&
@@ -1448,23 +1748,39 @@ for (const [language, source, introduction, note] of [
     `${language} hero needs the exact Jin AI label above the H1.`);
   check(count(source, /class="hero-intro"/g) === 1 &&
     section.match(/<h1 class="hero-reveal"[^>]*>[\s\S]*?<\/h1>\s*<p class="hero-intro">([^<]*)<\/p>\s*<div class="hero-actions">/)?.[1] === introduction &&
-    section.match(/<div class="hero-actions">[\s\S]*?<\/div>\s*<p class="hero-note">([^<]*)<\/p>\s*<\/div>\s*$/)?.[1] === note &&
-    !/hero-badges/.test(source),
-    `${language} hero must use the exact approved introduction after the H1 and the tools note after the actions, without badges.`);
+    /<div class="hero-actions">[\s\S]*?<\/div>\s*<ul class="hero-badges"/.test(section),
+    `${language} hero must use the exact approved introduction directly after the H1.`);
+  const list = section.match(/<ul class="hero-badges" role="list">([\s\S]*?)<\/ul>/)?.[1] || "";
+  const items = [...list.matchAll(/<li>([\s\S]*?)<\/li>/g)].map(match => match[1]);
+  check(count(section, /class="hero-badges"/g) === 1 && items.length === 4 &&
+    items.every((item, index) => /^<svg viewBox="0 0 24 24" aria-hidden="true">(?:<(?:path|circle)\b[^>]*\/>)+<\/svg><span>[^<]+<\/span>$/.test(item) &&
+      item.endsWith(`<span>${badges[index]}</span>`)) &&
+    !/\b(?:button|tabindex|aria-label|title|fill)=|<(?:a|button)\b/.test(list),
+    `${language} hero badges must be one four-item list with exact ordered labels and decorative inline line icons, not controls.`);
 }
+const heroBadges = source => source.match(/<ul class="hero-badges"[^>]*>([\s\S]*?)<\/ul>/)?.[1] || "";
+check(heroBadges(home).replace(/<span>[^<]*<\/span>/g, "<span>TEXT</span>") ===
+  heroBadges(japanese).replace(/<span>[^<]*<\/span>/g, "<span>TEXT</span>"),
+  "Hero badges must have identical English/Japanese markup and icon geometry apart from text.");
 check(cssBlock(englishCss, ".hero-eyebrow {").includes("display: block") &&
-  cssBlock(englishCss, ".hero-note {").includes("color: var(--text-3)"),
-  "Hero label and muted tools note must use the shared theme.");
-check(content.product.headline === "What if the work was already done?" &&
-  content.product.description === "Jin spots repetitive tasks, prepares the work, and learns from your team's feedback." &&
+  cssBlock(englishCss, ".hero-badges {").includes("display: flex") &&
+  cssBlock(englishCss, ".hero-badges {").includes("flex-wrap: wrap") &&
+  cssBlock(englishCss, ".hero-badges {").includes("color: var(--text-3)") &&
+  cssBlock(englishCss, ".hero-badges svg {").includes("fill: none") &&
+  cssBlock(englishCss, ".hero-badges svg {").includes("stroke: currentColor") &&
+  cssBlock(englishCss, ".hero-badges svg {").includes("stroke-width: 1.25"),
+  "Hero label and muted, wrapping, unfilled thin-line badges must use the shared theme.");
+check(content.product.headline === "Turn AI into a company asset" &&
+  content.product.description === "Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors." &&
   content.direct_answers.find(answer => answer.id === "what-is-jin-ai")?.answer === content.product.description &&
-  content.product.availability === "Jin AI is in private beta. We are working through the waitlist." &&
+  content.product.availability === "The workspace beta is live. Company features are being built, starting with Claude Code." &&
   content.direct_answers.find(answer => answer.id === "is-jin-ai-available")?.answer === content.product.availability,
-  "Product facts must use the proactive headline, description and private-beta availability.");
+  "R7 facts must use the new headline and preserve the description tail and availability without a pilot sentence.");
 
 const bodyStructure = (source, japaneseHome = false) => {
   const body = source.match(/<body\b[^>]*>([\s\S]*?)<\/body>/)?.[1] || "";
-  const alignedBody = body;
+  const alignedBody = japaneseHome
+    ? body.replace(japaneseSolutionClosing, '<p class="solution-closing"></p>') : body;
   return [...withoutJapanesePhrases(alignedBody).replace(/<!-- GENERATED:CTA_FINAL:START -->[\s\S]*?<!-- GENERATED:CTA_FINAL:END -->/g, "")
     .replace(/<h1 class="hero-reveal"[^>]*>[\s\S]*?<\/h1>/g, '<h1 class="hero-reveal"></h1>')
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>|<!--[\s\S]*?-->/g, "")
@@ -1530,14 +1846,14 @@ for (const [route, english, translated] of pagePairs) {
   }
 }
 const japaneseReveal = japanese.match(/<h1 class="hero-reveal"[^>]*>([\s\S]*?)<\/h1>/)?.[1] || "";
-check(count(japaneseReveal, /<span style="--word:[0-2]">[^<]+<\/span>/g) === 3 &&
-  [...japaneseReveal.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "012" &&
-  japaneseReveal.replace(/<[^>]+>/g, "") === "もし、仕事がもう終わっていたら？" &&
-  japanese.includes('aria-label="もし、仕事がもう終わっていたら？"') &&
+check(count(japaneseReveal, /<span style="--word:[0-1]">[^<]+<\/span>/g) === 2 &&
+  [...japaneseReveal.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "01" &&
+  japaneseReveal.replace(/<[^>]+>/g, "") === "AIを、会社の資産に。" &&
+  japanese.includes('aria-label="AIを、会社の資産に。"') &&
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
-  "Japanese hero must keep its three-phrase reveal, exact text, accessible name and motion opt-in.");
+  "Japanese hero must preserve its two-phrase reveal, exact R7 text, accessible name and motion opt-in.");
 for (const [page, source, phrases] of [
-  ["/ja/", japanese, ["会議は明日。", "下準備は、", "もうできています。", "AIツールはあるのに、", "なぜまだ全部", "自分でやっているのでしょう？", "もし、AIが", "先に動いてくれたら？", "下準備はJinが。", "決めるのは、", "あなたのチームです。", "Jinは、", "チームの働き方を学びます。", "自動化を、", "社員が自分で作る", "必要はありません。", "一人の改善が、", "チーム全体の助けになる。", "もう二度とやりたくない仕事を、", "ひとつ見つけましょう。"]],
+  ["/ja/", japanese, ["御社のAIは、", "会社の管理下に", "ありますか？", "シャドーAIによる", "情報漏洩リスク", "AIエージェントの", "属人化", "AI活用ノウハウの", "共有不足", "Jin AIが実現する、", "安心して", "使い続けられる", "AI環境", "機密情報を", "安全に管理する", "AIを会社の", "資産として残す", "AI活用のノウハウを", "組織全体に広げる", "御社のAIを、", "会社の資産に。"]],
   ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "御社のAIを、", "会社の資産に。"]],
   ["/ja/security/", japaneseSecurity, ["コンテクストは、", "会社のもの。"]],
   ["/ja/privacy/", japanesePrivacy, ["プライバシー", "ポリシー", "取り扱いを", "委託している", "事業者"]]
@@ -1545,10 +1861,11 @@ for (const [page, source, phrases] of [
   check(phrases.every(phrase => source.includes(`<span class="ja-phrase">${phrase}</span>`)),
     `${page} must protect the approved heading phrase boundaries from internal breaks.`);
 }
-check(!japanese.includes('class="demo-stage"') && !japanese.includes('id="jin-hero-demo"') &&
-  japanese.includes('<span class="brief-example">例</span>') &&
-  japanese.includes('<div class="brief-actions" aria-hidden="true">'),
-  "Japanese home must show the same labelled example brief, without the retired live hero.");
+check(count(japanese, /class="demo-stage"/g) === 1 && count(japanese, /<img\b[^>]*src="\/assets\/demo\//g) === 1 &&
+  japanese.includes('src="/assets/demo/demo-2-categories.webp" width="2880" height="1664" alt="Jin AI の社員向けの画面。ハーネスの部品が種類ごとに並び、それぞれに Can move か Confidential の表示がある。" decoding="async" loading="eager" fetchpriority="high" elementtiming="hero-still"') &&
+  japanese.includes('src="/assets/demo/app.html?embed=hero"') &&
+  japanese.match(/<script id="jin-hero-demo">([\s\S]*?)<\/script>/)?.[1] === heroDemoScript,
+  "Japanese home must retain the English live hero, exact Japanese alt, eager fallback and unchanged lifecycle.");
 const japaneseCss = await text("theme-ja.css");
 const typesettingProperties = new Set([
   "--font-sans", "font-family", "font-size", "font-weight", "line-height", "line-break",
