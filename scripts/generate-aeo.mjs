@@ -34,7 +34,7 @@ function validate(source) {
     "The product needs an AI harness definition.");
   assert(typeof source.problem?.headline === "string" && source.problem.headline.trim(),
     "The problem needs a headline.");
-  for (const [name, items] of [["Problem points", source.problem.points], ["Solution steps", source.solution.steps],
+  for (const [name, items] of [["Home steps", source.how_it_works?.steps],
     ["How it works features", source.how_it_works?.features]]) {
     assert(Array.isArray(items) && items.length > 0, `${name} must not be empty.`);
     for (const item of items) {
@@ -45,16 +45,22 @@ function validate(source) {
   }
   assert(typeof source.data_principles?.headline === "string" && source.data_principles.headline.trim(),
     "Data principles need a headline.");
-  assert(Array.isArray(source.data_principles.items) && source.data_principles.items.length > 0 &&
-    source.data_principles.items.every((item) => typeof item === "string" && item.trim()),
-  "Data principles need non-empty facts.");
-  assert(source.product.headline === "What if the work was already done?",
+  assert(source.product.headline === "Providing work that's already done, for every employee.",
     "The product headline must match the approved English H1.");
-  assert(source.solution.headline === "What if AI took the first step?" && source.solution.closing?.trim() &&
-    source.problem.closing?.trim() && source.how_it_works.introduction?.trim(),
+  assert(source.problem.headline === "AI is there. Using it is still their job." &&
+    source.solution.headline === "Don't ask AI. Jin AI prepares it before anyone asks, right when you need it." &&
+    source.solution.description === "One person's improvement is reviewed, then applied to the relevant people." &&
+    source.how_it_works.headline === "Jin learns how your team works." &&
+    source.how_it_works.steps.length === 4 && source.how_it_works.introduction?.trim(),
   "Problem, Solution and How it works need their approved copy.");
-  assert(source.data_principles.introduction?.trim() && source.data_principles.closing?.trim(),
-    "Data principles need their introduction and closing line.");
+  assert(source.data_principles.headline === "Single control plane for what can be accessed." &&
+    source.data_principles.introduction === "Jin only accesses information your company has approved. Your employees can see what Jin used, review what it prepared, and decide what happens next." &&
+    source.data_principles.model_training === "It is never used to train AI models.",
+    "Data principles need the approved control and model-training copy.");
+  assert(Object.keys(source.problem).join() === "headline" &&
+    Object.keys(source.solution).join() === "status,headline,description" &&
+    Object.keys(source.data_principles).join() === "headline,introduction,model_training",
+    "Home facts must not restore retired Problem paragraphs, comparison steps or trust promises.");
 
   const access = source.early_access;
   assert(access?.label && access?.note && access?.hero_label && access?.hero_note,
@@ -122,8 +128,8 @@ function validate(source) {
     `A capability in development needs a description: ${capability.id}`);
   }
 
-  for (const heading of [source.problem.headline, source.solution.headline, source.data_principles.headline,
-    ...source.problem.points.map(item => item.name), ...source.solution.steps.map(item => item.name),
+  // Yu's 2026-10-27 home sentences retain their approved final periods.
+  for (const heading of [...source.how_it_works.steps.map(item => item.name),
     ...source.how_it_works.features.map(item => item.name),
     ...source.capabilities.map(item => item.name)]) {
     assert(typeof heading === "string" && !heading.trim().endsWith("."),
@@ -333,7 +339,7 @@ function renderJsonLd(source) {
       "@type": "WebPage",
       "@id": `${source.canonical_url}#webpage`,
       url: source.canonical_url,
-      name: `${source.product.name} - ${source.product.category}`,
+      name: `${source.product.name} | ${source.product.headline}`,
       description: source.product.description,
       dateModified: source.last_updated,
       inLanguage: source.language,
@@ -388,10 +394,7 @@ ${JSON.stringify({
 }
 
 function renderAgent(source) {
-  const problemPoints = source.problem.points.map((point) => `
-    <li><strong>${escapeHtml(point.name)}:</strong> ${escapeHtml(point.description)}</li>`).join("");
-
-  const solutionSteps = source.solution.steps.map((step) => `
+  const homeSteps = source.how_it_works.steps.map((step) => `
     <h3>${escapeHtml(step.name)}</h3>
     <p>${escapeHtml(step.description)}</p>`).join("");
   const howFeatures = source.how_it_works.features.map(feature => `
@@ -422,9 +425,6 @@ function renderAgent(source) {
       <dt><a href="${escapeHtml(founder.profile_url)}">${escapeHtml(founder.name)}</a> - ${escapeHtml(founder.role)}</dt>
       <dd>${escapeHtml(founder.bio)}</dd>`).join("");
 
-  const dataPrinciples = source.data_principles.items.map((item) => `
-    <li>${escapeHtml(item)}</li>`).join("");
-
   return `<article data-content-version="${escapeHtml(source.content_version)}">
   <h1>${escapeHtml(source.product.name)} for agents</h1>
   <p class="dek">${escapeHtml(source.product.description)}</p>
@@ -440,22 +440,20 @@ function renderAgent(source) {
 
   <h2>Problem</h2>
   <p class="answer"><strong>${escapeHtml(source.problem.headline)}</strong></p>
-  <ul>${problemPoints}
-  </ul>
-  <p>${escapeHtml(source.problem.closing)}</p>
 
 ${source.evidence.length ? `  <h2>Evidence and limits</h2>\n  ${evidence}\n` : ""}
 
   <h2>${escapeHtml(source.solution.headline)}</h2>
   <p><span class="badge" data-status="${source.solution.status}">${statusLabels[source.solution.status]}</span></p>
-${solutionSteps}
-  <p>${escapeHtml(source.solution.closing)}</p>
+  <p>${escapeHtml(source.solution.description)}</p>
+
+  <h2>${escapeHtml(source.how_it_works.headline)}</h2>
+  <p><span class="badge" data-status="${source.solution.status}">${statusLabels[source.solution.status]}</span></p>
+${homeSteps}
 
   <h2>${escapeHtml(source.data_principles.headline)}</h2>
   <p>${escapeHtml(source.data_principles.introduction)}</p>
-  <ul>${dataPrinciples}
-  </ul>
-  <p>${escapeHtml(source.data_principles.closing)}</p>
+  <p>${escapeHtml(source.data_principles.model_training)}</p>
 
   <h2>How it works and status</h2>
   <p>${escapeHtml(source.how_it_works.introduction)}</p>
@@ -510,11 +508,7 @@ async function renderLlms(source) {
     return `- [Structured evidence record](${source.resources.structured_data}): ${item.finding} Scope: ${item.scope}. ${item.caveat}`;
   }).join("\n");
 
-  const problemPoints = source.problem.points.map((point) =>
-    `- ${point.name}: ${point.description}`
-  ).join("\n");
-
-  const solutionSteps = source.solution.steps.map((step) =>
+  const homeSteps = source.how_it_works.steps.map((step) =>
     `- ${step.name}: ${step.description}`
   ).join("\n");
   const howFeatures = source.how_it_works.features.map(feature =>
@@ -523,10 +517,6 @@ async function renderLlms(source) {
 
   const capabilities = source.capabilities.map((capability) =>
     `- ${capability.name} (${statusLabels[capability.status]})${capability.description ? `: ${capability.description}` : ""}${capability.note ? ` ${capability.note}.` : ""}`
-  ).join("\n");
-
-  const dataPrinciples = source.data_principles.items.map((item) =>
-    `- ${item}`
   ).join("\n");
 
   return `# ${source.product.name}
@@ -563,17 +553,15 @@ ${answerLinks}
 
 ${source.problem.headline}
 
-${problemPoints}
-
-${source.problem.closing}
-
 ## Solution (${statusLabels[source.solution.status]})
 
 ${source.solution.headline}
 
-${solutionSteps}
+${source.solution.description}
 
-${source.solution.closing}
+## ${source.how_it_works.headline} (${statusLabels[source.solution.status]})
+
+${homeSteps}
 
 ## How it works and status
 
@@ -587,9 +575,7 @@ ${capabilities}
 
 ${source.data_principles.introduction}
 
-${dataPrinciples}
-
-${source.data_principles.closing}
+${source.data_principles.model_training}
 
 ${source.evidence.length ? `## Evidence and sources\n\n${evidenceLinks}\n\n` : ""}## Founders
 

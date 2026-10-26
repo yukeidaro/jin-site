@@ -8,6 +8,14 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const site = path.join(root, "_site");
 const errors = [];
 const approvedCompanySolution = "Context, instructions, tools, and workflows stay with the company, not with one person. Even when someone leaves, the setup keeps working and the next person can continue from there.";
+const approvedHomeSentenceHeadings = new Set([
+  "Providing work that's already done, for every employee.",
+  "AI is there. Using it is still their job.",
+  "Don't ask AI. Jin AI prepares it before anyone asks, right when you need it.",
+  "Jin learns how your team works.",
+  "Single control plane for what can be accessed.",
+  "Let's find one task your team never wants to do again."
+]);
 
 function check(condition, message) {
   if (!condition) errors.push(message);
@@ -66,13 +74,9 @@ const expectedFiles = [
   "assets/figures/problem-tools.webp",
   "assets/figures/problem-busy.webp",
   "assets/figures/problem-how.webp",
-  "assets/figures/today.webp",
-  "assets/figures/with-jin.webp",
   "assets/figures/control.webp",
   "assets/figures/how-it-works-wide.webp",
   "assets/figures/how-it-works-tall.webp",
-  "assets/figures/why-jin.webp",
-  "assets/figures/team-learning.webp",
   "base.css",
   "brand/jin-mark.svg",
   "brand/jin-mark-white.svg",
@@ -174,7 +178,8 @@ for (const [route, source] of [...englishPages, ["agent/", agent]]) {
       `/${route} ${tag} title must not end a line with a period: ${headingLines(inner).join(" / ")}`);
   }
   for (const [, tag, inner] of source.matchAll(/<(h[1-4])\b[^>]*>([\s\S]*?)<\/\1>/g)) {
-    check(headingLines(inner).every(line => !line.endsWith(".")),
+    check(headingLines(inner).every(line => !line.endsWith(".") ||
+      (["", "agent/"].includes(route) && ["h1", "h2"].includes(tag) && approvedHomeSentenceHeadings.has(line))),
       `/${route} ${tag} must not end a line with a period: ${headingLines(inner).join(" / ")}`);
   }
 }
@@ -190,7 +195,7 @@ check([...demoClient.matchAll(/\bheading:\s*(?:[^?\n]+\?\s*)?"([^"]+)"/g)]
   "Demo success and error headings must not end with periods.");
 
 const pagePairs = [
-  ["", home, japanese, "もし、仕事がもう終わっていたら？", "Jin AI | もし、仕事がもう終わっていたら",
+  ["", home, japanese, "すべての社員に、もう終わっている仕事を届ける。", "Jin AI | すべての社員に、もう終わっている仕事を届ける",
     "Jinは、繰り返しの仕事を見つけて準備し、チームのフィードバックから学びます。"],
   ["how-it-works/", howPage, japaneseHow, "仕組み", "仕組み | Jin AI",
     "Jin AI が AI ツールにつながり、AI ハーネスを種類ごとに整理し、持ち出せるものを会社が決める仕組みです。"],
@@ -330,14 +335,14 @@ check(shareImage.length >= 24 && shareImage.length < 60000 &&
   "The logo share image must be a 1200 x 630 PNG below 60 KB.");
 check(home.includes("<main>") && home.includes("</main>"), "Root must have a main landmark.");
 const homeSections = [...home.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
-const homeSectionOrder = "problem,solution,data,how,why,team,demo";
-check(homeSections.length === 8 && homeSections[0]?.[1].includes('class="hero"') &&
+const homeSectionOrder = "problem,solution,how,data,demo";
+check(homeSections.length === 6 && homeSections[0]?.[1].includes('class="hero"') &&
   homeSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() === homeSectionOrder,
-  "Root must contain only hero, problem, solution, data, how, why, team and demo sections, in order.");
+  "Root must contain only hero, problem, solution, how, data and demo sections, in order.");
 check(count(home, /<h1\b/g) === 1 &&
-  home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "What if the work was already done?",
+  home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "Providing work that's already done, for every employee.",
   "Root must use the approved H1 once.");
-const homeTitle = "Jin AI | What if the work was already done?";
+const homeTitle = "Jin AI | Providing work that's already done, for every employee.";
 check(home.includes(`<title>${homeTitle}</title>`), "Root must use the approved title.");
 for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:title"]]) {
   check(home.includes(`<meta ${attribute}="${name}" content="${homeTitle}">`), `Root must use the approved ${name}.`);
@@ -584,85 +589,71 @@ function exactElement(source, tag, value) {
 const homeSection = (source, id) =>
   source.match(new RegExp(`<section\\b[^>]*\\bid="${id}"[^>]*>([\\s\\S]*?)</section>`))?.[1] || "";
 const homeSteps = [
-  ["Connect your tools", "Jin works with the tools your team already uses, with the permissions you choose."],
-  ["Spot repetitive work", "It looks for tasks that keep coming up and chances to save time."],
-  ["Get the work ready", "Jin prepares drafts and other work for your team to review."],
-  ["Learn what works", "Every approval, edit, or rejection helps Jin understand what to do differently next time."]
+  ["Connect your tools", "Jin connects to the apps your team already uses. Admins manage which tools and MCP servers employees connect, all in one place."],
+  ["Spot repetitive work", "Jin finds the tasks each employee does again and again."],
+  ["Get the work ready", "Jin doesn't just suggest an automation. It runs it in a sandbox and shows the finished output. Nothing changes until the employee approves it."],
+  ["Share what works", "Automations that work are offered to people doing similar work. Your company can also build organization skills that everyone can use."]
 ];
 const japaneseHomeSteps = [
-  ["ツールをつなぐ", "チームがいつも使っているツールと、選んだ権限でつながります。"],
-  ["繰り返しの仕事を見つける", "何度も出てくる作業や、時間を節約できるところを探します。"],
-  ["仕事を準備する", "たたき台などを用意し、チームが確認できるようにします。"],
-  ["うまくいくやり方を学ぶ", "承認、修正、却下のひとつひとつから、次にどうするかを学びます。"]
+  ["ツールをつなぐ", "Jinは、チームがいつも使っているアプリにつながります。管理者は、社員が接続するツールとMCPサーバーを一か所で管理できます。"],
+  ["繰り返しの仕事を見つける", "Jinは、社員一人ひとりが何度も繰り返す仕事を見つけます。"],
+  ["仕事を準備する", "Jinは、自動化を提案するだけではありません。サンドボックスで実行し、完成した成果物を見せます。社員が承認するまで、何も変わりません。"],
+  ["うまくいくやり方を共有する", "うまく動く自動化は、似た仕事をする人に提案されます。会社は、全員が使える組織のスキルも作れます。"]
 ];
 const pairs = (id, items) => items.flatMap(([title, body]) => [[id, "h3", title], [id, "p", body]]);
 const homeCopy = [
   ["English", home, [
-    ["problem", "h2", content.problem.headline],
-    ["problem", "p", "Companies have invested in ChatGPT, Copilot, and other AI tools."],
-    ["problem", "p", "But employees still spend hours preparing for meetings, putting together reports, and moving information between apps."],
-    ["problem", "p", `<strong>${content.problem.closing}</strong>`],
-    ["solution", "h2", content.solution.headline],
-    ...pairs("solution", content.solution.steps.map(step => [step.name, step.description])),
-    ["solution", "p", `<strong>${content.solution.closing}</strong>`],
-    ["how", "h2", "Jin learns how your team works"],
+    ["problem", "h2", "AI is there. Using it is still their job."],
+    ["solution", "h2", "Don't ask AI. Jin AI prepares it before anyone asks, right when you need it."],
+    ["solution", "p", "One person's improvement is reviewed, then applied to the relevant people."],
+    ["how", "h2", "Jin learns how your team works."],
     ...pairs("how", homeSteps),
-    ["why", "h2", "Your team shouldn't have to build their own automations"],
-    ["why", "p", "Most AI tools are useful once someone knows what to ask. Workflow builders are powerful, but someone still has to decide what to automate and set it up."],
-    ["why", "p", "<strong>Jin takes a different approach.</strong> It finds chances to help, prepares the work, and suggests what could be automated next. Your employees don't need to become AI experts to benefit from AI."],
-    ["team", "h2", "One person's improvement can help the whole team"],
-    ["team", "p", "When someone improves a result, Jin learns what changed and why. Over time, those lessons can help others doing similar work, without everyone starting from scratch."],
-    ["team", "p", "What gets shared is the way of doing the task, not anyone's emails or files. An admin reviews each improvement before it reaches other teams."],
-    ["team", "p", "<strong>The more your team teaches Jin, the more useful it becomes for everyone.</strong>"]
+    ["data", "h2", "Single control plane for what can be accessed."],
+    ["data", "p", "Jin only accesses information your company has approved. Your employees can see what Jin used, review what it prepared, and decide what happens next."],
+    ["data", "p", "It is never used to train AI models."]
   ]],
   ["Japanese", japanese, [
-    ["problem", "h2", "AIツールはあるのに、なぜまだ全部自分でやっているのでしょう？"],
-    ["problem", "p", "多くの会社が、ChatGPTやCopilotなどのAIツールに投資してきました。"],
-    ["problem", "p", "それでも社員は、会議の準備、報告書づくり、アプリ間の情報の移し替えに、何時間も使っています。"],
-    ["problem", "p", "<strong>AIは使える。でも、価値を引き出すには、まだ手間がかかります。</strong>"],
-    ["solution", "h2", "もし、AIが先に動いてくれたら？"],
-    ...pairs("solution", [
-      ["いま", "社員がやることを考え、AIツールを開き、背景を伝え、結果を確かめています。"],
-      ["Jinなら", "Jinが次に来る仕事に気づいてたたき台を用意し、社員は都合のよいときに確認します。"]
-    ]),
-    ["solution", "p", "<strong>AIに頼むところからではなく、準備ができた仕事から始められます。</strong>"],
-    ["data", "h2", "下準備はJinが。決めるのは、あなたのチームです。"],
-    ["data", "p", "Jinは、チームがつないだメール、カレンダー、チャット、ファイル（Gmail、Outlook、Slack、Teamsなど）を読み、正確な準備をします。読んだ内容は、その人の仕事の準備にだけ使い、AIモデルの学習には使いません。管理者は、フォルダ、チャンネル、ラベル、チームごとに対象から外せます。"],
-    ["data", "li", "Jinを使えるチームとツールは、管理者が選びます。社員は自分のアカウントをつなぎ、いつでも外せます。"],
-    ["data", "li", "Jinは、承認なしにメッセージを送ったり、システムを変えたりしません。"],
-    ["data", "li", "Jinが見つけたことは本人に届き、上司には届きません。Jinは人を採点したり、順位を付けたりしません。"],
-    ["data", "li", "データは会社ごとに分けて保管します。Jinが画面を録画することはありません。"],
-    ["data", "p", "<strong>いつも役に立ち、いつもあなたの管理下に。</strong>"],
+    ["problem", "h2", "AIはある。使うのは、まだ社員の仕事。"],
+    ["solution", "h2", "AIに頼まなくていい。Jin AIが、誰かに頼まれる前に、必要なときに仕事を準備します。"],
+    ["solution", "p", "一人の改善は、レビューを経て、関係する人たちに適用されます。"],
     ["how", "h2", "Jinは、チームの働き方を学びます。"],
     ...pairs("how", japaneseHomeSteps),
-    ["why", "h2", "自動化を、社員が自分で作る必要はありません。"],
-    ["why", "p", "多くのAIツールは、何を頼めばよいかが分かっている人にとって便利なものです。ワークフローを作るツールは強力ですが、何を自動化するかを決めて設定する人が必要です。"],
-    ["why", "p", "<strong>Jinのやり方は違います。</strong> 手伝えるところを見つけ、仕事を準備し、次に自動化できそうなことを提案します。社員がAIの専門家にならなくても、AIの恩恵を受けられます。"],
-    ["team", "h2", "一人の改善が、チーム全体の助けになる。"],
-    ["team", "p", "誰かが結果を直すと、Jinは何がなぜ変わったのかを学びます。その学びは、似た仕事をするほかの人の助けになり、みんなが一から始めずに済みます。"],
-    ["team", "p", "共有されるのは仕事のやり方で、誰かのメールやファイルではありません。ほかのチームに届く前に、管理者がひとつずつ確認します。"],
-    ["team", "p", "<strong>チームがJinに教えるほど、Jinはみんなの役に立つようになります。</strong>"]
+    ["data", "h2", "アクセスできる情報を、一か所で管理する。"],
+    ["data", "p", "Jinがアクセスするのは、会社が承認した情報だけです。社員は、Jinが使った情報を見て、準備した内容を確認し、次に何をするかを決められます。"],
+    ["data", "p", "AIモデルの学習には使いません。"]
   ]]
 ];
 for (const [language, source, entries] of homeCopy) {
   for (const [id, tag, value] of entries) {
     check(exactElement(homeSection(source, id), tag, value), `${language} home ${id} must use the approved ${tag} once: ${value}`);
   }
+  for (const id of ["problem", "solution", "how", "data"]) {
+    const section = homeSection(source, id);
+    const plain = withoutJapanesePhrases(section).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+    const expected = entries.filter(entry => entry[0] === id).map(entry => entry[2]);
+    if (id === "how") expected.unshift(language === "English" ? "How it works" : "仕組み");
+    check(plain === expected.join(" "),
+      `${language} ${id} must contain only the complete approved text, in order, without extra paragraphs or labels.`);
+  }
   check(count(homeSection(source, "how"), /<li>/g) === 4 &&
-    ["problem", "solution", "data", "how", "why", "team"].every(id => !/<(?:svg|button|iframe)\b/.test(homeSection(source, id))) &&
+    ["problem", "solution", "data", "how"].every(id => !/<(?:svg|button|iframe)\b/.test(homeSection(source, id))) &&
     !/problem\.js|data-problem|data-solution/.test(source),
     `${language} home sections must retain four HTML How it works steps and no retired interactive figures or controller.`);
+  check(!/\bid="(?:why|team)"|\b(?:compare|compare-before|compare-after|trust-list|hero-badges)\b|assets\/figures\/(?:today|with-jin|why-jin|team-learning)\.webp/.test(source) &&
+    !/<(?:ul|ol|li|h3|img|picture|figure)\b/.test(homeSection(source, "solution")) &&
+    !/<(?:p|ul|ol|li|h3|figcaption)\b/.test(homeSection(source, "problem")) &&
+    !/<(?:ul|ol|li)\b/.test(homeSection(source, "data")),
+    `${language} home must not restore comparisons, Why Jin, Team learning, four trust promises, badges or retired images.`);
+  const heroSection = source.match(/<section class="hero">([\s\S]*?)<\/section>/)?.[1] || "";
+  check(!/Secure|Company-owned|Shared|Up to date|>安全<|>会社のもの<|>共有<|>いつも最新</.test(heroSection),
+    `${language} hero must not restore the four retired badges or substitutes.`);
 }
 const sectionImages = [
   ["problem", "problem-tools", 1200, 309, "", ""],
   ["problem", "problem-busy", 900, 640, "", ""],
   ["problem", "problem-how", 1079, 636, "", ""],
-  ["solution", "today", 1200, 750, "", ""],
-  ["solution", "with-jin", 1200, 750, "", ""],
   ["data", "control", 1600, 800, "Drafts prepared by Jin are sent out only after a person approves them.", "Jinが用意した下書きは、人が承認してから外に出る"],
-  ["how", "how-it-works-wide", 1600, 360, "Four steps: connect, spot, prepare, and learn.", "つなぐ、見つける、用意する、学ぶの4段階"],
-  ["why", "why-jin", 1600, 800, "A comparison of automations you build yourself and automations Jin finds and offers.", "自分で組む自動化と、Jinが見つけて差し出す自動化の比較"],
-  ["team", "team-learning", 1600, 800, "One person's improvement reaches others doing similar work after review.", "1人の改善が、確認を経て、似た仕事をする人たちに届く"]
+  ["how", "how-it-works-wide", 1600, 360, "Four steps: connect, spot, prepare, and learn.", "つなぐ、見つける、用意する、学ぶの4段階"]
 ];
 for (const [id, name, width, height, enAlt, jaAlt] of sectionImages) {
   const bytes = await readFile(path.join(site, "assets", "figures", `${name}.webp`));
@@ -682,17 +673,25 @@ check(tallFigure.toString("ascii", 8, 16) === "WEBPVP8X" &&
   "The tall How it works image must keep its 750 x 1440 dimensions.");
 for (const [language, page] of [["English", home], ["Japanese", japanese]]) {
   check(/<picture class="how-figure">\s*<source media="\(max-width: 760px\)" srcset="\/assets\/figures\/how-it-works-tall.webp" width="750" height="1440">\s*<img src="\/assets\/figures\/how-it-works-wide.webp"[^>]+>\s*<\/picture>/.test(homeSection(page, "how")) &&
-    /class="compare-before"[\s\S]*?src="\/assets\/figures\/today.webp"[\s\S]*?class="compare-after"[\s\S]*?src="\/assets\/figures\/with-jin.webp"/.test(homeSection(page, "solution")) &&
-    count(homeSection(page, "problem"), /class="problem-scene"><p[\s\S]*?<\/p><img src="\/assets\/figures\/problem-(?:tools|busy|how).webp"/g) === 3 &&
+    /<div class="problem-images">\s*<img[^>]*src="\/assets\/figures\/problem-tools.webp"[^>]*>\s*<img[^>]*src="\/assets\/figures\/problem-busy.webp"[^>]*>\s*<img[^>]*src="\/assets\/figures\/problem-how.webp"[^>]*>\s*<\/div>/.test(homeSection(page, "problem")) &&
     !/assets\/figures\/brief-/.test(page),
-    `${language} must pair each Problem point and Today/With Jin column with its image, and use the responsive How picture instead of a brief image.`);
+    `${language} must keep the three captionless Problem images in order and preserve the responsive How picture.`);
 }
-check(JSON.stringify(content.problem.points.map(point => point.description)) === JSON.stringify([
-  "Companies have invested in ChatGPT, Copilot, and other AI tools.",
-  "Employees still spend hours preparing for meetings, putting together reports, and moving information between apps."
-]) && content.solution.status === "building" &&
-  JSON.stringify(content.solution.steps.map(step => step.name)) === JSON.stringify(["Today", "With Jin"]),
-  "Problem and Solution facts must match the approved home copy.");
+check(JSON.stringify(content.problem) === JSON.stringify({ headline: homeCopy[0][2][0][2] }) &&
+  JSON.stringify(content.solution) === JSON.stringify({
+    status: "building", headline: homeCopy[0][2][1][2], description: homeCopy[0][2][2][2]
+  }) && content.how_it_works.headline === "Jin learns how your team works." &&
+  JSON.stringify(content.how_it_works.steps) === JSON.stringify(homeSteps.map(([name, description]) => ({ name, description }))) &&
+  JSON.stringify(content.data_principles) === JSON.stringify({
+    headline: "Single control plane for what can be accessed.",
+    introduction: "Jin only accesses information your company has approved. Your employees can see what Jin used, review what it prepared, and decide what happens next.",
+    model_training: "It is never used to train AI models."
+  }),
+  "Home facts must match every approved sentence and four steps without retired fields.");
+check(cssBlock(homeFigureCss, ".home-page .problem-images {").includes("grid-template-columns: repeat(3, minmax(0, 1fr))") &&
+  cssBlock(homeFigureCss, "@media (max-width: 760px)").includes(".home-page .problem-images { grid-template-columns: minmax(0, 1fr); }") &&
+  !/problem-scene|\.compare/.test(homeFigureCss),
+  "Problem images must use one three-column row on desktop and one column on phones, without retired layout rules.");
 const featureCopy = [
   ["connect", "Connect once", "一度つなぐだけ", "Connect your usual AI tools once, through MCP.", "MCPで、いつものAIツールに一度つなぐだけ。", "Connect in one click", "ワンクリックでつなぐ", "demo-1-connect.webp", "connect"],
   ["categories", "See every part by type", "種類ごとに見る", "Skills, prompts, memory and MCP settings, sorted by type.", "スキル・プロンプト・記憶・MCPの設定を、種類ごとに整理して見られる。", "See every part by type", "種類ごとに見る", "demo-2-categories.webp", "categories"],
@@ -715,7 +714,7 @@ for (const [ja, page] of [[false, howPage], [true, japaneseHow]]) {
 }
 const closingCopy = "Turn your team's AI into a company asset";
 const japaneseClosingCopy = "御社のAIを、会社の資産に。";
-const homeClosingCopy = "Let's find one task your team never wants to do again";
+const homeClosingCopy = "Let's find one task your team never wants to do again.";
 const japaneseHomeClosingCopy = "もう二度とやりたくない仕事を、ひとつ見つけましょう。";
 for (const [ja, page, mission] of [
   [false, company, "Our mission is to turn every company's AI into an asset it owns: secure, shared, and always up to date."],
@@ -1222,11 +1221,11 @@ check(paintScript.includes('document.documentElement.classList.add("js-nav")') &
   /if\s*\(!matchMedia\("\(prefers-reduced-motion: reduce\)"\)\.matches\)\s*document\.documentElement\.classList\.add\("js-reveal"\)/.test(paintScript),
   "Home reveal must opt in through a reduced-motion-guarded inline head script.");
 const revealHeading = home.match(/<h1 class="hero-reveal">([\s\S]*?)<\/h1>/)?.[1] || "";
-check(count(revealHeading, /<span style="--word:[0-6]">[^<]+<\/span>/g) === 7 &&
+check(count(revealHeading, /<span style="--word:[0-7]">[^<]+<\/span>/g) === 8 &&
   !/aria-hidden|aria-label/.test(revealHeading) &&
-  [...revealHeading.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "0123456" &&
+  [...revealHeading.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "01234567" &&
   [...revealHeading.matchAll(/<span[^>]*>([^<]+)<\/span>/g)].map(match => match[1]).join(" ") === content.product.headline,
-  "Home H1 must contain seven ordered readable word spans with its exact accessible name.");
+  "Home H1 must contain eight ordered readable word spans with its exact accessible name.");
 const revealCss = cssBlock(englishCss, "@media (prefers-reduced-motion: no-preference)");
 check(cssBlock(englishCss, ".hero-intro {").includes("max-width: 720px"),
   "The hero body must use a font-independent line measure so font swapping cannot change its line count on tablets.");
@@ -1287,10 +1286,9 @@ for (const [route, source] of [["privacy", privacy], ["accessibility", accessibi
 const dataSection = homeSections.find((match) => match[1].includes('id="data"'))?.[2] || "";
 check(exactElement(dataSection, "h2", content.data_principles.headline) &&
   dataSection.includes(`<p class="trust-intro">${content.data_principles.introduction}</p>`) &&
-  count(dataSection, /<li>/g) === content.data_principles.items.length &&
-  content.data_principles.items.every((item) => dataSection.includes(`<li>${item}</li>`)) &&
-  dataSection.includes(`<p class="narrative-close"><strong>${content.data_principles.closing}</strong></p>`),
-  "Root must use the approved data introduction, every data promise and the closing line.");
+  count(dataSection, /<p\b/g) === 2 && !/<li\b/.test(dataSection) &&
+  exactElement(dataSection, "p", content.data_principles.model_training),
+  "Root must use only the approved control introduction and unchanged model-training promise.");
 const demoSection = homeSections.find((match) => match[1].includes('id="demo"'))?.[2] || "";
 check(exactElement(demoSection, "h2", homeClosingCopy) &&
   demoSection.includes('id="waitlistForm"'), "The demo section must contain the approved heading and form.");
@@ -1542,7 +1540,7 @@ check(llms.includes(`[Discord](${communityUrl})`) && count(llms, /https:\/\/disc
   "The LLM index must publish the single approved community invite.");
 
 const japaneseSections = [...japanese.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
-check(japaneseSections.length === 8 && japaneseSections[0]?.[1].includes('class="hero"') &&
+check(japaneseSections.length === 6 && japaneseSections[0]?.[1].includes('class="hero"') &&
   japaneseSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() === homeSectionOrder,
   "Japanese home must keep the English home sections in order.");
 for (const [language, source, introduction, note] of [
@@ -1563,7 +1561,7 @@ for (const [language, source, introduction, note] of [
 check(cssBlock(englishCss, ".hero-eyebrow {").includes("display: block") &&
   cssBlock(englishCss, ".hero-note {").includes("color: var(--text-3)"),
   "Hero label and muted tools note must use the shared theme.");
-check(content.product.headline === "What if the work was already done?" &&
+check(content.product.headline === "Providing work that's already done, for every employee." &&
   content.product.description === "Jin spots repetitive tasks, prepares the work, and learns from your team's feedback." &&
   content.direct_answers.find(answer => answer.id === "what-is-jin-ai")?.answer === content.product.description &&
   content.product.availability === "Jin AI is in private beta. We are working through the waitlist." &&
@@ -1640,12 +1638,12 @@ for (const [route, english, translated] of pagePairs) {
 const japaneseReveal = japanese.match(/<h1 class="hero-reveal"[^>]*>([\s\S]*?)<\/h1>/)?.[1] || "";
 check(count(japaneseReveal, /<span style="--word:[0-2]">[^<]+<\/span>/g) === 3 &&
   [...japaneseReveal.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "012" &&
-  japaneseReveal.replace(/<[^>]+>/g, "") === "もし、仕事がもう終わっていたら？" &&
-  japanese.includes('aria-label="もし、仕事がもう終わっていたら？"') &&
+  japaneseReveal.replace(/<[^>]+>/g, "") === "すべての社員に、もう終わっている仕事を届ける。" &&
+  japanese.includes('aria-label="すべての社員に、もう終わっている仕事を届ける。"') &&
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
   "Japanese hero must keep its three-phrase reveal, exact text, accessible name and motion opt-in.");
 for (const [page, source, phrases] of [
-  ["/ja/", japanese, ["AIツールはあるのに、", "なぜまだ全部", "自分でやっているのでしょう？", "もし、AIが", "先に動いてくれたら？", "下準備はJinが。", "決めるのは、", "あなたのチームです。", "Jinは、", "チームの働き方を学びます。", "自動化を、", "社員が自分で作る", "必要はありません。", "一人の改善が、", "チーム全体の助けになる。", "もう二度とやりたくない仕事を、", "ひとつ見つけましょう。"]],
+  ["/ja/", japanese, ["AIはある。", "使うのは、", "まだ社員の仕事。", "AIに頼まなくていい。", "Jin AIが、", "誰かに頼まれる前に、", "必要なときに", "仕事を準備します。", "Jinは、", "チームの働き方を学びます。", "アクセスできる情報を、", "一か所で管理する。", "もう二度とやりたくない仕事を、", "ひとつ見つけましょう。"]],
   ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "御社のAIを、", "会社の資産に。"]],
   ["/ja/security/", japaneseSecurity, ["コンテクストは、", "会社のもの。"]],
   ["/ja/privacy/", japanesePrivacy, ["プライバシー", "ポリシー", "取り扱いを", "委託している", "事業者"]]

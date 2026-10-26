@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "content_version": "2.0",
-  "last_updated": "2026-10-26",
+  "last_updated": "2026-10-27",
   "language": "en",
   "canonical_url": "https://jinai.md/",
   "resources": {
@@ -19,7 +19,7 @@
   },
   "product": {
     "name": "Jin AI",
-    "headline": "What if the work was already done?",
+    "headline": "Providing work that's already done, for every employee.",
     "category": "Proactive AI for teams",
     "description": "Jin spots repetitive tasks, prepares the work, and learns from your team's feedback.",
     "harness_definition": "An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.",
@@ -31,36 +31,34 @@
     "primary": "Teams that already use AI tools but still do repetitive work by hand"
   },
   "problem": {
-    "headline": "Your team has AI tools. So why are they still doing everything themselves?",
-    "points": [
-      {
-        "name": "AI tools are in place",
-        "description": "Companies have invested in ChatGPT, Copilot, and other AI tools."
-      },
-      {
-        "name": "The work is still manual",
-        "description": "Employees still spend hours preparing for meetings, putting together reports, and moving information between apps."
-      }
-    ],
-    "closing": "AI is available. Getting value from it still takes work."
+    "headline": "AI is there. Using it is still their job."
   },
   "evidence": [],
   "solution": {
     "status": "building",
-    "headline": "What if AI took the first step?",
-    "steps": [
-      {
-        "name": "Today",
-        "description": "Employees figure out what needs to be done, open an AI tool, provide context, and check the output."
-      },
-      {
-        "name": "With Jin",
-        "description": "Jin recognizes what's coming up, prepares a first draft, and lets employees review it when they're ready."
-      }
-    ],
-    "closing": "Instead of asking AI for help, your team starts with work that's already prepared."
+    "headline": "Don't ask AI. Jin AI prepares it before anyone asks, right when you need it.",
+    "description": "One person's improvement is reviewed, then applied to the relevant people."
   },
   "how_it_works": {
+    "headline": "Jin learns how your team works.",
+    "steps": [
+      {
+        "name": "Connect your tools",
+        "description": "Jin connects to the apps your team already uses. Admins manage which tools and MCP servers employees connect, all in one place."
+      },
+      {
+        "name": "Spot repetitive work",
+        "description": "Jin finds the tasks each employee does again and again."
+      },
+      {
+        "name": "Get the work ready",
+        "description": "Jin doesn't just suggest an automation. It runs it in a sandbox and shows the finished output. Nothing changes until the employee approves it."
+      },
+      {
+        "name": "Share what works",
+        "description": "Automations that work are offered to people doing similar work. Your company can also build organization skills that everyone can use."
+      }
+    ],
     "introduction": "Connect once, see every part, and Jin AI keeps each team's shared harness up to date.",
     "features": [
       {
@@ -86,15 +84,9 @@
     ]
   },
   "data_principles": {
-    "headline": "Jin does the prep work. Your team stays in control",
-    "introduction": "Jin reads the email, calendar, chat, and files your team connects, such as Gmail, Outlook, Slack, and Teams, so the work it prepares is accurate. What it reads is used only to prepare work for that person. It is never used to train AI models, and your admin can exclude any folder, channel, label, or team.",
-    "items": [
-      "Your admin chooses which teams and tools Jin can use. Each employee connects their own account and can disconnect at any time.",
-      "Jin never sends messages or changes your systems without approval.",
-      "What Jin finds goes to the employee, not their manager. Jin does not score or rank people.",
-      "Each company's data is kept separate. Jin never records your screen."
-    ],
-    "closing": "Helpful by default. Always under your control."
+    "headline": "Single control plane for what can be accessed.",
+    "introduction": "Jin only accesses information your company has approved. Your employees can see what Jin used, review what it prepared, and decide what happens next.",
+    "model_training": "It is never used to train AI models."
   },
   "capabilities": [
     {

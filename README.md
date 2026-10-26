@@ -2,28 +2,44 @@
 
 Public product site for **Jin AI** at <https://jinai.md/>.
 
-## Current home positioning (2026-10-26)
+## Current home positioning (2026-10-27)
 
-The home pages follow the proactive pitch: **What if the work was already
-done?** / **もし、仕事がもう終わっていたら？** Jin spots repetitive tasks,
-prepares the work, and learns from the team's feedback. The home order is hero,
-Yu's bilingual inbox demo, Problem, Solution (Today versus With Jin),
-Data, How it works (four steps), Why Jin, Team learning and the waitlist.
+The home pages use Yu's exact reviewed copy: **Providing work that's already
+done, for every employee.** / **すべての社員に、もう終わっている仕事を届ける。**
+Jin spots repetitive tasks, prepares the work, and learns from the team's
+feedback. The home order is hero, Yu's bilingual inbox demo, Problem, Solution,
+How it works (four steps), Trust and control, and the waitlist.
 The exact bilingual copy is pinned in `scripts/validate-site.mjs` and the
 facts live in `agent/content.json`.
 
 The inbox demo uses `inbox-demo.js` and scoped `site-page.css`, with the
 existing English/Japanese fonts and no additional external requests. It starts
 only when its screen enters the viewport. Reduced motion and no JavaScript
-show Sarah's email and the ready band without autoplay. The approved WebP
-figures accompany each section; How it works switches to the tall image at
-760px and below while retaining all four steps as HTML.
+show Sarah's email and the ready band without autoplay. The three approved
+Problem figures form one captionless row on desktop and stack on phones;
+all three have empty alt. How it works switches to the unchanged tall image at
+760px and below while retaining all four steps as HTML. Trust and control
+retains `control.webp` and the `#data` / `#privacy` anchors.
 
 Jin reads connected email, calendar, chat and files, including bodies and
-attachments (Yu, 2026-10-26). The four trust promises in the Data section are
-provisional until Yu confirms them. How it works, Security and Company still
-carry the earlier harness positioning; the home-page notes below about the
-hero demo, badges, Problem figures and Keep Solution are historical.
+attachments (Yu, 2026-10-26). Trust and control retains only the approved
+access/review paragraph and "It is never used to train AI models."
+The former four trust promises are removed, not approved by this rewrite.
+Today/With Jin, Why Jin, Team learning and hero badges are removed.
+Their four images (`today.webp`, `with-jin.webp`, `why-jin.webp`,
+`team-learning.webp`) remain in the repository but are not deployed.
+How it works, Security and Company still carry the earlier harness positioning;
+the home-page notes below about the former hero demo, badges, Problem figures
+and Keep Solution are historical, not current home copy guidance.
+
+`how_it_works.headline` and `steps` in the fact source hold the four new home
+steps, including Yu's approved MCP servers, sandbox and organization skills
+wording. Its existing `introduction` and five `features` remain unchanged for
+the companion page. The generator uses the new home facts in the Agent
+reference and LLM index, retaining Building status.
+Local evidence, the full bilingual copy comparison, and decisions are recorded
+in `.copilot-runs/notes/site-copy-r1.md`; browser evidence and full-page captures
+are in `.copilot-runs/site-copy/`. Japanese translations await Yu's review.
 
 ## Production routes
 
@@ -54,9 +70,9 @@ hero demo, badges, Problem figures and Keep Solution are historical.
 The public content pages are self-canonical, with `en`, `ja` and `x-default`
 hreflang alternates. Every Japanese page has the same body structure, section
 IDs, component classes, images and controllers as its English twin, except
-the approved Japanese two-part Solution closing (bold line plus paragraph). The
-Japanese home heading uses the approved text `AIを、会社の資産に。`
-in two reveal phrases; the generated form preserves surname-first order and Japanese country
+the generated form's field and country order. The
+Japanese home heading uses three protected reveal phrases;
+the generated form preserves surname-first order and Japanese country
 labels without changing payload values. The English-only language-choice
 redirect and root fact graph are not duplicated on Japanese pages.
 Headers have the Product dropdown, Security, Company,
@@ -263,11 +279,13 @@ When Yu chooses a new tagline, also update `product.headline` in
 exact-headline/reveal assertions in the generator and validator.
 Regenerate with `node scripts\generate-aeo.mjs`;
 never edit generated blocks. If the span count changes, keep the body reveal
-after the last word finishes and the buttons after the body. R7 uses six
-English words and two unbroken Japanese phrases. Titles and social titles
-omit only the Japanese headline's final full stop.
+after the last word finishes and the buttons after the body. The current
+English headline uses eight words and Japanese uses three unbroken phrases.
+The last English word finishes at 675ms, before the unchanged 720ms body
+reveal. Titles and social titles omit only the Japanese headline's final full stop.
 
-The exact English hero line is "Keep your AI agents, skills, and knowledge secure,
+Historical R7/R11 copy (not current home guidance):
+The former exact English hero line was "Keep your AI agents, skills, and knowledge secure,
 reusable, and accessible across your organization." R11's Japanese hero line is
 "AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。"
 It also supplies the Japanese home page and social descriptions. The four muted badges
@@ -439,22 +457,26 @@ recorded in `.copilot-runs/notes/j1.md`.
 
 - Product name: **Jin AI**. It is a B2B product for AI-forward companies.
   Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
-- Headline: **What if the work was already done?**
-- Japanese home headline: **もし、仕事がもう終わっていたら？**
-  Its page and social titles omit the final Japanese question mark.
+- Headline: **Providing work that's already done, for every employee.**
+- Japanese home headline: **すべての社員に、もう終わっている仕事を届ける。**
+  Its page and social titles omit the final Japanese full stop.
 - English headings and heading-like titles have no final period, including each
-  line separated by a `br`. Keep sentence punctuation in running descriptions,
+  line separated by a `br`, except Yu's exact 2026-10-27 home sentence headings
+  and their generated Agent equivalents. Preserve every approved final period.
+  Keep sentence punctuation in running descriptions,
   question and exclamation marks, and Japanese heading punctuation.
 - Do not display draft tags or `data-draft` attributes. Track unapproved copy
   in the E6c register instead.
 - Use **agent harness**, **AI harness** or **harnesses** for this concept.
   An AI harness is the instructions, skills, memory and connected tools around
   an AI agent that make it work for a role.
-- The home page contains only the hero, inbox demo, problem, solution, data,
-  how it works, why Jin, team learning and the waitlist. Do not show pricing or founders on the home page.
+- The home page contains only the hero, inbox demo, problem, solution,
+  how it works, trust and control, and the waitlist. Do not show pricing or founders on the home page.
   Founders and direct answers belong in the Agent reference.
-- Problem: **Your team has AI tools. So why are they still doing everything themselves?**
-- Solution: **What if AI took the first step?**, comparing **Today** with **With Jin**.
+- Problem: **AI is there. Using it is still their job.** No body paragraphs or captions.
+- Solution: **Don't ask AI. Jin AI prepares it before anyone asks, right when you need it.**
+  Body: **One person's improvement is reviewed, then applied to the relevant people.**
+  Do not restore comparison columns, Why Jin, Team learning, trust lists or badges.
 - Earlier (historical, still used by How it works and Security): Problem **Is your
   company in control of its AI?** and Solution **How Jin AI keeps your AI** with
   **Keep it safe**, **Keep it in the company**, **Keep it shared**.
@@ -464,9 +486,9 @@ recorded in `.copilot-runs/notes/j1.md`.
 - Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19).
   `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`.
   Never claim a Building or Next item is available today in any copy.
-- Home data: **Jin does the prep work. Your team stays in control** Jin reads
-  connected email, calendar, chat and files so its work is accurate; it never
-  trains AI models on them. Never claim Jin does not read message bodies.
+- Home trust and control: **Single control plane for what can be accessed.**
+  Use only the approved access/review paragraph and unchanged model-training
+  promise. Never claim Jin does not read message bodies.
 - How it works and Security data (until rewritten): **Your company's context stays yours**
   Each company's context is kept separate. Jin AI never records your screen.
   Jin AI itself never trains on your data.
@@ -496,8 +518,8 @@ recorded in `.copilot-runs/notes/j1.md`.
 - Avoid supercharge, unlock, seamless, effortless, revolutionize, game-changer,
   empower, leverage, cutting-edge and next-level. Do not repeat "No more X"
   headlines or claim nobody else does this.
-- Keep the paper background, Source Serif headings, Inter body and labels,
-  JetBrains Mono code, 4px radius and existing spacing. The only accent color is `#a84a1c`.
+- Keep the dark `#08090A` background, Inter headings, body and labels,
+  JetBrains Mono code, existing radii and spacing. The only accent color is `#a84a1c`.
   No gradients, glows, new blurs or shadows, emoji, rows of identical icon
   cards, numbered circles, positioning grids or letter-spaced all-caps labels.
   Prefer prose, lists, tables and real product screenshots. Use one dominant

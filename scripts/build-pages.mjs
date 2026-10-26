@@ -60,13 +60,9 @@ const files = [
   "assets/figures/problem-tools.webp",
   "assets/figures/problem-busy.webp",
   "assets/figures/problem-how.webp",
-  "assets/figures/today.webp",
-  "assets/figures/with-jin.webp",
   "assets/figures/control.webp",
   "assets/figures/how-it-works-wide.webp",
   "assets/figures/how-it-works-tall.webp",
-  "assets/figures/why-jin.webp",
-  "assets/figures/team-learning.webp",
   "shots/og-b2b.png"
 ];
 

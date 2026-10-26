@@ -2,17 +2,19 @@
 
 This repo is the public site for Jin AI. Read `README.md` and the supersession notice in `REPOSITION-PLAN.md` before changing copy or layout. The old plan below that notice is historical, not current copy guidance.
 
-## Positioning (proactive pitch, 2026-10-26)
+## Positioning (Yu-reviewed home copy, 2026-10-27)
 
 Jin AI is a B2B product. It spots repetitive work, prepares it before anyone asks, and learns from the team's approvals, edits and rejections. Write for company buyers (heads of IT, CIOs, CISOs and team leads) in plain, natural English. Do not add numbers, customer names or prices.
 
-Headline: **What if the work was already done?** / **もし、仕事がもう終わっていたら？** Page and social titles omit the Japanese question mark.
+Headline: **Providing work that's already done, for every employee.** / **すべての社員に、もう終わっている仕事を届ける。** Page and social titles omit the Japanese final full stop. Keep every approved English final period.
 
 Hero: small **Jin AI** eyebrow; line **Jin spots repetitive tasks, prepares the work, and learns from your team's feedback.** / **Jinは、繰り返しの仕事を見つけて準備し、チームのフィードバックから学びます。**; tools note below the actions. No badges. Preserve the reveal and CTAs. Yu's bilingual inbox demo sits directly below the hero, before Problem. It starts only in view; reduced motion and no JavaScript show Sarah's email and the ready band without autoplay.
 
-Home sections, in order: Problem (**Your team has AI tools. So why are they still doing everything themselves?**), Solution (**What if AI took the first step?**, Today versus With Jin), Data (**Jin does the prep work. Your team stays in control**), How it works (four steps), Why Jin, Team learning, then the waitlist. The exact bilingual copy is pinned in `scripts/validate-site.mjs` and the facts live in `agent/content.json`.
+Home sections, in order after the hero and inbox demo: Problem (**AI is there. Using it is still their job.**), Solution (**Don't ask AI. Jin AI prepares it before anyone asks, right when you need it.**), How it works (**Jin learns how your team works.**, four steps), Trust and control (**Single control plane for what can be accessed.**), then the waitlist (**Let's find one task your team never wants to do again.**). The exact bilingual copy is pinned in `scripts/validate-site.mjs` and the facts live in `agent/content.json`. The Japanese translations are recorded for Yu's review in `.copilot-runs/notes/site-copy-r1.md`.
 
-Data (Yu, 2026-10-26): Jin reads the email, calendar, chat and files a team connects, including bodies and attachments, so it may name Gmail, Outlook, Slack and Teams. Never claim Jin does not read message bodies. The four trust promises (admin chooses, employee can disconnect; nothing sent without approval; findings go to the employee, no scoring; data kept separate, no screen recording) are provisional until Yu confirms them.
+Problem contains only its heading and the three approved captionless images with empty alt. Solution has only its heading and **One person's improvement is reviewed, then applied to the relevant people.** Do not restore Today/With Jin, Why Jin, Team learning, the four trust promises or hero badges. Do not use or deploy `today.webp`, `with-jin.webp`, `why-jin.webp` or `team-learning.webp`; retain their source files. Preserve the How it works picture and the control image.
+
+Trust and control uses only the approved access/review paragraph and **It is never used to train AI models.** The four former trust promises are removed, not approved by this rewrite. Jin reads connected information, including message bodies and attachments (Yu, 2026-10-26); never claim otherwise. MCP servers, sandbox execution and organization skills are explicitly approved in the four home steps. `how_it_works.headline` and `steps` record those steps; its existing `introduction` and `features` still describe the unchanged companion page.
 
 How it works, Security and Company still carry the earlier harness positioning until they are rewritten. Keep their pinned copy (see `README.md`) unchanged unless the task is that rewrite.
 
@@ -20,7 +22,7 @@ The old consumer and visual-workspace positioning is retired. Do not reintroduce
 
 ## Page scope
 
-The home page (`index.html`) contains only the hero, the inbox demo, problem, solution, data, how it works, why Jin, team learning and the waitlist. Do not show pricing or founders on the home page. Founders and direct answers belong in the Agent reference.
+The home page (`index.html`) contains only the hero, the inbox demo, problem, solution, how it works, trust and control (retaining `#data` / `#privacy`), and the waitlist. Do not show pricing or founders on the home page. Founders and direct answers belong in the Agent reference.
 
 R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイトリストに登録**, then optional **Request a demo** / **デモを申し込む**. Waitlist note: **We'll email you when access is ready. You can request a demo after joining.** / **ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。** Direct `#request-demo` and the optional demo show **We'll email you to find a time.** / **日程の調整のため、こちらからメールでご連絡します。** Keep the existing fields, endpoint and each step's consent version. No post-request survey.
 
@@ -39,7 +41,7 @@ R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイト�
 ## Writing
 
 - Plain, specific English, or the approved Japanese copy on `/ja/`, `/ja/how-it-works/`, `/ja/privacy/` and `/ja/accessibility/` (Yu, 2026-10-20). Short sentences. Concrete scenes over abstractions.
-- English headings and heading-like titles have no final period, including each line separated by a `br`. Keep sentence punctuation in running descriptions, question and exclamation marks, and Japanese heading punctuation.
+- English headings and heading-like titles have no final period, including each line separated by a `br`, except the exact Yu-reviewed home sentence headings dated 2026-10-27 (also in generated Agent content). Keep their final periods, sentence punctuation in running descriptions, question and exclamation marks, and Japanese heading punctuation.
 - Do not display draft tags or `data-draft` attributes. Track unapproved copy in `.copilot-runs/notes/e6c-unapproved-copy.md` instead; removing a tag does not approve the copy.
 - CJK is required on the Japanese pages and forbidden in all other deployed files except the Japanese footer language-link text on English pages and exact Japanese page titles and descriptions in the generated `llms.txt` Pages index. Shared JavaScript keeps Japanese messages as Unicode escapes. No em dashes, en dashes or curly quotes in either language.
 - Keep each English/Japanese page pair structurally aligned, self-canonical, with reciprocal `en`, `ja` and `x-default` hreflang links and header/footer language switches. Generate both home-page CTA blocks from the same form facts; Japanese labels, surname-first order and country ordering must not change payload values or consent.
