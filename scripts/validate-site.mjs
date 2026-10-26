@@ -71,12 +71,20 @@ const expectedFiles = [
   "assets/demo/demo-2-categories.webp",
   "assets/demo/demo-3-by-role.webp",
   "assets/demo/demo-4-what-can-move.webp",
+  "assets/demo/video/jin-inbox-demo-en.webm",
+  "assets/demo/video/jin-inbox-demo-en.mp4",
+  "assets/demo/video/jin-inbox-demo-en-poster.webp",
+  "assets/demo/video/jin-inbox-demo-ja.webm",
+  "assets/demo/video/jin-inbox-demo-ja.mp4",
+  "assets/demo/video/jin-inbox-demo-ja-poster.webp",
   "assets/figures/problem-tools.webp",
   "assets/figures/problem-busy.webp",
   "assets/figures/problem-how.webp",
   "assets/figures/control.webp",
-  "assets/figures/how-it-works-wide.webp",
-  "assets/figures/how-it-works-tall.webp",
+  "assets/figures/how-connect.webp",
+  "assets/figures/how-spot.webp",
+  "assets/figures/how-prepare.webp",
+  "assets/figures/how-share.webp",
   "base.css",
   "brand/jin-mark.svg",
   "brand/jin-mark-white.svg",
@@ -89,7 +97,7 @@ const expectedFiles = [
   "googled8075da2e5b1406b.html",
   "human/index.html",
   "index.html",
-  "inbox-demo.js",
+  "scroll-motion.js",
   "ja/index.html",
   "ja/how-it-works/index.html",
   "ja/privacy/index.html",
@@ -367,75 +375,66 @@ for (const match of home.matchAll(/<(?:script|link)\b[^>]*(?:src|href)="(https?:
   check(["fonts.googleapis.com", "fonts.gstatic.com", "static.cloudflareinsights.com"].includes(new URL(match[1]).hostname),
     `Root loads an unapproved external resource: ${match[1]}.`);
 }
-const inboxClient = await text("inbox-demo.js");
+const motionClient = await text("scroll-motion.js");
 const homeFigureCss = await text("site-page.css");
-for (const [language, page, copy] of [
-  ["English", home, [
-    "Jin AI inbox demo", "Mail app", "Inbox", "Select a message",
-    "Q4 pilot kickoff timing", "Northwind Billing", "Your October invoice", "Notes from Thursday", "Re: security questionnaire",
-    "Hi Yu,", "Our team is ready a bit earlier than planned. Could we move the pilot kickoff to next week? 30 minutes is enough. Send me a few times that work for you.",
-    "Thanks,<br>Sarah", "Nothing to prepare for this one, so Jin stays out of the way.",
-    "Your reply to Sarah is ready", "I checked your calendar and picked 3 open times next week.",
-    "Show", "Send", "Not now", "Undo", "Replay", "Open on your calendar", "Draft",
-    "Preparing…", "Sent to Sarah", "Okay, not now", "You: Next week works well…", "Yu Asano · just now", "Sent",
-    "Tue 10/28 · 10:00 AM PT", "Wed 10/29 · 2:30 PM PT", "Thu 10/30 · 9:00 AM PT",
-    "Hi Sarah,\n\nNext week works well. Would {long} at {at} PT work for a 30-minute kickoff? If not, {other1} or {other2} PT are open too.\n\nBest,\nYu Asano",
-    "<b>Open an email.</b> Jin drops down from the top of the screen with the work already done."
-  ]],
-  ["Japanese", japanese, [
-    "Jin AIの受信箱デモ", "メールアプリ", "受信箱", "メールを選んでください",
-    "第4四半期の試験導入キックオフの日程", "Northwind 請求担当", "10月分の請求書", "木曜日の打ち合わせメモ", "Re: セキュリティ質問票",
-    "Yuさん", "チームの準備が予定より少し早く整いました。試験導入のキックオフを来週に早められますか？30分あれば十分です。ご都合のよい日時をいくつか教えてください。",
-    "よろしくお願いします。<br>Sarah", "このメールで準備することはないので、Jinは何も表示しません。",
-    "Sarahへの返信ができています", "カレンダーを見て、来週の空き時間を3つ選びました。",
-    "表示", "送信", "今はしない", "元に戻す", "もう一度見る", "カレンダーの空き時間", "下書き",
-    "準備しています…", "Sarahに送信しました", "わかりました。今はしません", "自分：来週で大丈夫です…", "Yu Asano · たった今", "送信済み",
-    "10月28日（火）10:00（太平洋時間）", "10月29日（水）14:30（太平洋時間）", "10月30日（木）9:00（太平洋時間）",
-    "Sarahさん\n\n来週で大丈夫です。30分のキックオフを、{long}{at}（太平洋時間）に行うのはいかがでしょうか。難しければ、{other1}か{other2}（いずれも太平洋時間）も空いています。\n\nよろしくお願いします。\nYu Asano",
-    "<b>メールを開くと、</b>Jinが準備を済ませて、画面の上から降りてきます。"
-  ]]
+for (const [language, page, locale, label] of [
+  ["English", home, "en", "Demo: Jin drops down from the top of the screen with a reply to Sarah already drafted"],
+  ["Japanese", japanese, "ja", "デモ: Sarahへの返信を準備したJinが、画面の上から降りてきます"]
 ]) {
-  const demo = page.match(/<div class="product-viewport">\s*(<figure class="inbox-demo"[\s\S]*?<\/figure>)\s*<\/div>/)?.[1] || "";
-  check(/<\/section>\s*<div class="product-viewport">\s*<figure class="inbox-demo"[\s\S]*?<\/figure>\s*<\/div>\s*<section class="section" id="problem">/.test(page) &&
-    count(page, /class="inbox-demo"/g) === 1 && !/brief-stage|jin-hero-demo|class="demo-stage"/.test(page),
-    `${language} must show exactly one inbox demo directly after the hero and before Problem, replacing the retired brief.`);
-  check(copy.every(value => demo.includes(value)) &&
-    ["Sarah Chen", "Marcus Lee", "Priya Raman", "Yu Asano", "sarah@contoso.com"].every(name => demo.includes(name)) &&
-    count(demo, /class="msg[^"]*" data-id=/g) === 4 && count(demo, /class="time" /g) === 3 &&
-    /class="jin" data-state="ready"/.test(demo) &&
-    /class="email-sarah">\s*<h2>/.test(demo) && /class="empty email-empty" hidden/.test(demo),
-    `${language} inbox must retain Yu's mail list, email, exact localized copy, three times and static ready fallback.`);
-  const labels = language === "English" ? ["Show", "Send", "Not now", "Undo", "Replay"] :
-    ["表示", "送信", "今はしない", "元に戻す", "もう一度見る"];
-  check(["pill show", "pill primary", "pill later", "undo", "replay"].every((className, index) =>
-    new RegExp(`<button type="button" class="${className}"(?: hidden)?>${labels[index]}</button>`).test(demo)),
-    `${language} inbox must retain each exact Show, Send, Not now, Undo and Replay button label.`);
+  const demo = page.match(/<div class="product-viewport">\s*(<figure class="demo-video">[\s\S]*?<\/figure>)\s*<\/div>/)?.[1] || "";
+  const videoTag = demo.match(/<video\b[^>]*>/)?.[0] || "";
+  check(/<\/section>\s*<div class="product-viewport">\s*<figure class="demo-video">[\s\S]*?<\/figure>\s*<\/div>\s*<section class="section" id="problem">/.test(page) &&
+    count(page, /<video\b/g) === 1 && !/inbox-demo\.js|class="inbox-demo"|brief-stage|jin-hero-demo|class="demo-stage"/.test(page),
+    `${language} must show exactly one local demo video directly after the hero and before Problem, without the retired inbox UI.`);
+  check(["muted", "autoplay", "loop", "playsinline", "controls"].every(attribute =>
+    new RegExp(`\\s${attribute}(?:\\s|>)`).test(videoTag)) &&
+    videoTag.includes('preload="metadata"') && videoTag.includes('width="1600" height="900"') &&
+    videoTag.includes(`poster="/assets/demo/video/jin-inbox-demo-${locale}-poster.webp"`) &&
+    videoTag.includes(`aria-label="${label}"`) &&
+    demo.match(/<source\b[^>]*>/g)?.join("\n") ===
+      `<source src="/assets/demo/video/jin-inbox-demo-${locale}.webm" type="video/webm">\n<source src="/assets/demo/video/jin-inbox-demo-${locale}.mp4" type="video/mp4">`,
+    `${language} video needs its exact localized WebM/MP4 order, poster, accessible name, dimensions and playback attributes.`);
   check(page.includes('<link rel="stylesheet" href="/site-page.css">') &&
-    page.includes('<script src="/inbox-demo.js" defer></script>') && !/Geist/i.test(page),
-    `${language} must load the shared local inbox assets without Geist.`);
+    count(page, /<script src="\/scroll-motion\.js" defer><\/script>/g) === 1 && !/Geist/i.test(page),
+    `${language} must load the shared local motion controller once, without new fonts.`);
   for (const [element, tag, url] of page.matchAll(/<(script|link)\b[^>]*(?:src|href)="(https?:\/\/[^"]+)"[^>]*>/g)) {
     if (tag === "link" && !/\brel="(?:stylesheet|preconnect)"/.test(element)) continue;
     check(["fonts.googleapis.com", "fonts.gstatic.com", "static.cloudflareinsights.com"].includes(new URL(url).hostname),
       `${language} must not add an external resource host: ${url}`);
   }
+  for (const [, url] of page.matchAll(/<(?:video|source|img)\b[^>]*(?:src|srcset|poster)="([^"]+)"/g)) {
+    check(url.startsWith("/") && !url.startsWith("//"), `${language} media must use local assets: ${url}`);
+  }
 }
-check(inboxClient.includes("new IntersectionObserver") &&
-  inboxClient.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
-  inboxClient.includes("visible && !started && !reduced.matches") &&
-  inboxClient.includes("!visible || document.hidden || reduced.matches") &&
-  inboxClient.includes("if (reduced.matches) openMail(sarah, true)") &&
-  inboxClient.includes("document.hidden") && inboxClient.includes("clearTimeout(timer)") &&
-  inboxClient.includes('setState("open")') && inboxClient.includes('setState("done", root.dataset.sent)') &&
-  !/\b(?:fetch|XMLHttpRequest|WebSocket|import)\s*\(/.test(inboxClient),
-  "Inbox playback must be viewport/motion guarded, pause hidden timers, support Show/Send/Undo and never send real requests.");
-check(homeFigureCss.includes("font: 14px/1.5 var(--font-sans)") &&
+check(motionClient.includes("new IntersectionObserver") &&
+  motionClient.includes('matchMedia("(prefers-reduced-motion: reduce)")') &&
+  motionClient.includes('matchMedia("(min-width: 761px)")') &&
+  motionClient.includes("!visible || document.hidden || reduced.matches") &&
+  motionClient.includes("video.pause()") && motionClient.includes('video.removeAttribute("autoplay")') &&
+  motionClient.includes('element.removeAttribute("src")') &&
+  motionClient.includes("video.load()") && motionClient.includes('document.addEventListener("visibilitychange", syncVideo)') &&
+  motionClient.includes('reduced.addEventListener("change", updateMotion)') &&
+  motionClient.includes('window.addEventListener("scroll", scheduleScroll, { passive: true })') &&
+  motionClient.includes("requestAnimationFrame(updateScroll)") && motionClient.includes("revealObserver.unobserve(entry.target)") &&
+  !/getBoundingClientRect|offsetHeight/.test(motionClient.match(/function updateScroll\(\) \{([\s\S]*?)\n  \}/)?.[1] || "") &&
+  !/\b(?:fetch|XMLHttpRequest|WebSocket|import)\s*\(|https?:\/\//.test(motionClient),
+  "Home motion must guard viewport and reduced motion, reset the poster, reveal once and cache layout outside passive/rAF scroll updates without network calls.");
+check(homeFigureCss.includes("--figure-height: 260px") && homeFigureCss.includes("--figure-height: 180px") &&
+  homeFigureCss.includes("object-fit: contain") && homeFigureCss.includes("aspect-ratio: 16 / 9") &&
+  homeFigureCss.includes("position: sticky") && homeFigureCss.includes("transform: translateY(20px)") &&
   cssBlock(homeFigureCss, "@media (prefers-reduced-motion: reduce)").includes("animation: none !important; transition: none !important") &&
+  cssBlock(homeFigureCss, "@media (prefers-reduced-motion: reduce)").includes("opacity: 1; transform: none") &&
+  cssBlock(homeFigureCss, "@media (prefers-reduced-motion: reduce)").includes("position: static") &&
   !/@import|\burl\s*\(|Geist/.test(homeFigureCss),
-  "Inbox must inherit existing fonts, fully disable reduced-motion animation and load no external CSS resources.");
-const scopedHomeCss = homeFigureCss.replace(`@keyframes inbox-rise {${cssBlock(homeFigureCss, "@keyframes inbox-rise")}}`, "");
-for (const [, selectors] of scopedHomeCss.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-  check(selectors.split(/,(?![^(]*\))/).every(selector => /^\s*\.(?:inbox-demo|home-page)\b/.test(selector)),
+  "Home figures need common contained sizes, a 16:9 video and sticky enhancement with fully visible static reduced-motion fallbacks and no external CSS resources.");
+for (const [, selectors] of homeFigureCss.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+  check(selectors.split(/,(?![^(]*\))/).every(selector =>
+    /^\s*\.home-page\b/.test(selector) || selector.trim() === "html:has(> .home-page)"),
     `Home-only styles must remain scoped: ${selectors.trim()}`);
+}
+for (const [, transition] of homeFigureCss.matchAll(/\btransition:\s*([^;}]+)/g)) {
+  check(transition.split(",").every(value => /^(?:opacity|transform|none)\b/.test(value.trim())),
+    `New home transitions may animate only transform and opacity: ${transition}`);
 }
 const demoApp = await text("assets/demo/app.html");
 check(demoApp.includes('new URLSearchParams(location.search).get("embed") === "hero"') &&
@@ -653,12 +652,20 @@ const sectionImages = [
   ["problem", "problem-busy", 900, 640, "", ""],
   ["problem", "problem-how", 1079, 636, "", ""],
   ["data", "control", 1600, 800, "Drafts prepared by Jin are sent out only after a person approves them.", "Jinが用意した下書きは、人が承認してから外に出る"],
-  ["how", "how-it-works-wide", 1600, 360, "Four steps: connect, spot, prepare, and learn.", "つなぐ、見つける、用意する、学ぶの4段階"]
+  ["how", "how-connect", 854, 609, "", ""],
+  ["how", "how-spot", 669, 543, "", ""],
+  ["how", "how-prepare", 409, 572, "", ""],
+  ["how", "how-share", 942, 436, "", ""]
 ];
 for (const [id, name, width, height, enAlt, jaAlt] of sectionImages) {
   const bytes = await readFile(path.join(site, "assets", "figures", `${name}.webp`));
-  check(bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 16) === "WEBPVP8X" &&
-    bytes.readUIntLE(24, 3) + 1 === width && bytes.readUIntLE(27, 3) + 1 === height,
+  const lossless = bytes.toString("ascii", 12, 16) === "VP8L";
+  const bits = lossless ? bytes.readUInt32LE(21) : 0;
+  check(bytes.toString("ascii", 0, 4) === "RIFF" &&
+    (lossless && id === "how" ?
+      (bits & 0x3fff) + 1 === width && ((bits >>> 14) & 0x3fff) + 1 === height :
+      bytes.toString("ascii", 8, 16) === "WEBPVP8X" &&
+      bytes.readUIntLE(24, 3) + 1 === width && bytes.readUIntLE(27, 3) + 1 === height),
     `${name} must keep its original WebP pixel dimensions.`);
   for (const [language, page, alt] of [["English", home, enAlt], ["Japanese", japanese, jaAlt]]) {
     const section = homeSection(page, id);
@@ -667,15 +674,14 @@ for (const [id, name, width, height, enAlt, jaAlt] of sectionImages) {
       `${language} ${id} must have exactly its approved images, with intrinsic dimensions, lazy/async loading and exact alt.`);
   }
 }
-const tallFigure = await readFile(path.join(site, "assets", "figures", "how-it-works-tall.webp"));
-check(tallFigure.toString("ascii", 8, 16) === "WEBPVP8X" &&
-  tallFigure.readUIntLE(24, 3) + 1 === 750 && tallFigure.readUIntLE(27, 3) + 1 === 1440,
-  "The tall How it works image must keep its 750 x 1440 dimensions.");
 for (const [language, page] of [["English", home], ["Japanese", japanese]]) {
-  check(/<picture class="how-figure">\s*<source media="\(max-width: 760px\)" srcset="\/assets\/figures\/how-it-works-tall.webp" width="750" height="1440">\s*<img src="\/assets\/figures\/how-it-works-wide.webp"[^>]+>\s*<\/picture>/.test(homeSection(page, "how")) &&
+  const how = homeSection(page, "how");
+  check(how.includes('<div class="how-scroll">\n    <div class="how-sticky">') &&
+    [...how.matchAll(/<li><img class="step-figure" src="\/assets\/figures\/(how-[^"]+)\.webp"/g)]
+      .map(([, name]) => name).join(",") === "how-connect,how-spot,how-prepare,how-share" &&
     /<div class="problem-images">\s*<img[^>]*src="\/assets\/figures\/problem-tools.webp"[^>]*>\s*<img[^>]*src="\/assets\/figures\/problem-busy.webp"[^>]*>\s*<img[^>]*src="\/assets\/figures\/problem-how.webp"[^>]*>\s*<\/div>/.test(homeSection(page, "problem")) &&
     !/assets\/figures\/brief-/.test(page),
-    `${language} must keep the three captionless Problem images in order and preserve the responsive How picture.`);
+    `${language} must keep the three captionless Problem images and all four original How drawings in exact step order.`);
 }
 check(JSON.stringify(content.problem) === JSON.stringify({ headline: homeCopy[0][2][0][2] }) &&
   JSON.stringify(content.solution) === JSON.stringify({

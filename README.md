@@ -12,14 +12,30 @@ How it works (four steps), Trust and control, and the waitlist.
 The exact bilingual copy is pinned in `scripts/validate-site.mjs` and the
 facts live in `agent/content.json`.
 
-The inbox demo uses `inbox-demo.js` and scoped `site-page.css`, with the
-existing English/Japanese fonts and no additional external requests. It starts
-only when its screen enters the viewport. Reduced motion and no JavaScript
-show Sarah's email and the ready band without autoplay. The three approved
-Problem figures form one captionless row on desktop and stack on phones;
-all three have empty alt. How it works switches to the unchanged tall image at
-760px and below while retaining all four steps as HTML. Trust and control
-retains `control.webp` and the `#data` / `#privacy` anchors.
+The bilingual inbox video is a **trial, awaiting Yu's approval**. Each home uses
+its local WebM then MP4 sources and WebP poster in `assets/demo/video/`.
+`scroll-motion.js` pauses it offscreen and in hidden tabs. Reduced motion removes
+autoplay, resets to the poster and disables playback. Without JavaScript, the
+browser's normal muted autoplay applies. Native controls let visitors pause.
+Recording sources and PNG posters are not deployed. No external requests or
+dependencies are added.
+
+Home-only `site-page.css` uses 260px illustration boxes, reduced to 180px at
+760px and below, with `object-fit: contain`. The three captionless Problem
+figures share equal tracks on desktop and stack on phones. Control and the
+individual How it works drawings are capped at 520px wide (360px on phones).
+The original four Yu PNGs are only format-converted to lossless WebP, not redrawn.
+All four exact HTML steps remain visible. On sufficiently tall desktops,
+How it works sticks while scrolling advances the highlighted step and drawing.
+Phones, short windows, reduced motion and no JavaScript keep all four drawings
+and steps in normal flow. One-time section reveals move 20px over 650ms;
+only opacity and transform transition. The header switches to a centered capsule
+after 48px of scroll, including without transition under reduced motion.
+Trust and control retains `control.webp` and the `#data` / `#privacy` anchors.
+
+Motion verification, screenshots and measurements are in
+`.copilot-runs/site-motion/`; decisions and commands are recorded in
+`.copilot-runs/notes/site-motion-r1.md`.
 
 Jin reads connected email, calendar, chat and files, including bodies and
 attachments (Yu, 2026-10-26). Trust and control retains only the approved

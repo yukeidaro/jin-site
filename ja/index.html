@@ -42,7 +42,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 <link rel="stylesheet" href="/theme-en.css">
 <link rel="stylesheet" href="/theme-ja.css">
 <link rel="stylesheet" href="/site-page.css">
-<script src="/inbox-demo.js" defer></script>
+<script src="/scroll-motion.js" defer></script>
 <!-- GENERATED:JSON_LD:START -->
 <script type="application/ld+json">
 {
@@ -112,61 +112,11 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 </section>
 
 <div class="product-viewport">
-  <figure class="inbox-demo" aria-label="Jin AIの受信箱デモ" data-preparing="準備しています…" data-sent="Sarahに送信しました" data-later="わかりました。今はしません" data-reply-subject="自分：来週で大丈夫です…">
-    <div class="screen">
-      <div class="mail" role="group" aria-label="メールアプリ">
-        <nav class="list" aria-label="受信箱">
-          <div class="list-h">受信箱</div>
-          <button type="button" class="msg unread on" data-id="sarah"><b><i class="dot"></i>Sarah Chen</b><span>第4四半期の試験導入キックオフの日程</span></button>
-          <button type="button" class="msg" data-id="other"><b><i class="dot"></i>Northwind 請求担当</b><span>10月分の請求書</span></button>
-          <button type="button" class="msg" data-id="other"><b><i class="dot"></i>Marcus Lee</b><span>木曜日の打ち合わせメモ</span></button>
-          <button type="button" class="msg" data-id="other"><b><i class="dot"></i>Priya Raman</b><span>Re: セキュリティ質問票</span></button>
-        </nav>
-        <div class="reader">
-          <div class="empty email-empty" hidden>メールを選んでください</div>
-          <div class="email-sarah">
-            <h2>第4四半期の試験導入キックオフの日程</h2>
-            <div class="from">Sarah Chen &lt;sarah@contoso.com&gt; · 9:12</div>
-            <div class="body">
-              <p>Yuさん</p>
-              <p>チームの準備が予定より少し早く整いました。試験導入のキックオフを来週に早められますか？30分あれば十分です。ご都合のよい日時をいくつか教えてください。</p>
-              <p>よろしくお願いします。<br>Sarah</p>
-            </div>
-          </div>
-          <div class="email-other" hidden>
-            <h2 class="other-subject"></h2>
-            <div class="from other-from"></div>
-            <div class="body"><p>このメールで準備することはないので、Jinは何も表示しません。</p></div>
-          </div>
-          <div class="reply" hidden><span class="lbl">Yu Asano · たった今 <span class="sent">送信済み</span></span><div class="reply-text"></div></div>
-        </div>
-      </div>
-      <div class="jin" data-state="ready" role="region" aria-label="Jin" aria-live="polite">
-        <div class="band"><i class="pulse"></i><span class="band-text">Jin</span><button type="button" class="undo" hidden>元に戻す</button></div>
-        <span class="glyph" aria-hidden="true"><svg viewBox="0 0 390 326"><g fill="currentColor"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></g></svg></span>
-        <div class="panel">
-          <div class="headline">Sarahへの返信ができています</div>
-          <div class="sub">カレンダーを見て、来週の空き時間を3つ選びました。</div>
-          <button type="button" class="pill show">表示</button>
-          <div class="detail">
-            <div><div class="k">カレンダーの空き時間</div><div class="times">
-              <button type="button" class="time" data-day="火曜日" data-long="10月28日（火）" data-at="10:00" aria-pressed="true">10月28日（火）10:00（太平洋時間）</button>
-              <button type="button" class="time" data-day="水曜日" data-long="10月29日（水）" data-at="14:30" aria-pressed="false">10月29日（水）14:30（太平洋時間）</button>
-              <button type="button" class="time" data-day="木曜日" data-long="10月30日（木）" data-at="9:00" aria-pressed="false">10月30日（木）9:00（太平洋時間）</button>
-            </div></div>
-            <div><div class="k">下書き</div><div class="draft" aria-live="polite"></div></div>
-            <div class="acts"><button type="button" class="pill primary">送信</button><button type="button" class="pill later">今はしない</button></div>
-          </div>
-        </div>
-      </div>
-      <template class="draft-template">Sarahさん
-
-来週で大丈夫です。30分のキックオフを、{long}{at}（太平洋時間）に行うのはいかがでしょうか。難しければ、{other1}か{other2}（いずれも太平洋時間）も空いています。
-
-よろしくお願いします。
-Yu Asano</template>
-    </div>
-    <figcaption class="foot"><span><b>メールを開くと、</b>Jinが準備を済ませて、画面の上から降りてきます。</span><button type="button" class="replay">もう一度見る</button></figcaption>
+  <figure class="demo-video">
+    <video muted autoplay loop playsinline controls preload="metadata" width="1600" height="900" poster="/assets/demo/video/jin-inbox-demo-ja-poster.webp" aria-label="デモ: Sarahへの返信を準備したJinが、画面の上から降りてきます">
+      <source src="/assets/demo/video/jin-inbox-demo-ja.webm" type="video/webm">
+      <source src="/assets/demo/video/jin-inbox-demo-ja.mp4" type="video/mp4">
+    </video>
   </figure>
 </div>
 
@@ -192,17 +142,17 @@ Yu Asano</template>
 
 <section class="section" id="how">
   <div class="wrap">
+    <div class="how-scroll">
+    <div class="how-sticky">
     <div class="section-head"><span class="mono-label">仕組み</span><h2 class="h2"><span class="ja-phrase">Jinは、</span><span class="ja-phrase">チームの働き方を学びます。</span></h2></div>
-    <picture class="how-figure">
-      <source media="(max-width: 760px)" srcset="/assets/figures/how-it-works-tall.webp" width="750" height="1440">
-      <img src="/assets/figures/how-it-works-wide.webp" width="1600" height="360" loading="lazy" decoding="async" alt="つなぐ、見つける、用意する、学ぶの4段階">
-    </picture>
     <ol class="steps">
-      <li><h3>ツールをつなぐ</h3><p>Jinは、チームがいつも使っているアプリにつながります。管理者は、社員が接続するツールとMCPサーバーを一か所で管理できます。</p></li>
-      <li><h3>繰り返しの仕事を見つける</h3><p>Jinは、社員一人ひとりが何度も繰り返す仕事を見つけます。</p></li>
-      <li><h3>仕事を準備する</h3><p>Jinは、自動化を提案するだけではありません。サンドボックスで実行し、完成した成果物を見せます。社員が承認するまで、何も変わりません。</p></li>
-      <li><h3>うまくいくやり方を共有する</h3><p>うまく動く自動化は、似た仕事をする人に提案されます。会社は、全員が使える組織のスキルも作れます。</p></li>
+      <li><img class="step-figure" src="/assets/figures/how-connect.webp" width="854" height="609" loading="lazy" decoding="async" alt=""><h3>ツールをつなぐ</h3><p>Jinは、チームがいつも使っているアプリにつながります。管理者は、社員が接続するツールとMCPサーバーを一か所で管理できます。</p></li>
+      <li><img class="step-figure" src="/assets/figures/how-spot.webp" width="669" height="543" loading="lazy" decoding="async" alt=""><h3>繰り返しの仕事を見つける</h3><p>Jinは、社員一人ひとりが何度も繰り返す仕事を見つけます。</p></li>
+      <li><img class="step-figure" src="/assets/figures/how-prepare.webp" width="409" height="572" loading="lazy" decoding="async" alt=""><h3>仕事を準備する</h3><p>Jinは、自動化を提案するだけではありません。サンドボックスで実行し、完成した成果物を見せます。社員が承認するまで、何も変わりません。</p></li>
+      <li><img class="step-figure" src="/assets/figures/how-share.webp" width="942" height="436" loading="lazy" decoding="async" alt=""><h3>うまくいくやり方を共有する</h3><p>うまく動く自動化は、似た仕事をする人に提案されます。会社は、全員が使える組織のスキルも作れます。</p></li>
     </ol>
+    </div>
+    </div>
   </div>
 </section>
 

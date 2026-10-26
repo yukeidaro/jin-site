@@ -161,7 +161,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 <link rel="stylesheet" href="base.css">
 <link rel="stylesheet" href="theme-en.css">
 <link rel="stylesheet" href="/site-page.css">
-<script src="/inbox-demo.js" defer></script>
+<script src="/scroll-motion.js" defer></script>
 </head>
 <body class="home-page">
 
@@ -210,61 +210,11 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentEl
 </section>
 
 <div class="product-viewport">
-  <figure class="inbox-demo" aria-label="Jin AI inbox demo" data-preparing="Preparing…" data-sent="Sent to Sarah" data-later="Okay, not now" data-reply-subject="You: Next week works well…">
-    <div class="screen">
-      <div class="mail" role="group" aria-label="Mail app">
-        <nav class="list" aria-label="Inbox">
-          <div class="list-h">Inbox</div>
-          <button type="button" class="msg unread on" data-id="sarah"><b><i class="dot"></i>Sarah Chen</b><span>Q4 pilot kickoff timing</span></button>
-          <button type="button" class="msg" data-id="other"><b><i class="dot"></i>Northwind Billing</b><span>Your October invoice</span></button>
-          <button type="button" class="msg" data-id="other"><b><i class="dot"></i>Marcus Lee</b><span>Notes from Thursday</span></button>
-          <button type="button" class="msg" data-id="other"><b><i class="dot"></i>Priya Raman</b><span>Re: security questionnaire</span></button>
-        </nav>
-        <div class="reader">
-          <div class="empty email-empty" hidden>Select a message</div>
-          <div class="email-sarah">
-            <h2>Q4 pilot kickoff timing</h2>
-            <div class="from">Sarah Chen &lt;sarah@contoso.com&gt; · 9:12 AM</div>
-            <div class="body">
-              <p>Hi Yu,</p>
-              <p>Our team is ready a bit earlier than planned. Could we move the pilot kickoff to next week? 30 minutes is enough. Send me a few times that work for you.</p>
-              <p>Thanks,<br>Sarah</p>
-            </div>
-          </div>
-          <div class="email-other" hidden>
-            <h2 class="other-subject"></h2>
-            <div class="from other-from"></div>
-            <div class="body"><p>Nothing to prepare for this one, so Jin stays out of the way.</p></div>
-          </div>
-          <div class="reply" hidden><span class="lbl">Yu Asano · just now <span class="sent">Sent</span></span><div class="reply-text"></div></div>
-        </div>
-      </div>
-      <div class="jin" data-state="ready" role="region" aria-label="Jin" aria-live="polite">
-        <div class="band"><i class="pulse"></i><span class="band-text">Jin</span><button type="button" class="undo" hidden>Undo</button></div>
-        <span class="glyph" aria-hidden="true"><svg viewBox="0 0 390 326"><g fill="currentColor"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></g></svg></span>
-        <div class="panel">
-          <div class="headline">Your reply to Sarah is ready</div>
-          <div class="sub">I checked your calendar and picked 3 open times next week.</div>
-          <button type="button" class="pill show">Show</button>
-          <div class="detail">
-            <div><div class="k">Open on your calendar</div><div class="times">
-              <button type="button" class="time" data-day="Tue" data-long="Tuesday, Oct 28" data-at="10:00 AM" aria-pressed="true">Tue 10/28 · 10:00 AM PT</button>
-              <button type="button" class="time" data-day="Wed" data-long="Wednesday, Oct 29" data-at="2:30 PM" aria-pressed="false">Wed 10/29 · 2:30 PM PT</button>
-              <button type="button" class="time" data-day="Thu" data-long="Thursday, Oct 30" data-at="9:00 AM" aria-pressed="false">Thu 10/30 · 9:00 AM PT</button>
-            </div></div>
-            <div><div class="k">Draft</div><div class="draft" aria-live="polite"></div></div>
-            <div class="acts"><button type="button" class="pill primary">Send</button><button type="button" class="pill later">Not now</button></div>
-          </div>
-        </div>
-      </div>
-      <template class="draft-template">Hi Sarah,
-
-Next week works well. Would {long} at {at} PT work for a 30-minute kickoff? If not, {other1} or {other2} PT are open too.
-
-Best,
-Yu Asano</template>
-    </div>
-    <figcaption class="foot"><span><b>Open an email.</b> Jin drops down from the top of the screen with the work already done.</span><button type="button" class="replay">Replay</button></figcaption>
+  <figure class="demo-video">
+    <video muted autoplay loop playsinline controls preload="metadata" width="1600" height="900" poster="/assets/demo/video/jin-inbox-demo-en-poster.webp" aria-label="Demo: Jin drops down from the top of the screen with a reply to Sarah already drafted">
+      <source src="/assets/demo/video/jin-inbox-demo-en.webm" type="video/webm">
+      <source src="/assets/demo/video/jin-inbox-demo-en.mp4" type="video/mp4">
+    </video>
   </figure>
 </div>
 
@@ -290,17 +240,17 @@ Yu Asano</template>
 
 <section class="section" id="how">
   <div class="wrap">
+    <div class="how-scroll">
+    <div class="how-sticky">
     <div class="section-head"><span class="mono-label">How it works</span><h2 class="h2">Jin learns how your team works.</h2></div>
-    <picture class="how-figure">
-      <source media="(max-width: 760px)" srcset="/assets/figures/how-it-works-tall.webp" width="750" height="1440">
-      <img src="/assets/figures/how-it-works-wide.webp" width="1600" height="360" loading="lazy" decoding="async" alt="Four steps: connect, spot, prepare, and learn.">
-    </picture>
     <ol class="steps">
-      <li><h3>Connect your tools</h3><p>Jin connects to the apps your team already uses. Admins manage which tools and MCP servers employees connect, all in one place.</p></li>
-      <li><h3>Spot repetitive work</h3><p>Jin finds the tasks each employee does again and again.</p></li>
-      <li><h3>Get the work ready</h3><p>Jin doesn't just suggest an automation. It runs it in a sandbox and shows the finished output. Nothing changes until the employee approves it.</p></li>
-      <li><h3>Share what works</h3><p>Automations that work are offered to people doing similar work. Your company can also build organization skills that everyone can use.</p></li>
+      <li><img class="step-figure" src="/assets/figures/how-connect.webp" width="854" height="609" loading="lazy" decoding="async" alt=""><h3>Connect your tools</h3><p>Jin connects to the apps your team already uses. Admins manage which tools and MCP servers employees connect, all in one place.</p></li>
+      <li><img class="step-figure" src="/assets/figures/how-spot.webp" width="669" height="543" loading="lazy" decoding="async" alt=""><h3>Spot repetitive work</h3><p>Jin finds the tasks each employee does again and again.</p></li>
+      <li><img class="step-figure" src="/assets/figures/how-prepare.webp" width="409" height="572" loading="lazy" decoding="async" alt=""><h3>Get the work ready</h3><p>Jin doesn't just suggest an automation. It runs it in a sandbox and shows the finished output. Nothing changes until the employee approves it.</p></li>
+      <li><img class="step-figure" src="/assets/figures/how-share.webp" width="942" height="436" loading="lazy" decoding="async" alt=""><h3>Share what works</h3><p>Automations that work are offered to people doing similar work. Your company can also build organization skills that everyone can use.</p></li>
     </ol>
+    </div>
+    </div>
   </div>
 </section>
 
