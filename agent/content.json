@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "content_version": "2.0",
-  "last_updated": "2026-10-21",
+  "last_updated": "2026-10-26",
   "language": "en",
   "canonical_url": "https://jinai.md/",
   "resources": {
@@ -19,53 +19,46 @@
   },
   "product": {
     "name": "Jin AI",
-    "headline": "Turn AI into a company asset",
-    "category": "AI harnesses for companies",
-    "description": "Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors.",
+    "headline": "What if the work was already done?",
+    "category": "Proactive AI for teams",
+    "description": "Jin spots repetitive tasks, prepares the work, and learns from your team's feedback.",
     "harness_definition": "An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role.",
     "status": "building",
-    "availability": "The workspace beta is live. Company features are being built, starting with Claude Code.",
+    "availability": "Jin AI is in private beta. We are working through the waitlist.",
     "industry": "B2B"
   },
   "audience": {
-    "primary": "AI-forward companies"
+    "primary": "Teams that already use AI tools but still do repetitive work by hand"
   },
   "problem": {
-    "headline": "Is your company in control of its AI?",
+    "headline": "Your team has AI tools. So why are they still doing everything themselves?",
     "points": [
       {
-        "name": "Shadow AI",
-        "description": "Confidential company information could end up in personal AI tools, outside the company's control."
+        "name": "AI tools are in place",
+        "description": "Companies have invested in ChatGPT, Copilot, and other AI tools."
       },
       {
-        "name": "Agents that depend on one person",
-        "description": "Agents and workflows stay with the people who built them. When they leave, everything starts over."
-      },
-      {
-        "name": "Skills stuck in one team",
-        "description": "Teams build useful AI workflows, but they rarely get shared across the company."
+        "name": "The work is still manual",
+        "description": "Employees still spend hours preparing for meetings, putting together reports, and moving information between apps."
       }
-    ]
+    ],
+    "closing": "AI is available. Getting value from it still takes work."
   },
   "evidence": [],
   "solution": {
     "status": "building",
-    "headline": "How Jin AI keeps your AI",
+    "headline": "What if AI took the first step?",
     "steps": [
       {
-        "name": "Keep it safe",
-        "description": "Separate confidential information from reusable context, skills, and workflows. Share each part only with the AI tools you approve."
+        "name": "Today",
+        "description": "Employees figure out what needs to be done, open an AI tool, provide context, and check the output."
       },
       {
-        "name": "Keep it in the company",
-        "description": "Context, instructions, tools, and workflows stay with the company, not with one person. Even when someone leaves, the setup keeps working and the next person can continue from there."
-      },
-      {
-        "name": "Keep it shared",
-        "description": "Useful workflows and skills can be shared across teams and recommended where they fit, so good AI practices spread instead of staying in one team."
+        "name": "With Jin",
+        "description": "Jin recognizes what's coming up, prepares a first draft, and lets employees review it when they're ready."
       }
     ],
-    "closing": "As people improve the way they work with AI, Jin AI keeps those improvements available to the whole company."
+    "closing": "Instead of asking AI for help, your team starts with work that's already prepared."
   },
   "how_it_works": {
     "introduction": "Connect once, see every part, and Jin AI keeps each team's shared harness up to date.",
@@ -93,12 +86,15 @@
     ]
   },
   "data_principles": {
-    "headline": "Your company's context stays yours",
+    "headline": "Jin does the prep work. Your team stays in control",
+    "introduction": "Jin reads the email, calendar, chat, and files your team connects, such as Gmail, Outlook, Slack, and Teams, so the work it prepares is accurate. What it reads is used only to prepare work for that person. It is never used to train AI models, and your admin can exclude any folder, channel, label, or team.",
     "items": [
-      "Each company's context is kept separate.",
-      "Jin AI never records your screen.",
-      "Jin AI itself never trains on your data."
-    ]
+      "Your admin chooses which teams and tools Jin can use. Each employee connects their own account and can disconnect at any time.",
+      "Jin never sends messages or changes your systems without approval.",
+      "What Jin finds goes to the employee, not their manager. Jin does not score or rank people.",
+      "Each company's data is kept separate. Jin never records your screen."
+    ],
+    "closing": "Helpful by default. Always under your control."
   },
   "capabilities": [
     {
@@ -144,7 +140,7 @@
     {
       "id": "what-is-jin-ai",
       "question": "What is Jin AI?",
-      "answer": "Turn AI into a company asset. Keep confidential data in, see how each role uses AI, and hand the best harnesses to colleagues and successors."
+      "answer": "Jin spots repetitive tasks, prepares the work, and learns from your team's feedback."
     },
     {
       "id": "what-is-an-ai-harness",
@@ -154,7 +150,7 @@
     {
       "id": "is-jin-ai-available",
       "question": "Is Jin AI available now?",
-      "answer": "The workspace beta is live. Company features are being built, starting with Claude Code."
+      "answer": "Jin AI is in private beta. We are working through the waitlist."
     },
     {
       "id": "which-ai-tools-does-it-work-with",
@@ -164,7 +160,7 @@
     {
       "id": "where-does-the-data-live",
       "question": "Where does the data live?",
-      "answer": "Jin AI keeps each company's context separate."
+      "answer": "Jin AI keeps each company's data separate. What Jin reads is used only to prepare work for that person and is never used to train AI models."
     },
     {
       "id": "how-is-this-different-from-banning-ai-tools",

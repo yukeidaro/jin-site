@@ -2,6 +2,22 @@
 
 Public product site for **Jin AI** at <https://jinai.md/>.
 
+## Current home positioning (2026-10-26)
+
+The home pages follow the proactive pitch: **What if the work was already
+done?** / **もし、仕事がもう終わっていたら？** Jin spots repetitive tasks,
+prepares the work, and learns from the team's feedback. The home order is hero,
+a labelled example meeting brief, Problem, Solution (Today versus With Jin),
+Data, How it works (four steps), Why Jin, Team learning and the waitlist.
+The exact bilingual copy is pinned in `scripts/validate-site.mjs` and the
+facts live in `agent/content.json`.
+
+Jin reads connected email, calendar, chat and files, including bodies and
+attachments (Yu, 2026-10-26). The four trust promises in the Data section are
+provisional until Yu confirms them. How it works, Security and Company still
+carry the earlier harness positioning; the home-page notes below about the
+hero demo, badges, Problem figures and Keep Solution are historical.
+
 ## Production routes
 
 | Route | Purpose |
@@ -91,7 +107,7 @@ It updates:
 Do not edit content inside `GENERATED:*` markers directly. CI runs the generator
 in check mode and fails when a derivative has drifted.
 
-## English hero product demo
+## English hero product demo (retired from the home page on 2026-10-26)
 
 Every product screen uses a `figure.demo-stage` outline and lighter
 inner surface around a floating `.demo-window`. Desktop padding is 48px;
@@ -282,7 +298,7 @@ the supplied Japanese notes. No page displays approval tags. The complete
 unapproved-copy register is `.copilot-runs/notes/e6c-unapproved-copy.md`;
 removing a tag does not approve its copy.
 
-## Interactive Problem figures
+## Interactive Problem figures (retired from the home page on 2026-10-26)
 
 Both home pages use the approved R10 Problem heading
 "Is your company in control of its AI?" / "御社のAIは、会社の管理下にありますか？"
@@ -416,9 +432,9 @@ recorded in `.copilot-runs/notes/j1.md`.
 
 - Product name: **Jin AI**. It is a B2B product for AI-forward companies.
   Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
-- Headline: **Turn AI into a company asset**
-- Japanese home headline: **AIを、会社の資産に。**
-  Its page and social titles omit the final Japanese full stop.
+- Headline: **What if the work was already done?**
+- Japanese home headline: **もし、仕事がもう終わっていたら？**
+  Its page and social titles omit the final Japanese question mark.
 - English headings and heading-like titles have no final period, including each
   line separated by a `br`. Keep sentence punctuation in running descriptions,
   question and exclamation marks, and Japanese heading punctuation.
@@ -427,22 +443,26 @@ recorded in `.copilot-runs/notes/j1.md`.
 - Use **agent harness**, **AI harness** or **harnesses** for this concept.
   An AI harness is the instructions, skills, memory and connected tools around
   an AI agent that make it work for a role.
-- The home page contains only the hero, problem, solution, how it works, data
-  and demo request. Do not show pricing or founders on the home page.
+- The home page contains only the hero, example brief, problem, solution, data,
+  how it works, why Jin, team learning and the waitlist. Do not show pricing or founders on the home page.
   Founders and direct answers belong in the Agent reference.
-- Problem: **Is your company in control of its AI?**
-  Shadow AI is a problem label, not a claim that Jin AI blocks it.
-- Solution: **How Jin AI keeps your AI**, followed by **Keep it safe**, **Keep it in
-  the company**, **Keep it shared**. Keep both employee and company value.
+- Problem: **Your team has AI tools. So why are they still doing everything themselves?**
+- Solution: **What if AI took the first step?**, comparing **Today** with **With Jin**.
+- Earlier (historical, still used by How it works and Security): Problem **Is your
+  company in control of its AI?** and Solution **How Jin AI keeps your AI** with
+  **Keep it safe**, **Keep it in the company**, **Keep it shared**.
   R6's English/Japanese copy, with R7 hero, R8 review fixes, R10 English Problem
   and R11 Solution, Japanese Problem and Japanese hero copy, is approved word for word;
   it supersedes R1's pending headline and copy choices. No draft tag appears.
 - Human pages (`/`, `/how-it-works/` and their Japanese twins) do not show status labels (Yu, 2026-10-19).
   `/agent/` and `llms.txt` keep the Live/Building/Next facts from `agent/content.json`.
   Never claim a Building or Next item is available today in any copy.
-- Data: **Your company's context stays yours** Each company's context is kept
-  separate. Jin AI never records your screen. Jin AI itself never trains on
-  your data. Do not claim that Jin AI does not read conversation histories.
+- Home data: **Jin does the prep work. Your team stays in control** Jin reads
+  connected email, calendar, chat and files so its work is accurate; it never
+  trains AI models on them. Never claim Jin does not read message bodies.
+- How it works and Security data (until rewritten): **Your company's context stays yours**
+  Each company's context is kept separate. Jin AI never records your screen.
+  Jin AI itself never trains on your data.
 - R13b CTA (Yu, 2026-10-21): **Join the waitlist** / **ウェイトリストに登録**.
   After signup, **Request a demo** / **デモを申し込む** opens the optional demo.
   R13e applies all copy proposals approved by Yu on 2026-10-21 from
