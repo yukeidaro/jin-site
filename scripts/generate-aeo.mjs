@@ -48,10 +48,13 @@ function validate(source) {
   assert(Array.isArray(source.data_principles.items) && source.data_principles.items.length > 0 &&
     source.data_principles.items.every((item) => typeof item === "string" && item.trim()),
   "Data principles need non-empty facts.");
-  assert(source.product.headline === "Turn AI into a company asset",
-    "The product headline must match the approved English H1 without a final period.");
-  assert(source.solution.headline === "How Jin AI keeps your AI" && source.solution.closing?.trim() &&
-    source.how_it_works.introduction?.trim(), "Solution and How it works need their approved Keep copy.");
+  assert(source.product.headline === "What if the work was already done?",
+    "The product headline must match the approved English H1.");
+  assert(source.solution.headline === "What if AI took the first step?" && source.solution.closing?.trim() &&
+    source.problem.closing?.trim() && source.how_it_works.introduction?.trim(),
+  "Problem, Solution and How it works need their approved copy.");
+  assert(source.data_principles.introduction?.trim() && source.data_principles.closing?.trim(),
+    "Data principles need their introduction and closing line.");
 
   const access = source.early_access;
   assert(access?.label && access?.note && access?.hero_label && access?.hero_note,
@@ -439,6 +442,7 @@ function renderAgent(source) {
   <p class="answer"><strong>${escapeHtml(source.problem.headline)}</strong></p>
   <ul>${problemPoints}
   </ul>
+  <p>${escapeHtml(source.problem.closing)}</p>
 
 ${source.evidence.length ? `  <h2>Evidence and limits</h2>\n  ${evidence}\n` : ""}
 
@@ -448,8 +452,10 @@ ${solutionSteps}
   <p>${escapeHtml(source.solution.closing)}</p>
 
   <h2>${escapeHtml(source.data_principles.headline)}</h2>
+  <p>${escapeHtml(source.data_principles.introduction)}</p>
   <ul>${dataPrinciples}
   </ul>
+  <p>${escapeHtml(source.data_principles.closing)}</p>
 
   <h2>How it works and status</h2>
   <p>${escapeHtml(source.how_it_works.introduction)}</p>
@@ -559,6 +565,8 @@ ${source.problem.headline}
 
 ${problemPoints}
 
+${source.problem.closing}
+
 ## Solution (${statusLabels[source.solution.status]})
 
 ${source.solution.headline}
@@ -577,7 +585,11 @@ ${capabilities}
 
 ## ${source.data_principles.headline}
 
+${source.data_principles.introduction}
+
 ${dataPrinciples}
+
+${source.data_principles.closing}
 
 ${source.evidence.length ? `## Evidence and sources\n\n${evidenceLinks}\n\n` : ""}## Founders
 

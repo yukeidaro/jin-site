@@ -2,30 +2,25 @@
 
 This repo is the public site for Jin AI. Read `README.md` and the supersession notice in `REPOSITION-PLAN.md` before changing copy or layout. The old plan below that notice is historical, not current copy guidance.
 
-## Positioning (October 2026)
+## Positioning (proactive pitch, 2026-10-26)
 
-Jin AI is a B2B product for AI-forward companies. Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
+Jin AI is a B2B product. It spots repetitive work, prepares it before anyone asks, and learns from the team's approvals, edits and rejections. Write for company buyers (heads of IT, CIOs, CISOs and team leads) in plain, natural English. Do not add numbers, customer names or prices.
 
-Headline: **Turn AI into a company asset**
+Headline: **What if the work was already done?** / **もし、仕事がもう終わっていたら？** Page and social titles omit the Japanese question mark.
 
-Japanese home headline: **AIを、会社の資産に。**
-Its page and social titles omit the final Japanese full stop.
+Hero: small **Jin AI** eyebrow; line **Jin spots repetitive tasks, prepares the work, and learns from your team's feedback.** / **Jinは、繰り返しの仕事を見つけて準備し、チームのフィードバックから学びます。**; tools note below the actions. No badges. Preserve the reveal and CTAs. A labelled example meeting brief (text, not a screenshot or live demo) sits directly below the hero.
 
-Hero (R7 English, R11 Japanese, Yu, 2026-10-21): small **Jin AI** eyebrow; line **Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.** / **AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。**; four muted list badges **Secure**, **Company-owned**, **Shared**, **Up to date** / **安全**, **会社のもの**, **共有**, **いつも最新**, with decorative thin-line icons. Preserve the reveal, CTAs and demo.
+Home sections, in order: Problem (**Your team has AI tools. So why are they still doing everything themselves?**), Solution (**What if AI took the first step?**, Today versus With Jin), Data (**Jin does the prep work. Your team stays in control**), How it works (four steps), Why Jin, Team learning, then the waitlist. The exact bilingual copy is pinned in `scripts/validate-site.mjs` and the facts live in `agent/content.json`.
 
-Use **agent harness**, **AI harness** or **harnesses** for this concept. An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role. Preserve R11's exact "setup" wording in the second English Solution body.
+Data (Yu, 2026-10-26): Jin reads the email, calendar, chat and files a team connects, including bodies and attachments, so it may name Gmail, Outlook, Slack and Teams. Never claim Jin does not read message bodies. The four trust promises (admin chooses, employee can disconnect; nothing sent without approval; findings go to the employee, no scoring; data kept separate, no screen recording) are provisional until Yu confirms them.
 
-Problem (R10 English, R11 Japanese, Yu, 2026-10-21): **Is your company in control of its AI?** / **御社のAIは、会社の管理下にありますか？** Three problems, in order: **Shadow AI**, **Agents that depend on one person**, **Skills stuck in one team**. Use the exact English/Japanese titles and bodies recorded in `README.md`. Shadow AI is a problem label, not something Jin AI claims to block. Dependency figure labels stay English in both languages: **Context**, **Instructions**, **Tools**, **Workflows**, top to bottom.
-
-Solution (R11, Yu, 2026-10-21): **How Jin AI keeps your AI** / **Jin AIが実現する、安心して使い続けられるAI環境**. Three English answers, in order: **Keep it safe**, **Keep it in the company**, **Keep it shared**. Use the exact bilingual R11 titles, bodies and closing recorded in `README.md`. Three columns match Problem from 1024px; one column on phones. No numbers or figures yet. Only the Japanese two-part closing (bold line plus paragraph) may differ structurally. R11 supersedes R6 Solution, Japanese Problem and Japanese hero line; R7, R8 and R10 English Problem remain approved. Do not replace approved copy with historical pitch copy.
-
-Data: **Your company's context stays yours** Each company's context is kept separate. Jin AI never records your screen. Jin AI itself never trains on your data. Do not claim that Jin AI does not read conversation histories.
+How it works, Security and Company still carry the earlier harness positioning until they are rewritten. Keep their pinned copy (see `README.md`) unchanged unless the task is that rewrite.
 
 The old consumer and visual-workspace positioning is retired. Do not reintroduce it.
 
 ## Page scope
 
-The home page (`index.html`) contains only the hero, problem, solution, how it works, data and demo request. Do not show pricing or founders on the home page. Founders and direct answers belong in the Agent reference.
+The home page (`index.html`) contains only the hero, the example brief, problem, solution, data, how it works, why Jin, team learning and the waitlist. Do not show pricing or founders on the home page. Founders and direct answers belong in the Agent reference.
 
 R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイトリストに登録**, then optional **Request a demo** / **デモを申し込む**. Waitlist note: **We'll email you when access is ready. You can request a demo after joining.** / **ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。** Direct `#request-demo` and the optional demo show **We'll email you to find a time.** / **日程の調整のため、こちらからメールでご連絡します。** Keep the existing fields, endpoint and each step's consent version. No post-request survey.
 
