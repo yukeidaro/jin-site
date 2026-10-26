@@ -1,0 +1,317 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Jin demo scene</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=block">
+<style>
+:root {
+  --font: "Inter", "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  --glass-top: rgba(0, 0, 0, .97);
+  --glass-mid: rgba(3, 6, 16, .93);
+  --glass-low: rgba(12, 30, 86, .88);
+  --glass-line: rgba(255, 255, 255, .08);
+  --glass-ink: #F2F4F8;
+  --glass-muted: rgba(226, 231, 242, .62);
+  --ok: #7FD6A8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1600px; height: 900px; overflow: hidden; font-family: var(--font); -webkit-font-smoothing: antialiased; }
+button { font: inherit; border: 0; background: none; color: inherit; }
+
+/* ---------- desktop ---------- */
+.desk {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(60% 70% at 30% 85%, #5b8fe6 0%, transparent 60%),
+    radial-gradient(55% 65% at 75% 70%, #2b5fcf 0%, transparent 60%),
+    radial-gradient(80% 80% at 50% 30%, #a9c6f2 0%, #6f9be0 45%, #2a4fa8 100%);
+}
+
+/* ---------- taskbar ---------- */
+.taskbar {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 48px;
+  background: rgba(238, 241, 246, .86); backdrop-filter: blur(30px);
+  border-top: 1px solid rgba(255,255,255,.6);
+  display: flex; align-items: center; justify-content: center; gap: 6px; z-index: 3;
+}
+.tb { width: 40px; height: 40px; border-radius: 6px; display: grid; place-items: center; position: relative; }
+.tb.on { background: rgba(255,255,255,.7); }
+.tb.on::after { content: ""; position: absolute; bottom: 2px; width: 16px; height: 3px; border-radius: 2px; background: #2f6fd6; }
+.start { display: grid; grid-template-columns: 9px 9px; gap: 2px; }
+.start i { width: 9px; height: 9px; background: #2f7ae0; border-radius: 1px; }
+.search {
+  width: 210px; height: 32px; border-radius: 16px; background: #fff; border: 1px solid #d6dbe3;
+  display: flex; align-items: center; gap: 8px; padding: 0 12px; font-size: 13px; color: #5d6470; margin: 0 6px;
+}
+.tray { position: absolute; right: 14px; top: 0; bottom: 0; display: flex; align-items: center; gap: 16px; font-size: 12px; color: #1f2430; }
+.clock { text-align: right; line-height: 1.3; }
+
+/* ---------- browser window ---------- */
+.win {
+  position: absolute; left: 70px; right: 70px; top: 62px; bottom: 74px;
+  border-radius: 9px; overflow: hidden; background: #fff;
+  box-shadow: 0 24px 70px rgba(10, 25, 60, .45), 0 0 0 1px rgba(0,0,0,.12);
+  display: grid; grid-template-rows: 40px 44px 1fr; z-index: 2;
+}
+.tabs { background: #dfe3eb; display: flex; align-items: flex-end; padding: 0 0 0 10px; position: relative; }
+.tab {
+  height: 34px; width: 260px; background: #fff; border-radius: 9px 9px 0 0;
+  display: flex; align-items: center; gap: 8px; padding: 0 12px; font-size: 12.5px; color: #1f2430;
+}
+.tab #tabTitle { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tab .x { margin-left: auto; color: #6b7280; font-size: 13px; }
+.plus { width: 34px; height: 34px; display: grid; place-items: center; color: #4b5563; font-size: 18px; }
+.ctrl { position: absolute; right: 0; top: 0; height: 40px; display: flex; }
+.ctrl span { width: 46px; display: grid; place-items: center; color: #333; font-size: 13px; }
+.bar { display: flex; align-items: center; gap: 6px; padding: 0 12px; border-bottom: 1px solid #e3e6eb; }
+.nav { width: 30px; height: 30px; display: grid; place-items: center; color: #4b5563; }
+.omni {
+  flex: 1; height: 32px; border-radius: 16px; background: #eef1f5; display: flex; align-items: center;
+  gap: 8px; padding: 0 14px; font-size: 13.5px; color: #1f2430;
+}
+.omni .host { color: #1f2430; } .omni .path { color: #6b7280; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; background: #7a5af8; color: #fff; display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+
+/* ---------- mail web app ---------- */
+.app { display: grid; grid-template-columns: 236px 1fr; grid-template-rows: 60px 1fr; background: #f6f8fc; min-height: 0; }
+.top { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; padding: 0 16px; }
+.burger { width: 40px; display: grid; place-items: center; color: #444746; }
+.brand { display: flex; align-items: center; gap: 8px; font-size: 21px; color: #444746; width: 170px; }
+.env { width: 30px; height: 22px; border-radius: 3px; position: relative; background: #fff; border: 2px solid #ea4335; overflow: hidden; }
+.env::before { content: ""; position: absolute; left: -2px; right: -2px; top: -12px; height: 22px; border-bottom: 2px solid #ea4335; transform: scaleY(.9) rotate(0deg); clip-path: polygon(0 0, 100% 0, 50% 100%); background: #fff; }
+.sbox { flex: 0 1 720px; height: 46px; border-radius: 24px; background: #e9eef6; display: flex; align-items: center; gap: 12px; padding: 0 18px; color: #444746; font-size: 15px; }
+.side { padding: 6px 12px 0 8px; display: grid; align-content: start; gap: 2px; }
+.compose { width: 140px; height: 54px; border-radius: 16px; background: #c2e7ff; display: flex; align-items: center; gap: 12px; padding: 0 18px; font-size: 14px; font-weight: 500; color: #001d35; margin-bottom: 14px; }
+.nv { height: 32px; border-radius: 0 16px 16px 0; display: flex; align-items: center; gap: 16px; padding: 0 12px 0 24px; font-size: 14px; color: #202124; margin-left: -8px; }
+.nv.on { background: #d3e3fd; font-weight: 700; color: #001d35; }
+.nv .n { margin-left: auto; font-size: 12px; }
+.main { background: #fff; border-radius: 16px; margin: 0 16px 16px 0; overflow: hidden; display: grid; grid-template-rows: 48px 1fr; min-height: 0; }
+.mtool { display: flex; align-items: center; gap: 20px; padding: 0 18px; color: #444746; font-size: 13px; border-bottom: 1px solid #f1f3f4; }
+.rows { display: grid; align-content: start; }
+.row { height: 42px; display: grid; grid-template-columns: 26px 26px 190px 1fr 70px; align-items: center; padding: 0 16px; font-size: 14px; color: #444; border-bottom: 1px solid #f1f3f4; background: #f2f6fc; }
+.row.unread { background: #fff; color: #1f1f1f; font-weight: 700; }
+.row.hover { box-shadow: inset 1px 0 #dadce0, inset -1px 0 #dadce0, 0 1px 2px rgba(60,64,67,.3); position: relative; z-index: 1; }
+.box { width: 14px; height: 14px; border: 2px solid #9aa0a6; border-radius: 2px; }
+.star { color: #9aa0a6; font-size: 15px; }
+.subj { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.subj .snip { font-weight: 400; color: #5f6368; }
+.time { text-align: right; font-size: 12.5px; }
+
+.read { padding: 20px 28px 20px 72px; display: none; overflow: hidden; }
+.read.on { display: block; }
+.read h2 { font-size: 22px; font-weight: 400; color: #1f1f1f; margin: 4px 0 18px -0px; }
+.who { display: flex; align-items: center; gap: 12px; margin-left: -52px; margin-bottom: 14px; }
+.who .av { width: 40px; height: 40px; border-radius: 50%; background: #0b8043; color: #fff; display: grid; place-items: center; font-weight: 600; }
+.who b { font-size: 14px; color: #1f1f1f; } .who span { font-size: 12.5px; color: #5f6368; }
+.who .when { margin-left: auto; font-size: 12.5px; color: #5f6368; }
+.body { font-size: 14px; line-height: 1.6; color: #222; max-width: 680px; }
+.body p { margin: 0 0 10px; }
+.sent {
+  margin-top: 18px; border-top: 1px solid #eceff1; padding-top: 14px; max-width: 680px;
+  font-size: 14px; line-height: 1.6; white-space: pre-wrap; color: #222;
+  opacity: 0; transform: translateY(6px); transition: opacity .4s, transform .4s;
+}
+.sent.on { opacity: 1; transform: none; }
+.sent .lbl { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #5f6368; margin-bottom: 6px; white-space: normal; }
+.sent .lbl b { color: #1f1f1f; }
+
+/* ---------- Jin band at the top edge of the screen ---------- */
+.jin {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 200px; height: 34px; border-radius: 0 0 18px 18px;
+  background: linear-gradient(180deg, var(--glass-top) 0%, var(--glass-mid) 55%, var(--glass-low) 100%);
+  backdrop-filter: blur(28px) saturate(140%);
+  border: 1px solid var(--glass-line); border-top: 0; color: var(--glass-ink);
+  overflow: hidden; z-index: 5; box-shadow: 0 18px 50px rgba(0,0,0,.35);
+  transition: width .55s cubic-bezier(.2,.9,.25,1), height .55s cubic-bezier(.2,.9,.25,1), border-radius .55s;
+}
+.jin[data-state="ready"] { width: 560px; height: 168px; border-radius: 0 0 30px 30px; }
+.jin[data-state="open"] { width: 560px; border-radius: 0 0 30px 30px; }
+.jin[data-state="done"] { width: 240px; }
+.band { height: 34px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12.5px; color: var(--glass-muted); white-space: nowrap; }
+.band .pulse { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.35); }
+.jin[data-state="done"] .band { color: var(--glass-ink); }
+.jin[data-state="done"] .pulse { background: var(--ok); }
+.jin[data-state="ready"] .band, .jin[data-state="open"] .band { display: none; }
+.glyph { position: absolute; top: 14px; left: 18px; height: 18px; opacity: 0; transition: opacity .3s .2s; }
+.glyph svg { height: 100%; width: auto; display: block; }
+.jin[data-state="ready"] .glyph, .jin[data-state="open"] .glyph { opacity: 1; }
+.panel { position: absolute; inset: 0; padding: 18px 24px 22px; display: grid; align-content: start; justify-items: center; gap: 4px; opacity: 0; transition: opacity .25s; }
+.jin[data-state="ready"] .panel, .jin[data-state="open"] .panel { opacity: 1; transition-delay: .18s; }
+.headline { margin-top: 30px; font-size: 16px; font-weight: 500; text-align: center; }
+.sub { font-size: 12.5px; color: var(--glass-muted); text-align: center; }
+.pill { margin-top: 14px; padding: 8px 22px; border-radius: 999px; background: rgba(255,255,255,.10); font-size: 13px; font-weight: 500; transition: background .2s; }
+.pill.press { background: rgba(255,255,255,.22); }
+.jin[data-state="open"] .pill.show { display: none; }
+.detail { width: 100%; display: grid; gap: 14px; margin-top: 16px; text-align: left; }
+.jin:not([data-state="open"]) .detail { display: none; }
+.k { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--glass-muted); margin-bottom: 6px; }
+.times { display: flex; flex-wrap: wrap; gap: 6px; }
+.tchip { padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.07); font-size: 12.5px; }
+.tchip.on { background: rgba(255,255,255,.18); }
+.draft { background: rgba(255,255,255,.05); border: 1px solid var(--glass-line); border-radius: 14px; padding: 12px 14px; font-size: 13px; line-height: 1.55; white-space: pre-wrap; color: rgba(242,244,248,.9); }
+.acts { display: flex; justify-content: center; gap: 8px; margin-top: 2px; }
+.acts .pill { margin-top: 0; }
+.acts .primary { background: #F2F4F8; color: #0B0E16; }
+.acts .primary.press { background: #c9ced8; }
+
+/* ---------- pointer ---------- */
+.cursor { position: absolute; left: 1100px; top: 700px; width: 22px; z-index: 9; transition: left .9s cubic-bezier(.4,0,.2,1), top .9s cubic-bezier(.4,0,.2,1), transform .12s; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+.cursor.down { transform: scale(.86); }
+</style>
+</head>
+<body>
+<div class="desk"></div>
+
+<div class="win">
+  <div class="tabs">
+    <div class="tab"><svg width="16" height="12" viewBox="0 0 16 12"><rect x=".75" y=".75" width="14.5" height="10.5" rx="1.5" fill="#fff" stroke="#d93025" stroke-width="1.5"/><path d="M1 1.5l7 5 7-5" stroke="#d93025" stroke-width="1.5" fill="none"/></svg><span id="tabTitle"></span><span class="x">✕</span></div>
+    <div class="plus">+</div>
+    <div class="ctrl"><span>—</span><span>▢</span><span>✕</span></div>
+  </div>
+  <div class="bar">
+    <span class="nav">←</span><span class="nav">→</span><span class="nav">↻</span>
+    <div class="omni"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span><span class="host">mail.google.com</span><span class="path">/mail/u/0/#inbox</span></span></div>
+    <span class="avatar">Y</span>
+  </div>
+  <div class="app">
+    <div class="top">
+      <span class="burger">☰</span>
+      <span class="brand">Gmail</span>
+      <div class="sbox">⌕ <span id="searchPh"></span></div>
+    </div>
+    <div class="side">
+      <div class="compose">✎ <span id="compose"></span></div>
+      <div class="nv on"><span id="nInbox"></span><span class="n" id="nCount">1</span></div>
+      <div class="nv" id="nStar"></div>
+      <div class="nv" id="nSnooze"></div>
+      <div class="nv" id="nSent"></div>
+      <div class="nv" id="nDrafts"></div>
+    </div>
+    <div class="main">
+      <div class="mtool"><span class="box"></span><span>↻</span><span>⋮</span><span style="margin-left:auto" id="range"></span></div>
+      <div>
+        <div class="rows" id="rows"></div>
+        <div class="read" id="read">
+          <h2 id="rSubj"></h2>
+          <div class="who"><span class="av">S</span><div><b>Sarah Chen</b> <span>&lt;sarah@contoso.com&gt;</span><br><span id="toMe"></span></div><span class="when" id="rWhen"></span></div>
+          <div class="body" id="rBody"></div>
+          <div class="sent" id="sentBox"><div class="lbl"><b>Yu Asano</b><span id="sentWhen"></span></div><span id="sentText"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="taskbar">
+  <span class="tb"><span class="start"><i></i><i></i><i></i><i></i></span></span>
+  <span class="search">⌕ <span id="tbSearch"></span></span>
+  <span class="tb"><svg width="22" height="18" viewBox="0 0 22 18"><path d="M1 3a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2Z" fill="#f4c34e"/></svg></span>
+  <span class="tb on"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="10" fill="#e8eef9" stroke="#3a78e0" stroke-width="2"/><circle cx="11" cy="11" r="4" fill="#3a78e0"/></svg></span>
+  <span class="tb"><svg width="22" height="16" viewBox="0 0 22 16"><rect x="1" y="1" width="20" height="14" rx="2" fill="#2f7ae0"/><path d="M1 3l10 6 10-6" stroke="#fff" stroke-width="1.6" fill="none"/></svg></span>
+  <div class="tray"><span>ENG</span><span>📶</span><span class="clock" id="clock"></span></div>
+</div>
+
+<div class="jin" id="jin" data-state="idle">
+  <div class="band"><i class="pulse"></i><span id="bandText">Jin</span></div>
+  <span class="glyph"><svg viewBox="0 0 390 326"><g fill="#F2F4F8"><path d="M234 0h71L71 326H0Z"/><path d="M248 129 211 180 317 326 389 326Z"/></g></svg></span>
+  <div class="panel">
+    <div class="headline" id="head"></div>
+    <div class="sub" id="sub"></div>
+    <button class="pill show" id="show"></button>
+    <div class="detail">
+      <div><div class="k" id="kOpen"></div><div class="times" id="times"></div></div>
+      <div><div class="k" id="kDraft"></div><div class="draft" id="draft"></div></div>
+      <div class="acts"><button class="pill primary" id="send"></button><button class="pill" id="later"></button></div>
+    </div>
+  </div>
+</div>
+
+<svg class="cursor" id="cursor" viewBox="0 0 20 28"><path d="M1 1v22l6-5.5 4 9 3.4-1.5-4-8.8H18Z" fill="#fff" stroke="#000" stroke-width="1.3" stroke-linejoin="round"/></svg>
+
+<script>
+const T = {
+  en: {
+    tab: "Inbox (1) - yu@contoso.com - Gmail", search: "Search mail", compose: "Compose",
+    inbox: "Inbox", starred: "Starred", snoozed: "Snoozed", sent: "Sent", drafts: "Drafts",
+    range: "1–4 of 4", tbSearch: "Search", clock: "9:14 AM<br>10/27/2026", toMe: "to me",
+    rows: [
+      ["Sarah Chen", "Q4 pilot kickoff timing", "Our team is ready a bit earlier than planned...", "9:12 AM", true],
+      ["Northwind Billing", "Your October invoice", "Your invoice for October is now available.", "8:40 AM"],
+      ["Marcus Lee", "Notes from Thursday", "Sharing my notes from the planning call.", "Oct 24"],
+      ["Priya Raman", "Re: security questionnaire", "Thanks, we will review and get back to you.", "Oct 23"],
+    ],
+    when: "9:12 AM (2 minutes ago)",
+    body: "<p>Hi Yu,</p><p>Our team is ready a bit earlier than planned. Could we move the pilot kickoff to next week? 30 minutes is enough. Send me a few times that work for you.</p><p>Thanks,<br>Sarah</p>",
+    preparing: "Preparing…", head: "Your reply to Sarah is ready", sub: "I checked your calendar and picked 3 open times next week.",
+    show: "Show", kOpen: "Open on your calendar", kDraft: "Draft", send: "Send", later: "Not now",
+    times: ["Tue 10/28 · 10:00 AM PT", "Wed 10/29 · 2:30 PM PT", "Thu 10/30 · 9:00 AM PT"],
+    draft: "Hi Sarah,\n\nNext week works well. Would Tuesday, Oct 28 at 10:00 AM PT work for a 30-minute kickoff? If not, Wed 2:30 PM or Thu 9:00 AM PT are open too.\n\nBest,\nYu Asano",
+    done: "Sent to Sarah", sentWhen: "9:14 AM (0 minutes ago)",
+  },
+  ja: {
+    tab: "受信トレイ (1) - yu@contoso.com - Gmail", search: "メールを検索", compose: "作成",
+    inbox: "受信トレイ", starred: "スター付き", snoozed: "スヌーズ中", sent: "送信済み", drafts: "下書き",
+    range: "1～4 / 4 行", tbSearch: "検索", clock: "9:14<br>2026/10/27", toMe: "To 自分",
+    rows: [
+      ["Sarah Chen", "Q4 パイロットのキックオフ日程", "こちらのチームの準備が予定より少し早く整いました…", "9:12", true],
+      ["Northwind Billing", "10月の請求書", "10月分の請求書をご確認いただけます。", "8:40"],
+      ["Marcus Lee", "木曜日のメモ", "企画会議のメモを共有します。", "10月24日"],
+      ["Priya Raman", "Re: セキュリティ質問票", "ありがとうございます。確認してご連絡します。", "10月23日"],
+    ],
+    when: "9:12（2 分前）",
+    body: "<p>Yu さん</p><p>こちらのチームの準備が、予定より少し早く整いました。パイロットのキックオフを来週に前倒しできますか？ 30 分あれば十分です。ご都合のよい時間をいくつか送ってください。</p><p>よろしくお願いします。<br>Sarah</p>",
+    preparing: "準備しています…", head: "Sarah さんへの返信を用意しました", sub: "カレンダーを確認して、来週の空き時間を 3 つ選びました。",
+    show: "見る", kOpen: "カレンダーの空き時間", kDraft: "下書き", send: "送信", later: "今はしない",
+    times: ["10/28（火）10:00 PT", "10/29（水）14:30 PT", "10/30（木）9:00 PT"],
+    draft: "Sarah さん\n\n来週で問題ありません。10 月 28 日（火）10:00（PT）から 30 分のキックオフはいかがでしょうか。難しければ、29 日（水）14:30 と 30 日（木）9:00（PT）も空いています。\n\nよろしくお願いします。\nYu Asano",
+    done: "Sarah さんに送信しました", sentWhen: "9:14（0 分前）",
+  },
+};
+const L = T[new URLSearchParams(location.search).get("lang") || "en"];
+const $ = id => document.getElementById(id);
+const set = (id, v) => { $(id).innerHTML = v; };
+set("tabTitle", L.tab); set("searchPh", L.search); set("compose", L.compose); set("nInbox", L.inbox);
+set("nStar", L.starred); set("nSnooze", L.snoozed); set("nSent", L.sent); set("nDrafts", L.drafts);
+set("range", L.range); set("tbSearch", L.tbSearch); set("clock", L.clock); set("toMe", L.toMe);
+set("rSubj", L.rows[0][1]); set("rWhen", L.when); set("rBody", L.body);
+set("head", L.head); set("sub", L.sub); set("show", L.show); set("kOpen", L.kOpen); set("kDraft", L.kDraft);
+set("send", L.send); set("later", L.later); set("sentWhen", L.sentWhen);
+$("draft").textContent = L.draft; $("sentText").textContent = L.draft;
+L.times.forEach((t, i) => { const s = document.createElement("span"); s.className = "tchip" + (i === 0 ? " on" : ""); s.textContent = t; $("times").appendChild(s); });
+L.rows.forEach(r => {
+  const d = document.createElement("div"); d.className = "row" + (r[4] ? " unread" : "");
+  d.innerHTML = `<span class="box"></span><span class="star">☆</span><span>${r[0]}</span><span class="subj">${r[1]} <span class="snip">- ${r[2]}</span></span><span class="time">${r[3]}</span>`;
+  $("rows").appendChild(d);
+});
+
+const jin = $("jin"), cur = $("cursor");
+const state = (s, text) => { jin.dataset.state = s; $("bandText").textContent = text || "Jin"; jin.style.height = s === "open" ? jin.querySelector(".panel").scrollHeight + "px" : ""; };
+const center = el => { const r = el.getBoundingClientRect(); return [r.left + r.width * .45, r.top + r.height * .55]; };
+const move = el => { const [x, y] = center(el); cur.style.left = x + "px"; cur.style.top = y + "px"; };
+const click = (el, fn) => { cur.classList.add("down"); el && el.classList.add("press"); setTimeout(() => { cur.classList.remove("down"); el && el.classList.remove("press"); fn(); }, 160); };
+const at = (ms, fn) => setTimeout(fn, ms);
+
+window.play = () => {
+  const sarah = $("rows").firstElementChild;
+  at(600, () => move(sarah));
+  at(1500, () => sarah.classList.add("hover"));
+  at(1900, () => click(null, () => {
+    $("rows").style.display = "none"; $("read").classList.add("on");
+    $("nCount").textContent = ""; set("tabTitle", L.tab.replace(" (1)", ""));
+    state("idle", L.preparing);
+  }));
+  at(2800, () => state("ready"));
+  at(4300, () => move($("show")));
+  at(5400, () => click($("show"), () => state("open")));
+  at(5900, () => { cur.style.left = "1180px"; cur.style.top = "520px"; });
+  at(8600, () => move($("send")));
+  at(9700, () => click($("send"), () => { state("done", L.done); $("sentBox").classList.add("on"); }));
+  at(10300, () => { cur.style.left = "1250px"; cur.style.top = "640px"; });
+  at(12800, () => state("idle"));
+  at(13800, () => { window.finished = true; });
+};
+</script>
+</body>
+</html>
