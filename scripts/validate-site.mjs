@@ -594,10 +594,10 @@ const homeSteps = [
   ["Share what works", "Automations that work are offered to people doing similar work. Your company can also build organization skills that everyone can use."]
 ];
 const japaneseHomeSteps = [
-  ["ツールをつなぐ", "Jinは、チームがいつも使っているアプリにつながります。管理者は、社員が接続するツールとMCPサーバーを一か所で管理できます。"],
-  ["繰り返しの仕事を見つける", "Jinは、社員一人ひとりが何度も繰り返す仕事を見つけます。"],
-  ["仕事を準備する", "Jinは、自動化を提案するだけではありません。サンドボックスで実行し、完成した成果物を見せます。社員が承認するまで、何も変わりません。"],
-  ["うまくいくやり方を共有する", "うまく動く自動化は、似た仕事をする人に提案されます。会社は、全員が使える組織のスキルも作れます。"]
+  ["業務ツールとの連携", "会社が許可した範囲で業務ツールに接続し、必要な情報を参照します。社員が接続するツールとMCPサーバーは、管理者が一か所で管理します。"],
+  ["自動化候補の抽出", "繰り返し発生する業務の中から、自動化によって作業時間を削減できるものを見つけます。"],
+  ["自動化の実行・確認", "自動化を提案するだけでなく、サンドボックスで実行し、完成した結果を提示します。担当者が承認するまで、何も変更しません。"],
+  ["改善内容の共有", "効果のあった自動化は、同じような業務を担当する社員にも提案します。全社で使える組織のスキルも作成できます。"]
 ];
 const pairs = (id, items) => items.flatMap(([title, body]) => [[id, "h3", title], [id, "p", body]]);
 const homeCopy = [
@@ -612,14 +612,14 @@ const homeCopy = [
     ["data", "p", "It is never used to train AI models."]
   ]],
   ["Japanese", japanese, [
-    ["problem", "h2", "AIはある。使うのは、まだ社員の仕事。"],
-    ["solution", "h2", "AIに頼まなくていい。Jin AIが、誰かに頼まれる前に、必要なときに仕事を準備します。"],
-    ["solution", "p", "一人の改善は、レビューを経て、関係する人たちに適用されます。"],
-    ["how", "h2", "Jinは、チームの働き方を学びます。"],
+    ["problem", "h2", "社員の指示から始まるAI活用"],
+    ["solution", "h2", "Jin AIが作業の準備を進め、社員が依頼内容を考えて入力する手間を減らします。"],
+    ["solution", "p", "改善した設定や作業手順は、確認・承認を経て社内で共有します。"],
+    ["how", "h2", "サービスの仕組み"],
     ...pairs("how", japaneseHomeSteps),
-    ["data", "h2", "アクセスできる情報を、一か所で管理する。"],
-    ["data", "p", "Jinがアクセスするのは、会社が承認した情報だけです。社員は、Jinが使った情報を見て、準備した内容を確認し、次に何をするかを決められます。"],
-    ["data", "p", "AIモデルの学習には使いません。"]
+    ["data", "h2", "安全に利用するための仕組み"],
+    ["data", "p", "会社が利用を許可した情報のみを扱います。社員が、AIの参照した情報と作成内容を確認し、実行するかどうかを判断します。"],
+    ["data", "p", "お客様のデータをAIモデルの学習に使うことはありません。"]
   ]]
 ];
 for (const [language, source, entries] of homeCopy) {
@@ -630,7 +630,7 @@ for (const [language, source, entries] of homeCopy) {
     const section = homeSection(source, id);
     const plain = withoutJapanesePhrases(section).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
     const expected = entries.filter(entry => entry[0] === id).map(entry => entry[2]);
-    if (id === "how") expected.unshift(language === "English" ? "How it works" : "仕組み");
+    if (id === "how") expected.unshift(language === "English" ? "How it works" : "サービスの仕組み");
     check(plain === expected.join(" "),
       `${language} ${id} must contain only the complete approved text, in order, without extra paragraphs or labels.`);
   }
@@ -1649,7 +1649,7 @@ check(count(japaneseReveal, /<span style="--word:[0-2]">[^<]+<\/span>/g) === 3 &
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
   "Japanese hero must keep its three-phrase reveal, exact text, accessible name and motion opt-in.");
 for (const [page, source, phrases] of [
-  ["/ja/", japanese, ["AIはある。", "使うのは、", "まだ社員の仕事。", "AIに頼まなくていい。", "Jin AIが、", "誰かに頼まれる前に、", "必要なときに", "仕事を準備します。", "Jinは、", "チームの働き方を学びます。", "アクセスできる情報を、", "一か所で管理する。", "もう二度とやりたくない仕事を、", "ひとつ見つけましょう。"]],
+  ["/ja/", japanese, ["社員の指示から", "始まるAI活用", "Jin AIが", "作業の準備を進め、", "社員が依頼内容を", "考えて入力する", "手間を減らします。", "サービスの仕組み", "安全に利用するための", "仕組み", "もう二度とやりたくない仕事を、", "ひとつ見つけましょう。"]],
   ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "御社のAIを、", "会社の資産に。"]],
   ["/ja/security/", japaneseSecurity, ["コンテクストは、", "会社のもの。"]],
   ["/ja/privacy/", japanesePrivacy, ["プライバシー", "ポリシー", "取り扱いを", "委託している", "事業者"]]
