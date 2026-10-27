@@ -22,8 +22,10 @@ Recording sources and PNG posters are not deployed. No external requests or
 dependencies are added.
 
 Home-only `site-page.css` uses 260px illustration boxes, reduced to 180px at
-760px and below, with `object-fit: contain`. The three captionless Problem
-figures share equal tracks on desktop and stack on phones. The individual
+760px and below, with `object-fit: contain`. The three Problem figures each
+have one exact bilingual caption below the image, with shared typography.
+Image/caption pairs reveal together, share equal tracks on desktop and stack
+at 760px and below. The Japanese heading is **AIを導入しても残る手作業**. The individual
 How it works drawings are capped at 520px wide (360px on phones).
 The original four Yu PNGs are only format-converted to lossless WebP, not redrawn.
 All four exact HTML steps remain visible. On sufficiently tall desktops,
@@ -492,7 +494,10 @@ recorded in `.copilot-runs/notes/j1.md`.
 - The home page contains only the hero, inbox demo, problem, solution,
   how it works, trust and control, and the waitlist. Do not show pricing or founders on the home page.
   Founders and direct answers belong in the Agent reference.
-- Problem: **AI is there. Using it is still their job.** No body paragraphs or captions.
+- Problem: **AI is there. Using it is still their job.** / **AIを導入しても残る手作業**.
+  Only the three approved image/caption pairs, in tools, busy, how order;
+  their six exact English/Japanese captions are pinned in `scripts/validate-site.mjs`.
+  No extra body paragraphs or labels.
 - Solution: **Don't ask AI. Jin AI prepares it before anyone asks, right when you need it.**
   Body: **One person's improvement is reviewed, then applied to the relevant people.**
   Do not restore comparison columns, Why Jin, Team learning, trust lists or badges.

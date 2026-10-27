@@ -11,6 +11,9 @@
   gap: var(--s-8); margin-top: var(--s-8);
 }
 .home-page .problem-images img { display: block; width: 100%; height: var(--figure-height); object-fit: contain; }
+.home-page .problem-images figcaption {
+  margin-top: var(--s-6); color: var(--text-2); font-size: var(--t-body-l); line-height: 1.6;
+}
 .home-page .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .home-page .step-figure { margin-bottom: var(--s-8); }
 

@@ -12,7 +12,7 @@
     element, src: element.getAttribute("src")
   }));
   const revealItems = [...home.querySelectorAll(
-    ".section-head, #solution .h2, #solution p, .problem-images img, .steps > li, #data .h2, #data p, .section-figure, .demo-intro, .demo-form"
+    ".section-head, #solution .h2, #solution p, .problem-images figure, .steps > li, #data .h2, #data p, .section-figure, .demo-intro, .demo-form"
   )];
   const seen = new WeakSet();
   let revealObserver;

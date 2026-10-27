@@ -602,6 +602,9 @@ const pairs = (id, items) => items.flatMap(([title, body]) => [[id, "h3", title]
 const homeCopy = [
   ["English", home, [
     ["problem", "h2", "AI is there. Using it is still their job."],
+    ["problem", "figcaption", "Employees juggle multiple AI tools, each with its own context."],
+    ["problem", "figcaption", "Many tasks still feel faster to do by hand."],
+    ["problem", "figcaption", "AI is available. But most people don't know how to use it in their work."],
     ["solution", "h2", "Don't ask AI. Jin AI prepares it before anyone asks, right when you need it."],
     ["solution", "p", "One person's improvement is reviewed, then applied to the relevant people."],
     ["how", "h2", "Jin learns how your team works."],
@@ -611,7 +614,10 @@ const homeCopy = [
     ["data", "p", "It is never used to train AI models."]
   ]],
   ["Japanese", japanese, [
-    ["problem", "h2", "社員の指示から始まるAI活用"],
+    ["problem", "h2", "AIを導入しても残る手作業"],
+    ["problem", "figcaption", "複数の AI ツールを使い分けている"],
+    ["problem", "figcaption", "会議の準備や報告書の作成、システム間の転記は、今も手作業"],
+    ["problem", "figcaption", "AI はあっても、業務での使い方が分からない"],
     ["solution", "h2", "Jin AIが作業の準備を進め、社員が依頼内容を考えて入力する手間を減らします。"],
     ["solution", "p", "改善した設定や作業手順は、確認・承認を経て社内で共有します。"],
     ["how", "h2", "サービスの仕組み"],
@@ -642,7 +648,7 @@ for (const [language, source, entries] of homeCopy) {
     `${language} home must not contain control.webp or an illustration frame in Trust and control.`);
   check(!/\bid="(?:why|team)"|\b(?:compare|compare-before|compare-after|trust-list|hero-badges)\b|assets\/figures\/(?:today|with-jin|why-jin|team-learning)\.webp/.test(source) &&
     !/<(?:ul|ol|li|h3|img|picture|figure)\b/.test(homeSection(source, "solution")) &&
-    !/<(?:p|ul|ol|li|h3|figcaption)\b/.test(homeSection(source, "problem")) &&
+    !/<(?:p|ul|ol|li|h3)\b/.test(homeSection(source, "problem")) &&
     !/<(?:ul|ol|li)\b/.test(homeSection(source, "data")),
     `${language} home must not restore comparisons, Why Jin, Team learning, four trust promises, badges or retired images.`);
   const heroSection = source.match(/<section class="hero">([\s\S]*?)<\/section>/)?.[1] || "";
@@ -680,13 +686,17 @@ for (const [language, page] of [["English", home], ["Japanese", japanese]]) {
   check(how.includes('<div class="how-scroll">\n    <div class="how-sticky">') &&
     [...how.matchAll(/<li><img class="step-figure" src="\/assets\/figures\/(how-[^"]+)\.webp"/g)]
       .map(([, name]) => name).join(",") === "how-connect,how-spot,how-prepare,how-share" &&
-    /<div class="problem-images">\s*<img[^>]*src="\/assets\/figures\/problem-tools.webp"[^>]*>\s*<img[^>]*src="\/assets\/figures\/problem-busy.webp"[^>]*>\s*<img[^>]*src="\/assets\/figures\/problem-how.webp"[^>]*>\s*<\/div>/.test(homeSection(page, "problem")) &&
+    /<div class="problem-images">\s*<figure>\s*<img[^>]*src="\/assets\/figures\/problem-tools.webp"[^>]*>\s*<figcaption>[^<]+<\/figcaption>\s*<\/figure>\s*<figure>\s*<img[^>]*src="\/assets\/figures\/problem-busy.webp"[^>]*>\s*<figcaption>[^<]+<\/figcaption>\s*<\/figure>\s*<figure>\s*<img[^>]*src="\/assets\/figures\/problem-how.webp"[^>]*>\s*<figcaption>[^<]+<\/figcaption>\s*<\/figure>\s*<\/div>/.test(homeSection(page, "problem")) &&
+    count(homeSection(page, "problem"), /<figure\b/g) === 3 &&
+    count(homeSection(page, "problem"), /<figcaption\b/g) === 3 &&
     !/assets\/figures\/brief-/.test(page),
-    `${language} must keep the three captionless Problem images and all four original How drawings in exact step order.`);
+    `${language} must keep exactly three Problem image/caption pairs and all four original How drawings in exact step order.`);
 }
 check(JSON.stringify(content.problem) === JSON.stringify({ headline: homeCopy[0][2][0][2] }) &&
   JSON.stringify(content.solution) === JSON.stringify({
-    status: "building", headline: homeCopy[0][2][1][2], description: homeCopy[0][2][2][2]
+    status: "building",
+    headline: homeCopy[0][2].find(([id, tag]) => id === "solution" && tag === "h2")[2],
+    description: homeCopy[0][2].find(([id, tag]) => id === "solution" && tag === "p")[2]
   }) && content.how_it_works.headline === "Jin learns how your team works." &&
   JSON.stringify(content.how_it_works.steps) === JSON.stringify(homeSteps.map(([name, description]) => ({ name, description }))) &&
   JSON.stringify(content.data_principles) === JSON.stringify({
@@ -699,6 +709,10 @@ check(cssBlock(homeFigureCss, ".home-page .problem-images {").includes("grid-tem
   cssBlock(homeFigureCss, "@media (max-width: 760px)").includes(".home-page .problem-images { grid-template-columns: minmax(0, 1fr); }") &&
   !/problem-scene|\.compare/.test(homeFigureCss),
   "Problem images must use one three-column row on desktop and one column on phones, without retired layout rules.");
+check(cssBlock(homeFigureCss, ".home-page .problem-images figcaption {").includes("font-size: var(--t-body-l)") &&
+  cssBlock(homeFigureCss, ".home-page .problem-images figcaption {").includes("line-height: 1.6") &&
+  motionClient.includes(".problem-images figure") && !motionClient.includes(".problem-images img"),
+  "Problem captions must share typography and reveal together with their images through the existing figure motion.");
 const featureCopy = [
   ["connect", "Connect once", "一度つなぐだけ", "Connect your usual AI tools once, through MCP.", "MCPで、いつものAIツールに一度つなぐだけ。", "Connect in one click", "ワンクリックでつなぐ", "demo-1-connect.webp", "connect"],
   ["categories", "See every part by type", "種類ごとに見る", "Skills, prompts, memory and MCP settings, sorted by type.", "スキル・プロンプト・記憶・MCPの設定を、種類ごとに整理して見られる。", "See every part by type", "種類ごとに見る", "demo-2-categories.webp", "categories"],
@@ -1650,7 +1664,7 @@ check(count(japaneseReveal, /<span style="--word:[0-2]">[^<]+<\/span>/g) === 3 &
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
   "Japanese hero must keep its three-phrase reveal, exact text, accessible name and motion opt-in.");
 for (const [page, source, phrases] of [
-  ["/ja/", japanese, ["社員の指示から", "始まるAI活用", "Jin AIが", "作業の準備を進め、", "社員が依頼内容を", "考えて入力する", "手間を減らします。", "サービスの仕組み", "安全に利用するための", "仕組み", "もう二度とやりたくない仕事を、", "ひとつ見つけましょう。"]],
+  ["/ja/", japanese, ["AIを導入しても", "残る手作業", "Jin AIが", "作業の準備を進め、", "社員が依頼内容を", "考えて入力する", "手間を減らします。", "サービスの仕組み", "安全に利用するための", "仕組み", "もう二度とやりたくない仕事を、", "ひとつ見つけましょう。"]],
   ["/ja/how-it-works/", japaneseHow, ["コンテクストは、", "御社のAIを、", "会社の資産に。"]],
   ["/ja/security/", japaneseSecurity, ["コンテクストは、", "会社のもの。"]],
   ["/ja/privacy/", japanesePrivacy, ["プライバシー", "ポリシー", "取り扱いを", "委託している", "事業者"]]
