@@ -236,6 +236,41 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
 .signup-offer { margin-top: var(--s-8); }
 .signup-offer h3 { font-size: var(--t-lead); margin-bottom: var(--s-4); }
 .signup-done { overflow-wrap: anywhere; }
+/* Proactive pitch home (2026-10-26) */
+.hero-note { margin-top: var(--s-6); color: var(--text-3); font: var(--t-label); letter-spacing: 0; }
+.brief-stage { display: grid; gap: var(--s-8); width: min(calc(100% - 64px), 1320px); margin-inline: auto; padding: var(--s-12); border: var(--border); border-radius: 24px; background: var(--surface-1); }
+.brief-caption .h2 { max-width: 900px; margin: 0; font-size: var(--t-h3); line-height: 1.2; }
+.brief-window { max-width: 720px; overflow: hidden; border: var(--border); border-radius: var(--r-xl); background: var(--surface-2); box-shadow: var(--shadow-float); }
+.brief-card { padding: var(--s-8); color: var(--text-2); font-size: var(--t-body-l); line-height: 1.6; }
+.brief-card p { color: var(--text-2); }
+.brief-card p + p, .brief-card ul + p, .brief-card p + ul { margin-top: var(--s-4); }
+.brief-from { display: flex; align-items: center; gap: var(--s-2); color: var(--text-1) !important; font-weight: 510; }
+.brief-example { margin-left: auto; color: var(--text-3); font: var(--t-label); letter-spacing: 0; }
+.brief-points { padding-left: var(--s-6); }
+.brief-points li + li { margin-top: var(--s-2); }
+.brief-points strong { color: var(--text-1); font-weight: 510; }
+.brief-actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
+.brief-btn { padding: var(--s-1) var(--s-4); border: var(--border); border-radius: var(--r-m); color: var(--text-2); font-size: var(--t-ui); }
+.brief-btn-p { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
+.brief-followup { margin-top: var(--s-6) !important; color: var(--text-3) !important; font-style: italic; }
+.narrative > p, .narrative > ul { max-width: 720px; }
+.narrative > p { color: var(--text-2); font-size: var(--t-body-l); line-height: 1.6; }
+.narrative > p + p { margin-top: var(--s-4); }
+.narrative .h2 + p { margin-top: var(--s-8); }
+.narrative-close { margin-top: var(--s-8) !important; font-size: var(--t-title) !important; }
+.narrative-close strong, .solution-closing strong, .narrative strong { color: var(--text-1); font-weight: 510; }
+.compare { display: grid; grid-template-columns: 1fr; gap: var(--s-8); margin-top: var(--s-12); }
+.compare > div { padding-top: var(--s-6); border-top: var(--border); }
+.compare .compare-after { border-top-color: var(--accent); }
+.compare h3 { margin-bottom: var(--s-3); font-size: var(--t-title); }
+.compare p { max-width: 44ch; color: var(--text-2); font-size: var(--t-body-l); line-height: 1.6; }
+.trust-intro { margin-top: var(--s-8); }
+.trust-list { margin-top: var(--s-8); padding-left: var(--s-6); color: var(--text-2); font-size: var(--t-body-l); line-height: 1.6; }
+.trust-list li + li { margin-top: var(--s-3); }
+.steps { display: grid; grid-template-columns: 1fr; gap: var(--s-8); padding: 0; list-style: none; counter-reset: none; }
+.steps h3 { margin-bottom: var(--s-3); font-size: var(--t-title); line-height: 1.33; }
+.steps p { max-width: 44ch; color: var(--text-2); }
+
 @media (max-width: 479px) {
   .signup[data-flow="waitlist"] > .signup-row:first-child { grid-template-columns: minmax(0, 1fr); }
 }
@@ -357,6 +392,8 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
   .solution-copy li + li { border-left: 1px solid transparent; }
   .how-excerpt { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: var(--s-16); }
   .how-excerpt > div { grid-template-columns: minmax(0, 1fr); }
+  .compare { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-16); }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-12) var(--s-16); }
 }
 
 @media (max-width: 1023px) {
@@ -399,6 +436,9 @@ header .btn { min-height: 32px; padding: var(--s-1) var(--s-4); }
   .hero-actions { gap: var(--s-4); }
   .hero-actions .text-link { font-size: 13px; }
   .demo-stage { width: calc(100% - 48px); padding: var(--s-4); }
+  .brief-stage { width: calc(100% - 48px); padding: var(--s-4); }
+  .brief-card { padding: var(--s-6); font-size: var(--t-body); }
+  .brief-caption .h2 { font-size: var(--t-lead); }
   .product-viewport { padding-bottom: 0; }
   .section { padding-block: 80px; }
   .section + .section { padding-top: 0; }

@@ -2,30 +2,27 @@
 
 This repo is the public site for Jin AI. Read `README.md` and the supersession notice in `REPOSITION-PLAN.md` before changing copy or layout. The old plan below that notice is historical, not current copy guidance.
 
-## Positioning (October 2026)
+## Positioning (Yu-reviewed home copy, 2026-10-27)
 
-Jin AI is a B2B product for AI-forward companies. Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
+Jin AI is a B2B product. It spots repetitive work, prepares it before anyone asks, and learns from the team's approvals, edits and rejections. Write for company buyers (heads of IT, CIOs, CISOs and team leads) in plain, natural English. Do not add numbers, customer names or prices.
 
-Headline: **Turn AI into a company asset**
+Headline: **Providing work that's already done, for every employee.** / **仕事を先回りするAI**. Japanese page and social titles use `Jin AI | 仕事を先回りするAI`. Keep every approved English final period.
 
-Japanese home headline: **AIを、会社の資産に。**
-Its page and social titles omit the final Japanese full stop.
+Hero: small **Jin AI** eyebrow; line **Jin spots repetitive tasks, prepares the work, and learns from your team's feedback.** / **必要な作業を見つけ、下書きを作成。社員の修正を学び、改善します。**; tools note below the actions. No badges. Preserve the reveal and CTAs. The bilingual inbox video sits directly below the hero, before Problem. This is a trial, awaiting Yu's approval. Use the matching local WebM/MP4 and WebP poster, pause offscreen and in hidden tabs, and show only the poster without playback under reduced motion. Without JavaScript, browser-native muted autoplay is allowed.
 
-Hero (R7 English, R11 Japanese, Yu, 2026-10-21): small **Jin AI** eyebrow; line **Keep your AI agents, skills, and knowledge secure, reusable, and accessible across your organization.** / **AIエージェントやスキル、ナレッジを安全に管理・蓄積し、組織全体で共有・活用できるようにします。**; four muted list badges **Secure**, **Company-owned**, **Shared**, **Up to date** / **安全**, **会社のもの**, **共有**, **いつも最新**, with decorative thin-line icons. Preserve the reveal, CTAs and demo.
+Home sections, in order after the hero and inbox demo: Problem (**AI is there. Using it is still their job.**), Solution (**Don't ask AI. Jin AI prepares it before anyone asks, right when you need it.**), How it works (**Jin learns how your team works.**, four steps), Trust and control (**Single control plane for what can be accessed.**), then the waitlist (**Let's find one task your team never wants to do again.**). The exact bilingual copy is pinned in `scripts/validate-site.mjs` and the facts live in `agent/content.json`. The Japanese translations are recorded for Yu's review in `.copilot-runs/notes/site-copy-r1.md`.
 
-Use **agent harness**, **AI harness** or **harnesses** for this concept. An AI harness is the instructions, skills, memory and connected tools around an AI agent that make it work for a role. Preserve R11's exact "setup" wording in the second English Solution body.
+Problem contains only its heading (**AI is there. Using it is still their job.** / **AIを導入しても残る手作業**) and the three approved image/caption pairs in tools, busy, how order. Keep empty image alt and the six exact English/Japanese captions pinned in `scripts/validate-site.mjs`, with shared typography. Reveal each image and caption together; stack pairs at 760px and below. No extra body paragraphs or labels. Solution has only its heading and **One person's improvement is reviewed, then applied to the relevant people.** Do not restore Today/With Jin, Why Jin, Team learning, the four trust promises or hero badges. Do not use or deploy `today.webp`, `with-jin.webp`, `why-jin.webp`, `team-learning.webp` or `control.webp`; retain their source files. Preserve Yu's four How it works drawings (individual WebP format conversions for scroll motion); retain the original wide/tall sources.
 
-Problem (R10 English, R11 Japanese, Yu, 2026-10-21): **Is your company in control of its AI?** / **御社のAIは、会社の管理下にありますか？** Three problems, in order: **Shadow AI**, **Agents that depend on one person**, **Skills stuck in one team**. Use the exact English/Japanese titles and bodies recorded in `README.md`. Shadow AI is a problem label, not something Jin AI claims to block. Dependency figure labels stay English in both languages: **Context**, **Instructions**, **Tools**, **Workflows**, top to bottom.
+Trust and control has no illustration (Yu, 2026-10-27). It uses only the approved access/review paragraph and **It is never used to train AI models.** The four former trust promises are removed, not approved by this rewrite. Jin reads connected information, including message bodies and attachments (Yu, 2026-10-26); never claim otherwise. MCP servers, sandbox execution and organization skills are explicitly approved in the four home steps. `how_it_works.headline` and `steps` record those steps; its existing `introduction` and `features` still describe the unchanged companion page.
 
-Solution (R11, Yu, 2026-10-21): **How Jin AI keeps your AI** / **Jin AIが実現する、安心して使い続けられるAI環境**. Three English answers, in order: **Keep it safe**, **Keep it in the company**, **Keep it shared**. Use the exact bilingual R11 titles, bodies and closing recorded in `README.md`. Three columns match Problem from 1024px; one column on phones. No numbers or figures yet. Only the Japanese two-part closing (bold line plus paragraph) may differ structurally. R11 supersedes R6 Solution, Japanese Problem and Japanese hero line; R7, R8 and R10 English Problem remain approved. Do not replace approved copy with historical pitch copy.
-
-Data: **Your company's context stays yours** Each company's context is kept separate. Jin AI never records your screen. Jin AI itself never trains on your data. Do not claim that Jin AI does not read conversation histories.
+How it works, Security and Company still carry the earlier harness positioning until they are rewritten. Keep their pinned copy (see `README.md`) unchanged unless the task is that rewrite.
 
 The old consumer and visual-workspace positioning is retired. Do not reintroduce it.
 
 ## Page scope
 
-The home page (`index.html`) contains only the hero, problem, solution, how it works, data and demo request. Do not show pricing or founders on the home page. Founders and direct answers belong in the Agent reference.
+The home page (`index.html`) contains only the hero, the inbox demo, problem, solution, how it works, trust and control (retaining `#data` / `#privacy`), and the waitlist. Do not show pricing or founders on the home page. Founders and direct answers belong in the Agent reference.
 
 R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイトリストに登録**, then optional **Request a demo** / **デモを申し込む**. Waitlist note: **We'll email you when access is ready. You can request a demo after joining.** / **ご案内の準備ができしだい、メールでお知らせします。登録後、デモもお申し込みいただけます。** Direct `#request-demo` and the optional demo show **We'll email you to find a time.** / **日程の調整のため、こちらからメールでご連絡します。** Keep the existing fields, endpoint and each step's consent version. No post-request survey.
 
@@ -44,7 +41,7 @@ R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイト�
 ## Writing
 
 - Plain, specific English, or the approved Japanese copy on `/ja/`, `/ja/how-it-works/`, `/ja/privacy/` and `/ja/accessibility/` (Yu, 2026-10-20). Short sentences. Concrete scenes over abstractions.
-- English headings and heading-like titles have no final period, including each line separated by a `br`. Keep sentence punctuation in running descriptions, question and exclamation marks, and Japanese heading punctuation.
+- English headings and heading-like titles have no final period, including each line separated by a `br`, except the exact Yu-reviewed home sentence headings dated 2026-10-27 (also in generated Agent content). Keep their final periods, sentence punctuation in running descriptions, question and exclamation marks, and Japanese heading punctuation.
 - Do not display draft tags or `data-draft` attributes. Track unapproved copy in `.copilot-runs/notes/e6c-unapproved-copy.md` instead; removing a tag does not approve the copy.
 - CJK is required on the Japanese pages and forbidden in all other deployed files except the Japanese footer language-link text on English pages and exact Japanese page titles and descriptions in the generated `llms.txt` Pages index. Shared JavaScript keeps Japanese messages as Unicode escapes. No em dashes, en dashes or curly quotes in either language.
 - Keep each English/Japanese page pair structurally aligned, self-canonical, with reciprocal `en`, `ja` and `x-default` hreflang links and header/footer language switches. Generate both home-page CTA blocks from the same form facts; Japanese labels, surname-first order and country ordering must not change payload values or consent.
@@ -57,6 +54,8 @@ R13e approved CTA flow (Yu, 2026-10-21): **Join the waitlist** / **ウェイト�
 - Keep the existing system: dark `#08090A` background, Inter headings, body and sentence-case labels (not monospace), primary buttons with white text on `#A84A1C`, existing radii and spacing. Monospace is reserved for code and file names.
 - Japanese pages use `"Yu Gothic", "YuGothic", "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif` for Japanese and Latin text, with body weight 500 and existing heading weights. Keep the Noto Sans JP web-font fallback and English fonts unchanged. Protect heading phrases with nonbreaking spans and progressively enhance with `word-break: auto-phrase`.
 - One accent color only: `#a84a1c`. Do not add new colors, gradients, glows, blurs, shadows beyond what exists, or emoji.
+- Inbox video trial (2026-10-27): Yu's supplied recording preserves its original styling, but the video is awaiting Yu's approval. Do not publish recording HTML/scripts or PNG posters. The former `.inbox-demo` CSS and controller are retired.
+- Home illustration boxes are 260px high (180px at 760px and below), with equal Problem tracks and contained artwork. How drawings cap at 520px wide (360px on phones). Home motion uses only local CSS/JS, one-time 20px/650ms reveals, a scroll capsule header and desktop-only four-step sticky progression. Short windows, phones, reduced motion and no JavaScript retain readable normal-flow steps and drawings. Reduced motion disables all transitions/animations; JS must also pause/reset the video and remove autoplay.
 - No rows of identical icon cards, numbered circles, 2x2 positioning charts or letter-spaced all-caps labels. Prefer prose, lists, tables and real product screenshots.
 - Vary weight: one dominant visual per section.
 - Must work at 375px wide with no horizontal scroll.

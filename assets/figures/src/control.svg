@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="800" viewBox="0 0 400 200" fill="none" stroke="#EAF4FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <g id="outbound-email-draft">
+    <path d="M38 42h61l23 23v85a7 7 0 0 1-7 7H38a7 7 0 0 1-7-7V49a7 7 0 0 1 7-7Zm61 0v23h23"/>
+    <rect x="49" y="83" width="53" height="35" rx="4" stroke="#8A8F98"/>
+    <path d="m50 86 25 18 26-18M49 116l17-18m36 18-18-18M50 135h49" stroke="#8A8F98"/>
+  </g>
+  <g id="human-approval-gate">
+    <path d="M139 111h46" stroke="#62666D" stroke-dasharray="4 4"/>
+    <path d="m179 106 6 5-6 5" stroke="#8A8F98"/>
+    <circle cx="218" cy="61" r="13"/>
+    <path d="M196 104V91c0-10 9-17 22-17s22 7 22 17v9M196 90l-10 11v23M240 92l19 14v27"/>
+    <circle cx="219" cy="129" r="23" stroke="#8A8F98"/>
+    <path d="m208 129 8 8 15-18" stroke="#FF7A38" stroke-width="2"/>
+    <path d="M259 91v63" stroke="#EAF4FF"/>
+  </g>
+  <g id="not-yet-sent">
+    <path d="M269 112h27" stroke="#62666D" stroke-dasharray="4 4"/>
+    <rect x="307" y="88" width="63" height="45" rx="5" stroke="#62666D" stroke-dasharray="4 4"/>
+    <path d="m309 92 29 20 30-20" stroke="#8A8F98"/>
+  </g>
+</svg>

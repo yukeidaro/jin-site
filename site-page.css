@@ -1,0 +1,63 @@
+.home-page { --figure-height: 260px; --figure-width: 520px; }
+.home-page :is(section[id], #waitlist, #request-demo, #privacy, #benefits) { scroll-margin-top: 100px; }
+.home-page .demo-video { width: min(calc(100% - 32px), 1100px); margin-inline: auto; }
+.home-page .demo-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: var(--r-l); }
+.home-page .step-figure {
+  display: block; width: min(100%, var(--figure-width)); height: var(--figure-height);
+  object-fit: contain; margin-inline: auto;
+}
+.home-page .problem-images {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-8); margin-top: var(--s-8);
+}
+.home-page .problem-images img { display: block; width: 100%; height: var(--figure-height); object-fit: contain; }
+.home-page .problem-images figcaption {
+  margin-top: var(--s-6); color: var(--text-2); font-size: var(--t-body-l); line-height: 1.6;
+}
+.home-page .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.home-page .step-figure { margin-bottom: var(--s-8); }
+
+.home-page.has-scroll-motion header { position: sticky; top: 0; background: transparent; border-bottom: 0; }
+.home-page.has-scroll-motion header .nav { background: var(--bg); border: 1px solid transparent; transition: transform .6s var(--ease); }
+.home-page.has-scroll-motion header.is-scrolled .nav {
+  max-width: 960px; width: calc(100% - 32px); min-height: 64px;
+  border-color: var(--line); border-radius: var(--r-pill); transform: translateY(12px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-page.has-scroll-motion .demo-video video { cursor: pointer; }
+  .home-page .motion-item { transition: opacity .65s var(--ease), transform .65s var(--ease); transition-delay: var(--reveal-delay, 0ms); }
+  .home-page .motion-pending { opacity: 0; transform: translateY(20px); }
+  .home-page.how-motion .how-scroll { height: calc(var(--how-height) + 300vh); }
+  .home-page.how-motion .how-sticky { position: sticky; top: 100px; }
+  .home-page.how-motion #how .section-head { margin-bottom: var(--s-8); }
+  .home-page.how-motion .steps { position: relative; display: grid; grid-template-columns: 1fr; gap: var(--s-6); }
+  .home-page.how-motion .steps > li { padding-right: calc(50% + var(--s-8)); opacity: 1; transform: none; }
+  .home-page.how-motion .steps h3, .home-page.how-motion .steps p { opacity: .4; transition: opacity .5s var(--ease); }
+  .home-page.how-motion .steps [aria-current="step"] h3, .home-page.how-motion .steps [aria-current="step"] p { opacity: 1; }
+  .home-page.how-motion .step-figure {
+    position: absolute; right: 0; top: 50%; width: min(calc(50% - var(--s-8)), var(--figure-width));
+    margin: 0; opacity: 0; transform: translateY(-50%); transition: opacity .5s var(--ease);
+  }
+  .home-page.how-motion [aria-current="step"] .step-figure { opacity: 1; }
+}
+@media (max-width: 959px) {
+  .home-page.has-scroll-motion header.is-scrolled .nav { padding-inline: var(--s-3); min-height: 56px; }
+  .home-page.has-scroll-motion header.is-scrolled .menu-toggle { flex-basis: 48px; width: 48px; height: 48px; margin-right: calc(-1 * var(--s-3)); padding: 14px; }
+  .home-page.has-scroll-motion header.is-scrolled .header-menu { max-height: calc(100dvh - 88px); }
+}
+@media (max-width: 760px) {
+  .home-page { --figure-height: 180px; --figure-width: 360px; }
+  .home-page .problem-images { grid-template-columns: minmax(0, 1fr); }
+  .home-page .steps { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has(> .home-page) { scroll-behavior: auto; }
+  .home-page *, .home-page *::before, .home-page *::after { animation: none !important; transition: none !important; }
+  .home-page .motion-item { opacity: 1; transform: none; }
+  .home-page .how-scroll { height: auto; }
+  .home-page .how-sticky { position: static; }
+}
+@media (max-width: 400px) {
+  .home-page:lang(ja) .demo-intro h2 { font-size: var(--t-lead); }
+}

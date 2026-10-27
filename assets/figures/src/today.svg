@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 320 200" fill="none" stroke="#EAF4FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <g id="employee">
+    <circle cx="47" cy="111" r="12"/>
+    <path d="M27 164v-21c0-10 8-16 20-16s20 6 20 16v21M67 145h12c9 0 12-7 12-15"/>
+  </g>
+  <g id="employee-led-workflow">
+    <path d="M63 100V63c0-6 5-11 11-11h11M119 52h14M175 52h14M231 52h31a10 10 0 0 1 10 10v26a10 10 0 0 1-10 10h-27a10 10 0 0 0-10 10v2" stroke="#62666D" stroke-dasharray="4 4"/>
+    <path d="M80 48l5 4-5 4M128 48l5 4-5 4M184 48l5 4-5 4M221 105l4 5 4-5" stroke="#8A8F98"/>
+    <path d="M91 38h22a6 6 0 0 1 6 6v16a6 6 0 0 1-6 6h-11l-9 8v-8h-2a6 6 0 0 1-6-6V44a6 6 0 0 1 6-6Z"/>
+    <path d="M94 48h16M94 56h10" stroke="#8A8F98"/>
+    <rect x="140" y="34" width="35" height="36" rx="4"/>
+    <path d="M140 44h35M147 39h1m5 0h1M148 53h19M148 61h12" stroke="#8A8F98"/>
+    <path d="M196 34h23l12 12v24h-35V34Zm23 0v12h12"/>
+    <path d="M202 53h21M202 61h15" stroke="#8A8F98"/>
+    <path d="M244 115h-32a6 6 0 0 0-6 6v24a6 6 0 0 0 6 6h26a6 6 0 0 0 6-6v-30Z"/>
+    <path d="m216 133 6 6 12-13" stroke="#8A8F98"/>
+    <path d="M203 133H97" stroke="#62666D" stroke-dasharray="4 4"/>
+    <path d="m102 129-5 4 5 4" stroke="#8A8F98"/>
+  </g>
+</svg>
