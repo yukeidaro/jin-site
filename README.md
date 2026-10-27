@@ -5,9 +5,10 @@ Public product site for **Jin AI** at <https://jinai.md/>.
 ## Current home positioning (2026-10-27)
 
 The home pages use Yu's exact reviewed copy: **Providing work that's already
-done, for every employee.** / **すべての社員に、もう終わっている仕事を届ける。**
+done, for every employee.** / **仕事を先回りするAI**
 Jin spots repetitive tasks, prepares the work, and learns from the team's
-feedback. The home order is hero, Yu's bilingual inbox demo, Problem, Solution,
+feedback. The Japanese hero line is **必要な作業を見つけ、下書きを作成。社員の修正を学び、改善します。**
+The home order is hero, Yu's bilingual inbox demo, Problem, Solution,
 How it works (four steps), Trust and control, and the waitlist.
 The exact bilingual copy is pinned in `scripts/validate-site.mjs` and the
 facts live in `agent/content.json`.
@@ -298,7 +299,7 @@ never edit generated blocks. If the span count changes, keep the body reveal
 after the last word finishes and the buttons after the body. The current
 English headline uses eight words and Japanese uses three unbroken phrases.
 The last English word finishes at 675ms, before the unchanged 720ms body
-reveal. Titles and social titles omit only the Japanese headline's final full stop.
+reveal. Japanese page and social titles use `Jin AI | 仕事を先回りするAI`.
 
 Historical R7/R11 copy (not current home guidance):
 The former exact English hero line was "Keep your AI agents, skills, and knowledge secure,
@@ -474,8 +475,9 @@ recorded in `.copilot-runs/notes/j1.md`.
 - Product name: **Jin AI**. It is a B2B product for AI-forward companies.
   Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
 - Headline: **Providing work that's already done, for every employee.**
-- Japanese home headline: **すべての社員に、もう終わっている仕事を届ける。**
-  Its page and social titles omit the final Japanese full stop.
+- Japanese home headline: **仕事を先回りするAI**
+  Its page and social titles use `Jin AI | 仕事を先回りするAI`.
+  Hero line: **必要な作業を見つけ、下書きを作成。社員の修正を学び、改善します。**
 - English headings and heading-like titles have no final period, including each
   line separated by a `br`, except Yu's exact 2026-10-27 home sentence headings
   and their generated Agent equivalents. Preserve every approved final period.

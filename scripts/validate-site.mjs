@@ -203,8 +203,8 @@ check([...demoClient.matchAll(/\bheading:\s*(?:[^?\n]+\?\s*)?"([^"]+)"/g)]
   "Demo success and error headings must not end with periods.");
 
 const pagePairs = [
-  ["", home, japanese, "すべての社員に、もう終わっている仕事を届ける。", "Jin AI | すべての社員に、もう終わっている仕事を届ける",
-    "Jinは、繰り返しの仕事を見つけて準備し、チームのフィードバックから学びます。"],
+  ["", home, japanese, "仕事を先回りするAI", "Jin AI | 仕事を先回りするAI",
+    "必要な作業を見つけ、下書きを作成。社員の修正を学び、改善します。"],
   ["how-it-works/", howPage, japaneseHow, "仕組み", "仕組み | Jin AI",
     "Jin AI が AI ツールにつながり、AI ハーネスを種類ごとに整理し、持ち出せるものを会社が決める仕組みです。"],
   ["security/", security, japaneseSecurity, "会社のコンテクストは、会社のもの。", "セキュリティ | Jin AI",
@@ -1551,7 +1551,7 @@ check(japaneseSections.length === 6 && japaneseSections[0]?.[1].includes('class=
   "Japanese home must keep the English home sections in order.");
 for (const [language, source, introduction, note] of [
   ["English", home, content.product.description, "Works with the email, calendar, and chat your team already uses."],
-  ["Japanese", japanese, "Jinは、繰り返しの仕事を見つけて準備し、チームのフィードバックから学びます。",
+  ["Japanese", japanese, "必要な作業を見つけ、下書きを作成。社員の修正を学び、改善します。",
     "チームがいつも使っているメール、カレンダー、チャットとつながります。"]
 ]) {
   const section = source.match(/<section class="hero">([\s\S]*?)<\/section>/)?.[1] || "";
@@ -1644,8 +1644,8 @@ for (const [route, english, translated] of pagePairs) {
 const japaneseReveal = japanese.match(/<h1 class="hero-reveal"[^>]*>([\s\S]*?)<\/h1>/)?.[1] || "";
 check(count(japaneseReveal, /<span style="--word:[0-2]">[^<]+<\/span>/g) === 3 &&
   [...japaneseReveal.matchAll(/--word:(\d)/g)].map(match => match[1]).join("") === "012" &&
-  japaneseReveal.replace(/<[^>]+>/g, "") === "すべての社員に、もう終わっている仕事を届ける。" &&
-  japanese.includes('aria-label="すべての社員に、もう終わっている仕事を届ける。"') &&
+  japaneseReveal.replace(/<[^>]+>/g, "") === "仕事を先回りするAI" &&
+  japanese.includes('aria-label="仕事を先回りするAI"') &&
   japanese.match(/<script id="jin-page-paint">([\s\S]*?)<\/script>/)?.[1] === paintScript,
   "Japanese hero must keep its three-phrase reveal, exact text, accessible name and motion opt-in.");
 for (const [page, source, phrases] of [
