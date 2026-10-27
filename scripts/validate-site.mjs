@@ -80,7 +80,6 @@ const expectedFiles = [
   "assets/figures/problem-tools.webp",
   "assets/figures/problem-busy.webp",
   "assets/figures/problem-how.webp",
-  "assets/figures/control.webp",
   "assets/figures/how-connect.webp",
   "assets/figures/how-spot.webp",
   "assets/figures/how-prepare.webp",
@@ -638,6 +637,9 @@ for (const [language, source, entries] of homeCopy) {
     ["problem", "solution", "data", "how"].every(id => !/<(?:svg|button|iframe)\b/.test(homeSection(source, id))) &&
     !/problem\.js|data-problem|data-solution/.test(source),
     `${language} home sections must retain four HTML How it works steps and no retired interactive figures or controller.`);
+  check(!source.includes("control.webp") &&
+    !/<(?:img|picture|figure)\b|\bclass="[^"]*\bsection-figure\b/.test(homeSection(source, "data")),
+    `${language} home must not contain control.webp or an illustration frame in Trust and control.`);
   check(!/\bid="(?:why|team)"|\b(?:compare|compare-before|compare-after|trust-list|hero-badges)\b|assets\/figures\/(?:today|with-jin|why-jin|team-learning)\.webp/.test(source) &&
     !/<(?:ul|ol|li|h3|img|picture|figure)\b/.test(homeSection(source, "solution")) &&
     !/<(?:p|ul|ol|li|h3|figcaption)\b/.test(homeSection(source, "problem")) &&
@@ -651,7 +653,6 @@ const sectionImages = [
   ["problem", "problem-tools", 1200, 309, "", ""],
   ["problem", "problem-busy", 900, 640, "", ""],
   ["problem", "problem-how", 1079, 636, "", ""],
-  ["data", "control", 1600, 800, "Drafts prepared by Jin are sent out only after a person approves them.", "Jinが用意した下書きは、人が承認してから外に出る"],
   ["how", "how-connect", 854, 609, "", ""],
   ["how", "how-spot", 669, 543, "", ""],
   ["how", "how-prepare", 409, 572, "", ""],

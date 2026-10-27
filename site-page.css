@@ -2,11 +2,10 @@
 .home-page :is(section[id], #waitlist, #request-demo, #privacy, #benefits) { scroll-margin-top: 100px; }
 .home-page .demo-video { width: min(calc(100% - 32px), 1100px); margin-inline: auto; }
 .home-page .demo-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: var(--r-l); }
-.home-page .section-figure, .home-page .step-figure {
+.home-page .step-figure {
   display: block; width: min(100%, var(--figure-width)); height: var(--figure-height);
   object-fit: contain; margin-inline: auto;
 }
-.home-page .section-figure { margin-block: var(--s-8); }
 .home-page .problem-images {
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s-8); margin-top: var(--s-8);

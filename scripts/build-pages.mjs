@@ -66,7 +66,6 @@ const files = [
   "assets/figures/problem-tools.webp",
   "assets/figures/problem-busy.webp",
   "assets/figures/problem-how.webp",
-  "assets/figures/control.webp",
   "assets/figures/how-connect.webp",
   "assets/figures/how-spot.webp",
   "assets/figures/how-prepare.webp",

@@ -23,8 +23,8 @@ dependencies are added.
 
 Home-only `site-page.css` uses 260px illustration boxes, reduced to 180px at
 760px and below, with `object-fit: contain`. The three captionless Problem
-figures share equal tracks on desktop and stack on phones. Control and the
-individual How it works drawings are capped at 520px wide (360px on phones).
+figures share equal tracks on desktop and stack on phones. The individual
+How it works drawings are capped at 520px wide (360px on phones).
 The original four Yu PNGs are only format-converted to lossless WebP, not redrawn.
 All four exact HTML steps remain visible. On sufficiently tall desktops,
 How it works sticks while scrolling advances the highlighted step and drawing.
@@ -32,7 +32,8 @@ Phones, short windows, reduced motion and no JavaScript keep all four drawings
 and steps in normal flow. One-time section reveals move 20px over 650ms;
 only opacity and transform transition. The header switches to a centered capsule
 after 48px of scroll, including without transition under reduced motion.
-Trust and control retains `control.webp` and the `#data` / `#privacy` anchors.
+Trust and control retains the `#data` / `#privacy` anchors without an illustration.
+`control.webp` remains in the repository but is not used on the home pages or deployed.
 
 Motion verification, screenshots and measurements are in
 `.copilot-runs/site-motion/`; decisions and commands are recorded in
