@@ -21,6 +21,7 @@
   let measureFrame;
   let activeStep = -1;
   let visible = false;
+  let manuallyPaused = false;
 
   home.classList.add("has-scroll-motion");
 
@@ -95,14 +96,20 @@
   }
 
   function syncVideo() {
-    if (!visible || document.hidden || reduced.matches) {
+    if (!visible || document.hidden || reduced.matches || manuallyPaused) {
       video.pause();
       return;
     }
     video.play().catch(error => {
       // A viewport/motion change can cancel an outstanding play request.
-      if (error.name !== "AbortError") console.warn("Demo video could not play. Native playback controls remain available.", error);
+      if (error.name !== "AbortError") console.warn("Demo video could not play. Click or use the keyboard to retry.", error);
     });
+  }
+
+  function toggleVideo() {
+    if (reduced.matches) return;
+    manuallyPaused = !video.paused;
+    syncVideo();
   }
 
   function updateMotion() {
@@ -117,7 +124,7 @@
       sources.forEach(({ element, src }) => element.setAttribute("src", src));
       if (restoreSources) video.load();
       video.setAttribute("autoplay", "");
-      video.controls = true;
+      video.controls = false;
     }
     setupReveals();
     measure();
@@ -125,8 +132,14 @@
   }
 
   video.pause();
+  video.addEventListener("click", toggleVideo);
+  video.addEventListener("keydown", event => {
+    if (event.key !== " " && event.key !== "Enter") return;
+    event.preventDefault();
+    if (!event.repeat) toggleVideo();
+  });
   video.addEventListener("play", () => {
-    if (reduced.matches || !visible || document.hidden) {
+    if (reduced.matches || !visible || document.hidden || manuallyPaused) {
       video.pause();
     }
   });

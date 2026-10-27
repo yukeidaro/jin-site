@@ -385,14 +385,15 @@ for (const [language, page, locale, label] of [
   check(/<\/section>\s*<div class="product-viewport">\s*<figure class="demo-video">[\s\S]*?<\/figure>\s*<\/div>\s*<section class="section" id="problem">/.test(page) &&
     count(page, /<video\b/g) === 1 && !/inbox-demo\.js|class="inbox-demo"|brief-stage|jin-hero-demo|class="demo-stage"/.test(page),
     `${language} must show exactly one local demo video directly after the hero and before Problem, without the retired inbox UI.`);
-  check(["muted", "autoplay", "loop", "playsinline", "controls"].every(attribute =>
+  check(["muted", "autoplay", "loop", "playsinline"].every(attribute =>
     new RegExp(`\\s${attribute}(?:\\s|>)`).test(videoTag)) &&
+    !/\scontrols(?:\s|=|>)/.test(videoTag) && videoTag.includes('tabindex="0"') &&
     videoTag.includes('preload="metadata"') && videoTag.includes('width="1600" height="900"') &&
     videoTag.includes(`poster="/assets/demo/video/jin-inbox-demo-${locale}-poster.webp"`) &&
     videoTag.includes(`aria-label="${label}"`) &&
     demo.match(/<source\b[^>]*>/g)?.join("\n") ===
       `<source src="/assets/demo/video/jin-inbox-demo-${locale}.webm" type="video/webm">\n<source src="/assets/demo/video/jin-inbox-demo-${locale}.mp4" type="video/mp4">`,
-    `${language} video needs its exact localized WebM/MP4 order, poster, accessible name, dimensions and playback attributes.`);
+    `${language} video needs its exact localized WebM/MP4 order, poster, accessible name, dimensions and playback attributes, with keyboard focus and no native controls.`);
   check(page.includes('<link rel="stylesheet" href="/site-page.css">') &&
     count(page, /<script src="\/scroll-motion\.js" defer><\/script>/g) === 1 && !/Geist/i.test(page),
     `${language} must load the shared local motion controller once, without new fonts.`);
@@ -418,6 +419,14 @@ check(motionClient.includes("new IntersectionObserver") &&
   !/getBoundingClientRect|offsetHeight/.test(motionClient.match(/function updateScroll\(\) \{([\s\S]*?)\n  \}/)?.[1] || "") &&
   !/\b(?:fetch|XMLHttpRequest|WebSocket|import)\s*\(|https?:\/\//.test(motionClient),
   "Home motion must guard viewport and reduced motion, reset the poster, reveal once and cache layout outside passive/rAF scroll updates without network calls.");
+check(motionClient.includes('video.addEventListener("click", toggleVideo)') &&
+  motionClient.includes('video.addEventListener("keydown", event =>') &&
+  motionClient.includes('event.key !== " " && event.key !== "Enter"') &&
+  motionClient.includes("event.preventDefault()") && motionClient.includes("!event.repeat") &&
+  motionClient.includes("manuallyPaused = !video.paused") &&
+  motionClient.includes("!visible || document.hidden || reduced.matches || manuallyPaused") &&
+  motionClient.includes("video.controls = false") && !motionClient.includes("video.controls = true"),
+  "Home video must toggle on click, Space and Enter without key repeats or scrolling, retain manual pause and keep native controls hidden.");
 check(homeFigureCss.includes("--figure-height: 260px") && homeFigureCss.includes("--figure-height: 180px") &&
   homeFigureCss.includes("object-fit: contain") && homeFigureCss.includes("aspect-ratio: 16 / 9") &&
   homeFigureCss.includes("position: sticky") && homeFigureCss.includes("transform: translateY(20px)") &&

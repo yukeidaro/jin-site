@@ -25,6 +25,7 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .home-page.has-scroll-motion .demo-video video { cursor: pointer; }
   .home-page .motion-item { transition: opacity .65s var(--ease), transform .65s var(--ease); transition-delay: var(--reveal-delay, 0ms); }
   .home-page .motion-pending { opacity: 0; transform: translateY(20px); }
   .home-page.how-motion .how-scroll { height: calc(var(--how-height) + 300vh); }
