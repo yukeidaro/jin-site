@@ -477,7 +477,7 @@ recorded in `.copilot-runs/notes/j1.md`.
 
 - Product name: **Jin AI**. It is a B2B product for AI-forward companies.
   Write for company buyers: CEOs, heads of IT and CISOs. Do not add company size numbers.
-- Headline: **Providing work that's already done, for every employee.**
+- Headline: **Proactive AI teammate for every employee**
 - Japanese home headline: **仕事を先回りするAI**
   Its page and social titles use `Jin AI | 仕事を先回りするAI`.
   Hero line: **必要な作業を見つけ、下書きを作成。社員の修正を学び、改善します。**
