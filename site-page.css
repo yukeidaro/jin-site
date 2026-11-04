@@ -24,6 +24,9 @@
   border-color: var(--line); border-radius: var(--r-pill); transform: translateY(12px);
 }
 
+.home-page:lang(ja) .demo-intro { container-type: inline-size; }
+.home-page:lang(ja) .demo-intro h2 { max-width: none; font-size: min(var(--t-h2), 6.4cqi); }
+
 @media (prefers-reduced-motion: no-preference) {
   .home-page.has-scroll-motion .demo-video video { cursor: pointer; }
   .home-page .motion-item { transition: opacity .65s var(--ease), transform .65s var(--ease); transition-delay: var(--reveal-delay, 0ms); }
