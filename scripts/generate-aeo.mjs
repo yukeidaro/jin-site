@@ -374,10 +374,14 @@ ${JSON.stringify({
 </script>`;
 }
 
-function renderJapanesePageJsonLd(source, document) {
+function renderPageJsonLd(source, document, language) {
+  assert(["en", "ja"].includes(language), "WebPage JSON-LD needs a supported page language.");
   const url = document.match(/<link rel="canonical" href="([^"]+)">/)?.[1];
-  const name = document.match(/<title>([^<]+)<\/title>/)?.[1];
-  assert(url && name, "Japanese WebPage JSON-LD needs the page's canonical URL and title.");
+  const title = document.match(/<title>([^<]+)<\/title>/)?.[1];
+  const description = document.match(/<meta name="description" content="([^"]+)">/)?.[1];
+  assert(url && title && (language === "ja" || description),
+    "WebPage JSON-LD needs the page's canonical URL, title and English meta description.");
+  const name = language === "en" ? title.replaceAll("&amp;", "&") : title;
   return `<script type="application/ld+json">
 ${JSON.stringify({
     "@context": "https://schema.org",
@@ -385,9 +389,10 @@ ${JSON.stringify({
     "@id": `${url}#webpage`,
     url,
     name,
-    inLanguage: "ja",
+    ...(language === "en" ? { description } : {}),
+    inLanguage: language,
     isPartOf: { "@id": `${source.canonical_url}#website` },
-    about: { "@id": `${source.canonical_url}#organization` },
+    about: { "@id": `${source.canonical_url}#${language === "en" ? "software" : "organization"}` },
     publisher: { "@id": `${source.canonical_url}#organization` }
   }, null, 2).replaceAll("<", "\\u003c")}
 </script>`;
@@ -629,10 +634,16 @@ await updateGeneratedFile(path.join(root, "index.html"), [
 ]);
 
 await updateGeneratedFile(path.join(root, "ja", "index.html"), [
-  ["JSON_LD", document => renderJapanesePageJsonLd(data, document)],
+  ["JSON_LD", document => renderPageJsonLd(data, document, "ja")],
   ["CTA_HERO", renderCta(data, { centred: false, language: "ja" })],
   ["CTA_FINAL", renderCta(data, { centred: true, language: "ja" })]
 ]);
+
+for (const route of ["how-it-works", "security", "company"]) {
+  await updateGeneratedFile(path.join(root, route, "index.html"), [
+    ["JSON_LD", document => renderPageJsonLd(data, document, "en")]
+  ]);
+}
 
 await updateGeneratedFile(path.join(root, "agent", "index.html"), [
   ["JSON_LD", renderFaqJsonLd(data)],
