@@ -1896,17 +1896,32 @@ check(Array.isArray(questions) && questions.length === content.direct_answers.le
     question.acceptedAnswer.text === content.direct_answers[index].answer),
   "Agent FAQPage questions and answers must match every direct_answers entry exactly, in order.");
 const japaneseSitemapUrls = sitemapUrls.filter(url => new URL(url).pathname.startsWith("/ja/"));
-for (const url of japaneseSitemapUrls) {
+const englishWebPageUrls = ["how-it-works", "security", "company"].map(route => `https://jinai.md/${route}/`);
+for (const url of [...japaneseSitemapUrls, ...englishWebPageUrls]) {
+  const language = new URL(url).pathname.startsWith("/ja/") ? "ja" : "en";
   const filename = `${new URL(url).pathname.slice(1)}index.html`;
   const page = htmlCache.get(filename) || "";
   const title = page.match(/<title>([^<]+)<\/title>/)?.[1];
+  const name = language === "en" ? title?.replaceAll("&amp;", "&") : title;
+  const canonical = page.match(/<link rel="canonical" href="([^"]+)">/)?.[1];
   const pages = (jsonLdByFile.get(filename) || []).filter(node => node["@type"] === "WebPage");
-  check(pages.length === 1 && pages[0]["@id"] === `${url}#webpage` &&
-    pages[0].url === url && pages[0].name === title && pages[0].inLanguage === "ja" &&
+  check(canonical === url && name && pages.length === 1 &&
+    pages[0]["@context"] === "https://schema.org" && pages[0]["@id"] === `${url}#webpage` &&
+    pages[0].url === url && pages[0].name === name && pages[0].inLanguage === language &&
     pages[0].isPartOf?.["@id"] === "https://jinai.md/#website" &&
-    pages[0].about?.["@id"] === "https://jinai.md/#organization" &&
+    pages[0].about?.["@id"] === `https://jinai.md/#${language === "en" ? "software" : "organization"}` &&
     pages[0].publisher?.["@id"] === "https://jinai.md/#organization",
-    `${filename} needs Japanese WebPage JSON-LD matching its canonical URL, title and shared entity IDs.`);
+    `${filename} needs ${language} WebPage JSON-LD matching its canonical URL, title and shared entity IDs.`);
+  if (language === "en") {
+    const description = page.match(/<meta name="description" content="([^"]+)">/)?.[1];
+    check(description && pages[0]?.description === description,
+      `${filename} WebPage JSON-LD description must match its existing meta description.`);
+    const head = page.match(/<head\b[^>]*>([\s\S]*?)<\/head>/)?.[1] || "";
+    check(count(head, /<!-- GENERATED:JSON_LD:START -->/g) === 1 &&
+      count(head, /<!-- GENERATED:JSON_LD:END -->/g) === 1 &&
+      /<!-- GENERATED:JSON_LD:START -->\s*<script type="application\/ld\+json">[\s\S]*?<\/script>\s*<!-- GENERATED:JSON_LD:END -->/.test(head),
+      `${filename} needs its generated WebPage JSON-LD block inside head.`);
+  }
 }
 
 for (const [relativePath, source] of htmlCache) {
