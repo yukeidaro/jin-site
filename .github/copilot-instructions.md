@@ -6,7 +6,7 @@ This repo is the public site for Jin AI. Read `README.md` and the supersession n
 
 Jin AI is a B2B product. It spots repetitive work, prepares it before anyone asks, and learns from the team's approvals, edits and rejections. Write for company buyers (heads of IT, CIOs, CISOs and team leads) in plain, natural English. Do not add numbers, customer names or prices.
 
-Headline: **Proactive AI teammate for every employee** / **仕事を先回りするAI**. Japanese page and social titles use `Jin AI | 仕事を先回りするAI`. Keep every approved English final period.
+Headline: **Productive AI Teammate for Every Marketer** / **仕事を先回りするAI**. Japanese page and social titles use `Jin AI | 仕事を先回りするAI`. Keep every approved English final period.
 
 Hero: small **Jin AI** eyebrow; line **Jin spots repetitive tasks, prepares the work, and learns from your team's feedback.** / **必要な作業を見つけ、下書きを作成。社員の修正を学び、改善します。**; tools note below the actions. No badges. Preserve the reveal and CTAs. The bilingual inbox video sits directly below the hero, before Problem. This is a trial, awaiting Yu's approval. Use the matching local WebM/MP4 and WebP poster, pause offscreen and in hidden tabs, and show only the poster without playback under reduced motion. Without JavaScript, browser-native muted autoplay is allowed.
 
