@@ -21,3 +21,8 @@ h1, h2, h3, h4 { line-height: 1.3; letter-spacing: 0; text-wrap: balance; word-b
 @supports (word-break: auto-phrase) {
   h1, h2, h3, h4 { word-break: auto-phrase; }
 }
+
+/* Handover page */
+.handover-page h2, .handover-hero h1, .handover-closing h2 { line-height: 1.4; }
+.handover-hero h1 { font-size: clamp(24px, 4.5vw, 64px); }
+/* End Handover page */
