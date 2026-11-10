@@ -45,7 +45,7 @@ function validate(source) {
   }
   assert(typeof source.data_principles?.headline === "string" && source.data_principles.headline.trim(),
     "Data principles need a headline.");
-  assert(source.product.headline === "Proactive AI teammate for every employee",
+  assert(source.product.headline === "Productive AI Teammate for Every Marketer",
     "The product headline must match the approved English H1.");
   assert(source.problem.headline === "AI is there. Using it is still their job." &&
     source.solution.headline === "Don't ask AI. Jin AI prepares it before anyone asks, right when you need it." &&

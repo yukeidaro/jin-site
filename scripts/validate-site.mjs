@@ -9,7 +9,7 @@ const site = path.join(root, "_site");
 const errors = [];
 const approvedCompanySolution = "Context, instructions, tools, and workflows stay with the company, not with one person. Even when someone leaves, the setup keeps working and the next person can continue from there.";
 const approvedHomeSentenceHeadings = new Set([
-  "Proactive AI teammate for every employee",
+  "Productive AI Teammate for Every Marketer",
   "AI is there. Using it is still their job.",
   "Don't ask AI. Jin AI prepares it before anyone asks, right when you need it.",
   "Jin learns how your team works.",
@@ -347,9 +347,9 @@ check(homeSections.length === 6 && homeSections[0]?.[1].includes('class="hero"')
   homeSections.slice(1).map((match) => match[1].match(/\bid="([^"]+)"/)?.[1]).join() === homeSectionOrder,
   "Root must contain only hero, problem, solution, how, data and demo sections, in order.");
 check(count(home, /<h1\b/g) === 1 &&
-  home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "Proactive AI teammate for every employee",
+  home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, "") === "Productive AI Teammate for Every Marketer",
   "Root must use the approved H1 once.");
-const homeTitle = "Jin AI | Proactive AI teammate for every employee";
+const homeTitle = "Jin AI | Productive AI Teammate for Every Marketer";
 check(home.includes(`<title>${homeTitle}</title>`), "Root must use the approved title.");
 for (const [attribute, name] of [["property", "og:title"], ["name", "twitter:title"]]) {
   check(home.includes(`<meta ${attribute}="${name}" content="${homeTitle}">`), `Root must use the approved ${name}.`);
@@ -1591,7 +1591,7 @@ for (const [language, source, introduction, note] of [
 check(cssBlock(englishCss, ".hero-eyebrow {").includes("display: block") &&
   cssBlock(englishCss, ".hero-note {").includes("color: var(--text-3)"),
   "Hero label and muted tools note must use the shared theme.");
-check(content.product.headline === "Proactive AI teammate for every employee" &&
+check(content.product.headline === "Productive AI Teammate for Every Marketer" &&
   content.product.description === "Jin spots repetitive tasks, prepares the work, and learns from your team's feedback." &&
   content.direct_answers.find(answer => answer.id === "what-is-jin-ai")?.answer === content.product.description &&
   content.product.availability === "Jin AI is in private beta. We are working through the waitlist." &&
