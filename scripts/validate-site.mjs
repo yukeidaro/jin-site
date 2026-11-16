@@ -41,6 +41,21 @@ function count(source, expression) {
   return source.match(expression)?.length ?? 0;
 }
 
+function decodeHtmlReferences(value) {
+  const named = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: "\u00a0" };
+  return value.replace(/&([a-z][a-z0-9]*|#(?:[xX][0-9a-fA-F]+|[0-9]+));/g, (reference, entity) => {
+    if (!entity.startsWith("#")) {
+      if (!Object.hasOwn(named, entity)) throw new Error(`Unsupported HTML character reference: ${reference}`);
+      return named[entity];
+    }
+    const codePoint = /^[xX]/.test(entity[1]) ? parseInt(entity.slice(2), 16) : Number(entity.slice(1));
+    if (codePoint <= 0 || codePoint > 0x10ffff || (codePoint >= 0xd800 && codePoint <= 0xdfff)) {
+      throw new Error(`Invalid HTML character reference: ${reference}`);
+    }
+    return String.fromCodePoint(codePoint);
+  });
+}
+
 const communityUrl = "https://discord.gg/C5m4jGgKXD";
 const communityLink = `<a href="${communityUrl}" target="_blank" rel="noopener">Discord</a>`;
 function emailComponent(japanese = false) {
@@ -573,16 +588,18 @@ check(JSON.stringify(sitemapUrls) === JSON.stringify(
   "Sitemap must contain exactly the twelve English and Japanese content page URLs, without retired articles.");
 check(!llms.includes(".md)"), "llms.txt must not link to Markdown mirrors.");
 check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blockquote summary.");
+check(!/&(?:[a-z][a-z0-9]*|#(?:[xX][0-9a-fA-F]+|[0-9]+));/i.test(llms),
+  "llms.txt must contain decoded text, without HTML character references.");
 const expectedLlmsPages = `## Pages\n\n${(await Promise.all(sitemapPageUrls.map(async (url) => {
   const page = await text(path.join(...new URL(url).pathname.split("/"), "index.html"));
   const title = page.match(/<title>([^<]+)<\/title>/)?.[1];
   const description = page.match(/<meta name="description" content="([^"]+)">/)?.[1];
   check(title && description, `${url} needs its title and meta description for the LLM page index.`);
-  return `- [${title}](${url}): ${description}`;
+  return decodeHtmlReferences(`- [${title}](${url}): ${description}`);
 }))).join("\n")}`;
 const llmsPages = llms.match(/(?:^|\n\n)(## Pages\n\n[\s\S]*?)(?=\n\n## |$)/)?.[1];
 const exactLlmsPages = llmsPages === expectedLlmsPages && count(llms, /^## Pages$/gm) === 1;
-check(exactLlmsPages, "llms.txt Pages must list every sitemap URL once, in order, with its exact HTML title and meta description.");
+check(exactLlmsPages, "llms.txt Pages must list every sitemap URL once, in order, with its exact decoded HTML title and meta description.");
 check(!llms.includes("sole canonical product page") && !llms.includes("Canonical indexable URL."),
   "llms.txt must describe the canonical Human pages in the plural.");
 
@@ -1896,7 +1913,8 @@ check(Array.isArray(questions) && questions.length === content.direct_answers.le
     question.acceptedAnswer.text === content.direct_answers[index].answer),
   "Agent FAQPage questions and answers must match every direct_answers entry exactly, in order.");
 const japaneseSitemapUrls = sitemapUrls.filter(url => new URL(url).pathname.startsWith("/ja/"));
-const englishWebPageUrls = ["how-it-works", "security", "company"].map(route => `https://jinai.md/${route}/`);
+const englishWebPageUrls = ["how-it-works", "security", "company", "privacy", "accessibility"]
+  .map(route => `https://jinai.md/${route}/`);
 for (const url of [...japaneseSitemapUrls, ...englishWebPageUrls]) {
   const language = new URL(url).pathname.startsWith("/ja/") ? "ja" : "en";
   const filename = `${new URL(url).pathname.slice(1)}index.html`;
@@ -1905,14 +1923,17 @@ for (const url of [...japaneseSitemapUrls, ...englishWebPageUrls]) {
   const name = language === "en" ? title?.replaceAll("&amp;", "&") : title;
   const canonical = page.match(/<link rel="canonical" href="([^"]+)">/)?.[1];
   const pages = (jsonLdByFile.get(filename) || []).filter(node => node["@type"] === "WebPage");
+  // The five hand-written Japanese subpages remain outside the generator's scope.
+  const generatedPage = language === "en" || filename === "ja/index.html";
   check(canonical === url && name && pages.length === 1 &&
     pages[0]["@context"] === "https://schema.org" && pages[0]["@id"] === `${url}#webpage` &&
     pages[0].url === url && pages[0].name === name && pages[0].inLanguage === language &&
     pages[0].isPartOf?.["@id"] === "https://jinai.md/#website" &&
-    pages[0].about?.["@id"] === `https://jinai.md/#${language === "en" ? "software" : "organization"}` &&
+    pages[0].about?.["@id"] === `https://jinai.md/#${generatedPage ? "software" : "organization"}` &&
+    (filename !== "ja/index.html" || pages[0].about?.["@id"] === homeWebPage?.about?.["@id"]) &&
     pages[0].publisher?.["@id"] === "https://jinai.md/#organization",
     `${filename} needs ${language} WebPage JSON-LD matching its canonical URL, title and shared entity IDs.`);
-  if (language === "en") {
+  if (generatedPage) {
     const description = page.match(/<meta name="description" content="([^"]+)">/)?.[1];
     check(description && pages[0]?.description === description,
       `${filename} WebPage JSON-LD description must match its existing meta description.`);

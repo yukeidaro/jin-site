@@ -24,7 +24,7 @@ An AI harness is the instructions, skills, memory and connected tools around an 
 
 - [Jin AI | Productive AI Teammate for Every Marketer](https://jinai.md/): Jin spots repetitive tasks, prepares the work, and learns from your team's feedback.
 - [How it works | Jin AI](https://jinai.md/how-it-works/): How Jin AI connects to your AI tools, sorts each AI harness by category, and lets the company decide what can move.
-- [Security &amp; data | Jin AI](https://jinai.md/security/): How Jin AI keeps each company's context separate, and what it does not do.
+- [Security & data | Jin AI](https://jinai.md/security/): How Jin AI keeps each company's context separate, and what it does not do.
 - [Company | Jin AI](https://jinai.md/company/): Our mission is to turn every company's AI into an asset it owns: secure, shared, and always up to date.
 - [Privacy Policy | Jin AI](https://jinai.md/privacy/): How Jin AI collects and uses the information you give us on jinai.md.
 - [Accessibility | Jin AI](https://jinai.md/accessibility/): Our accessibility goal for jinai.md and how to report a problem.
