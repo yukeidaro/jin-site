@@ -148,6 +148,20 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
+function decodeHtmlReferences(value) {
+  const named = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: "\u00a0" };
+  return value.replace(/&([a-z][a-z0-9]*|#(?:[xX][0-9a-fA-F]+|[0-9]+));/g, (reference, entity) => {
+    if (!entity.startsWith("#")) {
+      assert(Object.hasOwn(named, entity), `Unsupported HTML character reference: ${reference}`);
+      return named[entity];
+    }
+    const codePoint = /^[xX]/.test(entity[1]) ? parseInt(entity.slice(2), 16) : Number(entity.slice(1));
+    assert(codePoint > 0 && codePoint <= 0x10ffff && !(codePoint >= 0xd800 && codePoint <= 0xdfff),
+      `Invalid HTML character reference: ${reference}`);
+    return String.fromCodePoint(codePoint);
+  });
+}
+
 function renderEmail(address, japanese) {
   return `<span class="email-contact"><span class="email-address">${escapeHtml(address)}</span> <button type="button" class="copy-email" data-copy="${escapeHtml(address)}">${japanese ? "コピー" : "Copy"}</button></span>`;
 }
@@ -379,8 +393,8 @@ function renderPageJsonLd(source, document, language) {
   const url = document.match(/<link rel="canonical" href="([^"]+)">/)?.[1];
   const title = document.match(/<title>([^<]+)<\/title>/)?.[1];
   const description = document.match(/<meta name="description" content="([^"]+)">/)?.[1];
-  assert(url && title && (language === "ja" || description),
-    "WebPage JSON-LD needs the page's canonical URL, title and English meta description.");
+  assert(url && title && description,
+    "WebPage JSON-LD needs the page's canonical URL, title and meta description.");
   const name = language === "en" ? title.replaceAll("&amp;", "&") : title;
   return `<script type="application/ld+json">
 ${JSON.stringify({
@@ -389,10 +403,10 @@ ${JSON.stringify({
     "@id": `${url}#webpage`,
     url,
     name,
-    ...(language === "en" ? { description } : {}),
+    description,
     inLanguage: language,
     isPartOf: { "@id": `${source.canonical_url}#website` },
-    about: { "@id": `${source.canonical_url}#${language === "en" ? "software" : "organization"}` },
+    about: { "@id": `${source.canonical_url}#software` },
     publisher: { "@id": `${source.canonical_url}#organization` }
   }, null, 2).replaceAll("<", "\\u003c")}
 </script>`;
@@ -524,7 +538,7 @@ async function renderLlms(source) {
     `- ${capability.name} (${statusLabels[capability.status]})${capability.description ? `: ${capability.description}` : ""}${capability.note ? ` ${capability.note}.` : ""}`
   ).join("\n");
 
-  return `# ${source.product.name}
+  return decodeHtmlReferences(`# ${source.product.name}
 
 > ${source.product.description}
 
@@ -593,7 +607,7 @@ ${source.founders.map((founder) => `- [${founder.name}](${founder.profile_url}):
 ## Community
 
 [${source.early_access.community.label}](${source.early_access.community.url})
-`;
+`);
 }
 
 // Windows checkouts (core.autocrlf) use CRLF; compare as LF and write back the file's own line endings.
@@ -639,7 +653,7 @@ await updateGeneratedFile(path.join(root, "ja", "index.html"), [
   ["CTA_FINAL", renderCta(data, { centred: true, language: "ja" })]
 ]);
 
-for (const route of ["how-it-works", "security", "company"]) {
+for (const route of ["how-it-works", "security", "company", "privacy", "accessibility"]) {
   await updateGeneratedFile(path.join(root, route, "index.html"), [
     ["JSON_LD", document => renderPageJsonLd(data, document, "en")]
   ]);
