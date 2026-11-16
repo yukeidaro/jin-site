@@ -586,6 +586,17 @@ const sitemapUrls = [...sitemapPageUrls].sort();
 check(JSON.stringify(sitemapUrls) === JSON.stringify(
   pagePairs.flatMap(([route]) => [`https://jinai.md/${route}`, `https://jinai.md/ja/${route}`]).sort()),
   "Sitemap must contain exactly the twelve English and Japanese content page URLs, without retired articles.");
+const sitemapMaxLastmod = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+for (const [, entry] of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+  const url = entry.match(/<loc>([^<]+)<\/loc>/)?.[1];
+  const lastmods = [...entry.matchAll(/<lastmod>([^<]*)<\/lastmod>/g)];
+  const lastmod = lastmods[0]?.[1] ?? "";
+  const timestamp = Date.parse(`${lastmod}T00:00:00Z`);
+  check(lastmods.length === 1 && /^\d{4}-\d{2}-\d{2}$/.test(lastmod) &&
+    Number.isFinite(timestamp) && new Date(timestamp).toISOString().slice(0, 10) === lastmod &&
+    lastmod <= sitemapMaxLastmod,
+    `${url} sitemap lastmod must be a valid YYYY-MM-DD date, at most one day after today's UTC date.`);
+}
 check(!llms.includes(".md)"), "llms.txt must not link to Markdown mirrors.");
 check(llms.startsWith("# Jin AI\n\n> "), "llms.txt must begin with an H1 and blockquote summary.");
 check(!/&(?:[a-z][a-z0-9]*|#(?:[xX][0-9a-fA-F]+|[0-9]+));/i.test(llms),
