@@ -659,6 +659,12 @@ for (const route of ["how-it-works", "security", "company", "privacy", "accessib
   ]);
 }
 
+for (const route of ["how-it-works", "security", "company"]) {
+  await updateGeneratedFile(path.join(root, "ja", route, "index.html"), [
+    ["JSON_LD", document => renderPageJsonLd(data, document, "ja")]
+  ]);
+}
+
 await updateGeneratedFile(path.join(root, "agent", "index.html"), [
   ["JSON_LD", renderFaqJsonLd(data)],
   ["AGENT_CONTENT", renderAgent(data)]
