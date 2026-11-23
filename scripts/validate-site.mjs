@@ -1926,6 +1926,13 @@ check(Array.isArray(questions) && questions.length === content.direct_answers.le
 const japaneseSitemapUrls = sitemapUrls.filter(url => new URL(url).pathname.startsWith("/ja/"));
 const englishWebPageUrls = ["how-it-works", "security", "company", "privacy", "accessibility"]
   .map(route => `https://jinai.md/${route}/`);
+// Only the Japanese Privacy and Accessibility pages still use hand-written WebPage JSON-LD.
+const generatedJapaneseWebPages = new Set([
+  "ja/index.html",
+  "ja/how-it-works/index.html",
+  "ja/security/index.html",
+  "ja/company/index.html"
+]);
 for (const url of [...japaneseSitemapUrls, ...englishWebPageUrls]) {
   const language = new URL(url).pathname.startsWith("/ja/") ? "ja" : "en";
   const filename = `${new URL(url).pathname.slice(1)}index.html`;
@@ -1934,8 +1941,7 @@ for (const url of [...japaneseSitemapUrls, ...englishWebPageUrls]) {
   const name = language === "en" ? title?.replaceAll("&amp;", "&") : title;
   const canonical = page.match(/<link rel="canonical" href="([^"]+)">/)?.[1];
   const pages = (jsonLdByFile.get(filename) || []).filter(node => node["@type"] === "WebPage");
-  // The five hand-written Japanese subpages remain outside the generator's scope.
-  const generatedPage = language === "en" || filename === "ja/index.html";
+  const generatedPage = language === "en" || generatedJapaneseWebPages.has(filename);
   check(canonical === url && name && pages.length === 1 &&
     pages[0]["@context"] === "https://schema.org" && pages[0]["@id"] === `${url}#webpage` &&
     pages[0].url === url && pages[0].name === name && pages[0].inLanguage === language &&
